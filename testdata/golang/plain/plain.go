@@ -1,0 +1,4 @@
+package native
+
+func plain() {
+}
