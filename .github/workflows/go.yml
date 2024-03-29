@@ -1,0 +1,34 @@
+name: Go
+
+on:
+  push:
+    branches: ['master']
+  pull_request:
+    branches: ['master']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Install Symflower
+        shell: bash
+        run: |
+          mkdir -p $PWD/bin/
+          export OS=${OS:-"$(uname -s | awk '{print tolower($0)}')"}
+          export ARCH=${ARCH:-"$(uname -m)"}
+          curl -SLf -o $PWD/bin/symflower https://download.symflower.com/local/latest/symflower-$OS-$ARCH
+          chmod +x $PWD/bin/symflower
+          echo "PATH=$PWD/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Build
+        run: make install
+
+      - name: Test
+        run: make test
