@@ -2,6 +2,7 @@ package evaluate
 
 import (
 	"errors"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -13,7 +14,9 @@ import (
 )
 
 // EvaluateRepository evaluate a repository with the given model and language.
-func EvaluateRepository(repositoryPath string, model model.Model, language language.Language) (err error) {
+func EvaluateRepository(model model.Model, language language.Language, repositoryPath string) (err error) {
+	log.Printf("Evaluating model %q using language %q and repository %q", model.ID(), language.ID(), repositoryPath)
+
 	temporaryPath, err := os.MkdirTemp("", "eval-symflower-codegen-testing")
 	if err != nil {
 		return pkgerrors.WithStack(err)
