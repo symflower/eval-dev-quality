@@ -25,6 +25,13 @@ install: # [<Go package] - # Build and install everything, or only the specified
 	go install -v $(PACKAGE)
 .PHONY: install
 
+install-all: install-tools-testing install # Install everything for and of this repository.
+.PHONY: install-all
+
+install-tools-testing: # Install tools that are used for testing.
+	go install -v gotest.tools/gotestsum@v1.11.0
+.PHONY: install-tools-testing
+
 test: # [<Go package] - # Test everything, or only the specified package.
-	go test -race -test.timeout $(UNIT_TEST_TIMEOUT)s -v $(PACKAGE)
+	gotestsum --format standard-verbose --hide-summary skipped -- -race -test.timeout $(UNIT_TEST_TIMEOUT)s -v $(PACKAGE)
 .PHONY: test
