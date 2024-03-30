@@ -54,8 +54,9 @@ func (language *LanguageGolang) Execute(repositoryPath string) (err error) {
 	_, _, err = util.CommandWithResult(&util.Command{
 		Command: []string{
 			"go", "test",
-			"-v",    // Output with the maximum information for easier debugging.
-			"./...", // Always execute all tests of the repository in case multiple test files have been generated.
+			"-v",       // Output with the maximum information for easier debugging.
+			"-vet=off", // Disable all linter checks, because those should be part of a different task.
+			"./...",    // Always execute all tests of the repository in case multiple test files have been generated.
 		},
 
 		Directory: repositoryPath,
