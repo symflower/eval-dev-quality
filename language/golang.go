@@ -15,8 +15,7 @@ import (
 type LanguageGolang struct{}
 
 func init() {
-	l := &LanguageGolang{}
-	Languages[l.ID()] = l
+	Register(&LanguageGolang{})
 }
 
 var _ Language = (*LanguageGolang)(nil)
