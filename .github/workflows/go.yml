@@ -27,6 +27,9 @@ jobs:
           chmod +x $PWD/bin/symflower
           echo "PATH=$PWD/bin:$PATH" >> $GITHUB_ENV
 
+      - name: Install testing tools
+        run: make install-tools-testing
+
       - name: Build
         run: make install
 
