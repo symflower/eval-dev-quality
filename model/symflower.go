@@ -10,8 +10,7 @@ import (
 type ModelSymflower struct{}
 
 func init() {
-	m := &ModelSymflower{}
-	Models[m.ID()] = m
+	Register(&ModelSymflower{})
 }
 
 var _ Model = (*ModelSymflower)(nil)
