@@ -75,9 +75,11 @@ func TestLanguageGolangExecute(t *testing.T) {
 			actualError := tc.LanguageGolang.Execute(repositoryPath)
 
 			if tc.ExpectedError != nil {
-				assert.ErrorIs(t, tc.ExpectedError, actualError)
-			} else if actualError != nil || tc.ExpectedErrorText != "" {
+				assert.ErrorIs(t, actualError, tc.ExpectedError)
+			} else if actualError != nil && tc.ExpectedErrorText != "" {
 				assert.ErrorContains(t, actualError, tc.ExpectedErrorText)
+			} else {
+				assert.NoError(t, actualError)
 			}
 		})
 	}
