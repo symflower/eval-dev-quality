@@ -1,8 +1,11 @@
 package language
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strconv"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
@@ -49,11 +52,16 @@ func (language *LanguageGolang) Files(repositoryPath string) (filePaths []string
 	return filePaths, nil
 }
 
+var languageGoNoTestsMatch = regexp.MustCompile(`(?m)^DONE (\d+) tests.*in (.+?)$`)
+
 // Execute invokes the language specific testing on the given repository.
 func (language *LanguageGolang) Execute(repositoryPath string) (err error) {
-	_, _, err = util.CommandWithResult(&util.Command{
+	stdout, _, err := util.CommandWithResult(&util.Command{
 		Command: []string{
-			"go", "test",
+			"gotestsum",
+			"--format", "standard-verbose", // Keep formatting consistent.
+			"--hide-summary", "skipped", // We are not interested in skipped tests, because they are the same as no tests at all.
+			"--",       // Let the real Go "test" tool options begin.
 			"-v",       // Output with the maximum information for easier debugging.
 			"-vet=off", // Disable all linter checks, because those should be part of a different task.
 			"./...",    // Always execute all tests of the repository in case multiple test files have been generated.
@@ -63,6 +71,17 @@ func (language *LanguageGolang) Execute(repositoryPath string) (err error) {
 	})
 	if err != nil {
 		return pkgerrors.WithStack(err)
+	}
+
+	ms := languageGoNoTestsMatch.FindStringSubmatch(stdout)
+	if ms == nil {
+		return pkgerrors.WithStack(errors.New("could not find Go test summary"))
+	}
+	testCount, err := strconv.ParseUint(ms[1], 10, 64)
+	if err != nil {
+		return pkgerrors.WithStack(err)
+	} else if testCount == 0 {
+		return pkgerrors.WithStack(ErrNoTestFound)
 	}
 
 	return nil

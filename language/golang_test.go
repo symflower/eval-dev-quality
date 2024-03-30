@@ -88,6 +88,8 @@ func TestLanguageGolangExecute(t *testing.T) {
 		Name: "No test files",
 
 		RepositoryPath: "../testdata/golang/plain/",
+
+		ExpectedError: ErrNoTestFound,
 	})
 
 	t.Run("With test file", func(t *testing.T) {
