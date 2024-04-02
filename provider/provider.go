@@ -1,6 +1,8 @@
 package provider
 
 import (
+	"context"
+
 	pkgerrors "github.com/pkg/errors"
 	"github.com/symflower/eval-symflower-codegen-testing/model"
 )
@@ -14,6 +16,18 @@ type Provider interface {
 	ID() (id string)
 	// Models returns which models are available to be queried via this provider.
 	Models() (models []model.Model)
+}
+
+// InjectToken is a provider that needs an access token to authenticate a remote API.
+type InjectToken interface {
+	// SetToken sets an access token to be used to authenticate a remote API.
+	SetToken(token string)
+}
+
+// QueryProvider is a provider that allows to query a model directly.
+type QueryProvider interface {
+	// Query queries the provider with the given model name.
+	Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error)
 }
 
 // Providers holds a register of all providers.

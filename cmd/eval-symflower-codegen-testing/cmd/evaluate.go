@@ -13,6 +13,7 @@ import (
 	"github.com/symflower/eval-symflower-codegen-testing/language"
 	"github.com/symflower/eval-symflower-codegen-testing/model"
 	"github.com/symflower/eval-symflower-codegen-testing/provider"
+	_ "github.com/symflower/eval-symflower-codegen-testing/provider/openrouter"
 	_ "github.com/symflower/eval-symflower-codegen-testing/provider/symflower"
 )
 
@@ -24,6 +25,9 @@ type Evaluate struct {
 	Models []string `long:"model" description:"Evaluate with this model. By default all models are used."`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
+
+	// ProviderTokens holds all API tokens for the providers.
+	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token,...')." env:"PROVIDER_TOKEN"`
 }
 
 func (command *Evaluate) Execute(args []string) (err error) {
@@ -46,6 +50,14 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	models := map[string]model.Model{}
 	for _, p := range provider.Providers {
 		for _, m := range p.Models() {
+			if t, ok := p.(provider.InjectToken); ok {
+				token, ok := command.ProviderTokens[p.ID()]
+				if !ok {
+					log.Fatalf("ERROR: model provider %q requires an API token but none was given. Specify one using command line arguments or environment variables.", p.ID())
+				}
+				t.SetToken(token)
+			}
+
 			models[m.ID()] = m
 		}
 	}
