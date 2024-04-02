@@ -98,8 +98,12 @@ func (command *Evaluate) Execute(args []string) (err error) {
 			model := models[modelID]
 			language := language.Languages[languageID]
 
-			if err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain")); err != nil {
-				log.Printf("Excluding model %q since it was not able to solve the \"plain\" repository for language %q: %+v", modelID, languageID, err)
+			ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
+			if err != nil {
+				ps = append(ps, err)
+			}
+			if len(ps) > 0 {
+				log.Printf("Excluding model %q since it was not able to solve the \"plain\" repository for language %q: %+v", modelID, languageID, ps)
 				excludeModelIDs[modelID] = true
 			}
 		}
@@ -107,6 +111,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Evaluating models and languages.
 	log.Printf("Evaluating models and languages")
+	problemsPerModel := map[string][]error{}
 	for _, languageID := range command.Languages {
 		languagePath := filepath.Join(command.TestdataPath, languageID)
 
@@ -128,9 +133,21 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := models[modelID]
 				language := language.Languages[languageID]
 
-				if err := evaluate.EvaluateRepository(model, language, filepath.Join(languagePath, repository.Name())); err != nil {
+				ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(languagePath, repository.Name()))
+				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+				if err != nil {
 					log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repository.Name(), err)
 				}
+			}
+		}
+	}
+
+	for _, modelID := range command.Models {
+		ps := problemsPerModel[modelID]
+		if len(ps) > 0 {
+			log.Printf("Problems for %q:", modelID)
+			for _, p := range ps {
+				log.Printf("%+v:", p)
 			}
 		}
 	}

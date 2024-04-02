@@ -14,12 +14,15 @@ import (
 )
 
 // EvaluateRepository evaluate a repository with the given model and language.
-func EvaluateRepository(model model.Model, language language.Language, repositoryPath string) (err error) {
+func EvaluateRepository(model model.Model, language language.Language, repositoryPath string) (problems []error, err error) {
 	log.Printf("Evaluating model %q using language %q and repository %q", model.ID(), language.ID(), repositoryPath)
+	defer func() {
+		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems", model.ID(), language.ID(), repositoryPath, len(problems))
+	}()
 
 	temporaryPath, err := os.MkdirTemp("", "eval-symflower-codegen-testing")
 	if err != nil {
-		return pkgerrors.WithStack(err)
+		return problems, pkgerrors.WithStack(err)
 	}
 	defer func() {
 		if e := os.RemoveAll(temporaryPath); e != nil {
@@ -32,23 +35,27 @@ func EvaluateRepository(model model.Model, language language.Language, repositor
 	}()
 	temporaryRepositoryPath := filepath.Join(temporaryPath, filepath.Base(repositoryPath))
 	if err := osutil.CopyTree(repositoryPath, temporaryRepositoryPath); err != nil {
-		return pkgerrors.WithStack(err)
+		return problems, pkgerrors.WithStack(err)
 	}
 
 	filePaths, err := language.Files(repositoryPath)
 	if err != nil {
-		return err
+		return problems, pkgerrors.WithStack(err)
 	}
 
 	for _, filePath := range filePaths {
 		if err := model.GenerateTestsForFile(temporaryRepositoryPath, filePath); err != nil {
-			return err
+			problems = append(problems, pkgerrors.WithMessage(err, filePath))
+
+			continue
 		}
 
 		if err := language.Execute(temporaryRepositoryPath); err != nil {
-			return err
+			problems = append(problems, pkgerrors.WithMessage(err, filePath))
+
+			continue
 		}
 	}
 
-	return
+	return problems, nil
 }
