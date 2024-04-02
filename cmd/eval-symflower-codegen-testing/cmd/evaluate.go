@@ -6,12 +6,14 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/zimmski/osutil"
 	"golang.org/x/exp/maps"
 
 	"github.com/symflower/eval-symflower-codegen-testing/evaluate"
 	"github.com/symflower/eval-symflower-codegen-testing/language"
 	"github.com/symflower/eval-symflower-codegen-testing/model"
-	"github.com/zimmski/osutil"
+	"github.com/symflower/eval-symflower-codegen-testing/provider"
+	_ "github.com/symflower/eval-symflower-codegen-testing/provider/symflower"
 )
 
 // Evaluate holds the "evaluation" command.
@@ -41,15 +43,20 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	sort.Strings(command.Languages)
 
 	// Gather models.
+	models := map[string]model.Model{}
+	for _, p := range provider.Providers {
+		for _, m := range p.Models() {
+			models[m.ID()] = m
+		}
+	}
+	modelIDs := maps.Keys(models)
+	sort.Strings(modelIDs)
 	if len(command.Models) == 0 {
-		command.Models = maps.Keys(model.Models)
+		command.Models = modelIDs
 	} else {
 		for _, modelID := range command.Models {
-			if _, ok := model.Models[modelID]; !ok {
-				ms := maps.Keys(model.Models)
-				sort.Strings(ms)
-
-				log.Fatalf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(ms, ", "))
+			if _, ok := models[modelID]; !ok {
+				log.Fatalf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(modelIDs, ", "))
 			}
 		}
 	}
@@ -67,7 +74,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	log.Printf("Checking that models and languages can used for evaluation")
 	for _, languageID := range command.Languages {
 		for _, modelID := range command.Models {
-			model := model.Models[modelID]
+			model := models[modelID]
 			language := language.Languages[languageID]
 
 			if err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain")); err != nil {

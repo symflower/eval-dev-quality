@@ -1,23 +1,21 @@
-package model
+package symflower
 
 import (
 	pkgerrors "github.com/pkg/errors"
 
+	"github.com/symflower/eval-symflower-codegen-testing/model"
+	"github.com/symflower/eval-symflower-codegen-testing/provider"
 	"github.com/symflower/eval-symflower-codegen-testing/util"
 )
 
 // ModelSymflower holds a Symflower model using the locally installed CLI.
 type ModelSymflower struct{}
 
-func init() {
-	Register(&ModelSymflower{})
-}
-
-var _ Model = (*ModelSymflower)(nil)
+var _ model.Model = (*ModelSymflower)(nil)
 
 // ID returns the unique ID of this model.
 func (language *ModelSymflower) ID() (id string) {
-	return "symflower"
+	return "symflower" + provider.ProviderModelSeparator + "symbolic-execution"
 }
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.

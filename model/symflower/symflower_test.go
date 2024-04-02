@@ -1,4 +1,4 @@
-package model
+package symflower
 
 import (
 	"path/filepath"
@@ -56,7 +56,7 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 
 		Language: &language.LanguageGolang{},
 
-		RepositoryPath: "../testdata/golang/plain/",
+		RepositoryPath: "../../testdata/golang/plain/",
 		FilePath:       "plain.go",
 	})
 }
