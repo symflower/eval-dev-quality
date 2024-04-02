@@ -26,6 +26,8 @@ type Evaluate struct {
 	Models []string `long:"model" description:"Evaluate with this model. By default all models are used."`
 	// Repositories determines which repository should be used for the evaluation, or empty if all repositories should be used.
 	Repositories []string `long:"repository" description:"Evaluate with this repository. By default all repositories are used."`
+	// ResultPath holds the path to the results file.
+	ResultPath string `long:"result" description:"Path to the CSV results file." default:"evaluation.csv"`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
 
@@ -98,7 +100,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 			model := models[modelID]
 			language := language.Languages[languageID]
 
-			ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
+			_, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
 			if err != nil {
 				ps = append(ps, err)
 			}
@@ -111,6 +113,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Evaluating models and languages.
 	log.Printf("Evaluating models and languages")
+	metricsPerModel := map[string]evaluate.Metrics{}
 	problemsPerModel := map[string][]error{}
 	for _, languageID := range command.Languages {
 		languagePath := filepath.Join(command.TestdataPath, languageID)
@@ -133,11 +136,12 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := models[modelID]
 				language := language.Languages[languageID]
 
-				ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(languagePath, repository.Name()))
+				metrics, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(languagePath, repository.Name()))
 				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				if err != nil {
 					log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repository.Name(), err)
 				}
+				metricsPerModel[model.ID()] = metricsPerModel[model.ID()].Add(metrics)
 			}
 		}
 	}
@@ -150,6 +154,16 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				log.Printf("%+v:", p)
 			}
 		}
+
+		log.Printf("Evaluation score for %q: %s", modelID, metricsPerModel[modelID])
+	}
+
+	csv, err := evaluate.FormatStringCSV(metricsPerModel)
+	if err != nil {
+		log.Fatalf("ERROR: could not create result summary: %s", err)
+	}
+	if err := os.WriteFile(command.ResultPath, []byte(csv), 0644); err != nil {
+		log.Fatalf("ERROR: could not write result summary: %s", err)
 	}
 
 	return nil
