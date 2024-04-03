@@ -14,8 +14,8 @@ type Command struct {
 
 // Execute executes the root command.
 func Execute() {
-	var parser = flags.NewNamedParser("eval-symflower-codegen-testing", flags.Default)
-	parser.LongDescription = "Command to manage, update and actually execute the `eval-symflower-codegen-testing` evaluation benchmark."
+	var parser = flags.NewNamedParser("eval-codegen-testing", flags.Default)
+	parser.LongDescription = "Command to manage, update and actually execute the `eval-codegen-testing` evaluation benchmark."
 	if _, err := parser.AddGroup("Common command options", "", &Command{}); err != nil {
 		log.Fatalf("Could not add arguments group: %+v", err)
 	}

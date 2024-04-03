@@ -11,8 +11,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil/bytesutil"
 
-	"github.com/symflower/eval-symflower-codegen-testing/language"
-	providertesting "github.com/symflower/eval-symflower-codegen-testing/provider/testing"
+	"github.com/symflower/eval-codegen-testing/language"
+	providertesting "github.com/symflower/eval-codegen-testing/provider/testing"
 )
 
 func TestModelLLMGenerateTestsForFile(t *testing.T) {

@@ -12,7 +12,7 @@ import (
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
 
-	"github.com/symflower/eval-symflower-codegen-testing/util"
+	"github.com/symflower/eval-codegen-testing/util"
 )
 
 // LanguageGolang holds a Go language to evaluate a repository.

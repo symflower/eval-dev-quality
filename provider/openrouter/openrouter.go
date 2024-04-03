@@ -8,9 +8,9 @@ import (
 	pkgerrors "github.com/pkg/errors"
 	"github.com/sashabaranov/go-openai"
 
-	"github.com/symflower/eval-symflower-codegen-testing/model"
-	"github.com/symflower/eval-symflower-codegen-testing/model/llm"
-	"github.com/symflower/eval-symflower-codegen-testing/provider"
+	"github.com/symflower/eval-codegen-testing/model"
+	"github.com/symflower/eval-codegen-testing/model/llm"
+	"github.com/symflower/eval-codegen-testing/provider"
 )
 
 type openRouterProvider struct {
