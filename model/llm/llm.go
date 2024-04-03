@@ -86,7 +86,7 @@ func (m *llm) GenerateTestsForFile(language language.Language, repositoryPath st
 
 	importPath := filepath.Join(filepath.Base(repositoryPath), filepath.Dir(filePath))
 
-	message, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
+	request, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
 		Language: language,
 
 		Code:       fileContent,
@@ -97,11 +97,11 @@ func (m *llm) GenerateTestsForFile(language language.Language, repositoryPath st
 		return err
 	}
 
-	response, err := m.provider.Query(context.Background(), m.model, message)
+	response, err := m.provider.Query(context.Background(), m.model, request)
 	if err != nil {
 		return err
 	}
-	log.Printf("Model %q responded to query %q with: %q", m.ID(), message, response)
+	log.Printf("Model %q responded to query %s with: %s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
 
 	testContent := prompt.ParseResponse(response)
 
