@@ -22,6 +22,7 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 		RepositoryChange func(t *testing.T, repositoryPath string)
 		FilePath         string
 
+		ExpectedCoverage  float64
 		ExpectedError     error
 		ExpectedErrorText string
 	}
@@ -47,7 +48,9 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 				assert.ErrorContains(t, actualErr, tc.ExpectedErrorText)
 			}
 
-			require.NoError(t, tc.Language.Execute(repositoryPath))
+			actualCoverage, err := tc.Language.Execute(repositoryPath)
+			require.NoError(t, err)
+			assert.Equal(t, tc.ExpectedCoverage, actualCoverage)
 		})
 	}
 
@@ -58,5 +61,7 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 
 		RepositoryPath: "../../testdata/golang/plain/",
 		FilePath:       "plain.go",
+
+		ExpectedCoverage: 100,
 	})
 }

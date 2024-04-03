@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"log"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -23,6 +24,10 @@ type Evaluate struct {
 	Languages []string `long:"language" description:"Evaluate with this language. By default all languages are used."`
 	// Models determines which models should be used for the evaluation, or empty if all models should be used.
 	Models []string `long:"model" description:"Evaluate with this model. By default all models are used."`
+	// Repositories determines which repository should be used for the evaluation, or empty if all repositories should be used.
+	Repositories []string `long:"repository" description:"Evaluate with this repository. By default all repositories are used."`
+	// ResultPath holds the path to the results file.
+	ResultPath string `long:"result" description:"Path to the CSV results file." default:"evaluation.csv"`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
 
@@ -45,6 +50,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 	sort.Strings(command.Languages)
+
+	commandRepositories := map[string]bool{}
+	for _, r := range command.Repositories {
+		commandRepositories[r] = true
+	}
 
 	// Gather models.
 	models := map[string]model.Model{}
@@ -83,16 +93,77 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	}
 
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
-	log.Printf("Checking that models and languages can used for evaluation")
+	log.Printf("Checking that models and languages can be used for evaluation")
+	excludeModelIDs := map[string]bool{}
 	for _, languageID := range command.Languages {
 		for _, modelID := range command.Models {
 			model := models[modelID]
 			language := language.Languages[languageID]
 
-			if err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain")); err != nil {
-				log.Fatalf("%+v", err)
+			_, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
+			if err != nil {
+				ps = append(ps, err)
+			}
+			if len(ps) > 0 {
+				log.Printf("Excluding model %q since it was not able to solve the \"plain\" repository for language %q: %+v", modelID, languageID, ps)
+				excludeModelIDs[modelID] = true
 			}
 		}
+	}
+
+	// Evaluating models and languages.
+	log.Printf("Evaluating models and languages")
+	metricsPerModel := map[string]evaluate.Metrics{}
+	problemsPerModel := map[string][]error{}
+	for _, languageID := range command.Languages {
+		languagePath := filepath.Join(command.TestdataPath, languageID)
+
+		repositories, err := os.ReadDir(languagePath)
+		if err != nil {
+			log.Fatalf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
+		}
+
+		for _, repository := range repositories {
+			if !repository.IsDir() || (len(commandRepositories) > 0 && !commandRepositories[repository.Name()]) {
+				continue
+			}
+
+			for _, modelID := range command.Models {
+				if excludeModelIDs[modelID] {
+					continue
+				}
+
+				model := models[modelID]
+				language := language.Languages[languageID]
+
+				metrics, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(languagePath, repository.Name()))
+				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+				if err != nil {
+					log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repository.Name(), err)
+				}
+				metricsPerModel[model.ID()] = metricsPerModel[model.ID()].Add(metrics)
+			}
+		}
+	}
+
+	for _, modelID := range command.Models {
+		ps := problemsPerModel[modelID]
+		if len(ps) > 0 {
+			log.Printf("Problems for %q:", modelID)
+			for _, p := range ps {
+				log.Printf("%+v:", p)
+			}
+		}
+
+		log.Printf("Evaluation score for %q: %s", modelID, metricsPerModel[modelID])
+	}
+
+	csv, err := evaluate.FormatStringCSV(metricsPerModel)
+	if err != nil {
+		log.Fatalf("ERROR: could not create result summary: %s", err)
+	}
+	if err := os.WriteFile(command.ResultPath, []byte(csv), 0644); err != nil {
+		log.Fatalf("ERROR: could not write result summary: %s", err)
 	}
 
 	return nil

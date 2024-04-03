@@ -55,6 +55,7 @@ func TestLanguageGolangExecute(t *testing.T) {
 		RepositoryPath   string
 		RepositoryChange func(t *testing.T, repositoryPath string)
 
+		ExpectedCoverage  float64
 		ExpectedError     error
 		ExpectedErrorText string
 	}
@@ -72,7 +73,7 @@ func TestLanguageGolangExecute(t *testing.T) {
 			if tc.LanguageGolang == nil {
 				tc.LanguageGolang = &LanguageGolang{}
 			}
-			actualError := tc.LanguageGolang.Execute(repositoryPath)
+			actualCoverage, actualError := tc.LanguageGolang.Execute(repositoryPath)
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, actualError, tc.ExpectedError)
@@ -80,6 +81,7 @@ func TestLanguageGolangExecute(t *testing.T) {
 				assert.ErrorContains(t, actualError, tc.ExpectedErrorText)
 			} else {
 				assert.NoError(t, actualError)
+				assert.Equal(t, tc.ExpectedCoverage, actualCoverage)
 			}
 		})
 	}
@@ -110,6 +112,8 @@ func TestLanguageGolangExecute(t *testing.T) {
 					}
 				`)), 0660))
 			},
+
+			ExpectedCoverage: 100,
 		})
 
 		validate(t, &testCase{

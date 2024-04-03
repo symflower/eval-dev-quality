@@ -9,6 +9,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/zimmski/osutil v1.1.1-0.20240329123339-0f31a74c026a
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8
+	gonum.org/v1/gonum v0.15.0
 )
 
 require (
