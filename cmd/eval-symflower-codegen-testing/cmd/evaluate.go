@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"log"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -20,6 +21,8 @@ type Evaluate struct {
 	Languages []string `long:"language" description:"Evaluate with this language. By default all languages are used."`
 	// Models determines which models should be used for the evaluation, or empty if all models should be used.
 	Models []string `long:"model" description:"Evaluate with this model. By default all models are used."`
+	// Repositories determines which repository should be used for the evaluation, or empty if all repositories should be used.
+	Repositories []string `long:"repository" description:"Evaluate with this repository. By default all repositories are used."`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
 }
@@ -39,6 +42,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 	sort.Strings(command.Languages)
+
+	commandRepositories := map[string]bool{}
+	for _, r := range command.Repositories {
+		commandRepositories[r] = true
+	}
 
 	// Gather models.
 	if len(command.Models) == 0 {
@@ -64,14 +72,40 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	}
 
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
-	log.Printf("Checking that models and languages can used for evaluation")
+	log.Printf("Checking that models and languages can be used for evaluation")
 	for _, languageID := range command.Languages {
 		for _, modelID := range command.Models {
 			model := model.Models[modelID]
 			language := language.Languages[languageID]
 
-			if err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain")); err != nil {
+			if err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, languageID, "plain")); err != nil {
 				log.Fatalf("%+v", err)
+			}
+		}
+	}
+
+	// Evaluating models and languages.
+	log.Printf("Evaluating models and languages")
+	for _, languageID := range command.Languages {
+		languagePath := filepath.Join(command.TestdataPath, languageID)
+
+		repositories, err := os.ReadDir(languagePath)
+		if err != nil {
+			log.Fatalf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
+		}
+
+		for _, repository := range repositories {
+			if !repository.IsDir() || (len(commandRepositories) > 0 && !commandRepositories[repository.Name()]) {
+				continue
+			}
+
+			for _, modelID := range command.Models {
+				model := model.Models[modelID]
+				language := language.Languages[languageID]
+
+				if err := evaluate.EvaluateRepository(model, language, filepath.Join(languagePath, repository.Name())); err != nil {
+					log.Printf("%+v", err)
+				}
 			}
 		}
 	}
