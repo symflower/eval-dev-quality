@@ -13,7 +13,7 @@ type Language interface {
 	Files(repositoryPath string) (filePaths []string, err error)
 
 	// Execute invokes the language specific testing on the given repository.
-	Execute(repositoryPath string) (err error)
+	Execute(repositoryPath string) (coverage float64, err error)
 }
 
 // Languages holds a register of all languages.

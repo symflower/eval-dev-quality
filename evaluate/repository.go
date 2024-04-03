@@ -51,12 +51,14 @@ func EvaluateRepository(model model.Model, language language.Language, repositor
 			continue
 		}
 
-		if err := language.Execute(temporaryRepositoryPath); err != nil {
+		coverage, err := language.Execute(temporaryRepositoryPath)
+		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
 
 			continue
 		}
 		metrics.Executed++
+		metrics.Coverage = append(metrics.Coverage, coverage)
 	}
 
 	return metrics, problems, nil

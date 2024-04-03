@@ -2,6 +2,7 @@ package language
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -53,15 +54,18 @@ func (language *LanguageGolang) Files(repositoryPath string) (filePaths []string
 }
 
 var languageGoNoTestsMatch = regexp.MustCompile(`(?m)^DONE (\d+) tests.*in (.+?)$`)
+var languageGoCoverageMatch = regexp.MustCompile(`(?m)^coverage: (\d+\.?\d+)% of statements`)
+var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statements\]$`)
 
 // Execute invokes the language specific testing on the given repository.
-func (language *LanguageGolang) Execute(repositoryPath string) (err error) {
+func (language *LanguageGolang) Execute(repositoryPath string) (coverage float64, err error) {
 	stdout, _, err := util.CommandWithResult(&util.Command{
 		Command: []string{
 			"gotestsum",
 			"--format", "standard-verbose", // Keep formatting consistent.
 			"--hide-summary", "skipped", // We are not interested in skipped tests, because they are the same as no tests at all.
 			"--",       // Let the real Go "test" tool options begin.
+			"-cover",   // Enable statement coverage.
 			"-v",       // Output with the maximum information for easier debugging.
 			"-vet=off", // Disable all linter checks, because those should be part of a different task.
 			"./...",    // Always execute all tests of the repository in case multiple test files have been generated.
@@ -70,19 +74,33 @@ func (language *LanguageGolang) Execute(repositoryPath string) (err error) {
 		Directory: repositoryPath,
 	})
 	if err != nil {
-		return pkgerrors.WithStack(err)
+		return 0.0, pkgerrors.WithStack(err)
 	}
 
 	ms := languageGoNoTestsMatch.FindStringSubmatch(stdout)
 	if ms == nil {
-		return pkgerrors.WithStack(errors.New("could not find Go test summary"))
+		return 0.0, pkgerrors.WithStack(errors.New("could not find Go test summary"))
 	}
 	testCount, err := strconv.ParseUint(ms[1], 10, 64)
 	if err != nil {
-		return pkgerrors.WithStack(err)
+		return 0.0, pkgerrors.WithStack(err)
 	} else if testCount == 0 {
-		return pkgerrors.WithStack(ErrNoTestFound)
+		return 0.0, pkgerrors.WithStack(ErrNoTestFound)
 	}
 
-	return nil
+	if languageGoNoCoverageMatch.MatchString(stdout) {
+		return 0.0, nil
+	}
+
+	mc := languageGoCoverageMatch.FindStringSubmatch(stdout)
+	if mc == nil {
+		fmt.Println(mc, stdout)
+		return 0.0, pkgerrors.WithStack(errors.New("could not find Go coverage report"))
+	}
+	coverage, err = strconv.ParseFloat(mc[1], 64)
+	if err != nil {
+		return 0.0, pkgerrors.WithStack(err)
+	}
+
+	return coverage, nil
 }
