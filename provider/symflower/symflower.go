@@ -13,12 +13,12 @@ func init() {
 }
 
 // ID returns the unique ID of this provider.
-func (*symflowerProvider) ID() (id string) {
+func (p *symflowerProvider) ID() (id string) {
 	return "symflower"
 }
 
 // Model implements provider.Provider.
-func (*symflowerProvider) Models() (models []model.Model) {
+func (p *symflowerProvider) Models() (models []model.Model) {
 	return []model.Model{
 		&symflower.ModelSymflower{},
 	}
