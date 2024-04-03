@@ -101,7 +101,7 @@ func TestLanguageGolangExecute(t *testing.T) {
 			RepositoryPath: "../testdata/golang/plain/",
 			RepositoryChange: func(t *testing.T, repositoryPath string) {
 				require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "plain_test.go"), []byte(bytesutil.StringTrimIndentations(`
-					package native
+					package plain
 
 					import (
 						"testing"
