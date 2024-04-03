@@ -112,7 +112,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := models[modelID]
 				language := language.Languages[languageID]
 
-				_, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
+				metrics, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
+				metricsPerModel[modelID] = metricsPerModel[modelID].Add(metrics)
 				if err != nil {
 					ps = append(ps, err)
 				}
@@ -148,11 +149,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				language := language.Languages[languageID]
 
 				metrics, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(languagePath, repository.Name()))
+				metricsPerModel[model.ID()] = metricsPerModel[model.ID()].Add(metrics)
 				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				if err != nil {
 					log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repository.Name(), err)
 				}
-				metricsPerModel[model.ID()] = metricsPerModel[model.ID()].Add(metrics)
 			}
 		}
 	}
