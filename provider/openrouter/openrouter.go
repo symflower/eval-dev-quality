@@ -29,11 +29,17 @@ func newOpenRouterProvider() provider.Provider {
 	}
 }
 
-// Query queries the LLM.
-func (o *openRouterProvider) Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error) {
+// client returns a new client with the current configuration.
+func (o *openRouterProvider) client() (client *openai.Client) {
 	config := openai.DefaultConfig(o.token)
 	config.BaseURL = o.baseURL
-	client := openai.NewClientWithConfig(config)
+
+	return openai.NewClientWithConfig(config)
+}
+
+// Query queries the LLM.
+func (o *openRouterProvider) Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error) {
+	client := o.client()
 	modelIdentifier = strings.TrimPrefix(modelIdentifier, o.ID()+provider.ProviderModelSeparator)
 
 	apiResponse, err := client.CreateChatCompletion(
