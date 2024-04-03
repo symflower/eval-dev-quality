@@ -58,34 +58,36 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Gather models.
 	models := map[string]model.Model{}
-	for _, p := range provider.Providers {
-		ms, err := p.Models()
-		if err != nil {
-			log.Fatalf("ERROR: could not query models for provider %q: %s", p.ID(), err)
+	{
+		for _, p := range provider.Providers {
+			ms, err := p.Models()
+			if err != nil {
+				log.Fatalf("ERROR: could not query models for provider %q: %s", p.ID(), err)
+			}
+			for _, m := range ms {
+				if t, ok := p.(provider.InjectToken); ok {
+					token, ok := command.ProviderTokens[p.ID()]
+					if ok {
+						t.SetToken(token)
+					}
+				}
+
+				models[m.ID()] = m
+			}
 		}
-		for _, m := range ms {
-			if t, ok := p.(provider.InjectToken); ok {
-				token, ok := command.ProviderTokens[p.ID()]
-				if ok {
-					t.SetToken(token)
+		modelIDs := maps.Keys(models)
+		sort.Strings(modelIDs)
+		if len(command.Models) == 0 {
+			command.Models = modelIDs
+		} else {
+			for _, modelID := range command.Models {
+				if _, ok := models[modelID]; !ok {
+					log.Fatalf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(modelIDs, ", "))
 				}
 			}
-
-			models[m.ID()] = m
 		}
+		sort.Strings(command.Models)
 	}
-	modelIDs := maps.Keys(models)
-	sort.Strings(modelIDs)
-	if len(command.Models) == 0 {
-		command.Models = modelIDs
-	} else {
-		for _, modelID := range command.Models {
-			if _, ok := models[modelID]; !ok {
-				log.Fatalf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(modelIDs, ", "))
-			}
-		}
-	}
-	sort.Strings(command.Models)
 
 	if err := osutil.DirExists(command.TestdataPath); err != nil {
 		log.Fatalf("ERROR: testdata path %q cannot be accessed: %s", command.TestdataPath, err)
@@ -118,7 +120,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	log.Printf("Evaluating models and languages")
 	metricsPerModel := map[string]evaluate.Metrics{}
 	// Ensure we report metrics for every model even if they are excluded.
-	for _, modelID := range modelIDs {
+	for _, modelID := range command.Models {
 		metricsPerModel[modelID] = evaluate.Metrics{}
 	}
 	problemsPerModel := map[string][]error{}
