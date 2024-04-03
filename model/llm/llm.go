@@ -2,6 +2,7 @@ package llm
 
 import (
 	"context"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -78,6 +79,7 @@ func (m *llm) GenerateTestsForFile(repositoryPath string, filePath string) (err 
 	if err != nil {
 		return err
 	}
+	log.Printf("Model %q responded to query %q with: %q", m.ID(), promptBuilder.String(), response)
 
 	testContent := prompt.ParseResponse(response)
 
