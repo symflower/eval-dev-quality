@@ -58,34 +58,36 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Gather models.
 	models := map[string]model.Model{}
-	for _, p := range provider.Providers {
-		ms, err := p.Models()
-		if err != nil {
-			log.Fatalf("ERROR: could not query models for provider %q: %s", p.ID(), err)
+	{
+		for _, p := range provider.Providers {
+			ms, err := p.Models()
+			if err != nil {
+				log.Fatalf("ERROR: could not query models for provider %q: %s", p.ID(), err)
+			}
+			for _, m := range ms {
+				if t, ok := p.(provider.InjectToken); ok {
+					token, ok := command.ProviderTokens[p.ID()]
+					if ok {
+						t.SetToken(token)
+					}
+				}
+
+				models[m.ID()] = m
+			}
 		}
-		for _, m := range ms {
-			if t, ok := p.(provider.InjectToken); ok {
-				token, ok := command.ProviderTokens[p.ID()]
-				if ok {
-					t.SetToken(token)
+		modelIDs := maps.Keys(models)
+		sort.Strings(modelIDs)
+		if len(command.Models) == 0 {
+			command.Models = modelIDs
+		} else {
+			for _, modelID := range command.Models {
+				if _, ok := models[modelID]; !ok {
+					log.Fatalf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(modelIDs, ", "))
 				}
 			}
-
-			models[m.ID()] = m
 		}
+		sort.Strings(command.Models)
 	}
-	modelIDs := maps.Keys(models)
-	sort.Strings(modelIDs)
-	if len(command.Models) == 0 {
-		command.Models = modelIDs
-	} else {
-		for _, modelID := range command.Models {
-			if _, ok := models[modelID]; !ok {
-				log.Fatalf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(modelIDs, ", "))
-			}
-		}
-	}
-	sort.Strings(command.Models)
 
 	if err := osutil.DirExists(command.TestdataPath); err != nil {
 		log.Fatalf("ERROR: testdata path %q cannot be accessed: %s", command.TestdataPath, err)
@@ -97,27 +99,34 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	log.Printf("Checking that models and languages can be used for evaluation")
-	excludeModelIDs := map[string]bool{}
-	for _, languageID := range command.Languages {
+	metricsPerModel := map[string]evaluate.Metrics{}
+	problemsPerModel := map[string][]error{}
+	{
+		// Ensure we report metrics for every model even if they are excluded.
 		for _, modelID := range command.Models {
-			model := models[modelID]
-			language := language.Languages[languageID]
+			metricsPerModel[modelID] = evaluate.Metrics{}
+		}
 
-			_, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
-			if err != nil {
-				ps = append(ps, err)
-			}
-			if len(ps) > 0 {
-				log.Printf("Excluding model %q since it was not able to solve the \"plain\" repository for language %q: %+v", modelID, languageID, ps)
-				excludeModelIDs[modelID] = true
+		for _, languageID := range command.Languages {
+			for _, modelID := range command.Models {
+				model := models[modelID]
+				language := language.Languages[languageID]
+
+				metrics, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
+				metricsPerModel[modelID] = metricsPerModel[modelID].Add(metrics)
+				if err != nil {
+					ps = append(ps, err)
+				}
+				if len(ps) > 0 {
+					log.Printf("Excluding model %q since it was not able to solve the \"plain\" repository for language %q: %+v", modelID, languageID, ps)
+					problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+				}
 			}
 		}
 	}
 
 	// Evaluating models and languages.
 	log.Printf("Evaluating models and languages")
-	metricsPerModel := map[string]evaluate.Metrics{}
-	problemsPerModel := map[string][]error{}
 	for _, languageID := range command.Languages {
 		languagePath := filepath.Join(command.TestdataPath, languageID)
 
@@ -131,8 +140,13 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				continue
 			}
 
+			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
+			if filepath.Base(repository.Name()) == "plain" {
+				continue
+			}
+
 			for _, modelID := range command.Models {
-				if excludeModelIDs[modelID] {
+				if len(problemsPerModel[modelID]) > 0 {
 					continue
 				}
 
@@ -140,11 +154,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				language := language.Languages[languageID]
 
 				metrics, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(languagePath, repository.Name()))
+				metricsPerModel[model.ID()] = metricsPerModel[model.ID()].Add(metrics)
 				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				if err != nil {
 					log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repository.Name(), err)
 				}
-				metricsPerModel[model.ID()] = metricsPerModel[model.ID()].Add(metrics)
 			}
 		}
 	}

@@ -14,10 +14,12 @@ import (
 
 // Metrics holds numerical benchmarking metrics.
 type Metrics struct {
-	// Total is the total number of benchmarking candidates.
-	Total uint
 	// Executed is the number of benchmarking candidates with successful execution.
 	Executed uint
+	// Problems is the number of benchmarking candidates with problems.
+	Problems uint
+	// Total is the total number of benchmarking candidates.
+	Total uint
 
 	// Coverage holds the coverage of the benchmarking candidates.
 	Coverage []float64
@@ -26,8 +28,9 @@ type Metrics struct {
 // Add sums two metrics objects.
 func (m Metrics) Add(o Metrics) Metrics {
 	return Metrics{
-		Total:    m.Total + o.Total,
+		Problems: m.Problems + o.Problems,
 		Executed: m.Executed + o.Executed,
+		Total:    m.Total + o.Total,
 
 		Coverage: append(m.Coverage, o.Coverage...),
 	}
@@ -45,11 +48,24 @@ func (m Metrics) AverageCoverage() float64 {
 
 // String returns a string representation of the metrics.
 func (m Metrics) String() string {
+	problemsPercentage := float64(m.Problems) / float64(m.Total) * 100.0
+	if math.IsNaN(problemsPercentage) {
+		problemsPercentage = 0
+	}
 	executedPercentage := float64(m.Executed) / float64(m.Total) * 100.0
 	if math.IsNaN(executedPercentage) {
 		executedPercentage = 0
 	}
-	return fmt.Sprintf("#executed=%3.1f%%(%d/%d), average coverage=%3.1f", executedPercentage, m.Executed, m.Total, m.AverageCoverage())
+	return fmt.Sprintf(
+		"#executed=%3.1f%%(%d/%d), #problems=%3.1f%%(%d/%d), average statement coverage=%3.1f%%",
+		executedPercentage,
+		m.Executed,
+		m.Total,
+		problemsPercentage,
+		m.Problems,
+		m.Total,
+		m.AverageCoverage(),
+	)
 }
 
 // StringCSV returns a CSV row string representation of the metrics.
@@ -57,6 +73,7 @@ func (m Metrics) StringCSV() []string {
 	return []string{
 		fmt.Sprintf("%d", m.Total),
 		fmt.Sprintf("%d", m.Executed),
+		fmt.Sprintf("%d", m.Problems),
 		fmt.Sprintf("%.0f", m.AverageCoverage()),
 	}
 }
@@ -66,7 +83,7 @@ func FormatStringCSV(metricsPerModel map[string]Metrics) (string, error) {
 	var out strings.Builder
 	csv := csv.NewWriter(&out)
 
-	if err := csv.Write([]string{"model", "total", "executed", "coverage"}); err != nil {
+	if err := csv.Write([]string{"model", "files-total", "files-executed", "files-problems", "coverage-statement"}); err != nil {
 		return "", err
 	}
 	categories := maps.Keys(metricsPerModel)
