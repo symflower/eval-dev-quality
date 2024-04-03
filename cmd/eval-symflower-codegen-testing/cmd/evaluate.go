@@ -117,6 +117,10 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	// Evaluating models and languages.
 	log.Printf("Evaluating models and languages")
 	metricsPerModel := map[string]evaluate.Metrics{}
+	// Ensure we report metrics for every model even if they are excluded.
+	for _, modelID := range modelIDs {
+		metricsPerModel[modelID] = evaluate.Metrics{}
+	}
 	problemsPerModel := map[string][]error{}
 	for _, languageID := range command.Languages {
 		languagePath := filepath.Join(command.TestdataPath, languageID)
