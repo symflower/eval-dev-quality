@@ -164,14 +164,6 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	}
 
 	for _, modelID := range command.Models {
-		ps := problemsPerModel[modelID]
-		if len(ps) > 0 {
-			log.Printf("Problems for %q:", modelID)
-			for _, p := range ps {
-				log.Printf("%+v:", p)
-			}
-		}
-
 		log.Printf("Evaluation score for %q: %s", modelID, metricsPerModel[modelID])
 	}
 
