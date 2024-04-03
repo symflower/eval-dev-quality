@@ -1,4 +1,4 @@
-module github.com/symflower/eval-symflower-codegen-testing
+module github.com/symflower/eval-codegen-testing
 
 go 1.21.5
 

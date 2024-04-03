@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
 
-	"github.com/symflower/eval-symflower-codegen-testing/language"
+	"github.com/symflower/eval-codegen-testing/language"
 )
 
 func TestModelSymflowerGenerateTestsForFile(t *testing.T) {

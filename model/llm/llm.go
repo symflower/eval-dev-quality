@@ -11,10 +11,10 @@ import (
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil/bytesutil"
 
-	"github.com/symflower/eval-symflower-codegen-testing/language"
-	"github.com/symflower/eval-symflower-codegen-testing/model"
-	"github.com/symflower/eval-symflower-codegen-testing/model/llm/prompt"
-	"github.com/symflower/eval-symflower-codegen-testing/provider"
+	"github.com/symflower/eval-codegen-testing/language"
+	"github.com/symflower/eval-codegen-testing/model"
+	"github.com/symflower/eval-codegen-testing/model/llm/prompt"
+	"github.com/symflower/eval-codegen-testing/provider"
 )
 
 // llm represents a LLM model accessed via a provider.

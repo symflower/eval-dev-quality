@@ -1,6 +1,6 @@
 package model
 
-import "github.com/symflower/eval-symflower-codegen-testing/language"
+import "github.com/symflower/eval-codegen-testing/language"
 
 // Model defines a model that can be queried for generations.
 type Model interface {

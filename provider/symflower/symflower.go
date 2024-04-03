@@ -1,9 +1,9 @@
 package symflower
 
 import (
-	"github.com/symflower/eval-symflower-codegen-testing/model"
-	"github.com/symflower/eval-symflower-codegen-testing/model/symflower"
-	"github.com/symflower/eval-symflower-codegen-testing/provider"
+	"github.com/symflower/eval-codegen-testing/model"
+	"github.com/symflower/eval-codegen-testing/model/symflower"
+	"github.com/symflower/eval-codegen-testing/provider"
 )
 
 type symflowerProvider struct{}

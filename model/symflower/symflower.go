@@ -3,10 +3,10 @@ package symflower
 import (
 	pkgerrors "github.com/pkg/errors"
 
-	"github.com/symflower/eval-symflower-codegen-testing/language"
-	"github.com/symflower/eval-symflower-codegen-testing/model"
-	"github.com/symflower/eval-symflower-codegen-testing/provider"
-	"github.com/symflower/eval-symflower-codegen-testing/util"
+	"github.com/symflower/eval-codegen-testing/language"
+	"github.com/symflower/eval-codegen-testing/model"
+	"github.com/symflower/eval-codegen-testing/provider"
+	"github.com/symflower/eval-codegen-testing/util"
 )
 
 // ModelSymflower holds a Symflower model using the locally installed CLI.

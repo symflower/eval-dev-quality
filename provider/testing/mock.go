@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/mock"
 
-	provider "github.com/symflower/eval-symflower-codegen-testing/provider"
+	provider "github.com/symflower/eval-codegen-testing/provider"
 )
 
 // MockQueryProvider is a mocked QueryProvider.
