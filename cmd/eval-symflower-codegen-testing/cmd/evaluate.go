@@ -140,6 +140,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				continue
 			}
 
+			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
+			if filepath.Base(repository.Name()) == "plain" {
+				continue
+			}
+
 			for _, modelID := range command.Models {
 				if len(problemsPerModel[modelID]) > 0 {
 					continue
