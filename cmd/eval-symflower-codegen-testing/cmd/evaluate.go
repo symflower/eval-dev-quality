@@ -99,31 +99,33 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	log.Printf("Checking that models and languages can be used for evaluation")
-	excludeModelIDs := map[string]bool{}
-	for _, languageID := range command.Languages {
+	metricsPerModel := map[string]evaluate.Metrics{}
+	problemsPerModel := map[string][]error{}
+	{
+		// Ensure we report metrics for every model even if they are excluded.
 		for _, modelID := range command.Models {
-			model := models[modelID]
-			language := language.Languages[languageID]
+			metricsPerModel[modelID] = evaluate.Metrics{}
+		}
 
-			_, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
-			if err != nil {
-				ps = append(ps, err)
-			}
-			if len(ps) > 0 {
-				log.Printf("Excluding model %q since it was not able to solve the \"plain\" repository for language %q: %+v", modelID, languageID, ps)
-				excludeModelIDs[modelID] = true
+		for _, languageID := range command.Languages {
+			for _, modelID := range command.Models {
+				model := models[modelID]
+				language := language.Languages[languageID]
+
+				_, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
+				if err != nil {
+					ps = append(ps, err)
+				}
+				if len(ps) > 0 {
+					log.Printf("Excluding model %q since it was not able to solve the \"plain\" repository for language %q: %+v", modelID, languageID, ps)
+					problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+				}
 			}
 		}
 	}
 
 	// Evaluating models and languages.
 	log.Printf("Evaluating models and languages")
-	metricsPerModel := map[string]evaluate.Metrics{}
-	// Ensure we report metrics for every model even if they are excluded.
-	for _, modelID := range command.Models {
-		metricsPerModel[modelID] = evaluate.Metrics{}
-	}
-	problemsPerModel := map[string][]error{}
 	for _, languageID := range command.Languages {
 		languagePath := filepath.Join(command.TestdataPath, languageID)
 
@@ -138,7 +140,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 			}
 
 			for _, modelID := range command.Models {
-				if excludeModelIDs[modelID] {
+				if len(problemsPerModel[modelID]) > 0 {
 					continue
 				}
 
