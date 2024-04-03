@@ -59,7 +59,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	// Gather models.
 	models := map[string]model.Model{}
 	for _, p := range provider.Providers {
-		for _, m := range p.Models() {
+		ms, err := p.Models()
+		if err != nil {
+			log.Fatalf("ERROR: could not query models for provider %q: %s", p.ID(), err)
+		}
+		for _, m := range ms {
 			if t, ok := p.(provider.InjectToken); ok {
 				token, ok := command.ProviderTokens[p.ID()]
 				if !ok {

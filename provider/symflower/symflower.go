@@ -18,8 +18,8 @@ func (p *symflowerProvider) ID() (id string) {
 }
 
 // Model implements provider.Provider.
-func (p *symflowerProvider) Models() (models []model.Model) {
+func (p *symflowerProvider) Models() (models []model.Model, err error) {
 	return []model.Model{
 		&symflower.ModelSymflower{},
-	}
+	}, nil
 }

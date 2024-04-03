@@ -15,7 +15,7 @@ type Provider interface {
 	// ID returns the unique ID of this provider.
 	ID() (id string)
 	// Models returns which models are available to be queried via this provider.
-	Models() (models []model.Model)
+	Models() (models []model.Model, err error)
 }
 
 // InjectToken is a provider that needs an access token to authenticate a remote API.

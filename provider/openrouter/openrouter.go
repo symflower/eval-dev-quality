@@ -74,21 +74,17 @@ func (p *openRouterProvider) ID() (id string) {
 }
 
 // Models returns which models are available to be queried via this provider.
-func (p *openRouterProvider) Models() (models []model.Model) {
-	// TODO Query this from the API directly. https://pkg.go.dev/github.com/sashabaranov/go-openai#ModelsList
-	modelIDs := []string{
-		"google/gemma-7b-it:free",
-		"gryphe/mythomist-7b:free",
-		"mistralai/mistral-7b-instruct:free",
-		"nousresearch/nous-capybara-7b:free",
-		"openrouter/cinematika-7b:free",
-		"undi95/toppy-m-7b:free",
+func (p *openRouterProvider) Models() (models []model.Model, err error) {
+	client := p.client()
+	ms, err := client.ListModels(context.Background())
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
 	}
 
-	models = make([]model.Model, len(modelIDs))
-	for i, id := range modelIDs {
-		models[i] = llm.NewLLMModel(p, p.ID()+provider.ProviderModelSeparator+id)
+	models = make([]model.Model, len(ms.Models))
+	for i, model := range ms.Models {
+		models[i] = llm.NewLLMModel(p, p.ID()+provider.ProviderModelSeparator+model.ID)
 	}
 
-	return models
+	return models, nil
 }
