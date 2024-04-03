@@ -29,6 +29,11 @@ func (language *LanguageGolang) ID() (id string) {
 	return "golang"
 }
 
+// Name is the prose name of this language.
+func (language *LanguageGolang) Name() (id string) {
+	return "Go"
+}
+
 // Files returns a list of relative file paths of the repository that should be evaluated.
 func (language *LanguageGolang) Files(repositoryPath string) (filePaths []string, err error) {
 	repositoryPath, err = filepath.Abs(repositoryPath)
