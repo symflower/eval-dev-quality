@@ -40,7 +40,7 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 			if tc.ModelSymflower == nil {
 				tc.ModelSymflower = &ModelSymflower{}
 			}
-			actualErr := tc.ModelSymflower.GenerateTestsForFile(repositoryPath, tc.FilePath)
+			actualErr := tc.ModelSymflower.GenerateTestsForFile(tc.Language, repositoryPath, tc.FilePath)
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, tc.ExpectedError, actualErr)

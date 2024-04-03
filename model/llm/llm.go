@@ -11,6 +11,7 @@ import (
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-symflower-codegen-testing/language"
 	"github.com/symflower/eval-symflower-codegen-testing/model"
 	"github.com/symflower/eval-symflower-codegen-testing/model/llm/prompt"
 	"github.com/symflower/eval-symflower-codegen-testing/provider"
@@ -34,6 +35,9 @@ func NewLLMModel(provider provider.QueryProvider, modelIdentifier string) model.
 
 // llmGenerateTestForFilePromptContext is the context for template for generating an LLM test generation prompt.
 type llmGenerateTestForFilePromptContext struct {
+	// Language holds the programming language name.
+	Language language.Language
+
 	// Code holds the source code of the file.
 	Code string
 	// FilePath holds the file path of the file.
@@ -44,11 +48,11 @@ type llmGenerateTestForFilePromptContext struct {
 
 // llmGenerateTestForFilePromptTemplate is the template for generating an LLM test generation prompt.
 var llmGenerateTestForFilePromptTemplate = template.Must(template.New("model-llm-generate-test-for-file-prompt").Parse(bytesutil.StringTrimIndentations(`
-	Given the following Go code file "{{ .FilePath }}" with package "{{ .ImportPath }}", provide a test file for this code.
+	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" with package "{{ .ImportPath }}", provide a test file for this code.
 	The tests should produce 100 percent code coverage and must compile.
 	The response must contain only the test code and nothing else.
 
-	` + "```" + `
+	` + "```" + `{{ .Language.ID }}
 	{{ .Code }}
 	` + "```" + `
 `)))
@@ -73,7 +77,7 @@ func (m *llm) ID() (id string) {
 }
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (m *llm) GenerateTestsForFile(repositoryPath string, filePath string) (err error) {
+func (m *llm) GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (err error) {
 	data, err := os.ReadFile(filepath.Join(repositoryPath, filePath))
 	if err != nil {
 		return err
@@ -83,6 +87,8 @@ func (m *llm) GenerateTestsForFile(repositoryPath string, filePath string) (err 
 	importPath := filepath.Join(filepath.Base(repositoryPath), filepath.Dir(filePath))
 
 	message, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
+		Language: language,
+
 		Code:       fileContent,
 		FilePath:   filePath,
 		ImportPath: importPath,

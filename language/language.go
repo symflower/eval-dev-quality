@@ -8,6 +8,8 @@ import (
 type Language interface {
 	// ID returns the unique ID of this language.
 	ID() (id string)
+	// Name is the prose name of this language.
+	Name() (id string)
 
 	// Files returns a list of relative file paths of the repository that should be evaluated.
 	Files(repositoryPath string) (filePaths []string, err error)

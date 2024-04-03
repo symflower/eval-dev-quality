@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-symflower-codegen-testing/language"
 	providertesting "github.com/symflower/eval-symflower-codegen-testing/provider/testing"
 )
 
@@ -20,9 +21,10 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 
 		SetupMock func(mockedProvider *providertesting.MockQueryProvider)
 
+		Language          language.Language
+		ModelID           string
 		SourceFileContent string
 		SourceFilePath    string
-		ModelID           string
 
 		ExpectedTestFileContent string
 		ExpectedTestFilePath    string
@@ -40,7 +42,7 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 			tc.SetupMock(mock)
 			llm := NewLLMModel(mock, tc.ModelID)
 
-			assert.NoError(t, llm.GenerateTestsForFile(temporaryPath, tc.SourceFilePath))
+			assert.NoError(t, llm.GenerateTestsForFile(tc.Language, temporaryPath, tc.SourceFilePath))
 
 			actualTestFileContent, err := os.ReadFile(filepath.Join(temporaryPath, tc.ExpectedTestFilePath))
 			assert.NoError(t, err)
@@ -56,6 +58,8 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 	`
 	sourceFilePath := "simple.go"
 	promptMessage, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
+		Language: &language.LanguageGolang{},
+
 		Code:       bytesutil.StringTrimIndentations(sourceFileContent),
 		FilePath:   sourceFilePath,
 		ImportPath: "native",
@@ -74,9 +78,10 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 				`), nil)
 		},
 
+		Language:          &language.LanguageGolang{},
+		ModelID:           "model-id",
 		SourceFileContent: sourceFileContent,
 		SourceFilePath:    sourceFilePath,
-		ModelID:           "model-id",
 
 		ExpectedTestFileContent: `
 			package native
