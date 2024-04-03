@@ -66,10 +66,9 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		for _, m := range ms {
 			if t, ok := p.(provider.InjectToken); ok {
 				token, ok := command.ProviderTokens[p.ID()]
-				if !ok {
-					log.Fatalf("ERROR: model provider %q requires an API token but none was given. Specify one using command line arguments or environment variables.", p.ID())
+				if ok {
+					t.SetToken(token)
 				}
-				t.SetToken(token)
 			}
 
 			models[m.ID()] = m
