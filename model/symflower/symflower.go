@@ -14,12 +14,12 @@ type ModelSymflower struct{}
 var _ model.Model = (*ModelSymflower)(nil)
 
 // ID returns the unique ID of this model.
-func (language *ModelSymflower) ID() (id string) {
+func (m *ModelSymflower) ID() (id string) {
 	return "symflower" + provider.ProviderModelSeparator + "symbolic-execution"
 }
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (model *ModelSymflower) GenerateTestsForFile(repositoryPath string, filePath string) (err error) {
+func (m *ModelSymflower) GenerateTestsForFile(repositoryPath string, filePath string) (err error) {
 	_, _, err = util.CommandWithResult(&util.Command{
 		Command: []string{
 			"symflower", "unit-tests",

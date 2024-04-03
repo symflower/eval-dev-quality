@@ -16,7 +16,7 @@ type MockQueryProvider struct {
 var _ provider.QueryProvider = &MockQueryProvider{}
 
 // Query queries the LLM with the given model name.
-func (m *MockQueryProvider) Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error) {
-	args := m.Called(ctx, modelIdentifier, promptText)
+func (p *MockQueryProvider) Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error) {
+	args := p.Called(ctx, modelIdentifier, promptText)
 	return args.String(0), args.Error(1)
 }

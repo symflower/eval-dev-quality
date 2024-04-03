@@ -12,7 +12,7 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-symflower-codegen-testing/model"
-	"github.com/symflower/eval-symflower-codegen-testing/model/prompt"
+	"github.com/symflower/eval-symflower-codegen-testing/model/llm/prompt"
 	"github.com/symflower/eval-symflower-codegen-testing/provider"
 )
 
