@@ -101,7 +101,7 @@ func (m *llm) GenerateTestsForFile(language language.Language, repositoryPath st
 	if err != nil {
 		return err
 	}
-	log.Printf("Model %q responded to query %q with: %q", m.ID(), request, response)
+	log.Printf("Model %q responded to query %s with: %s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
 
 	testContent := prompt.ParseResponse(response)
 
