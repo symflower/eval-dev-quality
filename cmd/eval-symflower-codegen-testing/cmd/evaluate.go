@@ -6,12 +6,15 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/zimmski/osutil"
 	"golang.org/x/exp/maps"
 
 	"github.com/symflower/eval-symflower-codegen-testing/evaluate"
 	"github.com/symflower/eval-symflower-codegen-testing/language"
 	"github.com/symflower/eval-symflower-codegen-testing/model"
-	"github.com/zimmski/osutil"
+	"github.com/symflower/eval-symflower-codegen-testing/provider"
+	_ "github.com/symflower/eval-symflower-codegen-testing/provider/openrouter"
+	_ "github.com/symflower/eval-symflower-codegen-testing/provider/symflower"
 )
 
 // Evaluate holds the "evaluation" command.
@@ -22,6 +25,9 @@ type Evaluate struct {
 	Models []string `long:"model" description:"Evaluate with this model. By default all models are used."`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
+
+	// ProviderTokens holds all API tokens for the providers.
+	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token,...')." env:"PROVIDER_TOKEN"`
 }
 
 func (command *Evaluate) Execute(args []string) (err error) {
@@ -41,15 +47,28 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	sort.Strings(command.Languages)
 
 	// Gather models.
+	models := map[string]model.Model{}
+	for _, p := range provider.Providers {
+		for _, m := range p.Models() {
+			if t, ok := p.(provider.InjectToken); ok {
+				token, ok := command.ProviderTokens[p.ID()]
+				if !ok {
+					log.Fatalf("ERROR: model provider %q requires an API token but none was given. Specify one using command line arguments or environment variables.", p.ID())
+				}
+				t.SetToken(token)
+			}
+
+			models[m.ID()] = m
+		}
+	}
+	modelIDs := maps.Keys(models)
+	sort.Strings(modelIDs)
 	if len(command.Models) == 0 {
-		command.Models = maps.Keys(model.Models)
+		command.Models = modelIDs
 	} else {
 		for _, modelID := range command.Models {
-			if _, ok := model.Models[modelID]; !ok {
-				ms := maps.Keys(model.Models)
-				sort.Strings(ms)
-
-				log.Fatalf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(ms, ", "))
+			if _, ok := models[modelID]; !ok {
+				log.Fatalf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(modelIDs, ", "))
 			}
 		}
 	}
@@ -67,7 +86,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	log.Printf("Checking that models and languages can used for evaluation")
 	for _, languageID := range command.Languages {
 		for _, modelID := range command.Models {
-			model := model.Models[modelID]
+			model := models[modelID]
 			language := language.Languages[languageID]
 
 			if err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain")); err != nil {
