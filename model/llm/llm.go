@@ -48,13 +48,14 @@ type llmGenerateTestForFilePromptContext struct {
 
 // llmGenerateTestForFilePromptTemplate is the template for generating an LLM test generation prompt.
 var llmGenerateTestForFilePromptTemplate = template.Must(template.New("model-llm-generate-test-for-file-prompt").Parse(bytesutil.StringTrimIndentations(`
-	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" with package "{{ .ImportPath }}", provide a test file for this code.
-	The tests should produce 100 percent code coverage and must compile.
-	The response must contain only the test code and nothing else.
+	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" with import path "{{ .ImportPath }}" and the following content:
 
 	` + "```" + `{{ .Language.ID }}
 	{{ .Code }}
 	` + "```" + `
+
+	Provide code for a test file that should produce 100 percent code coverage.
+	The response must contain only the code for the test file.
 `)))
 
 // llmGenerateTestForFilePrompt returns the prompt for generating an LLM test generation.
