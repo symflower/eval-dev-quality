@@ -30,49 +30,57 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			tempDir := t.TempDir()
-			require.NoError(t, os.WriteFile(filepath.Join(tempDir, tc.SourceFilePath), []byte(bytesutil.StringTrimIndentations(tc.SourceFileContent)), 0644))
+			temporaryPath := t.TempDir()
+			temporaryPath = filepath.Join(temporaryPath, "native")
+			require.NoError(t, os.Mkdir(temporaryPath, 0755))
+
+			require.NoError(t, os.WriteFile(filepath.Join(temporaryPath, tc.SourceFilePath), []byte(bytesutil.StringTrimIndentations(tc.SourceFileContent)), 0644))
 
 			mock := &providertesting.MockQueryProvider{}
 			tc.SetupMock(mock)
 			llm := NewLLMModel(mock, tc.ModelID)
 
-			assert.NoError(t, llm.GenerateTestsForFile(tempDir, tc.SourceFilePath))
+			assert.NoError(t, llm.GenerateTestsForFile(temporaryPath, tc.SourceFilePath))
 
-			actualTestFileContent, err := os.ReadFile(filepath.Join(tempDir, tc.ExpectedTestFilePath))
+			actualTestFileContent, err := os.ReadFile(filepath.Join(temporaryPath, tc.ExpectedTestFilePath))
 			assert.NoError(t, err)
 
 			assert.Equal(t, strings.TrimSpace(bytesutil.StringTrimIndentations(tc.ExpectedTestFileContent)), string(actualTestFileContent))
 		})
 	}
 
+	sourceFileContent := `
+		package native
+
+		func main() {}
+	`
+	sourceFilePath := "simple.go"
+	promptMessage, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
+		Code:       bytesutil.StringTrimIndentations(sourceFileContent),
+		FilePath:   sourceFilePath,
+		ImportPath: "native",
+	})
+	require.NoError(t, err)
 	validate(t, &testCase{
 		Name: "Simple",
 
 		SetupMock: func(mockedProvider *providertesting.MockQueryProvider) {
-			mockedProvider.On("Query", mock.Anything, "model-id",
-				bytesutil.StringTrimIndentations(`
-					Given the following Go code file, provide a test file for this code.
-					The tests should produce 100 percent code coverage and must compile.
-					The response must contain only the test code and nothing else.
+			mockedProvider.On("Query", mock.Anything, "model-id", promptMessage).Return(bytesutil.StringTrimIndentations(`
+					`+"```"+`
+					package native
 
-					`+"```"+`
-					func main() {}
-					`+"```"+`
-				`)).Return(bytesutil.StringTrimIndentations(`
-					`+"```"+`
 					func TestMain() {}
 					`+"```"+`
 				`), nil)
 		},
 
-		SourceFileContent: `
-			func main() {}
-		`,
-		SourceFilePath: "simple.go",
-		ModelID:        "model-id",
+		SourceFileContent: sourceFileContent,
+		SourceFilePath:    sourceFilePath,
+		ModelID:           "model-id",
 
 		ExpectedTestFileContent: `
+			package native
+
 			func TestMain() {}
 		`,
 		ExpectedTestFilePath: "simple_test.go",

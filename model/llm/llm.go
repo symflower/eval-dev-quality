@@ -8,6 +8,7 @@ import (
 	"strings"
 	"text/template"
 
+	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-symflower-codegen-testing/model"
@@ -31,26 +32,38 @@ func NewLLMModel(provider provider.QueryProvider, modelIdentifier string) model.
 	}
 }
 
-// llmGenerateTestForFilePrompt is the prompt used to query LLMs for test generation.
-var llmGenerateTestForFilePrompt = bytesutil.StringTrimIndentations(`
-	Given the following Go code file, provide a test file for this code.
-	The tests should produce 100 percent code coverage and must compile.
-	The response must contain only the test code and nothing else.
-`)
-
-// llmGenerateTestForFilePromptContext is the context for for the prompt template.
+// llmGenerateTestForFilePromptContext is the context for template for generating an LLM test generation prompt.
 type llmGenerateTestForFilePromptContext struct {
-	Prompt string
-	Code   string
+	// Code holds the source code of the file.
+	Code string
+	// FilePath holds the file path of the file.
+	FilePath string
+	// ImportPath holds the import path of the file.
+	ImportPath string
 }
 
-// llmGenerateTestForFilePromptData is the template for generating an LLM test generation prompt.
-var llmGenerateTestForFilePromptData = template.Must(template.New("templateGenerateTestPrompt").Parse(bytesutil.StringTrimIndentations(`
-	{{ .Prompt }}
+// llmGenerateTestForFilePromptTemplate is the template for generating an LLM test generation prompt.
+var llmGenerateTestForFilePromptTemplate = template.Must(template.New("model-llm-generate-test-for-file-prompt").Parse(bytesutil.StringTrimIndentations(`
+	Given the following Go code file "{{ .FilePath }}" with package "{{ .ImportPath }}", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
 	` + "```" + `
 	{{ .Code }}
 	` + "```" + `
 `)))
+
+// llmGenerateTestForFilePrompt returns the prompt for generating an LLM test generation.
+func llmGenerateTestForFilePrompt(data *llmGenerateTestForFilePromptContext) (message string, err error) {
+	data.Code = strings.TrimSpace(data.Code)
+
+	var b strings.Builder
+	if err := llmGenerateTestForFilePromptTemplate.Execute(&b, data); err != nil {
+		return "", pkgerrors.WithStack(err)
+	}
+
+	return b.String(), nil
+}
 
 var _ model.Model = (*llm)(nil)
 
@@ -67,19 +80,22 @@ func (m *llm) GenerateTestsForFile(repositoryPath string, filePath string) (err 
 	}
 	fileContent := strings.TrimSpace(string(data))
 
-	var promptBuilder strings.Builder
-	if err = llmGenerateTestForFilePromptData.Execute(&promptBuilder, llmGenerateTestForFilePromptContext{
-		Prompt: llmGenerateTestForFilePrompt,
-		Code:   fileContent,
-	}); err != nil {
-		return err
-	}
+	importPath := filepath.Join(filepath.Base(repositoryPath), filepath.Dir(filePath))
 
-	response, err := m.provider.Query(context.Background(), m.model, promptBuilder.String())
+	message, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
+		Code:       fileContent,
+		FilePath:   filePath,
+		ImportPath: importPath,
+	})
 	if err != nil {
 		return err
 	}
-	log.Printf("Model %q responded to query %q with: %q", m.ID(), promptBuilder.String(), response)
+
+	response, err := m.provider.Query(context.Background(), m.model, message)
+	if err != nil {
+		return err
+	}
+	log.Printf("Model %q responded to query %q with: %q", m.ID(), message, response)
 
 	testContent := prompt.ParseResponse(response)
 
