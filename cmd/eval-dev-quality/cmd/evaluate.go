@@ -10,12 +10,12 @@ import (
 	"github.com/zimmski/osutil"
 	"golang.org/x/exp/maps"
 
-	"github.com/symflower/eval-codegen-testing/evaluate"
-	"github.com/symflower/eval-codegen-testing/language"
-	"github.com/symflower/eval-codegen-testing/model"
-	"github.com/symflower/eval-codegen-testing/provider"
-	_ "github.com/symflower/eval-codegen-testing/provider/openrouter"
-	_ "github.com/symflower/eval-codegen-testing/provider/symflower"
+	"github.com/symflower/eval-dev-quality/evaluate"
+	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/model"
+	"github.com/symflower/eval-dev-quality/provider"
+	_ "github.com/symflower/eval-dev-quality/provider/openrouter"
+	_ "github.com/symflower/eval-dev-quality/provider/symflower"
 )
 
 // Evaluate holds the "evaluation" command.
