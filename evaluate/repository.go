@@ -9,8 +9,8 @@ import (
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
 
-	"github.com/symflower/eval-codegen-testing/language"
-	"github.com/symflower/eval-codegen-testing/model"
+	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/model"
 )
 
 // EvaluateRepository evaluate a repository with the given model and language.
@@ -20,7 +20,7 @@ func EvaluateRepository(model model.Model, language language.Language, repositor
 		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems", model.ID(), language.ID(), repositoryPath, len(problems))
 	}()
 
-	temporaryPath, err := os.MkdirTemp("", "eval-codegen-testing")
+	temporaryPath, err := os.MkdirTemp("", "eval-dev-quality")
 	if err != nil {
 		return metrics, problems, pkgerrors.WithStack(err)
 	}

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	pkgerrors "github.com/pkg/errors"
-	"github.com/symflower/eval-codegen-testing/model"
+	"github.com/symflower/eval-dev-quality/model"
 )
 
 // ProviderModelSeparator is the the separator between a provider and a model.
