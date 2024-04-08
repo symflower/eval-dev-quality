@@ -1,0 +1,32 @@
+2024/04/03 23:05:14 Model "openrouter/rwkv/rwkv-5-world-3b" responded to query  Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+        The tests should produce 100 percent code coverage and must compile.
+        The response must contain only the test code and nothing else.
+
+        ```golang
+        package plain
+
+        func plain() {
+                return // This does not do anything but it gives us a line to cover.
+        }
+        ```
+ with:   ```go
+        package plain
+
+        import (
+                "fmt"
+                "os"
+        )
+        func main() {
+                fmt.Println("Hello, world!")
+        }
+        ```
+2024/04/03 23:05:14 $ gotestsum --format standard-verbose --hide-summary skipped -- -cover -v -vet=off ./...
+# plain [plain.test]
+./plain_test.go:5:2: "os" imported and not used
+WARN invalid TestEvent: FAIL    plain [build failed]
+bad output from test2json: FAIL plain [build failed]
+
+=== Errors
+./plain_test.go:5:2: "os" imported and not used
+
+DONE 0 tests, 1 error in 0.056s

@@ -1,0 +1,36 @@
+2024/04/03 23:02:19 Model "openrouter/nousresearch/nous-capybara-34b" responded to query        Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+        The tests should produce 100 percent code coverage and must compile.
+        The response must contain only the test code and nothing else.
+
+        ```golang
+        package plain
+
+        func plain() {
+                return // This does not do anything but it gives us a line to cover.
+        }
+        ```
+ with:   ```go
+        package plain
+
+        import (
+                "testing"
+        )
+
+        func TestPlain(t *testing.T) {
+                if plain() != nil {
+                        t.Errorf("plain() should return nothing, got %v", plain())
+                }
+        }
+        ```
+2024/04/03 23:02:19 $ gotestsum --format standard-verbose --hide-summary skipped -- -cover -v -vet=off ./...
+# plain [plain.test]
+./plain_test.go:8:5: plain() (no value) used as value
+./plain_test.go:9:53: plain() (no value) used as value
+WARN invalid TestEvent: FAIL    plain [build failed]
+bad output from test2json: FAIL plain [build failed]
+
+=== Errors
+./plain_test.go:8:5: plain() (no value) used as value
+./plain_test.go:9:53: plain() (no value) used as value
+
+DONE 0 tests, 2 errors in 0.051s

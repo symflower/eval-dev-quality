@@ -1,0 +1,56 @@
+2024/04/03 23:07:09 Model "openrouter/undi95/remm-slerp-l2-13b:extended" responded to query     Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+        The tests should produce 100 percent code coverage and must compile.
+        The response must contain only the test code and nothing else.
+
+        ```golang
+        package plain
+
+        func plain() {
+                return // This does not do anything but it gives us a line to cover.
+        }
+        ```
+ with:   =================
+        UTILITY TEST FILE for plain package
+        ===============
+
+        ```golang
+        package plain_test
+
+        import (
+                . "github.com/onsi/ginkgo"
+                . "github.com/onsi/ginkgo/extensions/table"
+                . "github.com/onsi/gomega"
+        )
+
+        func TestPlain(t *testing.T) {
+                var plainData []string
+                RegisterFailHandler(Fail)
+                RunSpecs(t, "Plain Suite")
+        }
+
+        // We want to make sure that the plain function is covered in our test.
+        func (s *PlainSuite) TestPlain_Coverage() {
+                var actual, expected []string
+                Expect(actual).NotTo(Equal(expected))
+                GinkgoT().Describe("Plain function")
+                GinkgoT().DescribeTable("Valid input",
+                        func(in string, out string) {
+                                actual = append(actual, in)
+                                plain()
+                        },
+                        Entry("Nothing is passed in so empty output is expected", "", ""),
+                )
+        }
+        ```
+2024/04/03 23:07:09 $ gotestsum --format standard-verbose --hide-summary skipped -- -cover -v -vet=off ./...
+# plain
+plain_test.go:4:2: no required module provides package github.com/onsi/ginkgo; to add it:
+        go get github.com/onsi/ginkgo
+WARN invalid TestEvent: FAIL    plain [setup failed]
+bad output from test2json: FAIL plain [setup failed]
+
+=== Errors
+plain_test.go:4:2: no required module provides package github.com/onsi/ginkgo; to add it:
+        go get github.com/onsi/ginkgo
+
+DONE 0 tests, 1 error in 0.015s
