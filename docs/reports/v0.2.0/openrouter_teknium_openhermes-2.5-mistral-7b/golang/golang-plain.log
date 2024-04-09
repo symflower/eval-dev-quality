@@ -1,0 +1,30 @@
+2024/04/03 23:06:49 Model "openrouter/teknium/openhermes-2.5-mistral-7b" responded to query     Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+        The tests should produce 100 percent code coverage and must compile.
+        The response must contain only the test code and nothing else.
+
+        ```golang
+        package plain
+
+        func plain() {
+                return // This does not do anything but it gives us a line to cover.
+        }
+        ```
+ with:  ```golang
+        package test_plain
+
+        import (
+                "testing"
+                "plain"
+        )
+
+        func TestPlain(t *testing.T) {
+                _ = plain.plain()
+        }
+        ```
+2024/04/03 23:06:49 $ gotestsum --format standard-verbose --hide-summary skipped -- -cover -v -vet=off ./...
+found packages plain (plain.go) and test_plain (plain_test.go) in /tmp/eval-codegen-testing1191907365/plain
+
+=== Errors
+found packages plain (plain.go) and test_plain (plain_test.go) in /tmp/eval-codegen-testing1191907365/plain
+
+DONE 0 tests, 1 error in 0.011s

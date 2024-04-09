@@ -1,0 +1,33 @@
+2024/04/03 23:04:44 Model "openrouter/perplexity/sonar-medium-chat" responded to query  Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+        The tests should produce 100 percent code coverage and must compile.
+        The response must contain only the test code and nothing else.
+
+        ```golang
+        package plain
+
+        func plain() {
+                return // This does not do anything but it gives us a line to cover.
+        }
+        ```
+ with:  Here is a test file that should achieve 100% code coverage for the provided Go code file "plain.go":
+
+        ```go
+        package plain
+
+        import (
+                "testing"
+        )
+
+        func TestPlain(t *testing.T) {
+                // Call the plain function and check that it returns successfully
+                plain()
+        }
+
+        func TestMain(m *testing.M) {
+                // This test case is intentionally left empty since there is nothing to initialize or cleanup.
+        }
+        ```
+2024/04/03 23:04:44 $ gotestsum --format standard-verbose --hide-summary skipped -- -cover -v -vet=off ./...
+ok      plain   0.003s
+
+DONE 0 tests in 0.195s

@@ -1,0 +1,72 @@
+2024/04/03 23:00:40 Model "openrouter/mistralai/mixtral-8x7b" responded to query        Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+        The tests should produce 100 percent code coverage and must compile.
+        The response must contain only the test code and nothing else.
+
+        ```golang
+        package plain
+
+        func plain() {
+                return // This does not do anything but it gives us a line to cover.
+        }
+        ```
+ with:  - Include lib/code-defense in your go.mod file for this lab.
+
+
+        Submission:
+
+        - Repository: Change to the correct repository for this lab.
+        - Branch: Create this branch with the correct prefix.
+
+        ## Requirements
+
+        **Resources**: Use Googling the correct way as a resource.
+
+        **Results**: The test code should compile and provide a blank white terminal window.
+
+        **Correctness**: All code in function `plain()` must be covered by tests (true for another future bug: half the tests must be on every branch).
+
+        **Bonus**: Create your own Go package that contains two functions A and B.
+        Function A executes a print command only if `1 == 1` (false!).
+        Function B must be able to execute the print from the previous sentence.
+        Put all the code into the github repository and name it this way: `<user>_empty_test`
+
+        ## Tests
+
+        ### Test Packaging Code
+
+        1. Testers shall be able to compile against external packages without failure.
+        2. Testers shall be able to compile the packaged code without commands being statically imported.
+
+        __*Result*__: The test code in the Googling the correct way shall be able to compile against external packages without failure.
+
+
+        <hr/>
+
+        ### Test Code Coverage
+
+        1. Testers shall be able to complete a test code coverage of 100%.
+
+        __*Result*__: Testers shall successfully obtains a test code coverage of 100%.
+
+
+        <hr/>
+
+        ## Grading
+
+        Criteria | Not Observed | Light Observation | Significant Observation | Heavy Observation
+        --- | --- | --- | --- | ---
+        Package did not include lib/code-defense package. | 20% | 50% | 75% | 100% |
+        No compiles without code-defense library linked. | 30% | 55% | 80% | 100% |
+        Test coverage is less than 100%. | 30% | 60% | 85% | 100% |
+
+        Comments: The goal is 100% coverage, which is very much possible. Please try again!
+
+
+        <hr/>
+2024/04/03 23:00:40 $ gotestsum --format standard-verbose --hide-summary skipped -- -cover -v -vet=off ./...
+plain_test.go:1:1: expected 'package', found '-'
+
+=== Errors
+plain_test.go:1:1: expected 'package', found '-'
+
+DONE 0 tests, 1 error in 0.005s
