@@ -2,20 +2,27 @@ package evaluate
 
 import (
 	"errors"
-	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 )
 
 // EvaluateRepository evaluate a repository with the given model and language.
-func EvaluateRepository(model model.Model, language language.Language, repositoryPath string) (repositoryMetrics metrics.Assessments, problems []error, err error) {
+func EvaluateRepository(resultPath string, model model.Model, language language.Language, testDataPath string, repositoryPath string) (repositoryMetrics metrics.Assessments, problems []error, err error) {
+	log, logClose, err := log.File(filepath.Join(resultPath, strings.ReplaceAll(model.ID(), "/", "_"), language.ID(), repositoryPath+".log"))
+	if err != nil {
+		return repositoryMetrics, nil, err
+	}
+	defer logClose()
+
 	log.Printf("Evaluating model %q using language %q and repository %q", model.ID(), language.ID(), repositoryPath)
 	defer func() {
 		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems", model.ID(), language.ID(), repositoryPath, len(problems))

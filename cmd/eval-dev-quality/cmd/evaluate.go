@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -13,6 +12,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
 	_ "github.com/symflower/eval-dev-quality/provider/openrouter"
@@ -27,8 +27,8 @@ type Evaluate struct {
 	Models []string `long:"model" description:"Evaluate with this model. By default all models are used."`
 	// Repositories determines which repository should be used for the evaluation, or empty if all repositories should be used.
 	Repositories []string `long:"repository" description:"Evaluate with this repository. By default all repositories are used."`
-	// ResultPath holds the path to the results file.
-	ResultPath string `long:"result" description:"Path to the CSV results file." default:"evaluation.csv"`
+	// ResultPath holds the directory path where results should be written to.
+	ResultPath string `long:"result-path" required:"true" description:"Directory path where results should be written to."`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
 
@@ -37,6 +37,12 @@ type Evaluate struct {
 }
 
 func (command *Evaluate) Execute(args []string) (err error) {
+	log, logClose, err := log.FileAndSTDOUT(filepath.Join(command.ResultPath, "evaluation.log"))
+	if err != nil {
+		return err
+	}
+	defer logClose()
+
 	// Gather languages.
 	if len(command.Languages) == 0 {
 		command.Languages = maps.Keys(language.Languages)
@@ -113,7 +119,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := models[modelID]
 				language := language.Languages[languageID]
 
-				metrics, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
+				metrics, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(language.ID(), "plain"))
 				metricsPerModel[modelID].Add(metrics)
 				if err != nil {
 					ps = append(ps, err)
@@ -130,7 +136,6 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	log.Printf("Evaluating models and languages")
 	for _, languageID := range command.Languages {
 		languagePath := filepath.Join(command.TestdataPath, languageID)
-
 		repositories, err := os.ReadDir(languagePath)
 		if err != nil {
 			log.Fatalf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
@@ -154,7 +159,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := models[modelID]
 				language := language.Languages[languageID]
 
-				metrics, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(languagePath, repository.Name()))
+				metrics, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(languageID, repository.Name()))
 				metricsPerModel[model.ID()].Add(metrics)
 				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				if err != nil {
@@ -172,7 +177,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	if err != nil {
 		log.Fatalf("ERROR: could not create result summary: %s", err)
 	}
-	if err := os.WriteFile(command.ResultPath, []byte(csv), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(command.ResultPath, "evaluation.csv"), []byte(csv), 0644); err != nil {
 		log.Fatalf("ERROR: could not write result summary: %s", err)
 	}
 
