@@ -14,6 +14,8 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
+	// import models once, so the init() is called and the models are registered
+	_ "github.com/symflower/eval-dev-quality/provider/ollama"
 	_ "github.com/symflower/eval-dev-quality/provider/openrouter"
 	_ "github.com/symflower/eval-dev-quality/provider/symflower"
 )
