@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 )
 
@@ -22,9 +23,10 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 		RepositoryChange func(t *testing.T, repositoryPath string)
 		FilePath         string
 
-		ExpectedCoverage  float64
-		ExpectedError     error
-		ExpectedErrorText string
+		ExpectedAssessment metrics.Assessments
+		ExpectedCoverage   float64
+		ExpectedError      error
+		ExpectedErrorText  string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -40,13 +42,14 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 			if tc.ModelSymflower == nil {
 				tc.ModelSymflower = &ModelSymflower{}
 			}
-			actualErr := tc.ModelSymflower.GenerateTestsForFile(tc.Language, repositoryPath, tc.FilePath)
+			actualAssessment, actualError := tc.ModelSymflower.GenerateTestsForFile(tc.Language, repositoryPath, tc.FilePath)
 
 			if tc.ExpectedError != nil {
-				assert.ErrorIs(t, tc.ExpectedError, actualErr)
-			} else if actualErr != nil || tc.ExpectedErrorText != "" {
-				assert.ErrorContains(t, actualErr, tc.ExpectedErrorText)
+				assert.ErrorIs(t, tc.ExpectedError, actualError)
+			} else if actualError != nil || tc.ExpectedErrorText != "" {
+				assert.ErrorContains(t, actualError, tc.ExpectedErrorText)
 			}
+			assert.Equal(t, tc.ExpectedAssessment, actualAssessment)
 
 			actualCoverage, err := tc.Language.Execute(repositoryPath)
 			require.NoError(t, err)
@@ -62,6 +65,9 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 		RepositoryPath: "../../testdata/golang/plain/",
 		FilePath:       "plain.go",
 
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyNoExcessResponse: 1,
+		},
 		ExpectedCoverage: 100,
 	})
 }

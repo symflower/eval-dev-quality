@@ -33,8 +33,8 @@ func TestFormatStringCSV(t *testing.T) {
 		},
 
 		ExpectedString: `
-			model,files-total,files-executed,files-problems,coverage-statement
-			Model,0,0,0,0
+			model,files-total,files-executed,files-problems,coverage-statement,no-excess-response
+			Model,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
@@ -46,19 +46,25 @@ func TestFormatStringCSV(t *testing.T) {
 				Executed: 3,
 				Problems: 2,
 				Coverage: []float64{100.0},
+				Assessments: Assessments{
+					AssessmentKeyNoExcessResponse: 3,
+				},
 			},
 			"ModelB": Metrics{
 				Total:    4,
 				Executed: 2,
 				Problems: 2,
 				Coverage: []float64{70.0},
+				Assessments: Assessments{
+					AssessmentKeyNoExcessResponse: 2,
+				},
 			},
 		},
 
 		ExpectedString: `
-			model,files-total,files-executed,files-problems,coverage-statement
-			ModelA,5,3,2,100
-			ModelB,4,2,2,70
+			model,files-total,files-executed,files-problems,coverage-statement,no-excess-response
+			ModelA,5,3,2,100,3
+			ModelB,4,2,2,70,2
 		`,
 	})
 }

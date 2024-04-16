@@ -13,6 +13,7 @@ import (
 )
 
 // Metrics holds numerical benchmarking metrics.
+// TODO Move all metrics to assessment. https://github.com/symflower/eval-dev-quality/issues/34
 type Metrics struct {
 	// Executed is the number of benchmarking candidates with successful execution.
 	Executed uint
@@ -23,6 +24,9 @@ type Metrics struct {
 
 	// Coverage holds the coverage of the benchmarking candidates.
 	Coverage []float64
+
+	// Assessments holds numerical assessments of a generation.
+	Assessments Assessments
 }
 
 // Add sums two metrics objects.
@@ -33,6 +37,8 @@ func (m Metrics) Add(o Metrics) Metrics {
 		Total:    m.Total + o.Total,
 
 		Coverage: append(m.Coverage, o.Coverage...),
+
+		Assessments: m.Assessments.Merge(o.Assessments),
 	}
 }
 
@@ -69,13 +75,23 @@ func (m Metrics) String() string {
 }
 
 // StringCSV returns a CSV row string representation of the metrics.
-func (m Metrics) StringCSV() []string {
-	return []string{
+func (m Metrics) StringCSV() (row []string) {
+	assessment := m.Assessments
+	if assessment == nil {
+		assessment = Assessments{}
+	}
+
+	row = []string{
 		fmt.Sprintf("%d", m.Total),
 		fmt.Sprintf("%d", m.Executed),
 		fmt.Sprintf("%d", m.Problems),
 		fmt.Sprintf("%.0f", m.AverageCoverage()),
 	}
+	for _, key := range allAssessmentKeys {
+		row = append(row, fmt.Sprintf("%d", assessment[key]))
+	}
+
+	return row
 }
 
 // FormatStringCSV formats the given metrics as CSV.
@@ -83,7 +99,7 @@ func FormatStringCSV(metricsPerModel map[string]Metrics) (string, error) {
 	var out strings.Builder
 	csv := csv.NewWriter(&out)
 
-	if err := csv.Write([]string{"model", "files-total", "files-executed", "files-problems", "coverage-statement"}); err != nil {
+	if err := csv.Write(append([]string{"model", "files-total", "files-executed", "files-problems", "coverage-statement"}, allAssessmentKeysStrings...)); err != nil {
 		return "", err
 	}
 	categories := maps.Keys(metricsPerModel)

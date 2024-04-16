@@ -3,6 +3,7 @@ package symflower
 import (
 	pkgerrors "github.com/pkg/errors"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
@@ -20,7 +21,7 @@ func (m *ModelSymflower) ID() (id string) {
 }
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (m *ModelSymflower) GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (err error) {
+func (m *ModelSymflower) GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
 	_, _, err = util.CommandWithResult(&util.Command{
 		Command: []string{
 			"symflower", "unit-tests",
@@ -31,8 +32,10 @@ func (m *ModelSymflower) GenerateTestsForFile(language language.Language, reposi
 		Directory: repositoryPath,
 	})
 	if err != nil {
-		return pkgerrors.WithStack(err)
+		return nil, pkgerrors.WithStack(err)
 	}
 
-	return nil
+	return metrics.Assessments{
+		metrics.AssessmentKeyNoExcessResponse: 1, // Symflower only generates code, never additional explanations.
+	}, nil
 }

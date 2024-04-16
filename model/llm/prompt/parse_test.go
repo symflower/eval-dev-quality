@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/zimmski/osutil/bytesutil"
 )
 
@@ -14,13 +15,15 @@ func TestParseResponse(t *testing.T) {
 
 		Response string
 
-		ExpectedCode string
+		ExpectedAssessment metrics.Assessments
+		ExpectedCode       string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualCode := ParseResponse(tc.Response)
+			actualAssessment, actualCode := ParseResponse(tc.Response)
 
+			assert.Equal(t, tc.ExpectedAssessment, actualAssessment)
 			assert.Equal(t, strings.TrimSpace(tc.ExpectedCode), actualCode)
 		})
 	}
@@ -38,7 +41,11 @@ func TestParseResponse(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Only Code",
 
-		Response:     code,
+		Response: code,
+
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyNoExcessResponse: 1,
+		},
 		ExpectedCode: code,
 	})
 
@@ -46,14 +53,22 @@ func TestParseResponse(t *testing.T) {
 		validate(t, &testCase{
 			Name: "No Prose",
 
-			Response:     "```\n" + code + "\n```\n",
+			Response: "```\n" + code + "\n```\n",
+
+			ExpectedAssessment: metrics.Assessments{
+				metrics.AssessmentKeyNoExcessResponse: 1,
+			},
 			ExpectedCode: code,
 		})
 
 		validate(t, &testCase{
 			Name: "With Prose",
 
-			Response:     "Some text...\n\n```\n" + code + "\n```\n\nSome more text...",
+			Response: "Some text...\n\n```\n" + code + "\n```\n\nSome more text...",
+
+			ExpectedAssessment: metrics.Assessments{
+				metrics.AssessmentKeyNoExcessResponse: 0,
+			},
 			ExpectedCode: code,
 		})
 	})
@@ -61,21 +76,31 @@ func TestParseResponse(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Language Specified",
 
-		Response:     "```go\n" + code + "\n```\n",
+		Response: "```go\n" + code + "\n```\n",
+
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyNoExcessResponse: 1,
+		},
 		ExpectedCode: code,
 	})
 
 	validate(t, &testCase{
 		Name: "Whitespace before Code Block Guards",
 
-		Response:     " ```\n" + code + "\n\t```\n",
+		Response: " ```\n" + code + "\n\t```\n",
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyNoExcessResponse: 1,
+		},
 		ExpectedCode: code,
 	})
 
 	validate(t, &testCase{
 		Name: "Duplicated Code Block Guards",
 
-		Response:     "```\n```\n" + code + "\n```\n```\n",
+		Response: "```\n```\n" + code + "\n```\n```\n",
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyNoExcessResponse: 1,
+		},
 		ExpectedCode: code,
 	})
 }

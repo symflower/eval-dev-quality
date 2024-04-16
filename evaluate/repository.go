@@ -46,12 +46,14 @@ func EvaluateRepository(model model.Model, language language.Language, repositor
 
 	for _, filePath := range filePaths {
 		metrics.Total++
-		if err := model.GenerateTestsForFile(language, temporaryRepositoryPath, filePath); err != nil {
+		assessments, err := model.GenerateTestsForFile(language, temporaryRepositoryPath, filePath)
+		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
 			metrics.Problems++
 
 			continue
 		}
+		metrics.Assessments = metrics.Assessments.Merge(assessments)
 
 		coverage, err := language.Execute(temporaryRepositoryPath)
 		if err != nil {

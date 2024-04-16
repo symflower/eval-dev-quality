@@ -1,6 +1,9 @@
 package model
 
-import "github.com/symflower/eval-dev-quality/language"
+import (
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	"github.com/symflower/eval-dev-quality/language"
+)
 
 // Model defines a model that can be queried for generations.
 type Model interface {
@@ -8,5 +11,5 @@ type Model interface {
 	ID() (id string)
 
 	// GenerateTestsForFile generates test files for the given implementation file in a repository.
-	GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (err error)
+	GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (assessments metrics.Assessments, err error)
 }
