@@ -1,4 +1,4 @@
-package evaluate
+package metrics
 
 import (
 	"encoding/csv"
