@@ -11,6 +11,7 @@ import (
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm/prompt"
@@ -77,10 +78,10 @@ func (m *llm) ID() (id string) {
 }
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (m *llm) GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (err error) {
+func (m *llm) GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
 	data, err := os.ReadFile(filepath.Join(repositoryPath, filePath))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	fileContent := strings.TrimSpace(string(data))
 
@@ -94,20 +95,24 @@ func (m *llm) GenerateTestsForFile(language language.Language, repositoryPath st
 		ImportPath: importPath,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	response, err := m.provider.Query(context.Background(), m.model, request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	log.Printf("Model %q responded to query %s with: %s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
 
-	testContent := prompt.ParseResponse(response)
+	assessment, testContent := prompt.ParseResponse(response)
 
 	// TODO Ask the model for the test file name or compute it in a more sophisticated manner.
 	fileExtension := filepath.Ext(filePath)
 	testFilePath := filepath.Join(repositoryPath, strings.TrimSuffix(filePath, fileExtension)+"_test"+fileExtension)
 
-	return os.WriteFile(testFilePath, []byte(testContent), 0644)
+	if err := os.WriteFile(testFilePath, []byte(testContent), 0644); err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	return assessment, nil
 }

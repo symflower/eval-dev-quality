@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 )
@@ -26,6 +27,7 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 		SourceFileContent string
 		SourceFilePath    string
 
+		ExpectedAssessment      metrics.Assessments
 		ExpectedTestFileContent string
 		ExpectedTestFilePath    string
 	}
@@ -42,7 +44,9 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 			tc.SetupMock(mock)
 			llm := NewLLMModel(mock, tc.ModelID)
 
-			assert.NoError(t, llm.GenerateTestsForFile(tc.Language, temporaryPath, tc.SourceFilePath))
+			actualAssessment, actualError := llm.GenerateTestsForFile(tc.Language, temporaryPath, tc.SourceFilePath)
+			assert.NoError(t, actualError)
+			assert.Equal(t, tc.ExpectedAssessment, actualAssessment)
 
 			actualTestFileContent, err := os.ReadFile(filepath.Join(temporaryPath, tc.ExpectedTestFilePath))
 			assert.NoError(t, err)
@@ -83,6 +87,9 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 		SourceFileContent: sourceFileContent,
 		SourceFilePath:    sourceFilePath,
 
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyNoExcessResponse: 1,
+		},
 		ExpectedTestFileContent: `
 			package native
 

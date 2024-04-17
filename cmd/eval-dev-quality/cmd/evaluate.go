@@ -11,6 +11,7 @@ import (
 	"golang.org/x/exp/maps"
 
 	"github.com/symflower/eval-dev-quality/evaluate"
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
@@ -99,12 +100,12 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	log.Printf("Checking that models and languages can be used for evaluation")
-	metricsPerModel := map[string]evaluate.Metrics{}
+	metricsPerModel := map[string]metrics.Metrics{}
 	problemsPerModel := map[string][]error{}
 	{
 		// Ensure we report metrics for every model even if they are excluded.
 		for _, modelID := range command.Models {
-			metricsPerModel[modelID] = evaluate.Metrics{}
+			metricsPerModel[modelID] = metrics.Metrics{}
 		}
 
 		for _, languageID := range command.Languages {
@@ -167,7 +168,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		log.Printf("Evaluation score for %q: %s", modelID, metricsPerModel[modelID])
 	}
 
-	csv, err := evaluate.FormatStringCSV(metricsPerModel)
+	csv, err := metrics.FormatStringCSV(metricsPerModel)
 	if err != nil {
 		log.Fatalf("ERROR: could not create result summary: %s", err)
 	}
