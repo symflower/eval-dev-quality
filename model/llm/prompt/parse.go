@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	codeTagRe           = regexp.MustCompile("(^|\n)\\s*```\\w*($|\n)")
-	codeTagDuplicatedRe = regexp.MustCompile("```(\\s|\n)*```")
+	codeTagMatch           = regexp.MustCompile("(^|\n)\\s*```\\w*($|\n)")
+	codeTagDuplicatedMatch = regexp.MustCompile("```(\\s|\n)*```")
 )
 
 // ParseResponse parses code from a model's response.
@@ -18,9 +18,9 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 	assessment = metrics.Assessments{}
 
 	// Some models produce duplicated code tags, so unify them if needed.
-	response = codeTagDuplicatedRe.ReplaceAllString(response, "```")
+	response = codeTagDuplicatedMatch.ReplaceAllString(response, "```")
 
-	blocks := bytesutil.GuardedBlocks(response, codeTagRe, codeTagRe)
+	blocks := bytesutil.GuardedBlocks(response, codeTagMatch, codeTagMatch)
 
 	// When no code blocks are found, assume that just the code is returned.
 	if len(blocks) == 0 {
@@ -40,5 +40,5 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 		assessment[metrics.AssessmentKeyNoExcessResponse] = 0
 	}
 
-	return assessment, strings.TrimSpace(codeTagRe.ReplaceAllString(block, ""))
+	return assessment, strings.TrimSpace(codeTagMatch.ReplaceAllString(block, ""))
 }
