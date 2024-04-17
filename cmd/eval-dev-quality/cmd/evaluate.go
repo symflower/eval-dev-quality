@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/zimmski/osutil"
 	"golang.org/x/exp/maps"
@@ -28,7 +29,7 @@ type Evaluate struct {
 	// Repositories determines which repository should be used for the evaluation, or empty if all repositories should be used.
 	Repositories []string `long:"repository" description:"Evaluate with this repository. By default all repositories are used."`
 	// ResultPath holds the directory path where results should be written to.
-	ResultPath string `long:"result-path" required:"true" description:"Directory path where results should be written to."`
+	ResultPath string `long:"result-path" description:"Directory path where results should be written to. The placeholder \"%datetime%\" can be used for the current date and time." default:"evaluation-%datetime%"`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
 
@@ -37,6 +38,8 @@ type Evaluate struct {
 }
 
 func (command *Evaluate) Execute(args []string) (err error) {
+	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", time.Now().Format(time.DateTime))
+
 	log, logClose, err := log.FileAndSTDOUT(filepath.Join(command.ResultPath, "evaluation.log"))
 	if err != nil {
 		return err
