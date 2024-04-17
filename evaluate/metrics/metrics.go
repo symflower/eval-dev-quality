@@ -38,7 +38,7 @@ func (m Metrics) Add(o Metrics) Metrics {
 
 		Coverage: append(m.Coverage, o.Coverage...),
 
-		Assessments: m.Assessments.Merge(o.Assessments),
+		Assessments: Merge(m.Assessments, o.Assessments),
 	}
 }
 
