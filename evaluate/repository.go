@@ -15,7 +15,7 @@ import (
 )
 
 // EvaluateRepository evaluate a repository with the given model and language.
-func EvaluateRepository(model model.Model, language language.Language, repositoryPath string) (metrics metrics.Metrics, problems []error, err error) {
+func EvaluateRepository(model model.Model, language language.Language, repositoryPath string) (repositoryMetrics metrics.Assessments, problems []error, err error) {
 	log.Printf("Evaluating model %q using language %q and repository %q", model.ID(), language.ID(), repositoryPath)
 	defer func() {
 		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems", model.ID(), language.ID(), repositoryPath, len(problems))
@@ -23,7 +23,7 @@ func EvaluateRepository(model model.Model, language language.Language, repositor
 
 	temporaryPath, err := os.MkdirTemp("", "eval-dev-quality")
 	if err != nil {
-		return metrics, problems, pkgerrors.WithStack(err)
+		return repositoryMetrics, problems, pkgerrors.WithStack(err)
 	}
 	defer func() {
 		if e := os.RemoveAll(temporaryPath); e != nil {
@@ -36,35 +36,37 @@ func EvaluateRepository(model model.Model, language language.Language, repositor
 	}()
 	temporaryRepositoryPath := filepath.Join(temporaryPath, filepath.Base(repositoryPath))
 	if err := osutil.CopyTree(repositoryPath, temporaryRepositoryPath); err != nil {
-		return metrics, problems, pkgerrors.WithStack(err)
+		return repositoryMetrics, problems, pkgerrors.WithStack(err)
 	}
 
 	filePaths, err := language.Files(repositoryPath)
 	if err != nil {
-		return metrics, problems, pkgerrors.WithStack(err)
+		return repositoryMetrics, problems, pkgerrors.WithStack(err)
 	}
 
+	repositoryMetrics = metrics.NewAssessments()
 	for _, filePath := range filePaths {
-		metrics.Total++
 		assessments, err := model.GenerateTestsForFile(language, temporaryRepositoryPath, filePath)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
-			metrics.Problems++
+			repositoryMetrics[metrics.AssessmentKeyFilesProblems]++
 
 			continue
 		}
-		metrics.Assessments.Add(assessments)
+		repositoryMetrics.Add(assessments)
 
 		coverage, err := language.Execute(temporaryRepositoryPath)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
-			metrics.Problems++
+			repositoryMetrics[metrics.AssessmentKeyFilesProblems]++
 
 			continue
 		}
-		metrics.Executed++
-		metrics.Coverage = append(metrics.Coverage, coverage)
+		repositoryMetrics[metrics.AssessmentKeyFilesExecuted]++
+		if coverage == 100 {
+			repositoryMetrics[metrics.AssessmentKeyCoverageStatement]++
+		}
 	}
 
-	return metrics, problems, nil
+	return repositoryMetrics, problems, nil
 }

@@ -1,5 +1,15 @@
 package metrics
 
+import (
+	"encoding/csv"
+	"fmt"
+	"sort"
+	"strings"
+
+	pkgerrors "github.com/pkg/errors"
+	"golang.org/x/exp/maps"
+)
+
 // AssessmentKey defines a key for a numerical key-value assessment pair.
 type AssessmentKey string
 
@@ -20,6 +30,14 @@ func RegisterAssessmentKey(key string) AssessmentKey {
 }
 
 var (
+	// AssessmentKeyFilesExecutes holds the successfully executed files.
+	AssessmentKeyFilesExecuted = RegisterAssessmentKey("files-executed")
+	// AssessmentKeyFilesProblems holds the files with problems.
+	AssessmentKeyFilesProblems = RegisterAssessmentKey("files-problems")
+
+	// AssessmentKeyCoverageStatement counts the cases where 100% coverage was reached.
+	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement")
+
 	// AssessmentKeyNoExcessResponse indicates that a model did not produce more content as requested.
 	AssessmentKeyNoExcessResponse = RegisterAssessmentKey("no-excess-response")
 )
@@ -27,7 +45,7 @@ var (
 // Assessments holds a collection of numerical assessment metrics.
 type Assessments map[AssessmentKey]uint
 
-// NewAssessments create a new assessment collection.
+// NewAssessments creates a new assessment collection.
 func NewAssessments() Assessments {
 	return map[AssessmentKey]uint{}
 }
@@ -50,4 +68,58 @@ func Merge(a Assessments, b Assessments) (c Assessments) {
 	}
 
 	return c
+}
+
+// String returns a string representation of the metrics.
+func (a Assessments) String() string {
+	if a == nil {
+		a = NewAssessments()
+	}
+	metrics := make([]string, len(allAssessmentKeys))
+
+	for i, key := range allAssessmentKeys {
+		metrics[i] = fmt.Sprintf("%s=%d", key, a[key])
+	}
+
+	return strings.Join(metrics, ", ")
+}
+
+// StringCSV returns a CSV row string representation of the metrics.
+func (a Assessments) StringCSV() (row []string) {
+	if a == nil {
+		a = NewAssessments()
+	}
+
+	row = make([]string, len(allAssessmentKeys))
+	for i, key := range allAssessmentKeys {
+		row[i] = fmt.Sprintf("%d", a[key])
+	}
+
+	return row
+}
+
+func csvHeader() []string {
+	return append([]string{"model"}, allAssessmentKeysStrings...)
+}
+
+// FormatStringCSV formats the given metrics as CSV.
+func FormatStringCSV(metricsPerModel map[string]Assessments) (string, error) {
+	var out strings.Builder
+	csv := csv.NewWriter(&out)
+
+	if err := csv.Write(csvHeader()); err != nil {
+		return "", err
+	}
+	models := maps.Keys(metricsPerModel)
+	sort.Strings(models)
+	for _, model := range models {
+		row := metricsPerModel[model].StringCSV()
+
+		if err := csv.Write(append([]string{model}, row...)); err != nil {
+			return "", pkgerrors.WithStack(err)
+		}
+	}
+	csv.Flush()
+
+	return out.String(), nil
 }

@@ -100,12 +100,12 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	log.Printf("Checking that models and languages can be used for evaluation")
-	metricsPerModel := map[string]metrics.Metrics{}
+	metricsPerModel := map[string]metrics.Assessments{}
 	problemsPerModel := map[string][]error{}
 	{
 		// Ensure we report metrics for every model even if they are excluded.
 		for _, modelID := range command.Models {
-			metricsPerModel[modelID] = metrics.Metrics{}
+			metricsPerModel[modelID] = metrics.NewAssessments()
 		}
 
 		for _, languageID := range command.Languages {
@@ -114,7 +114,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				language := language.Languages[languageID]
 
 				metrics, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(command.TestdataPath, language.ID(), "plain"))
-				metricsPerModel[modelID] = metricsPerModel[modelID].Add(metrics)
+				metricsPerModel[modelID].Add(metrics)
 				if err != nil {
 					ps = append(ps, err)
 				}
@@ -155,7 +155,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				language := language.Languages[languageID]
 
 				metrics, ps, err := evaluate.EvaluateRepository(model, language, filepath.Join(languagePath, repository.Name()))
-				metricsPerModel[model.ID()] = metricsPerModel[model.ID()].Add(metrics)
+				metricsPerModel[model.ID()].Add(metrics)
 				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				if err != nil {
 					log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repository.Name(), err)
