@@ -21,6 +21,11 @@ clean: # Clean up artifacts of the development environment to allow for untainte
 	go clean -i -race $(PACKAGE)
 .PHONY: clean
 
+editor: # Open our default IDE with the project's configuration.
+	@# WORKAROUND VS.code does not call Delve with absolute paths to files which it needs to set breakpoints. Until either Delve or VS.code have a fix we need to disable "-trimpath" which converts absolute to relative paths of Go builds which is a requirement for reproducible builds.
+	GOFLAGS="$(GOFLAGS) -trimpath=false" $(ROOT_DIR)/scripts/editor.sh
+.PHONY: editor
+
 help: # Show this help message.
 	@grep -E '^[a-zA-Z-][a-zA-Z0-9.-]*?:.*?# (.+)' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 .PHONY: help

@@ -53,7 +53,7 @@ func EvaluateRepository(model model.Model, language language.Language, repositor
 
 			continue
 		}
-		metrics.Assessments = metrics.Assessments.Merge(assessments)
+		metrics.Assessments.Add(assessments)
 
 		coverage, err := language.Execute(temporaryRepositoryPath)
 		if err != nil {

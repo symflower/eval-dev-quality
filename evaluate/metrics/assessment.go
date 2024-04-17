@@ -24,26 +24,30 @@ var (
 	AssessmentKeyNoExcessResponse = RegisterAssessmentKey("no-excess-response")
 )
 
-// Assessments holds numerical assessment metrics.
+// Assessments holds a collection of numerical assessment metrics.
 type Assessments map[AssessmentKey]uint
 
-// Merge combines two assessments into a new assessment and returns it.
-func (a Assessments) Merge(o Assessments) Assessments {
-	if a == nil {
-		a = Assessments{}
+// NewAssessments create a new assessment collection.
+func NewAssessments() Assessments {
+	return map[AssessmentKey]uint{}
+}
+
+// Add adds the given assessment collection to the current one.
+func (a Assessments) Add(x Assessments) {
+	for k, v := range x {
+		a[k] += v
 	}
-	if o == nil {
-		o = Assessments{}
+}
+
+// Merge combines two assessment collections into a new assessment collection and returns the new assessment collection.
+func Merge(a Assessments, b Assessments) (c Assessments) {
+	c = NewAssessments()
+	if a != nil {
+		c.Add(a)
+	}
+	if b != nil {
+		c.Add(b)
 	}
 
-	assessments := map[AssessmentKey]uint{}
-
-	for _, k := range allAssessmentKeys {
-		assessments[k] = a[k]
-	}
-	for _, k := range allAssessmentKeys {
-		assessments[k] = o[k]
-	}
-
-	return Assessments(assessments)
+	return c
 }
