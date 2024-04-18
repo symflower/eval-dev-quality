@@ -35,7 +35,9 @@ func (m *ModelSymflower) GenerateTestsForFile(language language.Language, reposi
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	return metrics.Assessments{
-		metrics.AssessmentKeyResponseNoExcess: 1, // Symflower only generates code, never additional explanations.
+	return metrics.Assessments{ // Symflower always generates just source code when it does not fail, so no need to check the assessment properties.
+		metrics.AssessmentKeyResponseNoExcess: 1,
+		metrics.AssessmentKeyResponseNotEmpty: 1,
+		metrics.AssessmentKeyResponseWithCode: 1,
 	}, nil
 }

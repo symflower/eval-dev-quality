@@ -62,6 +62,7 @@ func EvaluateRepository(resultPath string, model model.Model, language language.
 			continue
 		}
 		repositoryAssessment.Add(assessments)
+		repositoryAssessment[metrics.AssessmentKeyResponseNoError]++
 
 		coverage, err := language.Execute(temporaryRepositoryPath)
 		if err != nil {

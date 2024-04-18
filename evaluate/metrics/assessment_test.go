@@ -134,23 +134,26 @@ func TestAssessmentString(t *testing.T) {
 	}
 
 	validate(t, &testCase{
-		Name: "Initial Metrics",
+		Name: "Empty Metrics",
 
 		Assessment: NewAssessments(),
 
-		ExpectedString: "coverage-statement=0, files-executed=0, response-no-excess=0",
+		ExpectedString: "coverage-statement=0, files-executed=0, response-no-error=0, response-no-excess=0, response-not-empty=0, response-with-code=0",
 	})
 
 	validate(t, &testCase{
-		Name: "Empty Metrics",
+		Name: "Non-empty Metrics",
 
 		Assessment: Assessments{
 			AssessmentKeyCoverageStatement: 1,
 			AssessmentKeyFilesExecuted:     2,
-			AssessmentKeyResponseNoExcess:  4,
+			AssessmentKeyResponseNoError:   4,
+			AssessmentKeyResponseNoExcess:  5,
+			AssessmentKeyResponseNotEmpty:  6,
+			AssessmentKeyResponseWithCode:  7,
 		},
 
-		ExpectedString: "coverage-statement=1, files-executed=2, response-no-excess=4",
+		ExpectedString: "coverage-statement=1, files-executed=2, response-no-error=4, response-no-excess=5, response-not-empty=6, response-with-code=7",
 	})
 }
 
@@ -180,8 +183,8 @@ func TestFormatStringCSV(t *testing.T) {
 		},
 
 		ExpectedString: `
-			model,coverage-statement,files-executed,response-no-excess
-			Model,0,0,0
+			model,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+			Model,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
@@ -191,19 +194,24 @@ func TestFormatStringCSV(t *testing.T) {
 			"ModelA": Assessments{
 				AssessmentKeyCoverageStatement: 1,
 				AssessmentKeyFilesExecuted:     2,
-				AssessmentKeyResponseNoExcess:  4,
+				AssessmentKeyResponseNoError:   4,
+				AssessmentKeyResponseNoExcess:  5,
+				AssessmentKeyResponseNotEmpty:  6,
+				AssessmentKeyResponseWithCode:  7,
 			},
 			"ModelB": Assessments{
 				AssessmentKeyCoverageStatement: 1,
-				AssessmentKeyFilesExecuted:     2,
-				AssessmentKeyResponseNoExcess:  4,
+				AssessmentKeyFilesExecuted:     2, AssessmentKeyResponseNoError: 4,
+				AssessmentKeyResponseNoExcess: 5,
+				AssessmentKeyResponseNotEmpty: 6,
+				AssessmentKeyResponseWithCode: 7,
 			},
 		},
 
 		ExpectedString: `
-			model,coverage-statement,files-executed,response-no-excess
-			ModelA,1,2,4
-			ModelB,1,2,4
+			model,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+			ModelA,1,2,4,5,6,7
+			ModelB,1,2,4,5,6,7
 		`,
 	})
 }

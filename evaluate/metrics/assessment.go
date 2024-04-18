@@ -39,6 +39,12 @@ var (
 	// AssessmentKeyCoverageStatement counts the cases where 100% coverage was reached.
 	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement")
 
+	// AssessmentKeyResponseNoError indicates that a model responded without error.
+	AssessmentKeyResponseNoError = RegisterAssessmentKey("response-no-error")
+	// AssessmentKeyResponseNotEmpty indicates that a model response was not empty.
+	AssessmentKeyResponseNotEmpty = RegisterAssessmentKey("response-not-empty")
+	// AssessmentKeyResponseWithCode indicates that a model responded with code.
+	AssessmentKeyResponseWithCode = RegisterAssessmentKey("response-with-code")
 	// AssessmentKeyResponseNoExcess indicates that a model did not produce more content as requested.
 	AssessmentKeyResponseNoExcess = RegisterAssessmentKey("response-no-excess")
 )

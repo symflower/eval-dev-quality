@@ -9,6 +9,7 @@ import (
 	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/symflower"
@@ -35,7 +36,7 @@ func TestEvaluateRepository(t *testing.T) {
 
 			actualRepositoryAssessment, actualProblems, actualErr := EvaluateRepository(temporaryPath, tc.Model, tc.Language, tc.TestDataPath, tc.RepositoryPath)
 
-			assert.Equal(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
+			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 			assert.Equal(t, tc.ExpectedProblems, actualProblems)
 			assert.Equal(t, tc.ExpectedError, actualErr)
 
@@ -60,7 +61,10 @@ func TestEvaluateRepository(t *testing.T) {
 		ExpectedRepositoryAssessment: metrics.Assessments{
 			metrics.AssessmentKeyCoverageStatement: 1,
 			metrics.AssessmentKeyFilesExecuted:     1,
+			metrics.AssessmentKeyResponseNoError:   1,
 			metrics.AssessmentKeyResponseNoExcess:  1,
+			metrics.AssessmentKeyResponseNotEmpty:  1,
+			metrics.AssessmentKeyResponseWithCode:  1,
 		},
 		ExpectedResultFiles: []string{
 			"symflower_symbolic-execution/golang/golang/plain.log",
