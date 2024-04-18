@@ -19,10 +19,14 @@ import (
 	"github.com/symflower/eval-dev-quality/provider"
 	_ "github.com/symflower/eval-dev-quality/provider/openrouter"
 	_ "github.com/symflower/eval-dev-quality/provider/symflower"
+	"github.com/symflower/eval-dev-quality/tools"
 )
 
 // Evaluate holds the "evaluation" command.
 type Evaluate struct {
+	// InstallToolsPath determines where tools for the evaluation are installed.
+	InstallToolsPath string `long:"install-tools-path" description:"Install tools for the evaluation into this path."`
+
 	// Languages determines which language should be used for the evaluation, or empty if all languages should be used.
 	Languages []string `long:"language" description:"Evaluate with this language. By default all languages are used."`
 	// Models determines which models should be used for the evaluation, or empty if all models should be used.
@@ -41,6 +45,7 @@ type Evaluate struct {
 // repositoryPlainName holds the name of the plain repository.
 const repositoryPlainName = "plain"
 
+// Execute executes the command.
 func (command *Evaluate) Execute(args []string) (err error) {
 	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", time.Now().Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
 
@@ -116,6 +121,20 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		log.Fatalf("ERROR: could not resolve testdata path %q to an absolute path: %s", command.TestdataPath, err)
 	}
 
+	// Install required tools for the basic evaluation.
+	{
+		if command.InstallToolsPath == "" {
+			command.InstallToolsPath, err = tools.InstallPathDefault()
+			if err != nil {
+				log.Fatalf("ERROR: %s", err)
+			}
+		}
+
+		if err := tools.Install(log, command.InstallToolsPath); err != nil {
+			log.Fatalf("ERROR: %s", err)
+		}
+	}
+
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	log.Printf("Checking that models and languages can be used for evaluation")
 	// Ensure we report metrics for every model even if they are excluded.
@@ -188,7 +207,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	totalScore := uint(0)
 	// Set the total score to the number of evaluated languages if we are just checking the "plain" repositories since there is only one task to solve per language.
 	isOnlyPlainRepositories := true
-	for repository, _ := range commandRepositories {
+	for repository := range commandRepositories {
 		if filepath.Base(repository) != repositoryPlainName {
 			isOnlyPlainRepositories = false
 

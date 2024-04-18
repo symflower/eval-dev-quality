@@ -17,21 +17,13 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Install Symflower
-        shell: bash
-        run: |
-          mkdir -p $PWD/bin/
-          export OS=${OS:-"$(uname -s | awk '{print tolower($0)}')"}
-          export ARCH=${ARCH:-"$(uname -m)"}
-          curl -SLf -o $PWD/bin/symflower https://download.symflower.com/local/latest/symflower-$OS-$ARCH
-          chmod +x $PWD/bin/symflower
-          echo "PATH=$PWD/bin:$PATH" >> $GITHUB_ENV
-
-      - name: Install testing tools
-        run: make install-tools-testing
-
       - name: Build
         run: make install
+
+      - name: Install testing tools
+        run: |
+          make install-tools-testing
+          echo "PATH=$HOME/.eval-dev-quality/bin:$PATH" >> $GITHUB_ENV
 
       - name: Test
         run: make test

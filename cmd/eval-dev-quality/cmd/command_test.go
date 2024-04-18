@@ -34,7 +34,7 @@ func TestExecute(t *testing.T) {
 
 		ExpectedOutput: bytesutil.StringTrimIndentations(`
 			Usage:
-			  eval-dev-quality [OPTIONS] [evaluate]
+			  eval-dev-quality [OPTIONS] [evaluate | install-tools]
 
 			Command to manage, update and actually execute the ` + "`" + `eval-dev-quality` + "`" + `
 			evaluation benchmark.
@@ -43,7 +43,8 @@ func TestExecute(t *testing.T) {
 			  -h, --help  Show this help message
 
 			Available commands:
-			  evaluate  Run an evaluation, by default with all defined models, repositories and tasks.
+			  evaluate       Run an evaluation, by default with all defined models, repositories and tasks.
+			  install-tools  Checks and installs all tools required for the evaluation benchmark.
 		`),
 	})
 }

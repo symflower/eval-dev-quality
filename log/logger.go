@@ -60,3 +60,8 @@ func FileAndSTDOUT(filePath string) (logger *log.Logger, loggerClose func(), err
 
 	return logger, loggerClose, nil
 }
+
+// STDOUT returns a logger that writes to STDOUT.
+func STDOUT() (logger *log.Logger) {
+	return log.New(os.Stdout, "", log.LstdFlags)
+}
