@@ -9,6 +9,7 @@ export ARGS
 
 ifdef ARGS
 	HAS_ARGS := "1"
+	PACKAGE := $(ARGS)
 else
 	HAS_ARGS :=
 	PACKAGE := $(PACKAGE_BASE)/...
