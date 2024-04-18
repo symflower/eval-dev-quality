@@ -57,7 +57,7 @@ func (p *openRouterProvider) Query(ctx context.Context, modelIdentifier string, 
 	if err != nil {
 		return "", pkgerrors.WithStack(err)
 	} else if len(apiResponse.Choices) == 0 {
-		return "", fmt.Errorf("empty LLM %q response: %+v", modelIdentifier, apiResponse)
+		return "", pkgerrors.WithStack(fmt.Errorf("empty LLM %q response: %+v", modelIdentifier, apiResponse))
 	}
 
 	return apiResponse.Choices[0].Message.Content, nil

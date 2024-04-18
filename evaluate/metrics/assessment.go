@@ -8,6 +8,8 @@ import (
 
 	pkgerrors "github.com/pkg/errors"
 	"golang.org/x/exp/maps"
+
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // AssessmentKey defines a key for a numerical key-value assessment pair.
@@ -23,8 +25,9 @@ var (
 // RegisterAssessmentKey registers a new assessment key.
 func RegisterAssessmentKey(key string) AssessmentKey {
 	assessment := AssessmentKey(key)
-	allAssessmentKeys = append(allAssessmentKeys, assessment)
-	allAssessmentKeysStrings = append(allAssessmentKeysStrings, key)
+
+	allAssessmentKeys = util.InsertToSortedSlice(allAssessmentKeys, assessment)
+	allAssessmentKeysStrings = util.InsertToSortedSlice(allAssessmentKeysStrings, key)
 
 	return assessment
 }
@@ -32,14 +35,18 @@ func RegisterAssessmentKey(key string) AssessmentKey {
 var (
 	// AssessmentKeyFilesExecutes holds the successfully executed files.
 	AssessmentKeyFilesExecuted = RegisterAssessmentKey("files-executed")
-	// AssessmentKeyFilesProblems holds the files with problems.
-	AssessmentKeyFilesProblems = RegisterAssessmentKey("files-problems")
 
 	// AssessmentKeyCoverageStatement counts the cases where 100% coverage was reached.
 	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement")
 
-	// AssessmentKeyNoExcessResponse indicates that a model did not produce more content as requested.
-	AssessmentKeyNoExcessResponse = RegisterAssessmentKey("no-excess-response")
+	// AssessmentKeyResponseNoError indicates that a model responded without error.
+	AssessmentKeyResponseNoError = RegisterAssessmentKey("response-no-error")
+	// AssessmentKeyResponseNotEmpty indicates that a model response was not empty.
+	AssessmentKeyResponseNotEmpty = RegisterAssessmentKey("response-not-empty")
+	// AssessmentKeyResponseWithCode indicates that a model responded with code.
+	AssessmentKeyResponseWithCode = RegisterAssessmentKey("response-with-code")
+	// AssessmentKeyResponseNoExcess indicates that a model did not produce more content as requested.
+	AssessmentKeyResponseNoExcess = RegisterAssessmentKey("response-no-excess")
 )
 
 // Assessments holds a collection of numerical assessment metrics.
@@ -55,6 +62,21 @@ func (a Assessments) Add(x Assessments) {
 	for k, v := range x {
 		a[k] += v
 	}
+}
+
+// Equal checks if both assessment collections are equal.
+func (a Assessments) Equal(x Assessments) bool {
+	if a == nil || x == nil {
+		return a == nil && x == nil
+	}
+
+	for _, key := range allAssessmentKeys {
+		if a[key] != x[key] {
+			return false
+		}
+	}
+
+	return true
 }
 
 // Merge combines two assessment collections into a new assessment collection and returns the new assessment collection.
@@ -108,7 +130,7 @@ func FormatStringCSV(metricsPerModel map[string]Assessments) (string, error) {
 	csv := csv.NewWriter(&out)
 
 	if err := csv.Write(csvHeader()); err != nil {
-		return "", err
+		return "", pkgerrors.WithStack(err)
 	}
 	models := maps.Keys(metricsPerModel)
 	sort.Strings(models)

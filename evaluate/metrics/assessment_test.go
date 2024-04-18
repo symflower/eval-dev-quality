@@ -39,11 +39,11 @@ func TestAssessmentsAdd(t *testing.T) {
 
 		Assessments: NewAssessments(),
 		X: map[AssessmentKey]uint{
-			AssessmentKeyNoExcessResponse: 1,
+			AssessmentKeyResponseNoExcess: 1,
 		},
 
 		ExpectedAssessments: map[AssessmentKey]uint{
-			AssessmentKeyNoExcessResponse: 1,
+			AssessmentKeyResponseNoExcess: 1,
 		},
 	})
 
@@ -51,19 +51,19 @@ func TestAssessmentsAdd(t *testing.T) {
 		Name: "Existing key",
 
 		Assessments: map[AssessmentKey]uint{
-			AssessmentKeyNoExcessResponse: 1,
+			AssessmentKeyResponseNoExcess: 1,
 		},
 		X: map[AssessmentKey]uint{
-			AssessmentKeyNoExcessResponse: 1,
+			AssessmentKeyResponseNoExcess: 1,
 		},
 
 		ExpectedAssessments: map[AssessmentKey]uint{
-			AssessmentKeyNoExcessResponse: 2,
+			AssessmentKeyResponseNoExcess: 2,
 		},
 	})
 }
 
-func TestMerge(t *testing.T) {
+func TestAssessmentsMerge(t *testing.T) {
 	type testCase struct {
 		Name string
 
@@ -92,11 +92,11 @@ func TestMerge(t *testing.T) {
 
 		A: NewAssessments(),
 		B: map[AssessmentKey]uint{
-			AssessmentKeyNoExcessResponse: 1,
+			AssessmentKeyResponseNoExcess: 1,
 		},
 
 		ExpectedC: map[AssessmentKey]uint{
-			AssessmentKeyNoExcessResponse: 1,
+			AssessmentKeyResponseNoExcess: 1,
 		},
 	})
 
@@ -104,14 +104,14 @@ func TestMerge(t *testing.T) {
 		Name: "Existing key",
 
 		A: map[AssessmentKey]uint{
-			AssessmentKeyNoExcessResponse: 1,
+			AssessmentKeyResponseNoExcess: 1,
 		},
 		B: map[AssessmentKey]uint{
-			AssessmentKeyNoExcessResponse: 1,
+			AssessmentKeyResponseNoExcess: 1,
 		},
 
 		ExpectedC: map[AssessmentKey]uint{
-			AssessmentKeyNoExcessResponse: 2,
+			AssessmentKeyResponseNoExcess: 2,
 		},
 	})
 }
@@ -134,24 +134,26 @@ func TestAssessmentString(t *testing.T) {
 	}
 
 	validate(t, &testCase{
-		Name: "Initial Metrics",
+		Name: "Empty Metrics",
 
 		Assessment: NewAssessments(),
 
-		ExpectedString: "files-executed=0, files-problems=0, coverage-statement=0, no-excess-response=0",
+		ExpectedString: "coverage-statement=0, files-executed=0, response-no-error=0, response-no-excess=0, response-not-empty=0, response-with-code=0",
 	})
 
 	validate(t, &testCase{
-		Name: "Empty Metrics",
+		Name: "Non-empty Metrics",
 
 		Assessment: Assessments{
 			AssessmentKeyCoverageStatement: 1,
 			AssessmentKeyFilesExecuted:     2,
-			AssessmentKeyFilesProblems:     3,
-			AssessmentKeyNoExcessResponse:  4,
+			AssessmentKeyResponseNoError:   4,
+			AssessmentKeyResponseNoExcess:  5,
+			AssessmentKeyResponseNotEmpty:  6,
+			AssessmentKeyResponseWithCode:  7,
 		},
 
-		ExpectedString: "files-executed=2, files-problems=3, coverage-statement=1, no-excess-response=4",
+		ExpectedString: "coverage-statement=1, files-executed=2, response-no-error=4, response-no-excess=5, response-not-empty=6, response-with-code=7",
 	})
 }
 
@@ -181,8 +183,8 @@ func TestFormatStringCSV(t *testing.T) {
 		},
 
 		ExpectedString: `
-			model,files-executed,files-problems,coverage-statement,no-excess-response
-			Model,0,0,0,0
+			model,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+			Model,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
@@ -192,21 +194,101 @@ func TestFormatStringCSV(t *testing.T) {
 			"ModelA": Assessments{
 				AssessmentKeyCoverageStatement: 1,
 				AssessmentKeyFilesExecuted:     2,
-				AssessmentKeyFilesProblems:     3,
-				AssessmentKeyNoExcessResponse:  4,
+				AssessmentKeyResponseNoError:   4,
+				AssessmentKeyResponseNoExcess:  5,
+				AssessmentKeyResponseNotEmpty:  6,
+				AssessmentKeyResponseWithCode:  7,
 			},
 			"ModelB": Assessments{
 				AssessmentKeyCoverageStatement: 1,
-				AssessmentKeyFilesExecuted:     2,
-				AssessmentKeyFilesProblems:     3,
-				AssessmentKeyNoExcessResponse:  4,
+				AssessmentKeyFilesExecuted:     2, AssessmentKeyResponseNoError: 4,
+				AssessmentKeyResponseNoExcess: 5,
+				AssessmentKeyResponseNotEmpty: 6,
+				AssessmentKeyResponseWithCode: 7,
 			},
 		},
 
 		ExpectedString: `
-			model,files-executed,files-problems,coverage-statement,no-excess-response
-			ModelA,2,3,1,4
-			ModelB,2,3,1,4
+			model,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+			ModelA,1,2,4,5,6,7
+			ModelB,1,2,4,5,6,7
 		`,
+	})
+}
+
+func TestAssessmentsEqual(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Assessments Assessments
+		X           Assessments
+
+		ExpectedBool bool
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualBool := tc.Assessments.Equal(tc.X)
+
+			assert.Equal(t, tc.ExpectedBool, actualBool)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Empty",
+
+		Assessments: NewAssessments(),
+		X:           NewAssessments(),
+
+		ExpectedBool: true,
+	})
+
+	validate(t, &testCase{
+		Name: "Nil",
+
+		Assessments: nil,
+		X:           nil,
+
+		ExpectedBool: true,
+	})
+
+	validate(t, &testCase{
+		Name: "Equal Values",
+
+		Assessments: Assessments{
+			AssessmentKeyResponseWithCode: 2,
+		},
+		X: Assessments{
+			AssessmentKeyResponseWithCode: 2,
+		},
+
+		ExpectedBool: true,
+	})
+
+	validate(t, &testCase{
+		Name: "Default Value",
+
+		Assessments: Assessments{
+			AssessmentKeyResponseWithCode: 2,
+			AssessmentKeyResponseNoError:  0,
+		},
+		X: Assessments{
+			AssessmentKeyResponseWithCode: 2,
+		},
+
+		ExpectedBool: true,
+	})
+
+	validate(t, &testCase{
+		Name: "Different Values",
+
+		Assessments: Assessments{
+			AssessmentKeyResponseWithCode: 3,
+		},
+		X: Assessments{
+			AssessmentKeyResponseWithCode: 2,
+		},
+
+		ExpectedBool: false,
 	})
 }
