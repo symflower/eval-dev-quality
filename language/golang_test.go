@@ -9,6 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
+
+	"github.com/symflower/eval-dev-quality/log"
 )
 
 func TestLanguageGolangFiles(t *testing.T) {
@@ -25,10 +27,17 @@ func TestLanguageGolangFiles(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
+			log, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Log(log.String())
+				}
+			}()
+
 			if tc.LanguageGolang == nil {
 				tc.LanguageGolang = &LanguageGolang{}
 			}
-			actualFilePaths, actualError := tc.LanguageGolang.Files(tc.RepositoryPath)
+			actualFilePaths, actualError := tc.LanguageGolang.Files(logger, tc.RepositoryPath)
 
 			assert.Equal(t, tc.ExpectedFilePaths, actualFilePaths)
 			assert.Equal(t, tc.ExpectedError, actualError)
@@ -62,6 +71,13 @@ func TestLanguageGolangExecute(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
+			log, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Log(log.String())
+				}
+			}()
+
 			temporaryPath := t.TempDir()
 			repositoryPath := filepath.Join(temporaryPath, filepath.Base(tc.RepositoryPath))
 			require.NoError(t, osutil.CopyTree(tc.RepositoryPath, repositoryPath))
@@ -73,7 +89,7 @@ func TestLanguageGolangExecute(t *testing.T) {
 			if tc.LanguageGolang == nil {
 				tc.LanguageGolang = &LanguageGolang{}
 			}
-			actualCoverage, actualError := tc.LanguageGolang.Execute(repositoryPath)
+			actualCoverage, actualError := tc.LanguageGolang.Execute(logger, repositoryPath)
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, actualError, tc.ExpectedError)

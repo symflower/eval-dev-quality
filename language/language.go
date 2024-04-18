@@ -1,6 +1,8 @@
 package language
 
 import (
+	"log"
+
 	pkgerrors "github.com/pkg/errors"
 )
 
@@ -12,10 +14,10 @@ type Language interface {
 	Name() (id string)
 
 	// Files returns a list of relative file paths of the repository that should be evaluated.
-	Files(repositoryPath string) (filePaths []string, err error)
+	Files(log *log.Logger, repositoryPath string) (filePaths []string, err error)
 
 	// Execute invokes the language specific testing on the given repository.
-	Execute(repositoryPath string) (coverage float64, err error)
+	Execute(log *log.Logger, repositoryPath string) (coverage float64, err error)
 }
 
 // Languages holds a register of all languages.

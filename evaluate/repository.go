@@ -48,14 +48,14 @@ func EvaluateRepository(resultPath string, model model.Model, language language.
 		return nil, problems, pkgerrors.WithStack(err)
 	}
 
-	filePaths, err := language.Files(dataPath)
+	filePaths, err := language.Files(log, dataPath)
 	if err != nil {
 		return nil, problems, pkgerrors.WithStack(err)
 	}
 
 	repositoryAssessment = metrics.NewAssessments()
 	for _, filePath := range filePaths {
-		assessments, err := model.GenerateTestsForFile(language, temporaryRepositoryPath, filePath)
+		assessments, err := model.GenerateTestsForFile(log, language, temporaryRepositoryPath, filePath)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
 
@@ -64,7 +64,7 @@ func EvaluateRepository(resultPath string, model model.Model, language language.
 		repositoryAssessment.Add(assessments)
 		repositoryAssessment[metrics.AssessmentKeyResponseNoError]++
 
-		coverage, err := language.Execute(temporaryRepositoryPath)
+		coverage, err := language.Execute(log, temporaryRepositoryPath)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
 

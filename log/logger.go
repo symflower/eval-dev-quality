@@ -1,6 +1,7 @@
 package log
 
 import (
+	"bytes"
 	"io"
 	"log"
 	"os"
@@ -8,6 +9,14 @@ import (
 
 	pkgerrors "github.com/pkg/errors"
 )
+
+// Buffer returns a logger that writes to a buffer.
+func Buffer() (buffer *bytes.Buffer, logger *log.Logger) {
+	buffer = new(bytes.Buffer)
+	logger = log.New(buffer, "", log.LstdFlags)
+
+	return buffer, logger
+}
 
 // File returns a logger that writes to a file.
 func File(path string) (logger *log.Logger, loggerClose func(), err error) {

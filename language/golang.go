@@ -2,6 +2,7 @@ package language
 
 import (
 	"errors"
+	"log"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -34,7 +35,7 @@ func (language *LanguageGolang) Name() (id string) {
 }
 
 // Files returns a list of relative file paths of the repository that should be evaluated.
-func (language *LanguageGolang) Files(repositoryPath string) (filePaths []string, err error) {
+func (language *LanguageGolang) Files(log *log.Logger, repositoryPath string) (filePaths []string, err error) {
 	repositoryPath, err = filepath.Abs(repositoryPath)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
@@ -62,8 +63,8 @@ var languageGoCoverageMatch = regexp.MustCompile(`(?m)^coverage: (\d+\.?\d+)% of
 var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statements\]$`)
 
 // Execute invokes the language specific testing on the given repository.
-func (language *LanguageGolang) Execute(repositoryPath string) (coverage float64, err error) {
-	stdout, _, err := util.CommandWithResult(&util.Command{
+func (language *LanguageGolang) Execute(log *log.Logger, repositoryPath string) (coverage float64, err error) {
+	stdout, _, err := util.CommandWithResult(log, &util.Command{
 		Command: []string{
 			"gotestsum",
 			"--format", "standard-verbose", // Keep formatting consistent.

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 )
 
