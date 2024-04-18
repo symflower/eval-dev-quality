@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
@@ -92,6 +93,19 @@ func Merge(a Assessments, b Assessments) (c Assessments) {
 	return c
 }
 
+// Score computes the score over all assessments in the collection.
+func (a Assessments) Score() (score uint) {
+	if len(a) == 0 {
+		return 0
+	}
+
+	for _, value := range maps.Values(a) {
+		score += value
+	}
+
+	return score
+}
+
 // String returns a string representation of the metrics.
 func (a Assessments) String() string {
 	if a == nil {
@@ -102,6 +116,7 @@ func (a Assessments) String() string {
 	for i, key := range allAssessmentKeys {
 		entries[i] = fmt.Sprintf("%s=%d", key, a[key])
 	}
+	entries = append([]string{fmt.Sprintf("score=%d", a.Score())}, entries...)
 
 	return strings.Join(entries, ", ")
 }
@@ -121,7 +136,7 @@ func (a Assessments) StringCSV() (row []string) {
 }
 
 func csvHeader() []string {
-	return append([]string{"model"}, allAssessmentKeysStrings...)
+	return append([]string{"model", "score"}, allAssessmentKeysStrings...)
 }
 
 // FormatStringCSV formats the given assessment metrics as CSV.
@@ -132,16 +147,40 @@ func FormatStringCSV(assessmentsPerModel map[string]Assessments) (string, error)
 	if err := csv.Write(csvHeader()); err != nil {
 		return "", pkgerrors.WithStack(err)
 	}
-	models := maps.Keys(assessmentsPerModel)
-	sort.Strings(models)
-	for _, model := range models {
-		row := assessmentsPerModel[model].StringCSV()
 
-		if err := csv.Write(append([]string{model}, row...)); err != nil {
-			return "", pkgerrors.WithStack(err)
+	if err := WalkByScore(assessmentsPerModel, func(model string, assessment Assessments, score uint) error {
+		row := assessment.StringCSV()
+
+		if err := csv.Write(append([]string{model, strconv.FormatUint(uint64(score), 10)}, row...)); err != nil {
+			return pkgerrors.WithStack(err)
 		}
+
+		return nil
+	}); err != nil {
+		return "", err
 	}
 	csv.Flush()
 
 	return out.String(), nil
+}
+
+// WalkByScore walks the given assessment metrics by their score.
+func WalkByScore(assessmentsPerModel map[string]Assessments, function func(model string, assessment Assessments, score uint) error) error {
+	models := maps.Keys(assessmentsPerModel)
+	sort.Strings(models)
+	scores := make(map[string]uint, len(models))
+	for _, model := range models {
+		scores[model] = assessmentsPerModel[model].Score()
+	}
+	sort.SliceStable(models, func(i, j int) bool {
+		return scores[models[i]] < scores[models[j]]
+	})
+
+	for _, model := range models {
+		if err := function(model, assessmentsPerModel[model], scores[model]); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

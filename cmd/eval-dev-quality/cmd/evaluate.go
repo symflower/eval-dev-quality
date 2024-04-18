@@ -172,9 +172,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 
-	for _, modelID := range command.Models {
-		log.Printf("Evaluation score for %q: %s", modelID, assessmentsPerModel[modelID])
-	}
+	_ = metrics.WalkByScore(assessmentsPerModel, func(model string, assessment metrics.Assessments, score uint) error {
+		log.Printf("Evaluation score for %q: %s", model, assessment)
+
+		return nil
+	})
 
 	csv, err := metrics.FormatStringCSV(assessmentsPerModel)
 	if err != nil {
