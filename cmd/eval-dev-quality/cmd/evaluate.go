@@ -51,16 +51,21 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	defer logClose()
 
 	// Gather languages.
+	languages := map[string]language.Language{}
 	if len(command.Languages) == 0 {
 		command.Languages = maps.Keys(language.Languages)
+		languages = language.Languages
 	} else {
 		for _, languageID := range command.Languages {
-			if _, ok := language.Languages[languageID]; !ok {
+			l, ok := language.Languages[languageID]
+			if !ok {
 				ls := maps.Keys(language.Languages)
 				sort.Strings(ls)
 
 				log.Fatalf("ERROR: language %s does not exist. Valid languages are: %s", languageID, strings.Join(ls, ", "))
 			}
+
+			languages[languageID] = l
 		}
 	}
 	sort.Strings(command.Languages)
@@ -113,21 +118,17 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	log.Printf("Checking that models and languages can be used for evaluation")
-	assessmentsPerModel := map[string]metrics.Assessments{}
+	// Ensure we report metrics for every model even if they are excluded.
+	assessments := report.NewAssessmentPerModelPerLanguagePerRepository(maps.Values(models), maps.Values(languages), append(command.Repositories, repositoryPlainName))
 	problemsPerModel := map[string][]error{}
 	{
-		// Ensure we report metrics for every model even if they are excluded.
-		for _, modelID := range command.Models {
-			assessmentsPerModel[modelID] = metrics.NewAssessments()
-		}
-
 		for _, languageID := range command.Languages {
 			for _, modelID := range command.Models {
 				model := models[modelID]
-				language := language.Languages[languageID]
+				language := languages[languageID]
 
 				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(language.ID(), repositoryPlainName))
-				assessmentsPerModel[modelID].Add(assessment)
+				assessments[model][language][repositoryPlainName].Add(assessment)
 				if err != nil {
 					ps = append(ps, err)
 				}
@@ -164,10 +165,10 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				}
 
 				model := models[modelID]
-				language := language.Languages[languageID]
+				language := languages[languageID]
 
 				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(languageID, repository.Name()))
-				assessmentsPerModel[model.ID()].Add(assessment)
+				assessments[model][language][repository.Name()].Add(assessment)
 				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				if err != nil {
 					log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repository.Name(), err)
@@ -176,13 +177,13 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 
-	_ = metrics.WalkByScore(assessmentsPerModel, func(model string, assessment metrics.Assessments, score uint) error {
+	_ = metrics.WalkByScore(assessments.Collapse(), func(model string, assessment metrics.Assessments, score uint) error {
 		log.Printf("Evaluation score for %q: %s", model, assessment)
 
 		return nil
 	})
 
-	csv, err := report.FormatCSV(assessmentsPerModel)
+	csv, err := report.FormatCSV(assessments)
 	if err != nil {
 		log.Fatalf("ERROR: could not create result summary: %s", err)
 	}

@@ -7,20 +7,22 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
+	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 )
 
 func TestFormatCSV(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		AssessmentPerModel map[string]metrics.Assessments
+		Assessments AssessmentPerModelPerLanguagePerRepository
 
 		ExpectedString string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualString, err := FormatCSV(tc.AssessmentPerModel)
+			actualString, err := FormatCSV(tc.Assessments)
 			assert.NoError(t, err)
 
 			assert.Equal(t, bytesutil.StringTrimIndentations(tc.ExpectedString), actualString)
@@ -30,41 +32,53 @@ func TestFormatCSV(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Single Empty Model",
 
-		AssessmentPerModel: map[string]metrics.Assessments{
-			"Model": metrics.Assessments{},
+		Assessments: AssessmentPerModelPerLanguagePerRepository{
+			modeltesting.NewMockModelNamed("some-model"): {
+				languagetesting.NewMockLanguageNamed("some-language"): {
+					"some-repository": metrics.NewAssessments(),
+				},
+			},
 		},
 
 		ExpectedString: `
-			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-			Model,0,0,0,0,0,0,0
+			model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+			some-model,some-language,some-repository,0,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
 		Name: "Multiple Models",
 
-		AssessmentPerModel: map[string]metrics.Assessments{
-			"ModelA": metrics.Assessments{
-				metrics.AssessmentKeyCoverageStatement: 1,
-				metrics.AssessmentKeyFilesExecuted:     2,
-				metrics.AssessmentKeyResponseNoError:   3,
-				metrics.AssessmentKeyResponseNoExcess:  4,
-				metrics.AssessmentKeyResponseNotEmpty:  5,
-				metrics.AssessmentKeyResponseWithCode:  6,
+		Assessments: AssessmentPerModelPerLanguagePerRepository{
+			modeltesting.NewMockModelNamed("some-model-a"): {
+				languagetesting.NewMockLanguageNamed("some-language"): {
+					"some-repository": metrics.Assessments{
+						metrics.AssessmentKeyCoverageStatement: 1,
+						metrics.AssessmentKeyFilesExecuted:     2,
+						metrics.AssessmentKeyResponseNoError:   3,
+						metrics.AssessmentKeyResponseNoExcess:  4,
+						metrics.AssessmentKeyResponseNotEmpty:  5,
+						metrics.AssessmentKeyResponseWithCode:  6,
+					},
+				},
 			},
-			"ModelB": metrics.Assessments{
-				metrics.AssessmentKeyCoverageStatement: 2,
-				metrics.AssessmentKeyFilesExecuted:     3,
-				metrics.AssessmentKeyResponseNoError:   4,
-				metrics.AssessmentKeyResponseNoExcess:  5,
-				metrics.AssessmentKeyResponseNotEmpty:  6,
-				metrics.AssessmentKeyResponseWithCode:  7,
+			modeltesting.NewMockModelNamed("some-model-b"): {
+				languagetesting.NewMockLanguageNamed("some-language"): {
+					"some-repository": metrics.Assessments{
+						metrics.AssessmentKeyCoverageStatement: 1,
+						metrics.AssessmentKeyFilesExecuted:     2,
+						metrics.AssessmentKeyResponseNoError:   3,
+						metrics.AssessmentKeyResponseNoExcess:  4,
+						metrics.AssessmentKeyResponseNotEmpty:  5,
+						metrics.AssessmentKeyResponseWithCode:  6,
+					},
+				},
 			},
 		},
 
 		ExpectedString: `
-			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-			ModelA,21,1,2,3,4,5,6
-			ModelB,27,2,3,4,5,6,7
+			model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+			some-model-a,some-language,some-repository,21,1,2,3,4,5,6
+			some-model-b,some-language,some-repository,21,1,2,3,4,5,6
 		`,
 	})
 }
