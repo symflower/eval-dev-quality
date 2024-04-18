@@ -31,7 +31,7 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 
 	// When no code blocks are found, assume that just the code is returned.
 	if len(blocks) == 0 {
-		// If we cannot distinguish between code and text, we sadly also cannot check if the response contains actual code or if there is any excess response content.
+		// TODO If we cannot distinguish between code and text, we sadly also cannot check if the response contains actual code or if there is any excess response content. https://github.com/symflower/eval-dev-quality/issues/43
 
 		return assessment, strings.TrimSpace(response)
 	}

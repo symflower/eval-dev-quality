@@ -47,6 +47,7 @@ var (
 	// AssessmentKeyResponseWithCode indicates that a model responded with code.
 	AssessmentKeyResponseWithCode = RegisterAssessmentKey("response-with-code")
 	// AssessmentKeyResponseNoExcess indicates that a model did not produce more content as requested.
+	// TODO Infer if a model produced "too much" code. https://github.com/symflower/eval-dev-quality/issues/44
 	AssessmentKeyResponseNoExcess = RegisterAssessmentKey("response-no-excess")
 )
 
