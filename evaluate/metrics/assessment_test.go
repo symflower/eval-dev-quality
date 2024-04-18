@@ -207,3 +207,80 @@ func TestFormatStringCSV(t *testing.T) {
 		`,
 	})
 }
+
+func TestAssessmentsEqual(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Assessments Assessments
+		X           Assessments
+
+		ExpectedBool bool
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualBool := tc.Assessments.Equal(tc.X)
+
+			assert.Equal(t, tc.ExpectedBool, actualBool)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Empty",
+
+		Assessments: NewAssessments(),
+		X:           NewAssessments(),
+
+		ExpectedBool: true,
+	})
+
+	validate(t, &testCase{
+		Name: "Nil",
+
+		Assessments: nil,
+		X:           nil,
+
+		ExpectedBool: true,
+	})
+
+	validate(t, &testCase{
+		Name: "Equal Values",
+
+		Assessments: Assessments{
+			AssessmentKeyResponseWithCode: 2,
+		},
+		X: Assessments{
+			AssessmentKeyResponseWithCode: 2,
+		},
+
+		ExpectedBool: true,
+	})
+
+	validate(t, &testCase{
+		Name: "Default Value",
+
+		Assessments: Assessments{
+			AssessmentKeyResponseWithCode: 2,
+			AssessmentKeyResponseNoError:  0,
+		},
+		X: Assessments{
+			AssessmentKeyResponseWithCode: 2,
+		},
+
+		ExpectedBool: true,
+	})
+
+	validate(t, &testCase{
+		Name: "Different Values",
+
+		Assessments: Assessments{
+			AssessmentKeyResponseWithCode: 3,
+		},
+		X: Assessments{
+			AssessmentKeyResponseWithCode: 2,
+		},
+
+		ExpectedBool: false,
+	})
+}

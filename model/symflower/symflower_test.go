@@ -10,6 +10,8 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
+
+	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 )
 
 func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
@@ -49,7 +51,7 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 			} else if actualError != nil || tc.ExpectedErrorText != "" {
 				assert.ErrorContains(t, actualError, tc.ExpectedErrorText)
 			}
-			assert.Equal(t, tc.ExpectedAssessment, actualAssessment)
+			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 
 			actualCoverage, err := tc.Language.Execute(repositoryPath)
 			require.NoError(t, err)

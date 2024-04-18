@@ -7,6 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/zimmski/osutil/bytesutil"
+
+	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 )
 
 func TestParseResponse(t *testing.T) {
@@ -23,7 +25,7 @@ func TestParseResponse(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			actualAssessment, actualCode := ParseResponse(tc.Response)
 
-			assert.Equal(t, tc.ExpectedAssessment, actualAssessment)
+			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 			assert.Equal(t, strings.TrimSpace(tc.ExpectedCode), actualCode)
 		})
 	}

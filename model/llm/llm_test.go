@@ -13,6 +13,8 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
+
+	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 )
 
@@ -46,7 +48,7 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 
 			actualAssessment, actualError := llm.GenerateTestsForFile(tc.Language, temporaryPath, tc.SourceFilePath)
 			assert.NoError(t, actualError)
-			assert.Equal(t, tc.ExpectedAssessment, actualAssessment)
+			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 
 			actualTestFileContent, err := os.ReadFile(filepath.Join(temporaryPath, tc.ExpectedTestFilePath))
 			assert.NoError(t, err)

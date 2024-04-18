@@ -58,6 +58,21 @@ func (a Assessments) Add(x Assessments) {
 	}
 }
 
+// Equal checks if both assessment collections are equal.
+func (a Assessments) Equal(x Assessments) bool {
+	if a == nil || x == nil {
+		return a == nil && x == nil
+	}
+
+	for _, key := range allAssessmentKeys {
+		if a[key] != x[key] {
+			return false
+		}
+	}
+
+	return true
+}
+
 // Merge combines two assessment collections into a new assessment collection and returns the new assessment collection.
 func Merge(a Assessments, b Assessments) (c Assessments) {
 	c = NewAssessments()
