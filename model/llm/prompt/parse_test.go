@@ -44,7 +44,7 @@ func TestParseResponse(t *testing.T) {
 		Response: code,
 
 		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyNoExcessResponse: 1,
+			metrics.AssessmentKeyResponseNoExcess: 1,
 		},
 		ExpectedCode: code,
 	})
@@ -56,7 +56,7 @@ func TestParseResponse(t *testing.T) {
 			Response: "```\n" + code + "\n```\n",
 
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyNoExcessResponse: 1,
+				metrics.AssessmentKeyResponseNoExcess: 1,
 			},
 			ExpectedCode: code,
 		})
@@ -67,7 +67,7 @@ func TestParseResponse(t *testing.T) {
 			Response: "Some text...\n\n```\n" + code + "\n```\n\nSome more text...",
 
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyNoExcessResponse: 0,
+				metrics.AssessmentKeyResponseNoExcess: 0,
 			},
 			ExpectedCode: code,
 		})
@@ -79,7 +79,7 @@ func TestParseResponse(t *testing.T) {
 		Response: "```go\n" + code + "\n```\n",
 
 		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyNoExcessResponse: 1,
+			metrics.AssessmentKeyResponseNoExcess: 1,
 		},
 		ExpectedCode: code,
 	})
@@ -89,7 +89,7 @@ func TestParseResponse(t *testing.T) {
 
 		Response: " ```\n" + code + "\n\t```\n",
 		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyNoExcessResponse: 1,
+			metrics.AssessmentKeyResponseNoExcess: 1,
 		},
 		ExpectedCode: code,
 	})
@@ -99,7 +99,7 @@ func TestParseResponse(t *testing.T) {
 
 		Response: "```\n```\n" + code + "\n```\n```\n",
 		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyNoExcessResponse: 1,
+			metrics.AssessmentKeyResponseNoExcess: 1,
 		},
 		ExpectedCode: code,
 	})

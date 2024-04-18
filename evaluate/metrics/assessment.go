@@ -38,8 +38,8 @@ var (
 	// AssessmentKeyCoverageStatement counts the cases where 100% coverage was reached.
 	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement")
 
-	// AssessmentKeyNoExcessResponse indicates that a model did not produce more content as requested.
-	AssessmentKeyNoExcessResponse = RegisterAssessmentKey("no-excess-response")
+	// AssessmentKeyResponseNoExcess indicates that a model did not produce more content as requested.
+	AssessmentKeyResponseNoExcess = RegisterAssessmentKey("response-no-excess")
 )
 
 // Assessments holds a collection of numerical assessment metrics.

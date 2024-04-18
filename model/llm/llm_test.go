@@ -88,7 +88,7 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 		SourceFilePath:    sourceFilePath,
 
 		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyNoExcessResponse: 1,
+			metrics.AssessmentKeyResponseNoExcess: 1,
 		},
 		ExpectedTestFileContent: `
 			package native

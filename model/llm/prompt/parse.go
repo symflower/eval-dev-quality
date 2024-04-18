@@ -24,7 +24,7 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 
 	// When no code blocks are found, assume that just the code is returned.
 	if len(blocks) == 0 {
-		assessment[metrics.AssessmentKeyNoExcessResponse] = 1
+		assessment[metrics.AssessmentKeyResponseNoExcess] = 1
 
 		return assessment, strings.TrimSpace(response)
 	}
@@ -35,9 +35,9 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 	// Check if the response contained only that single code block.
 	responseWithoutBlock := strings.Replace(response, block, "", 1)
 	if len(strings.TrimSpace(responseWithoutBlock)) == 0 {
-		assessment[metrics.AssessmentKeyNoExcessResponse] = 1
+		assessment[metrics.AssessmentKeyResponseNoExcess] = 1
 	} else {
-		assessment[metrics.AssessmentKeyNoExcessResponse] = 0
+		assessment[metrics.AssessmentKeyResponseNoExcess] = 0
 	}
 
 	return assessment, strings.TrimSpace(codeTagMatch.ReplaceAllString(block, ""))

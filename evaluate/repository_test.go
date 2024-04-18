@@ -60,7 +60,7 @@ func TestEvaluateRepository(t *testing.T) {
 		ExpectedRepositoryAssessment: metrics.Assessments{
 			metrics.AssessmentKeyCoverageStatement: 1,
 			metrics.AssessmentKeyFilesExecuted:     1,
-			metrics.AssessmentKeyNoExcessResponse:  1,
+			metrics.AssessmentKeyResponseNoExcess:  1,
 		},
 		ExpectedResultFiles: []string{
 			"symflower_symbolic-execution/golang/golang/plain.log",

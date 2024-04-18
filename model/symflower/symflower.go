@@ -36,6 +36,6 @@ func (m *ModelSymflower) GenerateTestsForFile(language language.Language, reposi
 	}
 
 	return metrics.Assessments{
-		metrics.AssessmentKeyNoExcessResponse: 1, // Symflower only generates code, never additional explanations.
+		metrics.AssessmentKeyResponseNoExcess: 1, // Symflower only generates code, never additional explanations.
 	}, nil
 }

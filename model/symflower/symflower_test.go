@@ -66,7 +66,7 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 		FilePath:       "plain.go",
 
 		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyNoExcessResponse: 1,
+			metrics.AssessmentKeyResponseNoExcess: 1,
 		},
 		ExpectedCoverage: 100,
 	})
