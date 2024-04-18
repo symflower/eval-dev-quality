@@ -2,7 +2,6 @@ package language
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -99,8 +98,7 @@ func (language *LanguageGolang) Execute(repositoryPath string) (coverage float64
 
 	mc := languageGoCoverageMatch.FindStringSubmatch(stdout)
 	if mc == nil {
-		fmt.Println(mc, stdout)
-		return 0.0, pkgerrors.WithStack(errors.New("could not find Go coverage report"))
+		return 0.0, pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("could not find Go coverage report"), stdout))
 	}
 	coverage, err = strconv.ParseFloat(mc[1], 64)
 	if err != nil {
