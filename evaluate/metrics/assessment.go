@@ -97,13 +97,13 @@ func (a Assessments) String() string {
 	if a == nil {
 		a = NewAssessments()
 	}
-	metrics := make([]string, len(allAssessmentKeys))
+	entries := make([]string, len(allAssessmentKeys))
 
 	for i, key := range allAssessmentKeys {
-		metrics[i] = fmt.Sprintf("%s=%d", key, a[key])
+		entries[i] = fmt.Sprintf("%s=%d", key, a[key])
 	}
 
-	return strings.Join(metrics, ", ")
+	return strings.Join(entries, ", ")
 }
 
 // StringCSV returns a CSV row string representation of the metrics.
@@ -124,18 +124,18 @@ func csvHeader() []string {
 	return append([]string{"model"}, allAssessmentKeysStrings...)
 }
 
-// FormatStringCSV formats the given metrics as CSV.
-func FormatStringCSV(metricsPerModel map[string]Assessments) (string, error) {
+// FormatStringCSV formats the given assessment metrics as CSV.
+func FormatStringCSV(assessmentsPerModel map[string]Assessments) (string, error) {
 	var out strings.Builder
 	csv := csv.NewWriter(&out)
 
 	if err := csv.Write(csvHeader()); err != nil {
 		return "", pkgerrors.WithStack(err)
 	}
-	models := maps.Keys(metricsPerModel)
+	models := maps.Keys(assessmentsPerModel)
 	sort.Strings(models)
 	for _, model := range models {
-		row := metricsPerModel[model].StringCSV()
+		row := assessmentsPerModel[model].StringCSV()
 
 		if err := csv.Write(append([]string{model}, row...)); err != nil {
 			return "", pkgerrors.WithStack(err)

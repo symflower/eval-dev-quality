@@ -109,12 +109,12 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	log.Printf("Checking that models and languages can be used for evaluation")
-	metricsPerModel := map[string]metrics.Assessments{}
+	assessmentsPerModel := map[string]metrics.Assessments{}
 	problemsPerModel := map[string][]error{}
 	{
 		// Ensure we report metrics for every model even if they are excluded.
 		for _, modelID := range command.Models {
-			metricsPerModel[modelID] = metrics.NewAssessments()
+			assessmentsPerModel[modelID] = metrics.NewAssessments()
 		}
 
 		for _, languageID := range command.Languages {
@@ -122,8 +122,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := models[modelID]
 				language := language.Languages[languageID]
 
-				metrics, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(language.ID(), "plain"))
-				metricsPerModel[modelID].Add(metrics)
+				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(language.ID(), "plain"))
+				assessmentsPerModel[modelID].Add(assessment)
 				if err != nil {
 					ps = append(ps, err)
 				}
@@ -162,8 +162,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := models[modelID]
 				language := language.Languages[languageID]
 
-				metrics, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(languageID, repository.Name()))
-				metricsPerModel[model.ID()].Add(metrics)
+				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(languageID, repository.Name()))
+				assessmentsPerModel[model.ID()].Add(assessment)
 				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				if err != nil {
 					log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repository.Name(), err)
@@ -173,10 +173,10 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	}
 
 	for _, modelID := range command.Models {
-		log.Printf("Evaluation score for %q: %s", modelID, metricsPerModel[modelID])
+		log.Printf("Evaluation score for %q: %s", modelID, assessmentsPerModel[modelID])
 	}
 
-	csv, err := metrics.FormatStringCSV(metricsPerModel)
+	csv, err := metrics.FormatStringCSV(assessmentsPerModel)
 	if err != nil {
 		log.Fatalf("ERROR: could not create result summary: %s", err)
 	}
