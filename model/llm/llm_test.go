@@ -12,9 +12,9 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	"github.com/symflower/eval-dev-quality/language"
-
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
+	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 )
 
@@ -36,6 +36,13 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
+			log, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Log(log.String())
+				}
+			}()
+
 			temporaryPath := t.TempDir()
 			temporaryPath = filepath.Join(temporaryPath, "native")
 			require.NoError(t, os.Mkdir(temporaryPath, 0755))
@@ -46,7 +53,7 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 			tc.SetupMock(mock)
 			llm := NewLLMModel(mock, tc.ModelID)
 
-			actualAssessment, actualError := llm.GenerateTestsForFile(tc.Language, temporaryPath, tc.SourceFilePath)
+			actualAssessment, actualError := llm.GenerateTestsForFile(logger, tc.Language, temporaryPath, tc.SourceFilePath)
 			assert.NoError(t, actualError)
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 

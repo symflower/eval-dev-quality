@@ -4,8 +4,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/zimmski/osutil/bytesutil"
+
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 )
 
 var (

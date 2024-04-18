@@ -78,7 +78,7 @@ func (m *llm) ID() (id string) {
 }
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (m *llm) GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
+func (m *llm) GenerateTestsForFile(log *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
 	data, err := os.ReadFile(filepath.Join(repositoryPath, filePath))
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)

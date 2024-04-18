@@ -21,7 +21,7 @@ type Command struct {
 }
 
 // CommandWithResult executes a command, and prints and returns STDERR/STDOUT.
-func CommandWithResult(command *Command) (stdout string, stderr string, err error) {
+func CommandWithResult(log *log.Logger, command *Command) (stdout string, stderr string, err error) {
 	log.Printf("$ %s", strings.Join(command.Command, " "))
 
 	var stdoutWriter bytes.Buffer

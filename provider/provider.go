@@ -4,6 +4,7 @@ import (
 	"context"
 
 	pkgerrors "github.com/pkg/errors"
+
 	"github.com/symflower/eval-dev-quality/model"
 )
 

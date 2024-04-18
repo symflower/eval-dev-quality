@@ -1,6 +1,8 @@
 package symflower
 
 import (
+	"log"
+
 	pkgerrors "github.com/pkg/errors"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
@@ -21,8 +23,8 @@ func (m *ModelSymflower) ID() (id string) {
 }
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (m *ModelSymflower) GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
-	_, _, err = util.CommandWithResult(&util.Command{
+func (m *ModelSymflower) GenerateTestsForFile(log *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
+	_, _, err = util.CommandWithResult(log, &util.Command{
 		Command: []string{
 			"symflower", "unit-tests",
 			"--workspace", repositoryPath,

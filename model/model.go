@@ -1,6 +1,8 @@
 package model
 
 import (
+	"log"
+
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 )
@@ -11,5 +13,5 @@ type Model interface {
 	ID() (id string)
 
 	// GenerateTestsForFile generates test files for the given implementation file in a repository.
-	GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (assessments metrics.Assessments, err error)
+	GenerateTestsForFile(log *log.Logger, language language.Language, repositoryPath string, filePath string) (assessments metrics.Assessments, err error)
 }

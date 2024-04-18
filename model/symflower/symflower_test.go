@@ -9,9 +9,9 @@ import (
 	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	"github.com/symflower/eval-dev-quality/language"
-
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
+	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 )
 
 func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
@@ -33,6 +33,13 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
+			log, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Log(log.String())
+				}
+			}()
+
 			temporaryPath := t.TempDir()
 			repositoryPath := filepath.Join(temporaryPath, filepath.Base(tc.RepositoryPath))
 			require.NoError(t, osutil.CopyTree(tc.RepositoryPath, repositoryPath))
@@ -44,7 +51,7 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 			if tc.ModelSymflower == nil {
 				tc.ModelSymflower = &ModelSymflower{}
 			}
-			actualAssessment, actualError := tc.ModelSymflower.GenerateTestsForFile(tc.Language, repositoryPath, tc.FilePath)
+			actualAssessment, actualError := tc.ModelSymflower.GenerateTestsForFile(logger, tc.Language, repositoryPath, tc.FilePath)
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, tc.ExpectedError, actualError)
@@ -53,7 +60,7 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 			}
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 
-			actualCoverage, err := tc.Language.Execute(repositoryPath)
+			actualCoverage, err := tc.Language.Execute(logger, repositoryPath)
 			require.NoError(t, err)
 			assert.Equal(t, tc.ExpectedCoverage, actualCoverage)
 		})

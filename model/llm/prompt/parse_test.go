@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 )
 
