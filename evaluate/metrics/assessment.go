@@ -111,7 +111,7 @@ func FormatStringCSV(metricsPerModel map[string]Assessments) (string, error) {
 	csv := csv.NewWriter(&out)
 
 	if err := csv.Write(csvHeader()); err != nil {
-		return "", err
+		return "", pkgerrors.WithStack(err)
 	}
 	models := maps.Keys(metricsPerModel)
 	sort.Strings(models)

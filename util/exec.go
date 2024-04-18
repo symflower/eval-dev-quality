@@ -7,6 +7,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	pkgerrors "github.com/pkg/errors"
 )
 
 // Command defines a command that should be executed.
@@ -32,7 +34,7 @@ func CommandWithResult(command *Command) (stdout string, stderr string, err erro
 	c.Stderr = io.MultiWriter(os.Stderr, &stderrWriter)
 
 	if err := c.Run(); err != nil {
-		return stdoutWriter.String(), stderrWriter.String(), err
+		return stdoutWriter.String(), stderrWriter.String(), pkgerrors.WithStack(err)
 	}
 
 	return stdoutWriter.String(), stderrWriter.String(), nil

@@ -81,7 +81,7 @@ func (m *llm) ID() (id string) {
 func (m *llm) GenerateTestsForFile(language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
 	data, err := os.ReadFile(filepath.Join(repositoryPath, filePath))
 	if err != nil {
-		return nil, err
+		return nil, pkgerrors.WithStack(err)
 	}
 	fileContent := strings.TrimSpace(string(data))
 
