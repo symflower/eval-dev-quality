@@ -54,7 +54,7 @@ func TestEvaluateExecute(t *testing.T) {
 			"--repository", "golang/plain",
 		},
 
-		ExpectedOutputContains: `Evaluation score for "symflower/symbolic-execution": score=6, coverage-statement=1, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`,
+		ExpectedOutputContains: `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=6, coverage-statement=1, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`,
 		ExpectedResultFiles: []string{
 			"evaluation.csv",
 			"evaluation.log",

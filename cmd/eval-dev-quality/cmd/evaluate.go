@@ -177,12 +177,6 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 
-	_ = metrics.WalkByScore(assessments.Collapse(), func(model string, assessment metrics.Assessments, score uint) error {
-		log.Printf("Evaluation score for %q: %s", model, assessment)
-
-		return nil
-	})
-
 	csv, err := report.FormatCSV(assessments)
 	if err != nil {
 		log.Fatalf("ERROR: could not create result summary: %s", err)
@@ -190,6 +184,26 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	if err := os.WriteFile(filepath.Join(command.ResultPath, "evaluation.csv"), []byte(csv), 0644); err != nil {
 		log.Fatalf("ERROR: could not write result summary: %s", err)
 	}
+
+	totalScore := uint(0)
+	// Set the total score to the number of evaluated languages if we are just checking the "plain" repositories since there is only one task to solve per language.
+	isOnlyPlainRepositories := true
+	for repository, _ := range commandRepositories {
+		if filepath.Base(repository) != repositoryPlainName {
+			isOnlyPlainRepositories = false
+
+			break
+		}
+	}
+	if isOnlyPlainRepositories {
+		totalScore = uint(len(languages))
+	}
+
+	_ = metrics.WalkByScore(assessments.Collapse(), func(model string, assessment metrics.Assessments, score uint) error {
+		log.Printf("Evaluation score for %q (%q): %s", model, assessment.Category(totalScore), assessment)
+
+		return nil
+	})
 
 	return nil
 }
