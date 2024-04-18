@@ -8,6 +8,8 @@ import (
 
 	pkgerrors "github.com/pkg/errors"
 	"golang.org/x/exp/maps"
+
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // AssessmentKey defines a key for a numerical key-value assessment pair.
@@ -23,8 +25,9 @@ var (
 // RegisterAssessmentKey registers a new assessment key.
 func RegisterAssessmentKey(key string) AssessmentKey {
 	assessment := AssessmentKey(key)
-	allAssessmentKeys = append(allAssessmentKeys, assessment)
-	allAssessmentKeysStrings = append(allAssessmentKeysStrings, key)
+
+	allAssessmentKeys = util.InsertToSortedSlice(allAssessmentKeys, assessment)
+	allAssessmentKeysStrings = util.InsertToSortedSlice(allAssessmentKeysStrings, key)
 
 	return assessment
 }

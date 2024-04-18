@@ -138,7 +138,7 @@ func TestAssessmentString(t *testing.T) {
 
 		Assessment: NewAssessments(),
 
-		ExpectedString: "files-executed=0, files-problems=0, coverage-statement=0, response-no-excess=0",
+		ExpectedString: "coverage-statement=0, files-executed=0, files-problems=0, response-no-excess=0",
 	})
 
 	validate(t, &testCase{
@@ -151,7 +151,7 @@ func TestAssessmentString(t *testing.T) {
 			AssessmentKeyResponseNoExcess:  4,
 		},
 
-		ExpectedString: "files-executed=2, files-problems=3, coverage-statement=1, response-no-excess=4",
+		ExpectedString: "coverage-statement=1, files-executed=2, files-problems=3, response-no-excess=4",
 	})
 }
 
@@ -181,7 +181,7 @@ func TestFormatStringCSV(t *testing.T) {
 		},
 
 		ExpectedString: `
-			model,files-executed,files-problems,coverage-statement,response-no-excess
+			model,coverage-statement,files-executed,files-problems,response-no-excess
 			Model,0,0,0,0
 		`,
 	})
@@ -204,9 +204,9 @@ func TestFormatStringCSV(t *testing.T) {
 		},
 
 		ExpectedString: `
-			model,files-executed,files-problems,coverage-statement,response-no-excess
-			ModelA,2,3,1,4
-			ModelB,2,3,1,4
+			model,coverage-statement,files-executed,files-problems,response-no-excess
+			ModelA,1,2,3,4
+			ModelB,1,2,3,4
 		`,
 	})
 }
