@@ -35,8 +35,6 @@ func RegisterAssessmentKey(key string) AssessmentKey {
 var (
 	// AssessmentKeyFilesExecutes holds the successfully executed files.
 	AssessmentKeyFilesExecuted = RegisterAssessmentKey("files-executed")
-	// AssessmentKeyFilesProblems holds the files with problems.
-	AssessmentKeyFilesProblems = RegisterAssessmentKey("files-problems")
 
 	// AssessmentKeyCoverageStatement counts the cases where 100% coverage was reached.
 	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement")
