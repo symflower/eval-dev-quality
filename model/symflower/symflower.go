@@ -12,18 +12,23 @@ import (
 	"github.com/symflower/eval-dev-quality/util"
 )
 
-// ModelSymflower holds a Symflower model using the locally installed CLI.
-type ModelSymflower struct{}
+// Model holds a Symflower model using the locally installed CLI.
+type Model struct{}
 
-var _ model.Model = (*ModelSymflower)(nil)
+// NewModel returns a Symflower model.
+func NewModel() (model model.Model) {
+	return &Model{}
+}
+
+var _ model.Model = (*Model)(nil)
 
 // ID returns the unique ID of this model.
-func (m *ModelSymflower) ID() (id string) {
+func (m *Model) ID() (id string) {
 	return "symflower" + provider.ProviderModelSeparator + "symbolic-execution"
 }
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (m *ModelSymflower) GenerateTestsForFile(log *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
+func (m *Model) GenerateTestsForFile(log *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
 	_, _, err = util.CommandWithResult(log, &util.Command{
 		Command: []string{
 			"symflower", "unit-tests",

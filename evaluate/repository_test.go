@@ -11,6 +11,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/symflower"
 )
@@ -53,8 +54,8 @@ func TestRepository(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Plain",
 
-		Model:          &symflower.ModelSymflower{},
-		Language:       &language.LanguageGolang{},
+		Model:          symflower.NewModel(),
+		Language:       &golang.Language{},
 		TestDataPath:   "../testdata",
 		RepositoryPath: "golang/plain",
 

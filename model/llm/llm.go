@@ -18,17 +18,17 @@ import (
 	"github.com/symflower/eval-dev-quality/provider"
 )
 
-// llm represents a LLM model accessed via a provider.
-type llm struct {
+// Model represents a LLM model accessed via a provider.
+type Model struct {
 	// provider is the client to query the LLM model.
-	provider provider.QueryProvider
+	provider provider.Query
 	// model holds the identifier for the LLM model.
 	model string
 }
 
-// NewLLMModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
-func NewLLMModel(provider provider.QueryProvider, modelIdentifier string) model.Model {
-	return &llm{
+// NewModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
+func NewModel(provider provider.Query, modelIdentifier string) model.Model {
+	return &Model{
 		provider: provider,
 		model:    modelIdentifier,
 	}
@@ -70,15 +70,15 @@ func llmGenerateTestForFilePrompt(data *llmGenerateTestForFilePromptContext) (me
 	return b.String(), nil
 }
 
-var _ model.Model = (*llm)(nil)
+var _ model.Model = (*Model)(nil)
 
 // ID returns the unique ID of this model.
-func (m *llm) ID() (id string) {
+func (m *Model) ID() (id string) {
 	return m.model
 }
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (m *llm) GenerateTestsForFile(log *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
+func (m *Model) GenerateTestsForFile(log *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
 	data, err := os.ReadFile(filepath.Join(repositoryPath, filePath))
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)

@@ -1,4 +1,4 @@
-package language
+package golang
 
 import (
 	"os"
@@ -10,14 +10,15 @@ import (
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 )
 
-func TestLanguageGolangFiles(t *testing.T) {
+func TestLanguageFiles(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		LanguageGolang *LanguageGolang
+		Language *Language
 
 		RepositoryPath string
 
@@ -34,10 +35,10 @@ func TestLanguageGolangFiles(t *testing.T) {
 				}
 			}()
 
-			if tc.LanguageGolang == nil {
-				tc.LanguageGolang = &LanguageGolang{}
+			if tc.Language == nil {
+				tc.Language = &Language{}
 			}
-			actualFilePaths, actualError := tc.LanguageGolang.Files(logger, tc.RepositoryPath)
+			actualFilePaths, actualError := tc.Language.Files(logger, tc.RepositoryPath)
 
 			assert.Equal(t, tc.ExpectedFilePaths, actualFilePaths)
 			assert.Equal(t, tc.ExpectedError, actualError)
@@ -47,7 +48,7 @@ func TestLanguageGolangFiles(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Plain",
 
-		RepositoryPath: "../testdata/golang/plain/",
+		RepositoryPath: "../../testdata/golang/plain/",
 
 		ExpectedFilePaths: []string{
 			"plain.go",
@@ -55,11 +56,11 @@ func TestLanguageGolangFiles(t *testing.T) {
 	})
 }
 
-func TestLanguageGolangExecute(t *testing.T) {
+func TestLanguageExecute(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		LanguageGolang *LanguageGolang
+		Language *Language
 
 		RepositoryPath   string
 		RepositoryChange func(t *testing.T, repositoryPath string)
@@ -86,10 +87,10 @@ func TestLanguageGolangExecute(t *testing.T) {
 				tc.RepositoryChange(t, repositoryPath)
 			}
 
-			if tc.LanguageGolang == nil {
-				tc.LanguageGolang = &LanguageGolang{}
+			if tc.Language == nil {
+				tc.Language = &Language{}
 			}
-			actualCoverage, actualError := tc.LanguageGolang.Execute(logger, repositoryPath)
+			actualCoverage, actualError := tc.Language.Execute(logger, repositoryPath)
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, actualError, tc.ExpectedError)
@@ -105,16 +106,16 @@ func TestLanguageGolangExecute(t *testing.T) {
 	validate(t, &testCase{
 		Name: "No test files",
 
-		RepositoryPath: "../testdata/golang/plain/",
+		RepositoryPath: "../../testdata/golang/plain/",
 
-		ExpectedError: ErrNoTestFound,
+		ExpectedError: language.ErrNoTestFound,
 	})
 
 	t.Run("With test file", func(t *testing.T) {
 		validate(t, &testCase{
 			Name: "Valid",
 
-			RepositoryPath: "../testdata/golang/plain/",
+			RepositoryPath: "../../testdata/golang/plain/",
 			RepositoryChange: func(t *testing.T, repositoryPath string) {
 				require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "plain_test.go"), []byte(bytesutil.StringTrimIndentations(`
 					package plain
@@ -135,7 +136,7 @@ func TestLanguageGolangExecute(t *testing.T) {
 		validate(t, &testCase{
 			Name: "Syntax error",
 
-			RepositoryPath: "../testdata/golang/plain/",
+			RepositoryPath: "../../testdata/golang/plain/",
 			RepositoryChange: func(t *testing.T, repositoryPath string) {
 				require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "plain_test.go"), []byte(bytesutil.StringTrimIndentations(`
 					foobar
