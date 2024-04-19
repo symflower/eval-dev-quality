@@ -25,7 +25,7 @@ func Repository(resultPath string, model model.Model, language language.Language
 
 	log.Printf("Evaluating model %q using language %q and repository %q", model.ID(), language.ID(), repositoryPath)
 	defer func() {
-		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems", model.ID(), language.ID(), repositoryPath, len(problems))
+		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems: %+v", model.ID(), language.ID(), repositoryPath, len(problems), problems)
 	}()
 
 	dataPath := filepath.Join(testDataPath, repositoryPath)
