@@ -158,7 +158,7 @@ func TestAssessmentString(t *testing.T) {
 	})
 }
 
-func TestFormatStringCSV(t *testing.T) {
+func TestFormatCSV(t *testing.T) {
 	type testCase struct {
 		Name string
 
@@ -169,7 +169,7 @@ func TestFormatStringCSV(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualString, err := FormatStringCSV(tc.AssessmentPerModel)
+			actualString, err := FormatCSV(tc.AssessmentPerModel)
 			assert.NoError(t, err)
 
 			assert.Equal(t, bytesutil.StringTrimIndentations(tc.ExpectedString), actualString)

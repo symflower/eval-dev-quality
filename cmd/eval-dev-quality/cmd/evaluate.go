@@ -181,7 +181,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		return nil
 	})
 
-	csv, err := metrics.FormatStringCSV(assessmentsPerModel)
+	csv, err := metrics.FormatCSV(assessmentsPerModel)
 	if err != nil {
 		log.Fatalf("ERROR: could not create result summary: %s", err)
 	}

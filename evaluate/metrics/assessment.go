@@ -136,12 +136,13 @@ func (a Assessments) StringCSV() (row []string) {
 	return row
 }
 
+// csvHeader returns the header description as a CSV row.
 func csvHeader() []string {
 	return append([]string{"model", "score"}, allAssessmentKeysStrings...)
 }
 
-// FormatStringCSV formats the given assessment metrics as CSV.
-func FormatStringCSV(assessmentsPerModel map[string]Assessments) (string, error) {
+// FormatCSV formats the given assessment metrics as CSV.
+func FormatCSV(assessmentsPerModel map[string]Assessments) (string, error) {
 	var out strings.Builder
 	csv := csv.NewWriter(&out)
 
