@@ -12,6 +12,7 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
@@ -181,7 +182,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		return nil
 	})
 
-	csv, err := metrics.FormatCSV(assessmentsPerModel)
+	csv, err := report.FormatCSV(assessmentsPerModel)
 	if err != nil {
 		log.Fatalf("ERROR: could not create result summary: %s", err)
 	}
