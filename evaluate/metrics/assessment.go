@@ -1,16 +1,12 @@
 package metrics
 
 import (
-	"encoding/csv"
 	"fmt"
+	"slices"
 	"sort"
-	"strconv"
 	"strings"
 
-	pkgerrors "github.com/pkg/errors"
 	"golang.org/x/exp/maps"
-
-	"github.com/symflower/eval-dev-quality/util"
 )
 
 // AssessmentKey defines a key for a numerical key-value assessment pair.
@@ -19,16 +15,17 @@ type AssessmentKey string
 var (
 	// allAssessmentKeys holds all registered assessment keys.
 	allAssessmentKeys []AssessmentKey
-	// allAssessmentKeysStrings returns all registered assessment keys as strings.
-	allAssessmentKeysStrings []string
+	// AllAssessmentKeysStrings returns all registered assessment keys as strings.
+	AllAssessmentKeysStrings []string
 )
 
 // RegisterAssessmentKey registers a new assessment key.
 func RegisterAssessmentKey(key string) AssessmentKey {
 	assessment := AssessmentKey(key)
+	i := sort.SearchStrings(AllAssessmentKeysStrings, key)
 
-	allAssessmentKeys = util.InsertToSortedSlice(allAssessmentKeys, assessment)
-	allAssessmentKeysStrings = util.InsertToSortedSlice(allAssessmentKeysStrings, key)
+	allAssessmentKeys = slices.Insert(allAssessmentKeys, i, assessment)
+	AllAssessmentKeysStrings = slices.Insert(AllAssessmentKeysStrings, i, key)
 
 	return assessment
 }
@@ -47,6 +44,7 @@ var (
 	// AssessmentKeyResponseWithCode indicates that a model responded with code.
 	AssessmentKeyResponseWithCode = RegisterAssessmentKey("response-with-code")
 	// AssessmentKeyResponseNoExcess indicates that a model did not produce more content as requested.
+	// TODO Infer if a model produced "too much" code. https://github.com/symflower/eval-dev-quality/issues/44
 	AssessmentKeyResponseNoExcess = RegisterAssessmentKey("response-no-excess")
 )
 
@@ -133,35 +131,6 @@ func (a Assessments) StringCSV() (row []string) {
 	}
 
 	return row
-}
-
-func csvHeader() []string {
-	return append([]string{"model", "score"}, allAssessmentKeysStrings...)
-}
-
-// FormatStringCSV formats the given assessment metrics as CSV.
-func FormatStringCSV(assessmentsPerModel map[string]Assessments) (string, error) {
-	var out strings.Builder
-	csv := csv.NewWriter(&out)
-
-	if err := csv.Write(csvHeader()); err != nil {
-		return "", pkgerrors.WithStack(err)
-	}
-
-	if err := WalkByScore(assessmentsPerModel, func(model string, assessment Assessments, score uint) error {
-		row := assessment.StringCSV()
-
-		if err := csv.Write(append([]string{model, strconv.FormatUint(uint64(score), 10)}, row...)); err != nil {
-			return pkgerrors.WithStack(err)
-		}
-
-		return nil
-	}); err != nil {
-		return "", err
-	}
-	csv.Flush()
-
-	return out.String(), nil
 }
 
 // WalkByScore walks the given assessment metrics by their score.

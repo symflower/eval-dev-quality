@@ -5,7 +5,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/zimmski/osutil/bytesutil"
 )
 
 func TestAssessmentsAdd(t *testing.T) {
@@ -155,66 +154,6 @@ func TestAssessmentString(t *testing.T) {
 		},
 
 		ExpectedString: "score=21, coverage-statement=1, files-executed=2, response-no-error=3, response-no-excess=4, response-not-empty=5, response-with-code=6",
-	})
-}
-
-func TestFormatStringCSV(t *testing.T) {
-	type testCase struct {
-		Name string
-
-		AssessmentPerModel map[string]Assessments
-
-		ExpectedString string
-	}
-
-	validate := func(t *testing.T, tc *testCase) {
-		t.Run(tc.Name, func(t *testing.T) {
-			actualString, err := FormatStringCSV(tc.AssessmentPerModel)
-			assert.NoError(t, err)
-
-			assert.Equal(t, bytesutil.StringTrimIndentations(tc.ExpectedString), actualString)
-		})
-	}
-
-	validate(t, &testCase{
-		Name: "Single Empty Model",
-
-		AssessmentPerModel: map[string]Assessments{
-			"Model": Assessments{},
-		},
-
-		ExpectedString: `
-			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-			Model,0,0,0,0,0,0,0
-		`,
-	})
-	validate(t, &testCase{
-		Name: "Multiple Models",
-
-		AssessmentPerModel: map[string]Assessments{
-			"ModelA": Assessments{
-				AssessmentKeyCoverageStatement: 1,
-				AssessmentKeyFilesExecuted:     2,
-				AssessmentKeyResponseNoError:   3,
-				AssessmentKeyResponseNoExcess:  4,
-				AssessmentKeyResponseNotEmpty:  5,
-				AssessmentKeyResponseWithCode:  6,
-			},
-			"ModelB": Assessments{
-				AssessmentKeyCoverageStatement: 2,
-				AssessmentKeyFilesExecuted:     3,
-				AssessmentKeyResponseNoError:   4,
-				AssessmentKeyResponseNoExcess:  5,
-				AssessmentKeyResponseNotEmpty:  6,
-				AssessmentKeyResponseWithCode:  7,
-			},
-		},
-
-		ExpectedString: `
-			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-			ModelA,21,1,2,3,4,5,6
-			ModelB,27,2,3,4,5,6,7
-		`,
 	})
 }
 

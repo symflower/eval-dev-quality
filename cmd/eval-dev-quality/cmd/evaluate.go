@@ -12,6 +12,7 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
@@ -37,6 +38,9 @@ type Evaluate struct {
 	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token,...')." env:"PROVIDER_TOKEN"`
 }
 
+// repositoryPlainName holds the name of the plain repository.
+const repositoryPlainName = "plain"
+
 func (command *Evaluate) Execute(args []string) (err error) {
 	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", time.Now().Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
 
@@ -47,16 +51,21 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	defer logClose()
 
 	// Gather languages.
+	languages := map[string]language.Language{}
 	if len(command.Languages) == 0 {
 		command.Languages = maps.Keys(language.Languages)
+		languages = language.Languages
 	} else {
 		for _, languageID := range command.Languages {
-			if _, ok := language.Languages[languageID]; !ok {
+			l, ok := language.Languages[languageID]
+			if !ok {
 				ls := maps.Keys(language.Languages)
 				sort.Strings(ls)
 
 				log.Fatalf("ERROR: language %s does not exist. Valid languages are: %s", languageID, strings.Join(ls, ", "))
 			}
+
+			languages[languageID] = l
 		}
 	}
 	sort.Strings(command.Languages)
@@ -109,26 +118,22 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	log.Printf("Checking that models and languages can be used for evaluation")
-	assessmentsPerModel := map[string]metrics.Assessments{}
+	// Ensure we report metrics for every model even if they are excluded.
+	assessments := report.NewAssessmentPerModelPerLanguagePerRepository(maps.Values(models), maps.Values(languages), append(command.Repositories, repositoryPlainName))
 	problemsPerModel := map[string][]error{}
 	{
-		// Ensure we report metrics for every model even if they are excluded.
-		for _, modelID := range command.Models {
-			assessmentsPerModel[modelID] = metrics.NewAssessments()
-		}
-
 		for _, languageID := range command.Languages {
 			for _, modelID := range command.Models {
 				model := models[modelID]
-				language := language.Languages[languageID]
+				language := languages[languageID]
 
-				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(language.ID(), "plain"))
-				assessmentsPerModel[modelID].Add(assessment)
+				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(language.ID(), repositoryPlainName))
+				assessments[model][language][repositoryPlainName].Add(assessment)
 				if err != nil {
 					ps = append(ps, err)
 				}
 				if len(ps) > 0 {
-					log.Printf("Excluding model %q since it was not able to solve the \"plain\" repository for language %q: %+v", modelID, languageID, ps)
+					log.Printf("Excluding model %q since it was not able to solve the %q repository for language %q: %+v", modelID, repositoryPlainName, languageID, ps)
 					problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				}
 			}
@@ -150,7 +155,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 			}
 
 			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
-			if filepath.Base(repository.Name()) == "plain" {
+			if filepath.Base(repository.Name()) == repositoryPlainName {
 				continue
 			}
 
@@ -160,10 +165,10 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				}
 
 				model := models[modelID]
-				language := language.Languages[languageID]
+				language := languages[languageID]
 
 				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(languageID, repository.Name()))
-				assessmentsPerModel[model.ID()].Add(assessment)
+				assessments[model][language][repository.Name()].Add(assessment)
 				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				if err != nil {
 					log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repository.Name(), err)
@@ -172,19 +177,33 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 
-	_ = metrics.WalkByScore(assessmentsPerModel, func(model string, assessment metrics.Assessments, score uint) error {
-		log.Printf("Evaluation score for %q: %s", model, assessment)
-
-		return nil
-	})
-
-	csv, err := metrics.FormatStringCSV(assessmentsPerModel)
+	csv, err := report.FormatCSV(assessments)
 	if err != nil {
 		log.Fatalf("ERROR: could not create result summary: %s", err)
 	}
 	if err := os.WriteFile(filepath.Join(command.ResultPath, "evaluation.csv"), []byte(csv), 0644); err != nil {
 		log.Fatalf("ERROR: could not write result summary: %s", err)
 	}
+
+	totalScore := uint(0)
+	// Set the total score to the number of evaluated languages if we are just checking the "plain" repositories since there is only one task to solve per language.
+	isOnlyPlainRepositories := true
+	for repository, _ := range commandRepositories {
+		if filepath.Base(repository) != repositoryPlainName {
+			isOnlyPlainRepositories = false
+
+			break
+		}
+	}
+	if isOnlyPlainRepositories {
+		totalScore = uint(len(languages))
+	}
+
+	_ = metrics.WalkByScore(assessments.Collapse(), func(model string, assessment metrics.Assessments, score uint) error {
+		log.Printf("Evaluation score for %q (%q): %s", model, assessment.Category(totalScore), assessment)
+
+		return nil
+	})
 
 	return nil
 }
