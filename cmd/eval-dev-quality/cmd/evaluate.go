@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	golog "log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -48,6 +49,7 @@ const repositoryPlainName = "plain"
 // Execute executes the command.
 func (command *Evaluate) Execute(args []string) (err error) {
 	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", time.Now().Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
+	golog.Printf("Writing results to %s", command.ResultPath)
 
 	log, logClose, err := log.FileAndSTDOUT(filepath.Join(command.ResultPath, "evaluation.log"))
 	if err != nil {
