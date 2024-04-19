@@ -11,10 +11,13 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	pkgerrors "github.com/pkg/errors"
-	"github.com/symflower/eval-dev-quality/util"
+	"github.com/symflower/lockfile"
 	"github.com/zimmski/osutil"
+
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // SymflowerVersion holds the version of Symflower required for this revision of the evaluation.
@@ -26,6 +29,29 @@ func SymflowerInstall(log *log.Logger, installPath string) (err error) {
 	if err != nil {
 		return pkgerrors.WithStack(err)
 	}
+
+	if err := os.MkdirAll(installPath, 0755); err != nil {
+		return pkgerrors.WithStack(err)
+	}
+
+	// Make sure only one process is installing a tool at the same time.
+	lock, err := lockfile.New(filepath.Join(installPath, "install.lock"))
+	if err != nil {
+		return pkgerrors.WithStack(err)
+	}
+	for {
+		if err := lock.TryLock(); err == nil {
+			break
+		}
+
+		log.Printf("Try to lock %s for installing but need to wait for another process", installPath)
+		time.Sleep(time.Second)
+	}
+	defer func() {
+		if e := lock.Unlock(); e != nil {
+			err = errors.Join(err, e)
+		}
+	}()
 
 	// Check if install path is already used for binaries, or add it if not.
 	installPathUsed := false
@@ -94,10 +120,6 @@ func SymflowerInstall(log *log.Logger, installPath string) (err error) {
 		architectureIdentifier = "arm64"
 	default:
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("unkown architecture %s", a)))
-	}
-
-	if err := os.MkdirAll(installPath, 0755); err != nil {
-		return pkgerrors.WithStack(err)
 	}
 
 	log.Printf("Install \"symflower\" to %s", symflowerInstallPath)
