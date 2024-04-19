@@ -37,6 +37,9 @@ type Evaluate struct {
 	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token,...')." env:"PROVIDER_TOKEN"`
 }
 
+// repositoryPlainName holds the name of the plain repository.
+const repositoryPlainName = "plain"
+
 func (command *Evaluate) Execute(args []string) (err error) {
 	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", time.Now().Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
 
@@ -122,13 +125,13 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := models[modelID]
 				language := language.Languages[languageID]
 
-				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(language.ID(), "plain"))
+				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(language.ID(), repositoryPlainName))
 				assessmentsPerModel[modelID].Add(assessment)
 				if err != nil {
 					ps = append(ps, err)
 				}
 				if len(ps) > 0 {
-					log.Printf("Excluding model %q since it was not able to solve the \"plain\" repository for language %q: %+v", modelID, languageID, ps)
+					log.Printf("Excluding model %q since it was not able to solve the %q repository for language %q: %+v", modelID, repositoryPlainName, languageID, ps)
 					problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				}
 			}
@@ -150,7 +153,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 			}
 
 			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
-			if filepath.Base(repository.Name()) == "plain" {
+			if filepath.Base(repository.Name()) == repositoryPlainName {
 				continue
 			}
 
