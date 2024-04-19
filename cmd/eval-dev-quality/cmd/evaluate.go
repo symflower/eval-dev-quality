@@ -15,11 +15,12 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/language"
+	_ "github.com/symflower/eval-dev-quality/language/golang" // Register language.
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
-	_ "github.com/symflower/eval-dev-quality/provider/openrouter"
-	_ "github.com/symflower/eval-dev-quality/provider/symflower"
+	_ "github.com/symflower/eval-dev-quality/provider/openrouter" // Register provider.
+	_ "github.com/symflower/eval-dev-quality/provider/symflower"  // Register provider.
 	"github.com/symflower/eval-dev-quality/tools"
 )
 
@@ -148,7 +149,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := models[modelID]
 				language := languages[languageID]
 
-				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(language.ID(), repositoryPlainName))
+				assessment, ps, err := evaluate.Repository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(language.ID(), repositoryPlainName))
 				assessments[model][language][repositoryPlainName].Add(assessment)
 				if err != nil {
 					ps = append(ps, err)
@@ -188,7 +189,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := models[modelID]
 				language := languages[languageID]
 
-				assessment, ps, err := evaluate.EvaluateRepository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(languageID, repository.Name()))
+				assessment, ps, err := evaluate.Repository(command.ResultPath, model, language, command.TestdataPath, filepath.Join(languageID, repository.Name()))
 				assessments[model][language][repository.Name()].Add(assessment)
 				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				if err != nil {

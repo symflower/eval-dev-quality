@@ -6,20 +6,28 @@ import (
 	"github.com/symflower/eval-dev-quality/provider"
 )
 
-type symflowerProvider struct{}
+// Provider holds a Symflower provider.
+type Provider struct{}
 
 func init() {
-	provider.Register(&symflowerProvider{})
+	provider.Register(&Provider{})
 }
 
+// NewProvider returns a Symflower provider.
+func NewProvider() (provider provider.Provider) {
+	return &Provider{}
+}
+
+var _ provider.Provider = (*Provider)(nil)
+
 // ID returns the unique ID of this provider.
-func (p *symflowerProvider) ID() (id string) {
+func (p *Provider) ID() (id string) {
 	return "symflower"
 }
 
-// Model implements provider.Provider.
-func (p *symflowerProvider) Models() (models []model.Model, err error) {
+// Models returns which models are available to be queried via this provider.
+func (p *Provider) Models() (models []model.Model, err error) {
 	return []model.Model{
-		&symflower.ModelSymflower{},
+		symflower.NewModel(),
 	}, nil
 }

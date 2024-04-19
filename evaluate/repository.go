@@ -15,8 +15,8 @@ import (
 	"github.com/symflower/eval-dev-quality/model"
 )
 
-// EvaluateRepository evaluate a repository with the given model and language.
-func EvaluateRepository(resultPath string, model model.Model, language language.Language, testDataPath string, repositoryPath string) (repositoryAssessment metrics.Assessments, problems []error, err error) {
+// Repository evaluate a repository with the given model and language.
+func Repository(resultPath string, model model.Model, language language.Language, testDataPath string, repositoryPath string) (repositoryAssessment metrics.Assessments, problems []error, err error) {
 	log, logClose, err := log.File(filepath.Join(resultPath, strings.ReplaceAll(model.ID(), "/", "_"), language.ID(), repositoryPath+".log"))
 	if err != nil {
 		return nil, nil, err

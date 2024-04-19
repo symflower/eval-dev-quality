@@ -19,18 +19,6 @@ type Provider interface {
 	Models() (models []model.Model, err error)
 }
 
-// InjectToken is a provider that needs an access token to authenticate a remote API.
-type InjectToken interface {
-	// SetToken sets an access token to be used to authenticate a remote API.
-	SetToken(token string)
-}
-
-// QueryProvider is a provider that allows to query a model directly.
-type QueryProvider interface {
-	// Query queries the provider with the given model name.
-	Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error)
-}
-
 // Providers holds a register of all providers.
 var Providers = map[string]Provider{}
 
@@ -42,4 +30,16 @@ func Register(provider Provider) {
 	}
 
 	Providers[id] = provider
+}
+
+// InjectToken is a provider that needs an access token to authenticate a remote API.
+type InjectToken interface {
+	// SetToken sets an access token to be used to authenticate a remote API.
+	SetToken(token string)
+}
+
+// Query is a provider that allows to query a model directly.
+type Query interface {
+	// Query queries the provider with the given model name.
+	Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error)
 }

@@ -14,11 +14,12 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 )
 
-func TestModelLLMGenerateTestsForFile(t *testing.T) {
+func TestModelGenerateTestsForFile(t *testing.T) {
 	type testCase struct {
 		Name string
 
@@ -51,7 +52,7 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 
 			mock := &providertesting.MockQueryProvider{}
 			tc.SetupMock(mock)
-			llm := NewLLMModel(mock, tc.ModelID)
+			llm := NewModel(mock, tc.ModelID)
 
 			actualAssessment, actualError := llm.GenerateTestsForFile(logger, tc.Language, temporaryPath, tc.SourceFilePath)
 			assert.NoError(t, actualError)
@@ -71,7 +72,7 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 	`
 	sourceFilePath := "simple.go"
 	promptMessage, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
-		Language: &language.LanguageGolang{},
+		Language: &golang.Language{},
 
 		Code:       bytesutil.StringTrimIndentations(sourceFileContent),
 		FilePath:   sourceFilePath,
@@ -91,7 +92,7 @@ func TestModelLLMGenerateTestsForFile(t *testing.T) {
 				`), nil)
 		},
 
-		Language:          &language.LanguageGolang{},
+		Language:          &golang.Language{},
 		ModelID:           "model-id",
 		SourceFileContent: sourceFileContent,
 		SourceFilePath:    sourceFilePath,

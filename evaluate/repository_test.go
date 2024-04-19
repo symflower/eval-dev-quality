@@ -11,11 +11,12 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/symflower"
 )
 
-func TestEvaluateRepository(t *testing.T) {
+func TestRepository(t *testing.T) {
 	type testCase struct {
 		Name string
 
@@ -34,7 +35,7 @@ func TestEvaluateRepository(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			temporaryPath := t.TempDir()
 
-			actualRepositoryAssessment, actualProblems, actualErr := EvaluateRepository(temporaryPath, tc.Model, tc.Language, tc.TestDataPath, tc.RepositoryPath)
+			actualRepositoryAssessment, actualProblems, actualErr := Repository(temporaryPath, tc.Model, tc.Language, tc.TestDataPath, tc.RepositoryPath)
 
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 			assert.Equal(t, tc.ExpectedProblems, actualProblems)
@@ -53,8 +54,8 @@ func TestEvaluateRepository(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Plain",
 
-		Model:          &symflower.ModelSymflower{},
-		Language:       &language.LanguageGolang{},
+		Model:          symflower.NewModel(),
+		Language:       &golang.Language{},
 		TestDataPath:   "../testdata",
 		RepositoryPath: "golang/plain",
 

@@ -11,15 +11,16 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
 )
 
-func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
+func TestModelGenerateTestsForFile(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		ModelSymflower *ModelSymflower
-		Language       language.Language
+		Model    *Model
+		Language language.Language
 
 		RepositoryPath   string
 		RepositoryChange func(t *testing.T, repositoryPath string)
@@ -48,10 +49,10 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 				tc.RepositoryChange(t, repositoryPath)
 			}
 
-			if tc.ModelSymflower == nil {
-				tc.ModelSymflower = &ModelSymflower{}
+			if tc.Model == nil {
+				tc.Model = &Model{}
 			}
-			actualAssessment, actualError := tc.ModelSymflower.GenerateTestsForFile(logger, tc.Language, repositoryPath, tc.FilePath)
+			actualAssessment, actualError := tc.Model.GenerateTestsForFile(logger, tc.Language, repositoryPath, tc.FilePath)
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, tc.ExpectedError, actualError)
@@ -69,7 +70,7 @@ func TestModelSymflowerGenerateTestsForFile(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Go",
 
-		Language: &language.LanguageGolang{},
+		Language: &golang.Language{},
 
 		RepositoryPath: "../../testdata/golang/plain/",
 		FilePath:       "plain.go",

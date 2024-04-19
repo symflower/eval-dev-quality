@@ -1,4 +1,4 @@
-package language
+package golang
 
 import (
 	"errors"
@@ -12,30 +12,31 @@ import (
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
 
+	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
-// LanguageGolang holds a Go language to evaluate a repository.
-type LanguageGolang struct{}
+// Language holds a Go language to evaluate a repository.
+type Language struct{}
 
 func init() {
-	Register(&LanguageGolang{})
+	language.Register(&Language{})
 }
 
-var _ Language = (*LanguageGolang)(nil)
+var _ language.Language = (*Language)(nil)
 
 // ID returns the unique ID of this language.
-func (language *LanguageGolang) ID() (id string) {
+func (l *Language) ID() (id string) {
 	return "golang"
 }
 
 // Name is the prose name of this language.
-func (language *LanguageGolang) Name() (id string) {
+func (l *Language) Name() (id string) {
 	return "Go"
 }
 
 // Files returns a list of relative file paths of the repository that should be evaluated.
-func (language *LanguageGolang) Files(log *log.Logger, repositoryPath string) (filePaths []string, err error) {
+func (l *Language) Files(log *log.Logger, repositoryPath string) (filePaths []string, err error) {
 	repositoryPath, err = filepath.Abs(repositoryPath)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
@@ -63,7 +64,7 @@ var languageGoCoverageMatch = regexp.MustCompile(`(?m)^coverage: (\d+\.?\d+)% of
 var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statements\]$`)
 
 // Execute invokes the language specific testing on the given repository.
-func (language *LanguageGolang) Execute(log *log.Logger, repositoryPath string) (coverage float64, err error) {
+func (l *Language) Execute(log *log.Logger, repositoryPath string) (coverage float64, err error) {
 	stdout, _, err := util.CommandWithResult(log, &util.Command{
 		Command: []string{
 			"gotestsum",
@@ -90,7 +91,7 @@ func (language *LanguageGolang) Execute(log *log.Logger, repositoryPath string) 
 	if err != nil {
 		return 0.0, pkgerrors.WithStack(err)
 	} else if testCount == 0 {
-		return 0.0, pkgerrors.WithStack(ErrNoTestFound)
+		return 0.0, pkgerrors.WithStack(language.ErrNoTestFound)
 	}
 
 	if languageGoNoCoverageMatch.MatchString(stdout) {

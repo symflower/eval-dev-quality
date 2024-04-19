@@ -13,7 +13,7 @@ type MockQueryProvider struct {
 	mock.Mock
 }
 
-var _ provider.QueryProvider = &MockQueryProvider{}
+var _ provider.Query = &MockQueryProvider{}
 
 // Query queries the LLM with the given model name.
 func (p *MockQueryProvider) Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error) {

@@ -101,7 +101,7 @@ func SymflowerInstall(log *log.Logger, installPath string) (err error) {
 
 		// If the binary got installed by the user, let the user handle the update.
 		if filepath.Dir(symflowerPath) != installPath {
-			return pkgerrors.WithStack(fmt.Errorf("Found \"symflower\" binary with version %d but need at least %d", symflowerVersionInstalled, symflowerVersionWanted))
+			return pkgerrors.WithStack(fmt.Errorf("found \"symflower\" binary with version %d but need at least %d", symflowerVersionInstalled, symflowerVersionWanted))
 		}
 	}
 

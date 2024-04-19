@@ -13,32 +13,57 @@ import (
 	"github.com/symflower/eval-dev-quality/provider"
 )
 
-type openRouterProvider struct {
+// Provider holds an "openrouter.ai" provider using its public REST API.
+type Provider struct {
 	baseURL string
 	token   string
 }
 
 func init() {
-	provider.Register(newOpenRouterProvider())
+	provider.Register(NewProvider())
 }
 
-// newOpenRouterProvider returns an "openrouter.ai" provider.
-func newOpenRouterProvider() provider.Provider {
-	return &openRouterProvider{
+// NewProvider returns an "openrouter.ai" provider.
+func NewProvider() (provider provider.Provider) {
+	return &Provider{
 		baseURL: "https://openrouter.ai/api/v1",
 	}
 }
 
-// client returns a new client with the current configuration.
-func (p *openRouterProvider) client() (client *openai.Client) {
-	config := openai.DefaultConfig(p.token)
-	config.BaseURL = p.baseURL
+var _ provider.Provider = (*Provider)(nil)
 
-	return openai.NewClientWithConfig(config)
+// ID returns the unique ID of this provider.
+func (p *Provider) ID() (id string) {
+	return "openrouter"
 }
 
-// Query queries the LLM.
-func (p *openRouterProvider) Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error) {
+// Models returns which models are available to be queried via this provider.
+func (p *Provider) Models() (models []model.Model, err error) {
+	client := p.client()
+	ms, err := client.ListModels(context.Background())
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	models = make([]model.Model, len(ms.Models))
+	for i, model := range ms.Models {
+		models[i] = llm.NewModel(p, p.ID()+provider.ProviderModelSeparator+model.ID)
+	}
+
+	return models, nil
+}
+
+var _ provider.InjectToken = (*Provider)(nil)
+
+// SetToken sets a potential token to be used in case the provider needs to authenticate a remote API.
+func (p *Provider) SetToken(token string) {
+	p.token = token
+}
+
+var _ provider.Query = (*Provider)(nil)
+
+// Query queries the provider with the given model name.
+func (p *Provider) Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error) {
 	client := p.client()
 	modelIdentifier = strings.TrimPrefix(modelIdentifier, p.ID()+provider.ProviderModelSeparator)
 
@@ -63,28 +88,10 @@ func (p *openRouterProvider) Query(ctx context.Context, modelIdentifier string, 
 	return apiResponse.Choices[0].Message.Content, nil
 }
 
-// SetToken sets a potential token to be used in case the provider needs to authenticate a remote API.
-func (p *openRouterProvider) SetToken(token string) {
-	p.token = token
-}
+// client returns a new client with the current configuration.
+func (p *Provider) client() (client *openai.Client) {
+	config := openai.DefaultConfig(p.token)
+	config.BaseURL = p.baseURL
 
-// ID returns the unique ID of this provider.
-func (p *openRouterProvider) ID() (id string) {
-	return "openrouter"
-}
-
-// Models returns which models are available to be queried via this provider.
-func (p *openRouterProvider) Models() (models []model.Model, err error) {
-	client := p.client()
-	ms, err := client.ListModels(context.Background())
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-
-	models = make([]model.Model, len(ms.Models))
-	for i, model := range ms.Models {
-		models[i] = llm.NewLLMModel(p, p.ID()+provider.ProviderModelSeparator+model.ID)
-	}
-
-	return models, nil
+	return openai.NewClientWithConfig(config)
 }
