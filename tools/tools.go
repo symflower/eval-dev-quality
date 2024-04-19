@@ -18,7 +18,7 @@ func InstallPathDefault() (installPath string, err error) {
 	return filepath.Join(homePath, ".eval-dev-quality", "bin"), nil
 }
 
-// InstallTools install all basic evaluation tools.
+// Install install all basic evaluation tools.
 func Install(log *log.Logger, installPath string) (err error) {
 	if err := SymflowerInstall(log, installPath); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, "cannot install Symflower"))

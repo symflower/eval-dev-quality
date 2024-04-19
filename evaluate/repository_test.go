@@ -15,7 +15,7 @@ import (
 	"github.com/symflower/eval-dev-quality/model/symflower"
 )
 
-func TestEvaluateRepository(t *testing.T) {
+func TestRepository(t *testing.T) {
 	type testCase struct {
 		Name string
 
@@ -34,7 +34,7 @@ func TestEvaluateRepository(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			temporaryPath := t.TempDir()
 
-			actualRepositoryAssessment, actualProblems, actualErr := EvaluateRepository(temporaryPath, tc.Model, tc.Language, tc.TestDataPath, tc.RepositoryPath)
+			actualRepositoryAssessment, actualProblems, actualErr := Repository(temporaryPath, tc.Model, tc.Language, tc.TestDataPath, tc.RepositoryPath)
 
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 			assert.Equal(t, tc.ExpectedProblems, actualProblems)

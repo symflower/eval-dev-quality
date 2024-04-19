@@ -7,9 +7,9 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sashabaranov/go-openai v1.20.4
 	github.com/stretchr/testify v1.9.0
+	github.com/symflower/lockfile v0.0.0-20240419143922-aa3b60940c84
 	github.com/zimmski/osutil v1.1.1-0.20240329123339-0f31a74c026a
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8
-	gonum.org/v1/gonum v0.15.0
 )
 
 require (
@@ -20,7 +20,6 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/schollz/progressbar/v3 v3.14.2 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
-	github.com/symflower/lockfile v0.0.0-20240419143922-aa3b60940c84 // indirect
 	github.com/termie/go-shutil v0.0.0-20140729215957-bcacb06fecae // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect
 	github.com/yuin/goldmark v1.7.0 // indirect

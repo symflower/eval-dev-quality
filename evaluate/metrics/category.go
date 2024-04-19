@@ -6,7 +6,7 @@ type AssessmentCategory string
 var (
 	// AssessmentCategoryUnknown indicates that it is not possible to compute a model's category.
 	AssessmentCategoryUnknown = AssessmentCategory("category-unknown")
-	// AssessmentCategoryError indicates that a model has encountered an error trying to produce a response.
+	// AssessmentCategoryResponseError indicates that a model has encountered an error trying to produce a response.
 	AssessmentCategoryResponseError = AssessmentCategory("response-error")
 	// AssessmentCategoryResponseEmpty indicates that a model has returned an empty response.
 	AssessmentCategoryResponseEmpty = AssessmentCategory("response-empty")

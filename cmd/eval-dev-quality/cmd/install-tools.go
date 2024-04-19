@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"github.com/symflower/eval-dev-quality/log"
-	_ "github.com/symflower/eval-dev-quality/provider/openrouter"
-	_ "github.com/symflower/eval-dev-quality/provider/symflower"
 	"github.com/symflower/eval-dev-quality/tools"
 )
 
