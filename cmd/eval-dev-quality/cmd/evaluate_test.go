@@ -11,6 +11,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
+
+	"github.com/symflower/eval-dev-quality/log"
 )
 
 func TestEvaluateExecute(t *testing.T) {
@@ -20,7 +22,6 @@ func TestEvaluateExecute(t *testing.T) {
 		Arguments []string
 
 		ExpectedOutputValidate func(t *testing.T, output string, resultPath string)
-		ExpectedError          error
 		ExpectedResultFiles    map[string]func(t *testing.T, filePath string, data string)
 	}
 
@@ -28,18 +29,16 @@ func TestEvaluateExecute(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			temporaryPath := t.TempDir()
 
-			actualOutput, actualError := osutil.Capture(func() {
-				Execute(append([]string{
-					"evaluate",
-					"--result-path", temporaryPath,
-					"--testdata", "../../../testdata",
-				}, tc.Arguments...))
-			})
+			logOutput, logger := log.Buffer()
+			Execute(logger, append([]string{
+				"evaluate",
+				"--result-path", temporaryPath,
+				"--testdata", "../../../testdata",
+			}, tc.Arguments...))
 
 			if tc.ExpectedOutputValidate != nil {
-				tc.ExpectedOutputValidate(t, string(actualOutput), temporaryPath)
+				tc.ExpectedOutputValidate(t, string(logOutput.String()), temporaryPath)
 			}
-			assert.Equal(t, tc.ExpectedError, actualError)
 
 			actualResultFiles, err := osutil.FilesRecursive(temporaryPath)
 			require.NoError(t, err)

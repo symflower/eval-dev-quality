@@ -1,9 +1,9 @@
 package language
 
 import (
-	"log"
-
 	pkgerrors "github.com/pkg/errors"
+
+	"github.com/symflower/eval-dev-quality/log"
 )
 
 // Language defines a language to evaluate a repository.
@@ -14,12 +14,12 @@ type Language interface {
 	Name() (id string)
 
 	// Files returns a list of relative file paths of the repository that should be evaluated.
-	Files(log *log.Logger, repositoryPath string) (filePaths []string, err error)
+	Files(logger *log.Logger, repositoryPath string) (filePaths []string, err error)
 	// TestFilePath returns the file path of a test file given the corresponding file path of the test's source file.
 	TestFilePath(projectRootPath string, filePath string) (testFilePath string)
 
 	// Execute invokes the language specific testing on the given repository.
-	Execute(log *log.Logger, repositoryPath string) (coverage float64, err error)
+	Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error)
 }
 
 // Languages holds a register of all languages.

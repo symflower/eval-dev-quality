@@ -28,10 +28,10 @@ func TestLanguageFiles(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			log, logger := log.Buffer()
+			logOutput, logger := log.Buffer()
 			defer func() {
 				if t.Failed() {
-					t.Log(log.String())
+					t.Log(logOutput.String())
 				}
 			}()
 
@@ -72,10 +72,10 @@ func TestLanguageExecute(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			log, logger := log.Buffer()
+			logOutput, logger := log.Buffer()
 			defer func() {
 				if t.Failed() {
-					t.Log(log.String())
+					t.Log(logOutput.String())
 				}
 			}()
 

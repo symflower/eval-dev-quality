@@ -1,12 +1,11 @@
 package modeltesting
 
 import (
-	"log"
-
 	"github.com/stretchr/testify/mock"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 )
 
@@ -24,8 +23,8 @@ func NewMockModelNamed(id string) *MockModel {
 }
 
 // GenerateTestsForFile implements model.Model.
-func (m *MockModel) GenerateTestsForFile(log *log.Logger, language language.Language, repositoryPath string, filePath string) (assessments metrics.Assessments, err error) {
-	args := m.Called(log, language, repositoryPath, filePath)
+func (m *MockModel) GenerateTestsForFile(logger *log.Logger, language language.Language, repositoryPath string, filePath string) (assessments metrics.Assessments, err error) {
+	args := m.Called(logger, language, repositoryPath, filePath)
 	return args.Get(0).(metrics.Assessments), args.Error(1)
 }
 

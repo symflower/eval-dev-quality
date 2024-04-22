@@ -3,7 +3,6 @@ package tools
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -17,6 +16,7 @@ import (
 	"github.com/symflower/lockfile"
 	"github.com/zimmski/osutil"
 
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
@@ -24,7 +24,7 @@ import (
 const SymflowerVersion = "35657"
 
 // SymflowerInstall checks if the "symflower" binary has been installed, and if yes, updates it if necessary and possible.
-func SymflowerInstall(log *log.Logger, installPath string) (err error) {
+func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 	installPath, err = filepath.Abs(installPath)
 	if err != nil {
 		return pkgerrors.WithStack(err)
@@ -44,7 +44,7 @@ func SymflowerInstall(log *log.Logger, installPath string) (err error) {
 			break
 		}
 
-		log.Printf("Try to lock %s for installing but need to wait for another process", installPath)
+		logger.Printf("Try to lock %s for installing but need to wait for another process", installPath)
 		time.Sleep(time.Second)
 	}
 	defer func() {
@@ -70,9 +70,9 @@ func SymflowerInstall(log *log.Logger, installPath string) (err error) {
 	// Check if the "symflower" binary can already be used.
 	symflowerPath, err := exec.LookPath("symflower")
 	if err == nil {
-		log.Printf("Checking \"symflower\" binary %s", symflowerPath)
+		logger.Printf("Checking \"symflower\" binary %s", symflowerPath)
 
-		symflowerVersionOutput, _, err := util.CommandWithResult(log, &util.Command{
+		symflowerVersionOutput, _, err := util.CommandWithResult(logger, &util.Command{
 			Command: []string{symflowerPath, "version"},
 		})
 		if err != nil {
@@ -122,11 +122,11 @@ func SymflowerInstall(log *log.Logger, installPath string) (err error) {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("unkown architecture %s", a)))
 	}
 
-	log.Printf("Install \"symflower\" to %s", symflowerInstallPath)
+	logger.Printf("Install \"symflower\" to %s", symflowerInstallPath)
 	if err := osutil.DownloadFileWithProgress("https://download.symflower.com/local/v"+SymflowerVersion+"/symflower-"+osIdentifier+"-"+architectureIdentifier, symflowerInstallPath); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot download to %s", symflowerInstallPath)))
 	}
-	if _, _, err := util.CommandWithResult(log, &util.Command{
+	if _, _, err := util.CommandWithResult(logger, &util.Command{
 		Command: []string{"chmod", "+x", symflowerInstallPath},
 	}); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot make %s executable", symflowerInstallPath)))

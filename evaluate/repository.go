@@ -16,8 +16,8 @@ import (
 )
 
 // Repository evaluate a repository with the given model and language.
-func Repository(resultPath string, model model.Model, language language.Language, testDataPath string, repositoryPath string) (repositoryAssessment metrics.Assessments, problems []error, err error) {
-	log, logClose, err := log.File(filepath.Join(resultPath, strings.ReplaceAll(model.ID(), "/", "_"), language.ID(), repositoryPath+".log"))
+func Repository(logger *log.Logger, resultPath string, model model.Model, language language.Language, testDataPath string, repositoryPath string) (repositoryAssessment metrics.Assessments, problems []error, err error) {
+	log, logClose, err := log.WithFile(logger, filepath.Join(resultPath, strings.ReplaceAll(model.ID(), "/", "_"), language.ID(), repositoryPath+".log"))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -25,7 +25,7 @@ func Repository(resultPath string, model model.Model, language language.Language
 
 	log.Printf("Evaluating model %q using language %q and repository %q", model.ID(), language.ID(), repositoryPath)
 	defer func() {
-		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems", model.ID(), language.ID(), repositoryPath, len(problems))
+		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems: %+v", model.ID(), language.ID(), repositoryPath, len(problems), problems)
 	}()
 
 	dataPath := filepath.Join(testDataPath, repositoryPath)

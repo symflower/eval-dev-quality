@@ -9,21 +9,29 @@ import (
 type InstallTools struct {
 	// InstallToolsPath determines where tools for the evaluation are installed.
 	InstallToolsPath string `long:"install-tools-path" description:"Install tools for the evaluation into this path."`
+
+	// logger holds the logger of the command.
+	logger *log.Logger
+}
+
+var _ SetLogger = (*InstallTools)(nil)
+
+// SetLogger sets the logger of the command.
+func (command *InstallTools) SetLogger(logger *log.Logger) {
+	command.logger = logger
 }
 
 // Execute executes the command.
 func (command *InstallTools) Execute(args []string) (err error) {
-	log := log.STDOUT()
-
 	if command.InstallToolsPath == "" {
 		command.InstallToolsPath, err = tools.InstallPathDefault()
 		if err != nil {
-			log.Fatalf("ERROR: %s", err)
+			command.logger.Fatalf("ERROR: %s", err)
 		}
 	}
 
-	if err := tools.Install(log, command.InstallToolsPath); err != nil {
-		log.Fatalf("ERROR: %s", err)
+	if err := tools.Install(command.logger, command.InstallToolsPath); err != nil {
+		command.logger.Fatalf("ERROR: %s", err)
 	}
 
 	return nil

@@ -8,7 +8,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/zimmski/osutil"
+
+	"github.com/symflower/eval-dev-quality/log"
 )
 
 func TestInstallToolsExecute(t *testing.T) {
@@ -25,30 +26,26 @@ func TestInstallToolsExecute(t *testing.T) {
 	})
 
 	t.Run("Install tools for first time which should install all tools", func(t *testing.T) {
-		output, err := osutil.Capture(func() {
-			Execute([]string{
-				"install-tools",
-				"--install-tools-path", temporaryPath,
-			})
+		logOutput, logger := log.Buffer()
+		Execute(logger, []string{
+			"install-tools",
+			"--install-tools-path", temporaryPath,
 		})
-		require.NoError(t, err)
 
-		require.Contains(t, string(output), `Install "symflower" to`)
+		require.Contains(t, logOutput.String(), `Install "symflower" to`)
 		symflowerPath, err := exec.LookPath("symflower")
 		require.NoError(t, err)
 		require.NotEmpty(t, symflowerPath)
 	})
 
 	t.Run("Install tools a second time which should install no new tools", func(t *testing.T) {
-		output, err := osutil.Capture(func() {
-			Execute([]string{
-				"install-tools",
-				"--install-tools-path", temporaryPath,
-			})
+		logOutput, logger := log.Buffer()
+		Execute(logger, []string{
+			"install-tools",
+			"--install-tools-path", temporaryPath,
 		})
-		require.NoError(t, err)
 
-		require.NotContains(t, string(output), `Install "symflower" to`)
+		require.NotContains(t, logOutput.String(), `Install "symflower" to`)
 		symflowerPath, err := exec.LookPath("symflower")
 		require.NoError(t, err)
 		require.NotEmpty(t, symflowerPath)

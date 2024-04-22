@@ -1,25 +1,28 @@
 package log
 
 import (
-	"bytes"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/zimmski/osutil/bytesutil"
 )
 
+// Logger holds a logger to log to.
+type Logger = log.Logger
+
 // Buffer returns a logger that writes to a buffer.
-func Buffer() (buffer *bytes.Buffer, logger *log.Logger) {
-	buffer = new(bytes.Buffer)
+func Buffer() (buffer *bytesutil.SynchronizedBuffer, logger *Logger) {
+	buffer = new(bytesutil.SynchronizedBuffer)
 	logger = log.New(buffer, "", log.LstdFlags)
 
 	return buffer, logger
 }
 
 // File returns a logger that writes to a file.
-func File(path string) (logger *log.Logger, loggerClose func(), err error) {
+func File(path string) (logger *Logger, loggerClose func(), err error) {
 	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 		return nil, nil, pkgerrors.WithStack(err)
 	}
@@ -39,8 +42,13 @@ func File(path string) (logger *log.Logger, loggerClose func(), err error) {
 	return logger, loggerClose, nil
 }
 
-// FileAndSTDOUT returns a logger that writes to a file and STDOUT at the same time.
-func FileAndSTDOUT(filePath string) (logger *log.Logger, loggerClose func(), err error) {
+// STDOUT returns a logger that writes to STDOUT.
+func STDOUT() (logger *Logger) {
+	return log.New(os.Stdout, "", log.LstdFlags)
+}
+
+// WithFile returns a logger that writes to a file and to the parent logger at the same time.
+func WithFile(parent *Logger, filePath string) (logger *Logger, loggerClose func(), err error) {
 	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
 		return nil, nil, pkgerrors.WithStack(err)
 	}
@@ -55,13 +63,8 @@ func FileAndSTDOUT(filePath string) (logger *log.Logger, loggerClose func(), err
 		}
 	}
 
-	writer := io.MultiWriter(os.Stdout, file)
+	writer := io.MultiWriter(parent.Writer(), file)
 	logger = log.New(writer, "", log.LstdFlags)
 
 	return logger, loggerClose, nil
-}
-
-// STDOUT returns a logger that writes to STDOUT.
-func STDOUT() (logger *log.Logger) {
-	return log.New(os.Stdout, "", log.LstdFlags)
 }
