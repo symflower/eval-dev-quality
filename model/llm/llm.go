@@ -106,11 +106,8 @@ func (m *Model) GenerateTestsForFile(log *log.Logger, language language.Language
 
 	assessment, testContent := prompt.ParseResponse(response)
 
-	// TODO Ask the model for the test file name or compute it in a more sophisticated manner.
-	fileExtension := filepath.Ext(filePath)
-	testFilePath := filepath.Join(repositoryPath, strings.TrimSuffix(filePath, fileExtension)+"_test"+fileExtension)
-
-	if err := os.WriteFile(testFilePath, []byte(testContent), 0644); err != nil {
+	testFilePath := language.TestFilePath(repositoryPath, filePath)
+	if err := os.WriteFile(filepath.Join(repositoryPath, testFilePath), []byte(testContent), 0644); err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 
