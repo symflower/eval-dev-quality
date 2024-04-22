@@ -22,7 +22,7 @@ func TestEvaluateExecute(t *testing.T) {
 		Arguments []string
 
 		ExpectedOutputValidate func(t *testing.T, output string, resultPath string)
-		ExpectedResultFiles    map[string]func(t *testing.T, filePath string, data string)
+		ExpectedResultFiles    map[string]func(t *testing.T, resultPath string, filePath string, data string)
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -54,7 +54,7 @@ func TestEvaluateExecute(t *testing.T) {
 				if validate != nil {
 					data, err := os.ReadFile(filepath.Join(temporaryPath, filePath))
 					if assert.NoError(t, err) {
-						validate(t, filePath, string(data))
+						validate(t, temporaryPath, filePath, string(data))
 					}
 				}
 			}
@@ -78,15 +78,19 @@ func TestEvaluateExecute(t *testing.T) {
 				t.Logf("Output: %s", output)
 			}
 		},
-		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			"evaluation.csv": func(t *testing.T, filePath, data string) {
+		ExpectedResultFiles: map[string]func(t *testing.T, resultPath string, filePath string, data string){
+			"evaluation.csv": func(t *testing.T, resultPath string, filePath, data string) {
 				assert.Equal(t, bytesutil.StringTrimIndentations(`
 					model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
 					symflower/symbolic-execution,golang,golang/plain,6,1,1,1,1,1,1
 				`), data)
 			},
 			"evaluation.log": nil,
-			"report.md":      nil,
+			"report.md": func(t *testing.T, resultPath string, filePath, data string) {
+				// Ensure the report links to the CSV file and logs.
+				assert.Contains(t, data, filepath.Join(resultPath, "evaluation.csv"))
+				assert.Contains(t, data, filepath.Join(resultPath, "evaluation.log"))
+			},
 			"symflower_symbolic-execution/golang/golang/plain.log": nil,
 		},
 	})

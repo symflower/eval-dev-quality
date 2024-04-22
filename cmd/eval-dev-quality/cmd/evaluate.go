@@ -21,6 +21,7 @@ import (
 	_ "github.com/symflower/eval-dev-quality/provider/openrouter" // Register provider.
 	_ "github.com/symflower/eval-dev-quality/provider/symflower"  // Register provider.
 	"github.com/symflower/eval-dev-quality/tools"
+	"github.com/symflower/eval-dev-quality/version"
 )
 
 // Evaluate holds the "evaluation" command.
@@ -58,10 +59,12 @@ const repositoryPlainName = "plain"
 
 // Execute executes the command.
 func (command *Evaluate) Execute(args []string) (err error) {
-	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", time.Now().Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
+	evaluationTimestamp := time.Now()
+	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", evaluationTimestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
 	command.logger.Printf("Writing results to %s", command.ResultPath)
 
-	log, logClose, err := log.WithFile(command.logger, filepath.Join(command.ResultPath, "evaluation.log"))
+	logFilePath := filepath.Join(command.ResultPath, "evaluation.log")
+	log, logClose, err := log.WithFile(command.logger, logFilePath)
 	if err != nil {
 		return err
 	}
@@ -231,7 +234,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	if err != nil {
 		log.Fatalf("ERROR: could not create result summary: %s", err)
 	}
-	if err := os.WriteFile(filepath.Join(command.ResultPath, "evaluation.csv"), []byte(csv), 0644); err != nil {
+	csvReportPath := filepath.Join(command.ResultPath, "evaluation.csv")
+	if err := os.WriteFile(csvReportPath, []byte(csv), 0644); err != nil {
 		log.Fatalf("ERROR: could not write result summary: %s", err)
 	}
 
@@ -249,7 +253,21 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		totalScore = uint(len(languagesSelected))
 	}
 
-	_ = metrics.WalkByScore(assessments.Collapse(), func(model string, assessment metrics.Assessments, score uint) error {
+	assessmentsPerModel := assessments.Collapse()
+	if err := (report.Markdown{
+		DateTime: evaluationTimestamp,
+		Version:  version.Current,
+
+		CSVPath: csvReportPath,
+		LogPath: logFilePath,
+
+		AssessmentPerModel: assessmentsPerModel,
+		TotalScore:         totalScore,
+	}).WriteToFile(filepath.Join(command.ResultPath, "report.md")); err != nil {
+		return err
+	}
+
+	_ = metrics.WalkByScore(assessmentsPerModel, func(model string, assessment metrics.Assessments, score uint) error {
 		log.Printf("Evaluation score for %q (%q): %s", model, assessment.Category(totalScore).Name, assessment)
 
 		return nil
