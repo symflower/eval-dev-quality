@@ -20,10 +20,16 @@ func NewMockLanguageNamed(id string) *MockLanguage {
 	return m
 }
 
-// Execute implements language.Language.
-func (m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
-	args := m.Called(logger, repositoryPath)
-	return args.Get(0).(float64), args.Error(1)
+var _ language.Language = &MockLanguage{}
+
+// ID implements language.Language.
+func (m *MockLanguage) ID() (id string) {
+	return m.Called().String(0)
+}
+
+// Name implements language.Language.
+func (m *MockLanguage) Name() (id string) {
+	return m.Called().String(0)
 }
 
 // Files implements language.Language.
@@ -37,14 +43,8 @@ func (m *MockLanguage) TestFilePath(projectRootPath string, filePath string) (te
 	return m.Called(projectRootPath, filePath).String(0)
 }
 
-// ID implements language.Language.
-func (m *MockLanguage) ID() (id string) {
-	return m.Called().String(0)
+// Execute implements language.Language.
+func (m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
+	args := m.Called(logger, repositoryPath)
+	return args.Get(0).(float64), args.Error(1)
 }
-
-// Name implements language.Language.
-func (m *MockLanguage) Name() (id string) {
-	return m.Called().String(0)
-}
-
-var _ language.Language = &MockLanguage{}

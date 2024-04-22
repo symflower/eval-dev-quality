@@ -62,7 +62,6 @@ func (l *Language) Files(logger *log.Logger, repositoryPath string) (filePaths [
 // TestFilePath returns the file path of a test file given the corresponding file path of the test's source file.
 func (l *Language) TestFilePath(projectRootPath string, filePath string) (testFilePath string) {
 	return strings.TrimSuffix(filePath, ".go") + "_test.go"
-
 }
 
 var languageGoNoTestsMatch = regexp.MustCompile(`(?m)^DONE (\d+) tests.*in (.+?)$`)
