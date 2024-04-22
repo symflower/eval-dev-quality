@@ -15,6 +15,12 @@ import (
 	"github.com/symflower/eval-dev-quality/log"
 )
 
+// validateReportLinks checks if the Markdown report data contains all the links to other relevant report files.
+func validateReportLinks(t *testing.T, data string) {
+	assert.Contains(t, data, "](./evaluation.csv)")
+	assert.Contains(t, data, "](./evaluation.log)")
+}
+
 func TestEvaluateExecute(t *testing.T) {
 	type testCase struct {
 		Name string
@@ -91,6 +97,9 @@ func TestEvaluateExecute(t *testing.T) {
 					`), data)
 				},
 				"evaluation.log": nil,
+				"README.md": func(t *testing.T, filePath, data string) {
+					validateReportLinks(t, data)
+				},
 				"symflower_symbolic-execution/golang/golang/plain.log": nil,
 			},
 		})
@@ -116,6 +125,9 @@ func TestEvaluateExecute(t *testing.T) {
 					`), data)
 				},
 				"evaluation.log": nil,
+				"README.md": func(t *testing.T, filePath, data string) {
+					validateReportLinks(t, data)
+				},
 				"symflower_symbolic-execution/golang/golang/plain.log": nil,
 				"symflower_symbolic-execution/java/java/plain.log":     nil,
 			},
@@ -147,6 +159,9 @@ func TestEvaluateExecute(t *testing.T) {
 						`), data)
 					},
 					"evaluation.log": nil,
+					"README.md": func(t *testing.T, filePath, data string) {
+						validateReportLinks(t, data)
+					},
 					"symflower_symbolic-execution/golang/golang/plain.log": nil,
 				},
 			})
@@ -172,6 +187,9 @@ func TestEvaluateExecute(t *testing.T) {
 						`), data)
 					},
 					"evaluation.log": nil,
+					"README.md": func(t *testing.T, filePath, data string) {
+						validateReportLinks(t, data)
+					},
 					"symflower_symbolic-execution/golang/golang/plain.log": nil,
 				},
 			})
