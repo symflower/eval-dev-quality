@@ -33,6 +33,11 @@ func (m *MockLanguage) Files(log *log.Logger, repositoryPath string) (filePaths 
 	return args.Get(0).([]string), args.Error(1)
 }
 
+// TestFilePath implements language.Language.
+func (m *MockLanguage) TestFilePath(projectRootPath string, filePath string) (testFilePath string) {
+	return m.Called(projectRootPath, filePath).String(0)
+}
+
 // ID implements language.Language.
 func (m *MockLanguage) ID() (id string) {
 	return m.Called().String(0)
