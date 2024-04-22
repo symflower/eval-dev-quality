@@ -15,6 +15,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/language"
 	_ "github.com/symflower/eval-dev-quality/language/golang" // Register language.
+	_ "github.com/symflower/eval-dev-quality/language/java"   // Register language.
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
@@ -83,7 +84,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 					ls := maps.Keys(language.Languages)
 					sort.Strings(ls)
 
-					log.Fatalf("ERROR: language %s does not exist. Valid languages are: %s", languageID, strings.Join(ls, ", "))
+					log.Panicf("ERROR: language %s does not exist. Valid languages are: %s", languageID, strings.Join(ls, ", "))
 				}
 
 				languages[languageID] = l
@@ -112,7 +113,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		for _, p := range provider.Providers {
 			ms, err := p.Models()
 			if err != nil {
-				log.Fatalf("ERROR: could not query models for provider %q: %s", p.ID(), err)
+				log.Panicf("ERROR: could not query models for provider %q: %s", p.ID(), err)
 			}
 			for _, m := range ms {
 				if t, ok := p.(provider.InjectToken); ok {
@@ -132,7 +133,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		} else {
 			for _, modelID := range command.Models {
 				if _, ok := models[modelID]; !ok {
-					log.Fatalf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(modelIDs, ", "))
+					log.Panicf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(modelIDs, ", "))
 				}
 			}
 		}
@@ -143,11 +144,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	}
 
 	if err := osutil.DirExists(command.TestdataPath); err != nil {
-		log.Fatalf("ERROR: testdata path %q cannot be accessed: %s", command.TestdataPath, err)
+		log.Panicf("ERROR: testdata path %q cannot be accessed: %s", command.TestdataPath, err)
 	}
 	command.TestdataPath, err = filepath.Abs(command.TestdataPath)
 	if err != nil {
-		log.Fatalf("ERROR: could not resolve testdata path %q to an absolute path: %s", command.TestdataPath, err)
+		log.Panicf("ERROR: could not resolve testdata path %q to an absolute path: %s", command.TestdataPath, err)
 	}
 
 	// Install required tools for the basic evaluation.
@@ -159,12 +160,12 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		if command.InstallToolsPath == "" {
 			command.InstallToolsPath, err = tools.InstallPathDefault()
 			if err != nil {
-				log.Fatalf("ERROR: %s", err)
+				log.Panicf("ERROR: %s", err)
 			}
 		}
 
 		if err := tools.Install(log, command.InstallToolsPath); err != nil {
-			log.Fatalf("ERROR: %s", err)
+			log.Panicf("ERROR: %s", err)
 		}
 	}
 
@@ -200,7 +201,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		languagePath := filepath.Join(command.TestdataPath, languageID)
 		repositories, err := os.ReadDir(languagePath)
 		if err != nil {
-			log.Fatalf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
+			log.Panicf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
 		}
 
 		for _, repository := range repositories {
@@ -235,10 +236,10 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	csv, err := report.FormatCSV(assessments)
 	if err != nil {
-		log.Fatalf("ERROR: could not create result summary: %s", err)
+		log.Panicf("ERROR: could not create result summary: %s", err)
 	}
 	if err := os.WriteFile(filepath.Join(command.ResultPath, "evaluation.csv"), []byte(csv), 0644); err != nil {
-		log.Fatalf("ERROR: could not write result summary: %s", err)
+		log.Panicf("ERROR: could not write result summary: %s", err)
 	}
 
 	totalScore := uint(0)

@@ -86,11 +86,20 @@ func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 	if err == nil {
 		logger.Printf("Checking \"symflower\" binary %s", symflowerPath)
 
-		symflowerVersionOutput, _, err := util.CommandWithResult(logger, &util.Command{
+		symflowerVersionOutput, err := util.CommandWithResult(logger, &util.Command{
 			Command: []string{symflowerPath, "version"},
 		})
 		if err != nil {
 			return pkgerrors.WithStack(err)
+		}
+
+		// Development version of Symflower is always OK to use.
+		if strings.Contains(symflowerVersionOutput, " development on") {
+			if !strings.Contains(symflowerVersionOutput, "symflower-local development on") {
+				return pkgerrors.WithStack(errors.New("allow Symflower binary to be used concurrently with its shared folder"))
+			}
+
+			return nil
 		}
 
 		m := regexp.MustCompile(`symflower v(\d+) on`).FindStringSubmatch(symflowerVersionOutput)
@@ -140,7 +149,7 @@ func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 	if err := osutil.DownloadFileWithProgress("https://download.symflower.com/local/v"+SymflowerVersion+"/symflower-"+osIdentifier+"-"+architectureIdentifier, symflowerInstallPath); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot download to %s", symflowerInstallPath)))
 	}
-	if _, _, err := util.CommandWithResult(logger, &util.Command{
+	if _, err := util.CommandWithResult(logger, &util.Command{
 		Command: []string{"chmod", "+x", symflowerInstallPath},
 	}); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot make %s executable", symflowerInstallPath)))
