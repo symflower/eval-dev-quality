@@ -85,7 +85,7 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	}
 	fileContent := strings.TrimSpace(string(data))
 
-	importPath := filepath.Join(filepath.Base(repositoryPath), filepath.Dir(filePath))
+	importPath := language.ImportPath(repositoryPath, filePath)
 
 	request, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
 		Language: language,

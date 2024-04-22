@@ -59,6 +59,11 @@ func (l *Language) Files(logger *log.Logger, repositoryPath string) (filePaths [
 	return filePaths, nil
 }
 
+// ImportPath returns the import path of the given source file.
+func (l *Language) ImportPath(projectRootPath string, filePath string) (importPath string) {
+	return filepath.Join(filepath.Base(projectRootPath), filepath.Dir(filePath))
+}
+
 // TestFilePath returns the file path of a test file given the corresponding file path of the test's source file.
 func (l *Language) TestFilePath(projectRootPath string, filePath string) (testFilePath string) {
 	return strings.TrimSuffix(filePath, ".go") + "_test.go"
