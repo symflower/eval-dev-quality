@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	golog "log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -42,6 +41,16 @@ type Evaluate struct {
 
 	// ProviderTokens holds all API tokens for the providers.
 	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token,...')." env:"PROVIDER_TOKEN"`
+
+	// logger holds the logger of the command.
+	logger *log.Logger
+}
+
+var _ SetLogger = (*Evaluate)(nil)
+
+// SetLogger sets the logger of the command.
+func (command *Evaluate) SetLogger(logger *log.Logger) {
+	command.logger = logger
 }
 
 // repositoryPlainName holds the name of the plain repository.
@@ -50,9 +59,9 @@ const repositoryPlainName = "plain"
 // Execute executes the command.
 func (command *Evaluate) Execute(args []string) (err error) {
 	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", time.Now().Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
-	golog.Printf("Writing results to %s", command.ResultPath)
+	command.logger.Printf("Writing results to %s", command.ResultPath)
 
-	log, logClose, err := log.FileAndSTDOUT(filepath.Join(command.ResultPath, "evaluation.log"))
+	log, logClose, err := log.WithFile(command.logger, filepath.Join(command.ResultPath, "evaluation.log"))
 	if err != nil {
 		return err
 	}
@@ -166,7 +175,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 				repositoryPath := filepath.Join(languageID, repositoryPlainName)
 
-				assessment, ps, err := evaluate.Repository(command.ResultPath, model, language, command.TestdataPath, repositoryPath)
+				assessment, ps, err := evaluate.Repository(command.logger, command.ResultPath, model, language, command.TestdataPath, repositoryPath)
 				assessments[model][language][repositoryPath].Add(assessment)
 				if err != nil {
 					ps = append(ps, err)
@@ -208,7 +217,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				model := modelsSelected[modelID]
 				language := languagesSelected[languageID]
 
-				assessment, ps, err := evaluate.Repository(command.ResultPath, model, language, command.TestdataPath, repositoryPath)
+				assessment, ps, err := evaluate.Repository(command.logger, command.ResultPath, model, language, command.TestdataPath, repositoryPath)
 				assessments[model][language][repositoryPath].Add(assessment)
 				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				if err != nil {

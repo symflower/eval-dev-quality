@@ -1,11 +1,12 @@
 package tools
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 
 	pkgerrors "github.com/pkg/errors"
+
+	"github.com/symflower/eval-dev-quality/log"
 )
 
 // InstallPathDefault returns the default installation path for tools.
@@ -19,8 +20,8 @@ func InstallPathDefault() (installPath string, err error) {
 }
 
 // Install install all basic evaluation tools.
-func Install(log *log.Logger, installPath string) (err error) {
-	if err := SymflowerInstall(log, installPath); err != nil {
+func Install(logger *log.Logger, installPath string) (err error) {
+	if err := SymflowerInstall(logger, installPath); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, "cannot install Symflower"))
 	}
 

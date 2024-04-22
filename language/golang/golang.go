@@ -2,7 +2,6 @@ package golang
 
 import (
 	"errors"
-	"log"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -13,6 +12,7 @@ import (
 	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
@@ -36,7 +36,7 @@ func (l *Language) Name() (id string) {
 }
 
 // Files returns a list of relative file paths of the repository that should be evaluated.
-func (l *Language) Files(log *log.Logger, repositoryPath string) (filePaths []string, err error) {
+func (l *Language) Files(logger *log.Logger, repositoryPath string) (filePaths []string, err error) {
 	repositoryPath, err = filepath.Abs(repositoryPath)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
@@ -70,8 +70,8 @@ var languageGoCoverageMatch = regexp.MustCompile(`(?m)^coverage: (\d+\.?\d+)% of
 var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statements\]$`)
 
 // Execute invokes the language specific testing on the given repository.
-func (l *Language) Execute(log *log.Logger, repositoryPath string) (coverage float64, err error) {
-	stdout, _, err := util.CommandWithResult(log, &util.Command{
+func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
+	stdout, _, err := util.CommandWithResult(logger, &util.Command{
 		Command: []string{
 			"gotestsum",
 			"--format", "standard-verbose", // Keep formatting consistent.

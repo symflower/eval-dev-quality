@@ -2,7 +2,6 @@ package llm
 
 import (
 	"context"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,6 +12,7 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm/prompt"
 	"github.com/symflower/eval-dev-quality/provider"
@@ -78,7 +78,7 @@ func (m *Model) ID() (id string) {
 }
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (m *Model) GenerateTestsForFile(log *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
+func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
 	data, err := os.ReadFile(filepath.Join(repositoryPath, filePath))
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
@@ -102,7 +102,7 @@ func (m *Model) GenerateTestsForFile(log *log.Logger, language language.Language
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("Model %q responded to query %s with: %s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
+	logger.Printf("Model %q responded to query %s with: %s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
 
 	assessment, testContent := prompt.ParseResponse(response)
 

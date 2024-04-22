@@ -25,8 +25,8 @@ func TestSymflowerInstall(t *testing.T) {
 	})
 
 	t.Run("Install tools for first time which should install all tools", func(t *testing.T) {
-		logOutput, log := log.Buffer()
-		require.NoError(t, SymflowerInstall(log, temporaryPath))
+		logOutput, logger := log.Buffer()
+		require.NoError(t, SymflowerInstall(logger, temporaryPath))
 
 		require.Contains(t, logOutput.String(), `Install "symflower" to`)
 		symflowerPath, err := exec.LookPath("symflower")
@@ -35,8 +35,8 @@ func TestSymflowerInstall(t *testing.T) {
 	})
 
 	t.Run("Install tools a second time which should install no new tools", func(t *testing.T) {
-		logOutput, log := log.Buffer()
-		require.NoError(t, SymflowerInstall(log, temporaryPath))
+		logOutput, logger := log.Buffer()
+		require.NoError(t, SymflowerInstall(logger, temporaryPath))
 
 		require.NotContains(t, logOutput.String(), `Install "symflower" to`)
 		symflowerPath, err := exec.LookPath("symflower")

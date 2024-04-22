@@ -1,11 +1,10 @@
 package languagetesting
 
 import (
-	"log"
-
 	"github.com/stretchr/testify/mock"
 
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 )
 
 // MockLanguage is a mocked language.
@@ -22,14 +21,14 @@ func NewMockLanguageNamed(id string) *MockLanguage {
 }
 
 // Execute implements language.Language.
-func (m *MockLanguage) Execute(log *log.Logger, repositoryPath string) (coverage float64, err error) {
-	args := m.Called(log, repositoryPath)
+func (m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
+	args := m.Called(logger, repositoryPath)
 	return args.Get(0).(float64), args.Error(1)
 }
 
 // Files implements language.Language.
-func (m *MockLanguage) Files(log *log.Logger, repositoryPath string) (filePaths []string, err error) {
-	args := m.Called(log, repositoryPath)
+func (m *MockLanguage) Files(logger *log.Logger, repositoryPath string) (filePaths []string, err error) {
+	args := m.Called(logger, repositoryPath)
 	return args.Get(0).([]string), args.Error(1)
 }
 

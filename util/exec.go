@@ -3,12 +3,12 @@ package util
 import (
 	"bytes"
 	"io"
-	"log"
-	"os"
 	"os/exec"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
+
+	"github.com/symflower/eval-dev-quality/log"
 )
 
 // Command defines a command that should be executed.
@@ -20,9 +20,9 @@ type Command struct {
 	Directory string
 }
 
-// CommandWithResult executes a command, and prints and returns STDERR/STDOUT.
-func CommandWithResult(log *log.Logger, command *Command) (stdout string, stderr string, err error) {
-	log.Printf("$ %s", strings.Join(command.Command, " "))
+// CommandWithResult executes a command and returns its output, while printing the same output to the given logger.
+func CommandWithResult(logger *log.Logger, command *Command) (stdout string, stderr string, err error) {
+	logger.Printf("$ %s", strings.Join(command.Command, " "))
 
 	var stdoutWriter bytes.Buffer
 	var stderrWriter bytes.Buffer
@@ -30,8 +30,8 @@ func CommandWithResult(log *log.Logger, command *Command) (stdout string, stderr
 	if command.Directory != "" {
 		c.Dir = command.Directory
 	}
-	c.Stdout = io.MultiWriter(os.Stdout, &stdoutWriter)
-	c.Stderr = io.MultiWriter(os.Stderr, &stderrWriter)
+	c.Stdout = io.MultiWriter(logger.Writer(), &stdoutWriter)
+	c.Stderr = io.MultiWriter(logger.Writer(), &stderrWriter)
 
 	if err := c.Run(); err != nil {
 		return stdoutWriter.String(), stderrWriter.String(), pkgerrors.WithStack(err)

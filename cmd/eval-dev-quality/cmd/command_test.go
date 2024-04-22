@@ -4,8 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
+
+	"github.com/symflower/eval-dev-quality/log"
 )
 
 func TestExecute(t *testing.T) {
@@ -15,17 +16,15 @@ func TestExecute(t *testing.T) {
 		Arguments []string
 
 		ExpectedOutput string
-		ExpectedError  error
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualOutput, actualError := osutil.Capture(func() {
-				Execute(tc.Arguments)
-			})
+			logOutput, logger := log.Buffer()
 
-			assert.Equal(t, tc.ExpectedOutput, string(actualOutput))
-			assert.Equal(t, tc.ExpectedError, actualError)
+			Execute(logger, tc.Arguments)
+
+			assert.Equal(t, tc.ExpectedOutput, logOutput.String())
 		})
 	}
 
