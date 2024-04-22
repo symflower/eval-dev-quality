@@ -15,8 +15,12 @@ type Language interface {
 
 	// Files returns a list of relative file paths of the repository that should be evaluated.
 	Files(logger *log.Logger, repositoryPath string) (filePaths []string, err error)
+	// ImportPath returns the import path of the given source file.
+	ImportPath(projectRootPath string, filePath string) (importPath string)
 	// TestFilePath returns the file path of a test file given the corresponding file path of the test's source file.
 	TestFilePath(projectRootPath string, filePath string) (testFilePath string)
+	// TestFramework returns the human-readable name of the test framework that should be used.
+	TestFramework() (testFramework string)
 
 	// Execute invokes the language specific testing on the given repository.
 	Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error)

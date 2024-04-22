@@ -20,22 +20,7 @@ func NewMockLanguageNamed(id string) *MockLanguage {
 	return m
 }
 
-// Execute implements language.Language.
-func (m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
-	args := m.Called(logger, repositoryPath)
-	return args.Get(0).(float64), args.Error(1)
-}
-
-// Files implements language.Language.
-func (m *MockLanguage) Files(logger *log.Logger, repositoryPath string) (filePaths []string, err error) {
-	args := m.Called(logger, repositoryPath)
-	return args.Get(0).([]string), args.Error(1)
-}
-
-// TestFilePath implements language.Language.
-func (m *MockLanguage) TestFilePath(projectRootPath string, filePath string) (testFilePath string) {
-	return m.Called(projectRootPath, filePath).String(0)
-}
+var _ language.Language = &MockLanguage{}
 
 // ID implements language.Language.
 func (m *MockLanguage) ID() (id string) {
@@ -47,4 +32,29 @@ func (m *MockLanguage) Name() (id string) {
 	return m.Called().String(0)
 }
 
-var _ language.Language = &MockLanguage{}
+// Files implements language.Language.
+func (m *MockLanguage) Files(logger *log.Logger, repositoryPath string) (filePaths []string, err error) {
+	args := m.Called(logger, repositoryPath)
+	return args.Get(0).([]string), args.Error(1)
+}
+
+// ImportPath returns the import path of the given source file.
+func (m *MockLanguage) ImportPath(projectRootPath string, filePath string) (importPath string) {
+	return m.Called(projectRootPath, filePath).String(0)
+}
+
+// TestFilePath implements language.Language.
+func (m *MockLanguage) TestFilePath(projectRootPath string, filePath string) (testFilePath string) {
+	return m.Called(projectRootPath, filePath).String(0)
+}
+
+// TestFramework returns the human-readable name of the test framework that should be used.
+func (m *MockLanguage) TestFramework() (testFramework string) {
+	return m.Called().String(0)
+}
+
+// Execute implements language.Language.
+func (m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
+	args := m.Called(logger, repositoryPath)
+	return args.Get(0).(float64), args.Error(1)
+}
