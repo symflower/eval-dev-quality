@@ -69,6 +69,11 @@ func (l *Language) TestFilePath(projectRootPath string, filePath string) (testFi
 	return strings.TrimSuffix(filePath, ".go") + "_test.go"
 }
 
+// TestFramework returns the human-readable name of the test framework that should be used.
+func (l *Language) TestFramework() (testFramework string) {
+	return ""
+}
+
 var languageGoNoTestsMatch = regexp.MustCompile(`(?m)^DONE (\d+) tests.*in (.+?)$`)
 var languageGoCoverageMatch = regexp.MustCompile(`(?m)^coverage: (\d+\.?\d+)% of statements`)
 var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statements\]$`)

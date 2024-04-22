@@ -48,6 +48,11 @@ func (m *MockLanguage) TestFilePath(projectRootPath string, filePath string) (te
 	return m.Called(projectRootPath, filePath).String(0)
 }
 
+// TestFramework returns the human-readable name of the test framework that should be used.
+func (m *MockLanguage) TestFramework() (testFramework string) {
+	return m.Called().String(0)
+}
+
 // Execute implements language.Language.
 func (m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
 	args := m.Called(logger, repositoryPath)
