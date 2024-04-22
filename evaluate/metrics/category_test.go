@@ -13,7 +13,7 @@ func TestAssessmentsCategory(t *testing.T) {
 		Assessments Assessments
 		Total       uint
 
-		ExpectedAssessmentCategory AssessmentCategory
+		ExpectedAssessmentCategory *AssessmentCategory
 	}
 
 	validate := func(t *testing.T, tc *testCase) {

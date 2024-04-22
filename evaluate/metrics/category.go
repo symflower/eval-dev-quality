@@ -1,30 +1,78 @@
 package metrics
 
+import "fmt"
+
 // AssessmentCategory represents a categorical ranking of a model based on Assessments.
-type AssessmentCategory string
+type AssessmentCategory struct {
+	// Name holds a unique short name of the category.
+	Name string
+	// Description holds the description of a category.
+	Description string
+}
+
+// AllAssessmentCategories holds all assessment categories.
+var AllAssessmentCategories []*AssessmentCategory
+
+// registerAssessmentCategory registers a new assessment category.
+func registerAssessmentCategory(c AssessmentCategory) *AssessmentCategory {
+	for _, category := range AllAssessmentCategories {
+		if c.Name == category.Name {
+			panic(fmt.Sprintf("duplicated category name %q", c.Name))
+		}
+	}
+
+	AllAssessmentCategories = append(AllAssessmentCategories, &c)
+
+	return &c
+}
 
 var (
 	// AssessmentCategoryUnknown indicates that it is not possible to compute a model's category.
-	AssessmentCategoryUnknown = AssessmentCategory("category-unknown")
+	AssessmentCategoryUnknown = registerAssessmentCategory(AssessmentCategory{
+		Name:        "Category Unknown",
+		Description: "Models in this category could not be categorized.",
+	})
 	// AssessmentCategoryResponseError indicates that a model has encountered an error trying to produce a response.
-	AssessmentCategoryResponseError = AssessmentCategory("response-error")
+	AssessmentCategoryResponseError = registerAssessmentCategory(AssessmentCategory{
+		Name:        "Response Error",
+		Description: "Models in this category encountered an error.",
+	})
 	// AssessmentCategoryResponseEmpty indicates that a model has returned an empty response.
-	AssessmentCategoryResponseEmpty = AssessmentCategory("response-empty")
+	AssessmentCategoryResponseEmpty = registerAssessmentCategory(AssessmentCategory{
+		Name:        "Response Empty",
+		Description: "Models in this category produced an empty response.",
+	})
 	// AssessmentCategoryResponseNoCode indicates that a model's response did not contain any source code.
-	AssessmentCategoryResponseNoCode = AssessmentCategory("response-no-code")
+	AssessmentCategoryResponseNoCode = registerAssessmentCategory(AssessmentCategory{
+		Name:        "No Code",
+		Description: "Models in this category produced no code.",
+	})
 	// AssessmentCategoryCodeInvalid indicates that a model's generated code produced an error when executed.
-	AssessmentCategoryCodeInvalid = AssessmentCategory("code-invalid")
+	AssessmentCategoryCodeInvalid = registerAssessmentCategory(AssessmentCategory{
+		Name:        "Invalid Code",
+		Description: "Models in this category produced invalid code.",
+	})
 	// AssessmentCategoryCodeExecuted indicates that a model's generated code could be executed without an error.
-	AssessmentCategoryCodeExecuted = AssessmentCategory("code-executed")
+	AssessmentCategoryCodeExecuted = registerAssessmentCategory(AssessmentCategory{
+		Name:        "Executable Code",
+		Description: "Models in this category produced executable code.",
+	})
 	// AssessmentCategoryCodeCoverageStatementReached indicates that a model's generated code reached 100% statement coverage.
-	AssessmentCategoryCodeCoverageStatementReached = AssessmentCategory("code-coverage-statement")
+	AssessmentCategoryCodeCoverageStatementReached = registerAssessmentCategory(AssessmentCategory{
+		Name:        "Statement Coverage Reached",
+		Description: "Models in this category produced code that reached full statement coverage.",
+	})
 	// AssessmentCategoryCodeNoExcess indicates that a model's response did not contain more content than requested.
-	AssessmentCategoryCodeNoExcess = AssessmentCategory("code-no-excess")
+	AssessmentCategoryCodeNoExcess = registerAssessmentCategory(AssessmentCategory{
+		Name:        "No Excess Response",
+		Description: "Models in this category did not respond with more content than requested.",
+	})
 )
 
 // Category infers a categorical ranking of a model based on assessment values.
 // A models overall category corresponds to the criterion where the model was consistently able to receive "total" amount of points. I.e. if there were 3 tasks in total and a model was able to produce executing code for all tasks, but only in one case the coverage goal was reached, then the category is only "CodeExecuted" because the coverage goal was not reached consistently.
-func (a Assessments) Category(total uint) AssessmentCategory {
+// The returned category is never "nil".
+func (a Assessments) Category(total uint) *AssessmentCategory {
 	if total == 0 {
 		return AssessmentCategoryUnknown
 	}

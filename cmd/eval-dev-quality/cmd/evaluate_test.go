@@ -73,7 +73,7 @@ func TestEvaluateExecute(t *testing.T) {
 		},
 
 		ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-			assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=6, coverage-statement=1, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`)
+			assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("No Excess Response"): score=6, coverage-statement=1, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`)
 			if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
 				t.Logf("Output: %s", output)
 			}
@@ -86,6 +86,7 @@ func TestEvaluateExecute(t *testing.T) {
 				`), data)
 			},
 			"evaluation.log": nil,
+			"report.md":      nil,
 			"symflower_symbolic-execution/golang/golang/plain.log": nil,
 		},
 	})
