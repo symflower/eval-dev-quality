@@ -79,6 +79,10 @@ func TestEvaluateExecute(t *testing.T) {
 			}
 		},
 		ExpectedResultFiles: map[string]func(t *testing.T, resultPath string, filePath string, data string){
+			"categories.svg": func(t *testing.T, resultPath string, filePath, data string) {
+				assert.Contains(t, data, "No Excess Response</text>") // Assert "no excess" category is present.
+				assert.Contains(t, data, "1</text>")                  // Assert the Y-axis label is at least one for one model in that category.
+			},
 			"evaluation.csv": func(t *testing.T, resultPath string, filePath, data string) {
 				assert.Equal(t, bytesutil.StringTrimIndentations(`
 					model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -87,7 +91,8 @@ func TestEvaluateExecute(t *testing.T) {
 			},
 			"evaluation.log": nil,
 			"report.md": func(t *testing.T, resultPath string, filePath, data string) {
-				// Ensure the report links to the CSV file and logs.
+				// Ensure the report links to the CSV file, SVG file and logs.
+				assert.Contains(t, data, filepath.Join(resultPath, "categories.svg"))
 				assert.Contains(t, data, filepath.Join(resultPath, "evaluation.csv"))
 				assert.Contains(t, data, filepath.Join(resultPath, "evaluation.log"))
 			},

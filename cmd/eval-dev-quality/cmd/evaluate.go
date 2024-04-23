@@ -260,6 +260,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 		CSVPath: csvReportPath,
 		LogPath: logFilePath,
+		SVGPath: filepath.Join(command.ResultPath, "categories.svg"),
 
 		AssessmentPerModel: assessmentsPerModel,
 		TotalScore:         totalScore,
