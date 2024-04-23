@@ -27,6 +27,8 @@ import (
 type Evaluate struct {
 	// InstallToolsPath determines where tools for the evaluation are installed.
 	InstallToolsPath string `long:"install-tools-path" description:"Install tools for the evaluation into this path."`
+	// SymflowerBinaryPath overwites the Symflower binary path.
+	SymflowerBinaryPath string `long:"symflower-binary-path" description:"Overwrite the Symflower binary with this specific path instead of installing and using a global one." env:"SYMFLOWER_BINARY_PATH"`
 
 	// Languages determines which language should be used for the evaluation, or empty if all languages should be used.
 	Languages []string `long:"language" description:"Evaluate with this language. By default all languages are used."`
@@ -150,6 +152,10 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Install required tools for the basic evaluation.
 	{
+		if command.SymflowerBinaryPath != "" {
+			tools.SymflowerPath = command.SymflowerBinaryPath
+		}
+
 		if command.InstallToolsPath == "" {
 			command.InstallToolsPath, err = tools.InstallPathDefault()
 			if err != nil {

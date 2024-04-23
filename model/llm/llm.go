@@ -107,6 +107,9 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	assessment, testContent := prompt.ParseResponse(response)
 
 	testFilePath := language.TestFilePath(repositoryPath, filePath)
+	if err := os.MkdirAll(filepath.Join(repositoryPath, filepath.Dir(testFilePath)), 0755); err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
 	if err := os.WriteFile(filepath.Join(repositoryPath, testFilePath), []byte(testContent), 0644); err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}

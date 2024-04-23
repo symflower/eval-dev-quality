@@ -20,11 +20,25 @@ import (
 	"github.com/symflower/eval-dev-quality/util"
 )
 
+// SymflowerPath holds the file path to the Symflower binary or the command name that should be executed.
+var SymflowerPath = "symflower"
+
 // SymflowerVersion holds the version of Symflower required for this revision of the evaluation.
 const SymflowerVersion = "35657"
 
 // SymflowerInstall checks if the "symflower" binary has been installed, and if yes, updates it if necessary and possible.
 func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
+	// If the Symflower binary is overwritten, make sure it is a file path.
+	if SymflowerPath != "symflower" {
+		if osutil.FileExists(SymflowerPath) != nil {
+			return pkgerrors.WithStack(pkgerrors.WithMessage(err, "Symflower binary is not a valid file path"))
+		}
+
+		logger.Printf("Using Symflower binary %s", SymflowerPath)
+
+		return nil
+	}
+
 	installPath, err = filepath.Abs(installPath)
 	if err != nil {
 		return pkgerrors.WithStack(err)

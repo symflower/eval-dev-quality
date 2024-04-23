@@ -8,6 +8,7 @@ import (
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
+	"github.com/symflower/eval-dev-quality/tools"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
@@ -30,7 +31,7 @@ func (m *Model) ID() (id string) {
 func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
 	_, _, err = util.CommandWithResult(logger, &util.Command{
 		Command: []string{
-			"symflower", "unit-tests",
+			tools.SymflowerPath, "unit-tests",
 			"--workspace", repositoryPath,
 			filePath,
 		},
