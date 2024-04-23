@@ -25,5 +25,8 @@ jobs:
           make install-tools-testing
           echo "PATH=$HOME/.eval-dev-quality/bin:$PATH" >> $GITHUB_ENV
 
+      - name: Lint Build
+        run: make lint-build-ci
+
       - name: Test
         run: make test

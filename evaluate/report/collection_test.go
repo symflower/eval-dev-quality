@@ -44,8 +44,8 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 		Name: "Single Group",
 
 		Assessments: AssessmentPerModelPerLanguagePerRepository{
-			modeltesting.NewMockModelNamed("some-model"): {
-				languagetesting.NewMockLanguageNamed("some-language"): {
+			modeltesting.NewMockModelNamed(t, "some-model"): {
+				languagetesting.NewMockLanguageNamed(t, "some-language"): {
 					"some-repository": metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 1,
 					},
@@ -64,8 +64,8 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 		Name: "Multiple Groups",
 
 		Assessments: AssessmentPerModelPerLanguagePerRepository{
-			modeltesting.NewMockModelNamed("some-model-a"): {
-				languagetesting.NewMockLanguageNamed("some-language-a"): {
+			modeltesting.NewMockModelNamed(t, "some-model-a"): {
+				languagetesting.NewMockLanguageNamed(t, "some-language-a"): {
 					"some-repository-a": metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 1,
 					},
@@ -73,7 +73,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 						metrics.AssessmentKeyResponseNoExcess: 2,
 					},
 				},
-				languagetesting.NewMockLanguageNamed("some-language-b"): {
+				languagetesting.NewMockLanguageNamed(t, "some-language-b"): {
 					"some-repository-a": metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 3,
 					},
@@ -82,8 +82,8 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 					},
 				},
 			},
-			modeltesting.NewMockModelNamed("some-model-b"): {
-				languagetesting.NewMockLanguageNamed("some-language-a"): {
+			modeltesting.NewMockModelNamed(t, "some-model-b"): {
+				languagetesting.NewMockLanguageNamed(t, "some-language-a"): {
 					"some-repository-a": metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 5,
 					},
@@ -91,7 +91,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 						metrics.AssessmentKeyResponseNoExcess: 6,
 					},
 				},
-				languagetesting.NewMockLanguageNamed("some-language-b"): {
+				languagetesting.NewMockLanguageNamed(t, "some-language-b"): {
 					"some-repository-a": metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 7,
 					},

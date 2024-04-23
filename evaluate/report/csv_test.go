@@ -33,8 +33,8 @@ func TestFormatCSV(t *testing.T) {
 		Name: "Single Empty Model",
 
 		Assessments: AssessmentPerModelPerLanguagePerRepository{
-			modeltesting.NewMockModelNamed("some-model"): {
-				languagetesting.NewMockLanguageNamed("some-language"): {
+			modeltesting.NewMockModelNamed(t, "some-model"): {
+				languagetesting.NewMockLanguageNamed(t, "some-language"): {
 					"some-repository": metrics.NewAssessments(),
 				},
 			},
@@ -49,8 +49,8 @@ func TestFormatCSV(t *testing.T) {
 		Name: "Multiple Models",
 
 		Assessments: AssessmentPerModelPerLanguagePerRepository{
-			modeltesting.NewMockModelNamed("some-model-a"): {
-				languagetesting.NewMockLanguageNamed("some-language"): {
+			modeltesting.NewMockModelNamed(t, "some-model-a"): {
+				languagetesting.NewMockLanguageNamed(t, "some-language"): {
 					"some-repository": metrics.Assessments{
 						metrics.AssessmentKeyCoverageStatement: 1,
 						metrics.AssessmentKeyFilesExecuted:     2,
@@ -61,8 +61,8 @@ func TestFormatCSV(t *testing.T) {
 					},
 				},
 			},
-			modeltesting.NewMockModelNamed("some-model-b"): {
-				languagetesting.NewMockLanguageNamed("some-language"): {
+			modeltesting.NewMockModelNamed(t, "some-model-b"): {
+				languagetesting.NewMockLanguageNamed(t, "some-language"): {
 					"some-repository": metrics.Assessments{
 						metrics.AssessmentKeyCoverageStatement: 1,
 						metrics.AssessmentKeyFilesExecuted:     2,

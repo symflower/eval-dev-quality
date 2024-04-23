@@ -23,7 +23,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		SetupMock func(mockedProvider *providertesting.MockQueryProvider)
+		SetupMock func(mockedProvider *providertesting.MockQuery)
 
 		Language          language.Language
 		ModelID           string
@@ -50,7 +50,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 
 			require.NoError(t, os.WriteFile(filepath.Join(temporaryPath, tc.SourceFilePath), []byte(bytesutil.StringTrimIndentations(tc.SourceFileContent)), 0644))
 
-			mock := &providertesting.MockQueryProvider{}
+			mock := providertesting.NewMockQuery(t)
 			tc.SetupMock(mock)
 			llm := NewModel(mock, tc.ModelID)
 
@@ -82,7 +82,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Simple",
 
-		SetupMock: func(mockedProvider *providertesting.MockQueryProvider) {
+		SetupMock: func(mockedProvider *providertesting.MockQuery) {
 			mockedProvider.On("Query", mock.Anything, "model-id", promptMessage).Return(bytesutil.StringTrimIndentations(`
 					`+"```"+`
 					package native
