@@ -281,6 +281,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 		CSVPath: "./evaluation.csv",
 		LogPath: "./evaluation.log",
+		SVGPath: "./categories.svg",
 
 		AssessmentPerModel: assessmentsPerModel,
 		TotalScore:         totalScore,

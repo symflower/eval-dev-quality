@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -12,13 +13,23 @@ import (
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/log"
 )
 
 // validateReportLinks checks if the Markdown report data contains all the links to other relevant report files.
 func validateReportLinks(t *testing.T, data string) {
+	assert.Contains(t, data, "](./categories.svg)")
 	assert.Contains(t, data, "](./evaluation.csv)")
 	assert.Contains(t, data, "](./evaluation.log)")
+}
+
+// validateSVGContent checks if the SVG data contains all given categories and an axis label for the maximal model count.
+func validateSVGContent(t *testing.T, data string, categories []*metrics.AssessmentCategory, maxModelCount uint) {
+	for _, category := range categories {
+		assert.Contains(t, data, fmt.Sprintf("%s</text>", category.Name))
+	}
+	assert.Contains(t, data, fmt.Sprintf("%d</text>", maxModelCount))
 }
 
 func TestEvaluateExecute(t *testing.T) {
@@ -90,6 +101,9 @@ func TestEvaluateExecute(t *testing.T) {
 				}
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+				"categories.svg": func(t *testing.T, filePath, data string) {
+					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
+				},
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
 					assert.Equal(t, bytesutil.StringTrimIndentations(`
 						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -117,6 +131,9 @@ func TestEvaluateExecute(t *testing.T) {
 				}
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+				"categories.svg": func(t *testing.T, filePath, data string) {
+					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
+				},
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
 					assert.Equal(t, bytesutil.StringTrimIndentations(`
 						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -152,6 +169,9 @@ func TestEvaluateExecute(t *testing.T) {
 					}
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					"categories.svg": func(t *testing.T, filePath, data string) {
+						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
+					},
 					"evaluation.csv": func(t *testing.T, filePath, data string) {
 						assert.Equal(t, bytesutil.StringTrimIndentations(`
 							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -180,6 +200,9 @@ func TestEvaluateExecute(t *testing.T) {
 					}
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					"categories.svg": func(t *testing.T, filePath, data string) {
+						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
+					},
 					"evaluation.csv": func(t *testing.T, filePath, data string) {
 						assert.Equal(t, bytesutil.StringTrimIndentations(`
 							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
