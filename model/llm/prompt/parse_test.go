@@ -80,6 +80,19 @@ func TestParseResponse(t *testing.T) {
 		})
 
 		validate(t, &testCase{
+			Name: "No Final Newline",
+
+			Response: "```\n" + code + "\n```",
+
+			ExpectedAssessment: metrics.Assessments{
+				metrics.AssessmentKeyResponseNotEmpty: 1,
+				metrics.AssessmentKeyResponseNoExcess: 1,
+				metrics.AssessmentKeyResponseWithCode: 1,
+			},
+			ExpectedCode: code,
+		})
+
+		validate(t, &testCase{
 			Name: "With Prose",
 
 			Response: "Some text...\n\n```\n" + code + "\n```\n\nSome more text...",
@@ -91,42 +104,42 @@ func TestParseResponse(t *testing.T) {
 			},
 			ExpectedCode: code,
 		})
-	})
 
-	validate(t, &testCase{
-		Name: "Language Specified",
+		validate(t, &testCase{
+			Name: "Language Specified",
 
-		Response: "```go\n" + code + "\n```\n",
+			Response: "```go\n" + code + "\n```\n",
 
-		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyResponseNotEmpty: 1,
-			metrics.AssessmentKeyResponseNoExcess: 1,
-			metrics.AssessmentKeyResponseWithCode: 1,
-		},
-		ExpectedCode: code,
-	})
+			ExpectedAssessment: metrics.Assessments{
+				metrics.AssessmentKeyResponseNotEmpty: 1,
+				metrics.AssessmentKeyResponseNoExcess: 1,
+				metrics.AssessmentKeyResponseWithCode: 1,
+			},
+			ExpectedCode: code,
+		})
 
-	validate(t, &testCase{
-		Name: "Whitespace before Code Block Guards",
+		validate(t, &testCase{
+			Name: "Whitespace before Code Block Guards",
 
-		Response: " ```\n" + code + "\n\t```\n",
-		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyResponseNotEmpty: 1,
-			metrics.AssessmentKeyResponseNoExcess: 1,
-			metrics.AssessmentKeyResponseWithCode: 1,
-		},
-		ExpectedCode: code,
-	})
+			Response: " ```\n" + code + "\n\t```\n",
+			ExpectedAssessment: metrics.Assessments{
+				metrics.AssessmentKeyResponseNotEmpty: 1,
+				metrics.AssessmentKeyResponseNoExcess: 1,
+				metrics.AssessmentKeyResponseWithCode: 1,
+			},
+			ExpectedCode: code,
+		})
 
-	validate(t, &testCase{
-		Name: "Duplicated Code Block Guards",
+		validate(t, &testCase{
+			Name: "Duplicated Code Block Guards",
 
-		Response: "```\n```\n" + code + "\n```\n```\n",
-		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyResponseNotEmpty: 1,
-			metrics.AssessmentKeyResponseNoExcess: 1,
-			metrics.AssessmentKeyResponseWithCode: 1,
-		},
-		ExpectedCode: code,
+			Response: "```\n```\n" + code + "\n```\n```\n",
+			ExpectedAssessment: metrics.Assessments{
+				metrics.AssessmentKeyResponseNotEmpty: 1,
+				metrics.AssessmentKeyResponseNoExcess: 1,
+				metrics.AssessmentKeyResponseWithCode: 1,
+			},
+			ExpectedCode: code,
+		})
 	})
 }
