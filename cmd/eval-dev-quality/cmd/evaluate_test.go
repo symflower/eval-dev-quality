@@ -116,4 +116,60 @@ func TestEvaluateExecute(t *testing.T) {
 			},
 		})
 	})
+
+	t.Run("Repository filter", func(t *testing.T) {
+		t.Run("Single", func(t *testing.T) {
+			validate(t, &testCase{
+				Name: "Single Language",
+
+				Arguments: []string{
+					"--language", "golang",
+					"--model", "symflower/symbolic-execution",
+					"--repository", "golang/plain",
+				},
+
+				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
+					assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=6, coverage-statement=1, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`)
+					if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
+						t.Logf("Output: %s", output)
+					}
+				},
+				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					"evaluation.csv": func(t *testing.T, filePath, data string) {
+						assert.Equal(t, bytesutil.StringTrimIndentations(`
+							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+							symflower/symbolic-execution,golang,golang/plain,6,1,1,1,1,1,1
+						`), data)
+					},
+					"evaluation.log": nil,
+					"symflower_symbolic-execution/golang/golang/plain.log": nil,
+				},
+			})
+			validate(t, &testCase{
+				Name: "Multiple Languages",
+
+				Arguments: []string{
+					"--model", "symflower/symbolic-execution",
+					"--repository", "golang/plain",
+				},
+
+				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
+					assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=6, coverage-statement=1, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`)
+					if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
+						t.Logf("Output: %s", output)
+					}
+				},
+				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					"evaluation.csv": func(t *testing.T, filePath, data string) {
+						assert.Equal(t, bytesutil.StringTrimIndentations(`
+							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+							symflower/symbolic-execution,golang,golang/plain,6,1,1,1,1,1,1
+						`), data)
+					},
+					"evaluation.log": nil,
+					"symflower_symbolic-execution/golang/golang/plain.log": nil,
+				},
+			})
+		})
+	})
 }
