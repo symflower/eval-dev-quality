@@ -13,6 +13,7 @@ import (
 
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/tools"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
@@ -82,14 +83,9 @@ var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statemen
 func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
 	commandOutput, err := util.CommandWithResult(logger, &util.Command{
 		Command: []string{
-			"gotestsum",
-			"--format", "standard-verbose", // Keep formatting consistent.
-			"--hide-summary", "skipped", // We are not interested in skipped tests, because they are the same as no tests at all.
-			"--",       // Let the real Go "test" tool options begin.
-			"-cover",   // Enable statement coverage.
-			"-v",       // Output with the maximum information for easier debugging.
-			"-vet=off", // Disable all linter checks, because those should be part of a different task.
-			"./...",    // Always execute all tests of the repository in case multiple test files have been generated.
+			tools.SymflowerPath, "test",
+			"--language", "golang",
+			"--workspace", repositoryPath,
 		},
 
 		Directory: repositoryPath,
