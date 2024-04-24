@@ -86,7 +86,7 @@ func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 	if err == nil {
 		logger.Printf("Checking \"symflower\" binary %s", symflowerPath)
 
-		symflowerVersionOutput, _, err := util.CommandWithResult(logger, &util.Command{
+		symflowerVersionOutput, err := util.CommandWithResult(logger, &util.Command{
 			Command: []string{symflowerPath, "version"},
 		})
 		if err != nil {
@@ -140,7 +140,7 @@ func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 	if err := osutil.DownloadFileWithProgress("https://download.symflower.com/local/v"+SymflowerVersion+"/symflower-"+osIdentifier+"-"+architectureIdentifier, symflowerInstallPath); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot download to %s", symflowerInstallPath)))
 	}
-	if _, _, err := util.CommandWithResult(logger, &util.Command{
+	if _, err := util.CommandWithResult(logger, &util.Command{
 		Command: []string{"chmod", "+x", symflowerInstallPath},
 	}); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot make %s executable", symflowerInstallPath)))
