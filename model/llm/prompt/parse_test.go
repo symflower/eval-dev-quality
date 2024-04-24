@@ -80,6 +80,19 @@ func TestParseResponse(t *testing.T) {
 		})
 
 		validate(t, &testCase{
+			Name: "No Final Newline",
+
+			Response: "```\n" + code + "\n```",
+
+			ExpectedAssessment: metrics.Assessments{
+				metrics.AssessmentKeyResponseNotEmpty: 1,
+				metrics.AssessmentKeyResponseNoExcess: 1,
+				metrics.AssessmentKeyResponseWithCode: 1,
+			},
+			ExpectedCode: code,
+		})
+
+		validate(t, &testCase{
 			Name: "With Prose",
 
 			Response: "Some text...\n\n```\n" + code + "\n```\n\nSome more text...",
