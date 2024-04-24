@@ -1,9 +1,11 @@
 package java
 
 import (
-	"fmt"
+	"errors"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strconv"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
@@ -85,6 +87,8 @@ func (l *Language) TestFramework() (testFramework string) {
 	return "JUnit 5"
 }
 
+var languageJavaCoverageMatch = regexp.MustCompile(`Total coverage (.+?)%`)
+
 // Execute invokes the language specific testing on the given repository.
 func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
 	commandOutput, err := util.CommandWithResult(logger, &util.Command{
@@ -100,7 +104,14 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		return 0.0, pkgerrors.WithStack(err)
 	}
 
-	fmt.Println(commandOutput)
+	mc := languageJavaCoverageMatch.FindStringSubmatch(commandOutput)
+	if mc == nil {
+		return 0.0, pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("could not find coverage report"), commandOutput))
+	}
+	coverage, err = strconv.ParseFloat(mc[1], 64)
+	if err != nil {
+		return 0.0, pkgerrors.WithStack(err)
+	}
 
-	return 100.0, nil // TODO
+	return coverage, nil
 }

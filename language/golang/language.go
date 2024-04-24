@@ -111,7 +111,7 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 
 	mc := languageGoCoverageMatch.FindStringSubmatch(commandOutput)
 	if mc == nil {
-		return 0.0, pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("could not find Go coverage report"), commandOutput))
+		return 0.0, pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("could not find coverage report"), commandOutput))
 	}
 	coverage, err = strconv.ParseFloat(mc[1], 64)
 	if err != nil {
