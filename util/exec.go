@@ -1,12 +1,12 @@
 package util
 
 import (
-	"bytes"
 	"io"
 	"os/exec"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/log"
 )
@@ -21,21 +21,20 @@ type Command struct {
 }
 
 // CommandWithResult executes a command and returns its output, while printing the same output to the given logger.
-func CommandWithResult(logger *log.Logger, command *Command) (stdout string, stderr string, err error) {
+func CommandWithResult(logger *log.Logger, command *Command) (output string, err error) {
 	logger.Printf("$ %s", strings.Join(command.Command, " "))
 
-	var stdoutWriter bytes.Buffer
-	var stderrWriter bytes.Buffer
+	var writer bytesutil.SynchronizedBuffer
 	c := exec.Command(command.Command[0], command.Command[1:]...)
 	if command.Directory != "" {
 		c.Dir = command.Directory
 	}
-	c.Stdout = io.MultiWriter(logger.Writer(), &stdoutWriter)
-	c.Stderr = io.MultiWriter(logger.Writer(), &stderrWriter)
+	c.Stdout = io.MultiWriter(logger.Writer(), &writer)
+	c.Stderr = c.Stdout
 
 	if err := c.Run(); err != nil {
-		return stdoutWriter.String(), stderrWriter.String(), pkgerrors.WithStack(err)
+		return writer.String(), pkgerrors.WithStack(err)
 	}
 
-	return stdoutWriter.String(), stderrWriter.String(), nil
+	return writer.String(), nil
 }

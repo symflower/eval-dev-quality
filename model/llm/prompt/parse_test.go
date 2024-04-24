@@ -65,6 +65,20 @@ func TestParseResponse(t *testing.T) {
 		ExpectedCode: code,
 	})
 
+	validate(t, &testCase{
+		Name: "Unclosed Tags",
+
+		Response: "```\n" + code,
+
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyResponseNotEmpty: 1,
+			// If there are incorrect code fences, we currently cannot determine what is code and what is (excessive) text.
+			metrics.AssessmentKeyResponseNoExcess: 0,
+			metrics.AssessmentKeyResponseWithCode: 0,
+		},
+		ExpectedCode: code,
+	})
+
 	t.Run("Formatted Code", func(t *testing.T) {
 		validate(t, &testCase{
 			Name: "No Prose",

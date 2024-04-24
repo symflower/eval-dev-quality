@@ -80,7 +80,7 @@ var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statemen
 
 // Execute invokes the language specific testing on the given repository.
 func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
-	stdout, _, err := util.CommandWithResult(logger, &util.Command{
+	commandOutput, err := util.CommandWithResult(logger, &util.Command{
 		Command: []string{
 			"gotestsum",
 			"--format", "standard-verbose", // Keep formatting consistent.
@@ -98,7 +98,7 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		return 0.0, pkgerrors.WithStack(err)
 	}
 
-	ms := languageGoNoTestsMatch.FindStringSubmatch(stdout)
+	ms := languageGoNoTestsMatch.FindStringSubmatch(commandOutput)
 	if ms == nil {
 		return 0.0, pkgerrors.WithStack(errors.New("could not find Go test summary"))
 	}
@@ -109,13 +109,13 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		return 0.0, pkgerrors.WithStack(language.ErrNoTestFound)
 	}
 
-	if languageGoNoCoverageMatch.MatchString(stdout) {
+	if languageGoNoCoverageMatch.MatchString(commandOutput) {
 		return 0.0, nil
 	}
 
-	mc := languageGoCoverageMatch.FindStringSubmatch(stdout)
+	mc := languageGoCoverageMatch.FindStringSubmatch(commandOutput)
 	if mc == nil {
-		return 0.0, pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("could not find Go coverage report"), stdout))
+		return 0.0, pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("could not find coverage report"), commandOutput))
 	}
 	coverage, err = strconv.ParseFloat(mc[1], 64)
 	if err != nil {

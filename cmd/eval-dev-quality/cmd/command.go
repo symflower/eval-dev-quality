@@ -16,7 +16,7 @@ func Execute(logger *log.Logger, arguments []string) {
 	var parser = flags.NewNamedParser("eval-dev-quality", flags.Default)
 	parser.LongDescription = "Command to manage, update and actually execute the `eval-dev-quality` evaluation benchmark."
 	if _, err := parser.AddGroup("Common command options", "", &Command{}); err != nil {
-		logger.Fatalf("Could not add arguments group: %+v", err)
+		logger.Panicf("Could not add arguments group: %+v", err)
 	}
 
 	// Print the help, when there is no active command.
@@ -39,7 +39,7 @@ func Execute(logger *log.Logger, arguments []string) {
 			return
 		}
 
-		logger.Fatalf("Could not parse arguments: %+v", err)
+		logger.Panicf("Could not parse arguments: %+v", err)
 	}
 	if parser.Active == nil {
 		parser.WriteHelp(logger.Writer())

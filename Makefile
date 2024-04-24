@@ -18,6 +18,12 @@ else
 	PACKAGE := $(PACKAGE_BASE)/...
 endif
 
+ifdef NO_UNIT_TEST_CACHE
+	export NO_UNIT_TEST_CACHE=-count=1
+else
+	export NO_UNIT_TEST_CACHE=
+endif
+
 .DEFAULT_GOAL := help
 
 clean: # Clean up artifacts of the development environment to allow for untainted builds, installations and updates.
@@ -65,5 +71,5 @@ require-clean-worktree: # Check if there are uncommitted changes.
 .PHONY: require-clean-worktree
 
 test: # [<Go package] - # Test everything, or only the specified package.
-	gotestsum --format standard-verbose --hide-summary skipped -- -race -test.timeout $(UNIT_TEST_TIMEOUT)s -v $(PACKAGE)
+	gotestsum --format standard-verbose --hide-summary skipped -- $(NO_UNIT_TEST_CACHE) -race -test.timeout $(UNIT_TEST_TIMEOUT)s -v $(PACKAGE)
 .PHONY: test

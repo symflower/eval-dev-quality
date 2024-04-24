@@ -26,12 +26,12 @@ func (command *InstallTools) Execute(args []string) (err error) {
 	if command.InstallToolsPath == "" {
 		command.InstallToolsPath, err = tools.InstallPathDefault()
 		if err != nil {
-			command.logger.Fatalf("ERROR: %s", err)
+			command.logger.Panicf("ERROR: %s", err)
 		}
 	}
 
 	if err := tools.Install(command.logger, command.InstallToolsPath); err != nil {
-		command.logger.Fatalf("ERROR: %s", err)
+		command.logger.Panicf("ERROR: %s", err)
 	}
 
 	return nil

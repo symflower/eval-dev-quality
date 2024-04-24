@@ -29,9 +29,10 @@ func (m *Model) ID() (id string) {
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
 func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
-	_, _, err = util.CommandWithResult(logger, &util.Command{
+	_, err = util.CommandWithResult(logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "unit-tests",
+			"--code-disable-fetch-dependencies",
 			"--workspace", repositoryPath,
 			filePath,
 		},
