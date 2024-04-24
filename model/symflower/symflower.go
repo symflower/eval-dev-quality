@@ -32,6 +32,7 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	_, err = util.CommandWithResult(logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "unit-tests",
+			"--code-disable-fetch-dependencies",
 			"--workspace", repositoryPath,
 			filePath,
 		},
