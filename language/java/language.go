@@ -84,7 +84,7 @@ func (l *Language) TestFilePath(projectRootPath string, filePath string) (testFi
 
 // TestFramework returns the human-readable name of the test framework that should be used.
 func (l *Language) TestFramework() (testFramework string) {
-	return "JUnit 5"
+	return "JUnit5"
 }
 
 var languageJavaCoverageMatch = regexp.MustCompile(`Total coverage (.+?)%`)

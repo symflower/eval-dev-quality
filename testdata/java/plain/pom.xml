@@ -5,6 +5,10 @@
 	<groupId>eval.dev.quality</groupId>
 	<artifactId>test-java-plain</artifactId>
 	<version>SNAPSHOT</version>
+	<properties>
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+	</properties>
 	<build>
 		<plugins>
 			<plugin>
