@@ -93,6 +93,15 @@ func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 			return pkgerrors.WithStack(err)
 		}
 
+		// Development version of Symflower is always OK to use.
+		if strings.Contains(symflowerVersionOutput, " development on") {
+			if !strings.Contains(symflowerVersionOutput, "symflower-local development on") {
+				return pkgerrors.WithStack(errors.New("allow Symflower binary to be used concurrently with its shared folder"))
+			}
+
+			return nil
+		}
+
 		m := regexp.MustCompile(`symflower v(\d+) on`).FindStringSubmatch(symflowerVersionOutput)
 		if m == nil {
 			return pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("cannot find version"), symflowerVersionOutput))
