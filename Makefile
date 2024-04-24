@@ -7,6 +7,9 @@ ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(ARGS):;@:) # turn arguments into do-nothing targets
 export ARGS
 
+HAVE_CHANGED_FILES := ! git --no-pager diff --exit-code
+HAVE_UNTRACKED_FILES := git ls-files --others --exclude-standard | grep .
+
 ifdef ARGS
 	HAS_ARGS := "1"
 	PACKAGE := $(ARGS)
@@ -39,9 +42,27 @@ install-all: install install-tools-testing # Install everything for and of this 
 .PHONY: install-all
 
 install-tools-testing: # Install tools that are used for testing.
+	go install -v github.com/vektra/mockery/v2@v2.42.3
 	go install -v gotest.tools/gotestsum@v1.11.0
 	eval-dev-quality install-tools
 .PHONY: install-tools-testing
+
+generate: # Run code generation.
+	mockery
+.PHONY: generate
+
+lint-build-ci: generate # Check artifacts.
+	make require-clean-worktree
+.PHONY: lint-build-ci
+
+require-clean-worktree: # Check if there are uncommitted changes.
+	git status
+
+	@if $(HAVE_CHANGED_FILES) || $(HAVE_UNTRACKED_FILES); then\
+			echo $(if $(ERROR),$(ERROR),"Error: Found uncommitted changes");\
+			exit 1;\
+	fi
+.PHONY: require-clean-worktree
 
 test: # [<Go package] - # Test everything, or only the specified package.
 	gotestsum --format standard-verbose --hide-summary skipped -- -race -test.timeout $(UNIT_TEST_TIMEOUT)s -v $(PACKAGE)
