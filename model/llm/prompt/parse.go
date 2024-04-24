@@ -33,6 +33,11 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 	if len(blocks) == 0 {
 		// TODO If we cannot distinguish between code and text, we sadly also cannot check if the response contains actual code or if there is any excess response content. https://github.com/symflower/eval-dev-quality/issues/43
 
+		// If we weren`t able to extract blocks despite code fences being present, that means they are not used correctly (i.e. opened and not closed or vice versa) so just remove them completely.
+		if codeTagMatch.MatchString(response) {
+			response = strings.ReplaceAll(response, "```", "")
+		}
+
 		return assessment, strings.TrimSpace(response)
 	}
 	assessment[metrics.AssessmentKeyResponseWithCode]++
