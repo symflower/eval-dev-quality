@@ -98,11 +98,12 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 		return nil, err
 	}
 
+	logger.Printf("Querying model %q with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
 	response, err := m.provider.Query(context.Background(), m.model, request)
 	if err != nil {
 		return nil, err
 	}
-	logger.Printf("Model %q responded to query %s with: %s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
+	logger.Printf("Model %q responded with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
 
 	assessment, testContent := prompt.ParseResponse(response)
 
