@@ -1,4 +1,4 @@
-name: Go
+name: Test
 
 on:
   push:
@@ -22,6 +22,11 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '11'
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: '3.9.1'
 
       - name: Build
         run: make install
