@@ -48,7 +48,7 @@ install-all: install install-tools-testing # Install everything for and of this 
 .PHONY: install-all
 
 install-tools-testing: # Install tools that are used for testing.
-	go install -v github.com/vektra/mockery/v2@v2.42.3
+	go install -v github.com/vektra/mockery/v2@v2.40.3
 	go install -v gotest.tools/gotestsum@v1.11.0
 	eval-dev-quality install-tools
 .PHONY: install-tools-testing
