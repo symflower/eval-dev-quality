@@ -1,0 +1,35 @@
+2024/04/25 14:04:21 Evaluating model "openrouter/nousresearch/nous-hermes-2-vision-7b" using language "golang" and repository "golang/plain"
+2024/04/25 14:04:21 Querying model "openrouter/nousresearch/nous-hermes-2-vision-7b" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/04/25 14:04:21 Evaluated model "openrouter/nousresearch/nous-hermes-2-vision-7b" using language "golang" and repository "golang/plain": encountered 1 problems: [empty LLM "nousresearch/nous-hermes-2-vision-7b" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[879e31f30a575afa-VIE] Content-Type:[application/json] Date:[Thu, 25 Apr 2024 12:04:21 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::h7gst-1714046661627-6788b91b191b]]}
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	src/github.com/symflower/eval-dev-quality/provider/openrouter/openrouter.go:85
+github.com/symflower/eval-dev-quality/model/llm.(*Model).GenerateTestsForFile
+	src/github.com/symflower/eval-dev-quality/model/llm/llm.go:102
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	src/github.com/symflower/eval-dev-quality/evaluate/repository.go:58
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:205
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+plain.go]

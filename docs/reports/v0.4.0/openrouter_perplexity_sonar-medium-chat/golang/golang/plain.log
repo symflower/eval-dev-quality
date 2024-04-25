@@ -1,0 +1,43 @@
+2024/04/25 14:06:23 Evaluating model "openrouter/perplexity/sonar-medium-chat" using language "golang" and repository "golang/plain"
+2024/04/25 14:06:23 Querying model "openrouter/perplexity/sonar-medium-chat" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/04/25 14:06:27 Model "openrouter/perplexity/sonar-medium-chat" responded with:
+	Here is the test code that should achieve 100% code coverage for the given `plain.go` file:
+
+	```go
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		// Test the plain function
+		plain()
+	}
+
+	func TestMain(m *testing.M) {
+		// Call the testing.M.Run method to run all registered tests
+		m.Run()
+	}
+	```
+
+	The `TestPlain` function calls the `plain` function to ensure that it is executed during testing. The `TestMain` function is used to run all registered tests in the package.
+2024/04/25 14:06:27 $ symflower test --language golang --workspace /tmp/eval-dev-quality2109054785/plain
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.001s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.171s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/04/25 14:06:27 Evaluated model "openrouter/perplexity/sonar-medium-chat" using language "golang" and repository "golang/plain": encountered 0 problems: []

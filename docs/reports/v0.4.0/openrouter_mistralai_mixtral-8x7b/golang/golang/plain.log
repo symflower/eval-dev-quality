@@ -1,0 +1,147 @@
+2024/04/25 14:03:28 Evaluating model "openrouter/mistralai/mixtral-8x7b" using language "golang" and repository "golang/plain"
+2024/04/25 14:03:28 Querying model "openrouter/mistralai/mixtral-8x7b" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/04/25 14:03:35 Model "openrouter/mistralai/mixtral-8x7b" responded with:
+	golang/normal
+	End of challenge!
+
+
+	/*
+	 * LSTBGI: TEMPLATE
+	 */
+
+	/*
+	 * LSTBGI: helpers
+	 */
+
+
+	func TestValidStatusCode(t *testing.T) {
+		tests := []struct {
+			receivedStatusCode int
+			validStatusCode    int
+		}{
+			{http.StatusOK, 200},
+			{http.StatusCreated, 201},
+			{http.StatusAccepted, 202},
+			{http.StatusNonAuthoritativeInformation, 203},
+			{http.StatusNoContent, 204},
+			{http.StatusResetContent, 205},
+			{http.StatusPartialContent, 206},
+
+			{http.StatusMultipleChoices, 300},
+			{http.StatusMovedPermanently, 301},
+			{http.StatusFound, 302},
+			{http.StatusSeeOther, 303},
+			{http.StatusNotModified, 304},
+			{http.StatusUseProxy, 305},
+			{http.StatusTemporaryRedirect, 307},
+			{http.StatusReserved, 308},
+
+			{http.StatusBadRequest, 400},
+			{http.StatusUnauthorized, 401},
+			{http.StatusPaymentRequired, 402},
+			{http.StatusForbidden, 403},
+			{http.StatusNotFound, 404},
+			{http.StatusMethodNotAllowed, 405},
+			{http.StatusNotAcceptable, 406},
+			{http.StatusProxyAuthRequired, 407},
+			{http.StatusRequestTimeout, 408},
+			{http.StatusConflict, 409},
+			{http.StatusGone, 410},
+			{http.StatusLengthRequired, 411},
+			{http.StatusPreconditionFailed, 412},
+			{http.StatusPayloadTooLarge, 413},
+			{http.StatusURITooLong, 414},
+			{http.StatusUnsupportedMediaType, 415},
+			{http.StatusRangeNotSatisfiable, 416},
+			{http.StatusExpectationFailed, 417},
+			{http.StatusTeapot, 418},
+			{http.StatusMisdirectedRequest, 421},
+			{http.StatusUnprocessableEntity, 422},
+			{http.StatusLocked, 423},
+			{http.StatusFailedDependency, 424},
+			{http.StatusTooEarly, 425},
+			{http.StatusUpgradeRequired, 426},
+			{http.StatusPreconditionRequired, 428},
+			{http.StatusTooManyRequests, 429},
+			{http.StatusRequestHeaderFieldsTooLarge, 431},
+			{http.StatusUnavailableForLegalReasons, 451},
+
+			{http.StatusInternalServerError, 500},
+			{http.StatusNotImplemented, 501},
+			{http.StatusBadGateway, 502},
+			{http.StatusServiceUnavailable, 503},
+			{http.StatusGatewayTimeout, 504},
+			{http.StatusHTTPVersionNotSupported, 505},
+			{http.StatusVariantAlsoNegotiates, 506},
+			{http.StatusInsufficientStorage, 507},
+			{http.StatusLoopDetected, 508},
+			{http.StatusNotExtended, 510},
+			{http.StatusNetworkAuthenticationRequired, 511},
+		}
+
+		for i, test := range tests {
+			if test.receivedStatusCode != test.validStatusCode {
+				t.Errorf("test %d: '%v' is not a valid status code.", i, test.receivedStatusCode)
+			}
+		}
+	}
+2024/04/25 14:03:35 $ symflower test --language golang --workspace /tmp/eval-dev-quality4276992665/plain
+plain_test.go:1:1: expected 'package', found golang
+
+=== Errors
+plain_test.go:1:1: expected 'package', found golang
+
+DONE 0 tests, 1 error in 0.004s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/04/25 14:03:36 Evaluated model "openrouter/mistralai/mixtral-8x7b" using language "golang" and repository "golang/plain": encountered 1 problems: [exit status 1
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	src/github.com/symflower/eval-dev-quality/util/exec.go:36
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	src/github.com/symflower/eval-dev-quality/language/golang/language.go:84
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:205
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	src/github.com/symflower/eval-dev-quality/language/golang/language.go:94
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:205
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+plain.go]
