@@ -13,10 +13,15 @@ import (
 // Logger holds a logger to log to.
 type Logger = log.Logger
 
+// newLoggerWithWriter instantiate a logger with a writer.
+func newLoggerWithWriter(writer io.Writer) *Logger {
+	return log.New(writer, "", log.LstdFlags)
+}
+
 // Buffer returns a logger that writes to a buffer.
 func Buffer() (buffer *bytesutil.SynchronizedBuffer, logger *Logger) {
 	buffer = new(bytesutil.SynchronizedBuffer)
-	logger = log.New(buffer, "", log.LstdFlags)
+	logger = newLoggerWithWriter(buffer)
 
 	return buffer, logger
 }
@@ -37,14 +42,14 @@ func File(path string) (logger *Logger, loggerClose func(), err error) {
 		}
 	}
 
-	logger = log.New(file, "", log.LstdFlags)
+	logger = newLoggerWithWriter(file)
 
 	return logger, loggerClose, nil
 }
 
 // STDOUT returns a logger that writes to STDOUT.
 func STDOUT() (logger *Logger) {
-	return log.New(os.Stdout, "", log.LstdFlags)
+	return newLoggerWithWriter(os.Stdout)
 }
 
 // WithFile returns a logger that writes to a file and to the parent logger at the same time.
@@ -64,7 +69,7 @@ func WithFile(parent *Logger, filePath string) (logger *Logger, loggerClose func
 	}
 
 	writer := io.MultiWriter(parent.Writer(), file)
-	logger = log.New(writer, "", log.LstdFlags)
+	logger = newLoggerWithWriter(writer)
 
 	return logger, loggerClose, nil
 }

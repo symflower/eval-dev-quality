@@ -145,6 +145,18 @@ func TestParseResponse(t *testing.T) {
 		})
 
 		validate(t, &testCase{
+			Name: "Whitespace after Code Block Guards",
+
+			Response: "``` \n" + code + "\n``` ",
+			ExpectedAssessment: metrics.Assessments{
+				metrics.AssessmentKeyResponseNotEmpty: 1,
+				metrics.AssessmentKeyResponseNoExcess: 1,
+				metrics.AssessmentKeyResponseWithCode: 1,
+			},
+			ExpectedCode: code,
+		})
+
+		validate(t, &testCase{
 			Name: "Duplicated Code Block Guards",
 
 			Response: "```\n```\n" + code + "\n```\n```\n",

@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	codeTagMatch           = regexp.MustCompile("(^|\n)\\s*```\\w*($|\n)")
+	codeTagMatch           = regexp.MustCompile("(^|\n)\\s*```\\w*\\s*($|\n)")
 	codeTagDuplicatedMatch = regexp.MustCompile("```(\\s|\n)*```")
 )
 
