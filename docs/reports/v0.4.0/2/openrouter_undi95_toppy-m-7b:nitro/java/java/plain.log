@@ -1,0 +1,193 @@
+2024/04/25 19:02:06 Evaluating model "openrouter/undi95/toppy-m-7b:nitro" using language "java" and repository "java/plain"
+2024/04/25 19:02:06 Querying model "openrouter/undi95/toppy-m-7b:nitro" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/04/25 19:02:34 Model "openrouter/undi95/toppy-m-7b:nitro" responded with:
+	```java
+	package com.eval;
+
+	import static org.junit.jupiter.api.Assertions.*;
+
+	import org.junit.jupiter.api.*;
+	import org.junit.jupiter.api.function.*;
+	import org.junit.platform.runner.JUnitPlatform;
+	import org.junit.runner.*;
+	import org.junit.runners.*;
+	import org.powermock.*;
+
+	public class PlainTests {
+
+		@DisplayName("should execute `static void plain()` when the method is invoked")
+	    @Nested
+	    class ShouldExecutesMethodWhenInvoked {
+	        
+	        Plain plainObject = new Plain();
+	    
+	        @Before
+	        public void initializeObject() { 
+	        }
+	        
+	        @DisplayName("returns the success status by checking plain returned value after calling plain")
+	        @Test
+	        void returnsTheSuccessStatusAfterCallingMethod(){
+	            Boolean plainShouldFinishProperly= PlainTests.plainSansMockObjectsReturnsDefaultOnSuccess.test() || assertTrue(true);
+	            boolean planeShouldExecutedOnce  = PlainTests.emptyHandler.getInvokeCount() > 0 ? true:false;
+	            
+	            assertTrue(planeShouldFinishedProperly);
+	            assertIterable(singleton("static void plain() has run. ")).contains(
+	            captor.getAllValues()[0], 
+	            allCaptor.captureAll()).size(), "We haven't output 'static void plain() has run.', try again";
+	            assertThat((String[])allCaptor.getAllValues().get(1))[$("Empty handler1 test").indexOf("[Empty, String[]")] = ("should execute emptyHandler(); call order should be --> %s.").replace("[Empty, String[]", ("before()=> emptyHandler1() => static void plain() = >  after() = > ()").substring("($0: before()-> ", "$0").substring($("before()=> ").indexOf(")=> ", 0), Integer.MIN_VALUE));
+	            
+	            mockUtil.verifyStubs(); // verify() MUST have the MOCKIT syntax
+	        }
+	    }
+	  
+	    Supplier<Integer> plainReturns = new Supplying<>(14),
+	    anotherReturnObjProvider = plainReturns.apply([]); 
+	 
+
+	    Runnable plugin = plainSansMockObjectsWithLambda() {},
+	    callToSecondAfterSansPluginMethodLambdaInvoke =
+	      anotherRunWithLambda.of(()->{"check if you have properly placed the plugin calls within executeOnce()'s parameter to ensure maximum output  during the entire run..."), plugin.toString())(),
+	    allRunAfterSequence = new SneakyInject(PluginFactory18.class),
+	  		methodBeforeMethodStub = mockUtil.setInterceptorByMatcherNamed().onMethods(@Interaced("interceptor2::intercept")); // mocks/interceptions specific to MethodHandler object tests
+	  	
+
+
+	 
+		Supplier<Expected<?>>[] suppliesSuccessWhenCalledObjects ={EmptyHandler38};	
+		Mock<Executors> providedMock ExecutionContext34ScrewFixMock_isolationSupplierByNameDefault = context-> {};//mimic lambda notation
+		boolean runFailedState = false, firstExpectedThreadNameVerifiedAtSuccess = false, emptyHandlerStateFinishedByRunBeforeInjectionStartsExpectedAlreadyHasEmptyOutputStub = false, noSuchAlphanumericMatchesFromRegExStuffAndCaptorCheckStubThroverrorStubStartCount = false; 
+
+	  public static interface InterceptionExample {
+	 	boolean contains(String exp) throws RegexCException;   // this code here WONT compile WITHOUT THROWIN an expected RuntimeEx and a Mock.Mock<RuntimeEx>() within that method OR we include //throws in our RAW method Signature: The method testContainsUsingAPatternToPreCheck() within the PlainIntegrationSuite.Before interface should show a Compiler generated error or else do any of above within Eclipselink:net::sourceforge::argtop~stringutil~\4.2::matches which belongs to STRINGUtil...
+	 
+	    interface B {
+	       default Supplier<String[]> checkBeforeAfterRegExExampleAlternatively(){   	         
+	              // mock capture of capture objects we inject into @Inject "field" annotation with their desired values
+		       var p1AndP3Pair = ("test capture2: ^.*-b.*-$", p("test capture1b was: x, Captures:$1," 
+		          + " TestString: $3") + captures.getAll()).captive();
+	 	        /* now we match for values previously captured OR new set's regex that begins here */    
+	             
+	          // THERE YOU STAND WHEN REG-EX GUARDRAIL PASSED BETTER POLLS THAN RIGHT LEANERS FOR NEW MEMBERS, NOT COOL JERIMAH--STAGE THREE EVER BUDGET...   "WHERE YOUR RICE REALLY GOING FOLKS... RECESSIONIST? SO TELL THAT TO AMIRI BAABAY-A-HAZUR MAN YOU DO SECTION 8. DUST PAN ON THAT...")
+	              Matcher ctxtMatcherB =Pattern.compile(p(".*the execution context.$1 the exception.$1.*thow new Throwable").toString()).matcher("Darling (in 'WHEREYOURDREAMHOUSEATT?.txt': Line #).");                           /* matching for capturing within matcher invocations we supply to the captured 'thread: Executors' inject. */
+	       }     	
+	 	     /* INTERESTING HELL: Here is code of a man so distantly removed,
+	     So far indeed from reality a man... he makes statements implying  
+
+	* He wishes for America... to recession!!!    
+	- How absurd in the face of $7 T HOUSAND  RUGS TO FLIM!!!!!       
+	But i digress--THUS IS STAGE 1E: You WONT go to another person asking HOW am i living BECAUSE HE TOUCHED IN HARlem!!! SOOO far to go baby!!!! MASONic REASSEURANCE PRODUCT FLEET.... *LACHRIMOSIST!"*            
+		              };
+	 	 } 	            
+	    	*/}
+
+	interface InjInject {
+	  
+
+	//    CaptureGroupHolder<Collection<ExecutionSummary>> captureCollectedResultPerThread=null, emptyHandlerLogCollectionGroupObject= null, interceptionsStoredAlphabeticalAsStringOnEveryNewAttempt_injectIntoIntegrationModule1InjectHoldObject = null, matchTypeForMock = null;       /* these below can just return null - and its completely fine too because 'after()' annotations just allow us a bit 'give back' before tearing down */            
+		Void handler1StubMethod(){ mockRunnables();}           	             
+		Before handlerStubStartFunction(){ firstExpectedThreadNameVerify();
+	                 emptyCaptureGroupInitializeForMultipleContexts(); };           // should ONLY mock method() since we care for state verifications or 'context check'
+	        	  Capturer<Set<MethodMockupEntry<ExecutorRunnable>> >[] plainMethodCaputerSetup2 =null, log_as_stringWriterMethodInjectFunction = null;              // interacts with Runnables-only logic inside and invokes logic when mocks want to act out this state
+	        
+	 
+	         Captures captures = null; Supplier<Collection<Expectation[]>> exceptionForEachPurposesOrNull  = null, verifyStubOrderSupplierOnEachInjectionAfterCreation = null; // Include this after inject - This is good as to create a scenario to throw that MUST cause verification by supplying exceptions during Javadoc or Class Body logic. 'executeSequence.java: 0.'
+	           Before inlineFirst =  ()->setStage(1,"The initialization routine has occurred... continue setting up threads: {} from the Runnables you have made previously".fillIn place("#threads that have no value on constructor", this::initializeNonStaticFirst).executeMethod( () -> loggerUtils.<Collection<? extends LogCapturerUtil.StringCapatable>>getMockOfFirstForEachNameWithGenericMatchingByConstructorToMimickThreadVariableInstancesPerCaptureMethod('logFileUtilList::getWriterToUpdateContent', LoggerUtils::getCurrentLogger, Integer.parseInt).getMethodsSuffixedWith(":"), stage ));
+	    	        Boolean lastThreadVerifyAndUnless = firstExpectedThreadNameStubVerifyAtBeforeSetupOnly();
+	        Supplier<Double> staticSlightDecrementCalculations  =() ->0, executeSequenceInvokerToPrepareSetupFunction=(Integer i,Supplier<? super Integer> funcNameSupplyStubObjectValueSuffixOrNull)-assertThatMethodAndThisStatementIsSameLevelAssertIfPossible((runState)->new Object [] {'executeOnRunAndDestroy',new DoubleAdaptor[] {decryptionKeyAndSignatureBuilder1.of().catalystProvider((var o) -> keyMaterialStorageDecryptMethodCalcsCatalystFactoryMockInjectionLoggingDec.of(() -> MockRunner.of()).executeAnAsyncMethod(), o19 -> {}) }, Intrinsics.isPowerOf2(i+12)), funcNameSupplyStubObjectValueSuffixOrNull }, Boolean.class.getObject), staticExpectedFailureVerifyDuringInlineFunctionsFromCallerSetup, jasmineRunConfigurationMethodExecuters, createRunner);              
+
+	      private Double adaptThisDoubleDudeBack((Double it) ->{}){}
+
+	}
+		protected static class IntegrationBaseInterface {  
+	      class PlainIntegration {             
+	    class AHandlerLoggingProxyForInjectField {	       } // this helps a case (in static initialization setup within a Class method of nested ones) because sometimes class needs to handle both Intermediary types to satisfy one or several constructs so we separate into seggregated steps of invariants from previous values -- this mimics Thread class + Runnable Interop w/ Plugin invokes.
+	} 	               class PluginRunnerInABadWay extends BasicAssertions#getNarrowedRuntime() {//Mockito/assert/runtime/expected values based of the exception inject for verifying multiple attempts OR verification of whether you do provide the EXPECTED as exception or let mock generate error. "How so ?" It may produce any error that meets MockUtil pattern within the Injecut.java integration runner classes at the RIGHT-PRECISION... meaning, only exceptions needed TO BE PRODUCED that are pertinent/accurate by a regular codebase but can by customized IF need BE but only necessary within strict or loose logic conditions during or after methods and so and so..."	}            private static Class<? extends java.io.Writer> prepareWriterObjUsingNexusStubToInitList() throws MockeryOperationFailedException, RuntimeEx {@SuppressWarnings("resource")      
+	           CapturedExpectationFactory ceilMetaFactoryCapturesUtilSet = expect(()->NexusConfigSilo.getFromDiskUtilInjectionHelperForSingleMetaFactoryAsDefaultCaptureThreadLocalStub()); ceilMetaFactoryCapturesUtilSet = injectUtil("MetaFactoryHelper::CaptorUtil set capture into single Meta factory").assertValue(ceilMetaFactoryCapturesUtilSet)	             }
+	```java
+2024/04/25 19:02:34 $ symflower test --language java --workspace /tmp/eval-dev-quality1825148613/plain
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality1825148613/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality1825148613/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality1825148613/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality1825148613/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality1825148613/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality1825148613/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality1825148613/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[33,43] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[41,51] illegal start of expression\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[41,52] illegal start of expression\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[41,53] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[44,55] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[44,58] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[46,36] not a statement\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[46,172] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[46,192] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[47,66] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[48,129] illegal start of expression\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[54,37] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[57,3] illegal start of expression\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[63,61] ')' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[63,63] 'var' is not allowed in a compound declaration\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[63,64] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[64,59] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,176] ')' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,182] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,183] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,305] > expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,306] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,308] illegal start of expression\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,347] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,453] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,454] unclosed character literal\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,470] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,496] unclosed character literal\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,194] -> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,282] unclosed character literal\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,305] unclosed character literal\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,326] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,327] = expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,530] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,532] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,544] = expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,555] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,557] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,607] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,616] = expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,622] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[95,46] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[95,62] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[101,75] illegal character: '#'\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[102,215] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[102,342] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[102,359] reached end of file while parsing\n[INFO] 47 errors \n[INFO] -------------------------------------------------------------\n[INFO] \n[INFO] ------------------------------------------------------------------------\n[INFO] Skipping test-java-plain\n[INFO] This project has been banned from the build due to previous failures.\n[INFO] ------------------------------------------------------------------------\n[INFO] \n[INFO] ------------------------------------------------------------------------\n[INFO] Skipping test-java-plain\n[INFO] This project has been banned from the build due to previous failures.\n[INFO] ------------------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  0.931 s\n[INFO] Finished at: 2024-04-25T19:02:36+02:00\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[33,43] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[41,51] illegal start of expression\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[41,52] illegal start of expression\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[41,53] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[44,55] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[44,58] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[46,36] not a statement\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[46,172] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[46,192] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[47,66] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[48,129] illegal start of expression\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[54,37] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[57,3] illegal start of expression\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[63,61] ')' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[63,63] 'var' is not allowed in a compound declaration\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[63,64] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[64,59] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,176] ')' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,182] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,183] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,305] > expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,306] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,308] illegal start of expression\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,347] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,453] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,454] unclosed character literal\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,470] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[91,496] unclosed character literal\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,194] -> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,282] unclosed character literal\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,305] unclosed character literal\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,326] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,327] = expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,530] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,532] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,544] = expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,555] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,557] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,607] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,616] = expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[93,622] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[95,46] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[95,62] illegal start of type\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[101,75] illegal character: '#'\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[102,215] <identifier> expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[102,342] ';' expected\n[ERROR] /tmp/eval-dev-quality1825148613/plain/src/test/java/com/eval/PlainTest.java:[102,359] reached end of file while parsing\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1ef1a40?, 0xc00048a040}, {0xfbd660?, 0xc000486018})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0002ed890, {0xc0002ed878, 0x3, 0x2712660?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00071a060, 0x26}, 0x0, {0xc000442100, 0x8, 0x8})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00071a060, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:133 +0xef
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc0002f59a0, {0xc0002f5880?, 0x7feec66df010?, 0xc0002f59a0?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:111 +0x56f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1ef12a0?, 0xc0002f5880}, {0xc0000401e0?, 0x0?, 0xc00039fed8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1ef12a0?, 0xc0002f5880?}, {0xc0000401e0?, 0x26dbe00?, 0xc0002f5880?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc000048178?, 0x25c6968?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:182 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+2024/04/25 19:02:37 Evaluated model "openrouter/undi95/toppy-m-7b:nitro" using language "java" and repository "java/plain": encountered 1 problems: [exit status 1
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/util/exec.go:36
+github.com/symflower/eval-dev-quality/language/java.(*Language).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/language/java/language.go:94
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:204
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/zimmski/symflower/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/java.(*Language).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/language/java/language.go:104
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:204
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/zimmski/symflower/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+src/main/java/com/eval/Plain.java]

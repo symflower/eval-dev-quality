@@ -1,0 +1,44 @@
+2024/04/25 19:52:32 Evaluating model "openrouter/anthropic/claude-2.0" using language "java" and repository "java/plain"
+2024/04/25 19:52:32 Querying model "openrouter/anthropic/claude-2.0" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/04/25 19:52:40 Model "openrouter/anthropic/claude-2.0" responded with:
+	Here is the JUnit 5 test file that provides 100% code coverage for the Plain class:
+
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+
+	import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+	class PlainTest {
+
+	    @Test
+	    void testPlain() {
+	        assertDoesNotThrow(() -> Plain.plain());
+	    }
+	}
+	```
+
+	This test file:
+
+	- Is in the same package as the class under test 
+	- Has a single test method that calls the static plain() method and asserts that it does not throw an exception
+	- Provides 100% code coverage by executing the only method in the Plain class
+	- Uses JUnit 5 (Jupiter) assertions and annotations 
+	- Compiles against the Plain class under test
+2024/04/25 19:52:40 $ symflower test --language java --workspace /tmp/eval-dev-quality1895756145/plain
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/04/25 19:52:45 Evaluated model "openrouter/anthropic/claude-2.0" using language "java" and repository "java/plain": encountered 0 problems: []

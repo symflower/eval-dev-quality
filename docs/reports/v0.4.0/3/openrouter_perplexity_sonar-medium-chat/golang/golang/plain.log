@@ -1,0 +1,43 @@
+2024/04/25 19:12:41 Evaluating model "openrouter/perplexity/sonar-medium-chat" using language "golang" and repository "golang/plain"
+2024/04/25 19:12:41 Querying model "openrouter/perplexity/sonar-medium-chat" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/04/25 19:12:45 Model "openrouter/perplexity/sonar-medium-chat" responded with:
+	Here is the test file that should achieve 100% code coverage for the provided Go code:
+
+	```go
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain() // This calls the function we want to test.
+	}
+
+	func TestMain(m *testing.M) {
+		// This is a special function that is executed before any tests run.
+		// We don't need to do anything in this case, so we just call m.Run() to run the tests.
+		m.Run()
+	}
+	```
+
+	This test file includes a test function `TestPlain` that calls the `plain` function. This will ensure that the line in the `plain` function is executed, achieving 100% code coverage. The `TestMain` function is a special function that is executed before any tests run. In this case, we don't need to do anything special, so we just call `m.Run()` to run the tests.
+2024/04/25 19:12:45 $ symflower test --language golang --workspace /tmp/eval-dev-quality1219940905/plain
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.002s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.187s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/04/25 19:12:46 Evaluated model "openrouter/perplexity/sonar-medium-chat" using language "golang" and repository "golang/plain": encountered 0 problems: []

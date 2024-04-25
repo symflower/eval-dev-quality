@@ -1,0 +1,79 @@
+2024/04/25 20:00:52 Evaluating model "openrouter/perplexity/sonar-medium-online" using language "java" and repository "java/plain"
+2024/04/25 20:00:52 Querying model "openrouter/perplexity/sonar-medium-online" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/04/25 20:01:03 Model "openrouter/perplexity/sonar-medium-online" responded with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class PlainTest {
+	    @Test
+	    void testPlain() {
+	        new Plain().plain();
+	        // add any asserts if needed
+	    }
+	}
+	```
+
+	```xml
+	<dependencies>
+	    <dependency>
+	        <groupId>org.junit.jupiter</groupId>
+	        <artifactId>junit-jupiter-engine</artifactId>
+	        <version>5.6.0</version>
+	        <scope>test</scope>
+	    </dependency>
+	</dependencies>
+
+	<build>
+	    <plugins>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-surefire-plugin</artifactId>
+	            <version>2.22.2</version>
+	            <configuration>
+	                <argLine>${surefireArgLine}</argLine>
+	            </configuration>
+	        </plugin>
+	        <plugin>
+	            <groupId>org.jacoco</groupId>
+	            <artifactId>jacoco-maven-plugin</artifactId>
+	            <version>0.8.7</version>
+	            <executions>
+	                <execution>
+	                    <id>default-prepare-agent</id>
+	                    <goals>
+	                        <goal>prepare-agent</goal>
+	                    </goals>
+	                </execution>
+	                <execution>
+	                    <id>default-report</id>
+	                    <phase>test</phase>
+	                    <goals>
+	                        <goal>report</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	        </plugin>
+	    </plugins>
+	</build>
+	```
+
+	After writing JUnit5 test cases, run the command "mvn clean verify", which will execute JUnit5 tests and run JaCoCo to generate code coverage report. The code coverage report can be found in "target/surefire-reports/jacoco.xml" and "target/site/jacoco/index.html".
+2024/04/25 20:01:03 $ symflower test --language java --workspace /tmp/eval-dev-quality134286642/plain
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/04/25 20:01:09 Evaluated model "openrouter/perplexity/sonar-medium-online" using language "java" and repository "java/plain": encountered 0 problems: []

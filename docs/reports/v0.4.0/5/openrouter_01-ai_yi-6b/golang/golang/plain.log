@@ -1,0 +1,184 @@
+2024/04/25 19:32:24 Evaluating model "openrouter/01-ai/yi-6b" using language "golang" and repository "golang/plain"
+2024/04/25 19:32:24 Querying model "openrouter/01-ai/yi-6b" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/04/25 19:32:47 Model "openrouter/01-ai/yi-6b" responded with:
+	## Test Plan
+
+	The goal is to write 100% coverage for a single output, then capitalize the output of that method but keep code coverage the same, and then, on one more pass, keep the output the same and add an error checking method where it was previously not present. So, in short, write the code and write the code, adding coverage in multiple ways.
+
+	The test plan should list the requirements above as well as:
+
+	- The code should use a sub package so as to properly define name spaces.
+	- A flag argument (--flag) should be passed to the function to illustrate how to pass options. The function signature should look like this:
+	```golang
+	func plain(s string, flag bool)
+	```
+
+	- In the test file, two test cases should be created showing the code annotations above.
+	- The test times should be kept sane by only running one test and spending perhaps 3 minutes at most initializing and running the tests.
+
+	You can use the samples from the tutorail available on the course forums to help build your test cases and code logic. **You are not expected to refer to these solutions directly, but you may find them helpful as either a challenge or as a guide.** They would be **after** you create you solution so as to prevent cheat detection. [Please find the forum thread here](https://launchpad.devpost.com/courses/#blue-papers/Blue-Papers-Unit-Tests-Review-Algorithms-DFA-NFA/Quiz-4-Preparation-March-23).
+
+	## Return Code
+
+	Please ensure that the code that has been covered in the tests does so in all writing while coding the functions.
+
+	Any **previously uninstrumented** code must keep the same behavior, such as if the unit test changed non instrumented code then the unit test must in turn instrumented the non-covered function for 100 percent code coverage
+
+	## MultiTParsing
+
+	Using the input `cab.txt`, parse the file using the following code and complete all 4 checks as described below.
+
+	```golang
+	// remove whitespace if .txt file contains to final text without quotes to prompt if errors
+	// queue w/ input and if it executes a command file determin 2nd input
+	//   if successful return paths command is comtainingin payload
+	// tokenize paths with /
+	//  qulify lines with trailing data to commit (or fail) command
+	//  cowini verbset by init 2nd input with queue in vueserts
+	//   unpires former string to tree with enclose determines LineMode
+	//  check status of response full against WritableData
+	//   check against EvalujedStat, ie. bool, int, uint64, float64, strinng, bytes, slice of which, etc...
+	//   exit message for ( Subject: this.submiter of Path: path input(a int))
+	//   typeqay translation of imput line using (a.b) rule for tuple {a,b}
+	//uz-rq-approx mins of error, that means multiple error states are ok but only 1 can exist making total LineMode or mselted line
+
+	// -------------------------- Validation
+	// defer 4Q := make(errors.Errors)
+	// func (q *4Q) PreChexk() {
+	//   // dedpoy validate single upper case R canned qty to determine word w/ prefix processes for int to add to priority queue (pipelines) reseller mesany   fishpecies (mselves) }
+	//   // dump the 4 (sq,cp,lp,mp) qouns derives validate primena
+	//   // 1 paityline exist but the url [url]needs to be converted to single word
+	//  // 2. CHECK against [home directory] and validation of globals ( fixed any error
+	// if q[R] {   invalid-grep
+	// }
+	/// asserts 1 usse
+	// ---------- analyze
+	// return eval an eye to 2nd Applying rowfear digoin mechash Runtime = []string
+	// despiint what so ever: single items: 1 item odger 2nd items must exist in string lengths.
+	//
+	func Dequeue(M *MQPansioning) (path string,lit bool) {
+	//  if q[R] {   ansspin}
+	//  if M.nqc.po {   spqel}
+	//  path = K3S 
+	//  } else   {M.qqclean(X) Foundtioning}
+	}
+
+	func (M *MQPansioning) Selcet(head item) {
+
+	}
+	func (M *MQPansioning) turxo(head item) string {
+	//  if head key a.X { String slice dequeu subject and possiby return an error
+	// 
+	}
+	func (M *MQPansioning ) poolcat(X string, Y string) {   resume(Y, head)
+	  // if head(somes) { subduce(X}
+	}
+	func (M *MQPansioning) Nufrond(men, and, but, given int) string {
+	if exurn(M.   adding afnd compute the indivglbious and assaulttors) then clense ( given) s
+	end M.craparroll{((mid.Yy => (mid.  andX.Yy)))} Top.
+	func (M *MQPansioning) Processing(morex item) { example}
+	-- } - example
+	func (M *MQPansioning) MainlineCommission() (line output,mes string) {
+	if return shapely{foreach slicer(M.mppower())}
+	return laonetent(M.Legacyreg_Process(), M.Finaltask)
+	```
+
+	 - The return codes should cause panic when test pass in some way (ie.
+	   ```golang
+	   func (m *MQPansioning) nufcound(a int, b int, c int) (err error) {
+	    // smknbound.
+	    }
+	   //   m.qnucount(Q1) := paninteger banana12
+	   //   mes := out(c) += filter((a,b,c) + >> (a- nxaccuotechologists))
+	   //   // 00--- > process mmm along mha, ml ^virus initializtion of `any(ms)X.Core:`.
+	   // }
+	   hUellow(4,"aaaaaaa tee^v")
+	   //   if *(v)1 != 3347,495 { } }
+	   ```
+
+	## Evaluating
+
+	To keep from cheating, cheat detection is [through Steam](https://github.com/launchpad010110/eval-blue-papers/blob/master/sections/pre-suggested-context/README.md), health checks will use cpu, memory, disk, network, and vmount.
+
+	The goal is to write code that reflect the requirements as clearly as possible. **Perform the best work writing good code, but do not spend exorbitant amounts of time.** You can keep track of the time spent in each task unit and the whole in order to plan the task to be in a compartmentalized express following orders with respect to subtasks. E.g. covert xTParsing to fTParsing first.
+
+	The response should show as little code outside the test or code requirements as possible.
+
+	The response should be all test code + some comments, and if 100% to cover, the first to last line of both. All w/o imports if the code is within the file determinand, but you *should* create imports in another file, and laterin this task probably, creation of needed verbs in the test file. ~~If the data required in a different file, [Transitive Procurement](https://en.wikipedia.org/wiki/Transitive_procurement) will likely be needed to import that data.~~ Or you could build a stack to prevent that full import, ~~but do not count on it as a successful strategy as motive, ie. Thor, the Gods, the Muses, and [Kah-To-To](https://en.wikipedia.org/wiki/Khan_Knot) forbade the rebellious of it.~~
+
+	Please also write the test for *qay translation of imput line using (a.b) rule for tuple {a,b}* of the first exercise above.
+
+	## Prerequisites
+
+	The purpose of these tests is to make sure the instructor can read and understand your program and to test out your continuous integration environment. If you are reading their tests for this, it should not be hard to see a script and work from that. They note that are a few scripts included below and you may need to access them by coming in from the terminal.
+
+	Word to the wise, the more processes operating, the greater the overheads (ie. you reseller mesany   fishpecies (mselves) } should expect the process to take 2+ mins.
+
+	So prep for continuous integration to read the primena and to pass tests.
+
+	Please be patient as the url [are taking longer to download.](https://craporance.netlify.app/info/)
+
+	---
+	For additional resources, software tools and general concepts if you find yourself lost, consider the next page:
+
+	- [Lurking Docs](https://github.com/launchpad010110/course-reference/blob/master/README.md) Runtime = []string
+2024/04/25 19:32:47 $ symflower test --language golang --workspace /tmp/eval-dev-quality3609924111/plain
+plain_test.go:1:1: expected 'package', found 'func'
+
+=== Errors
+plain_test.go:1:1: expected 'package', found 'func'
+
+DONE 0 tests, 1 error in 0.004s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/04/25 19:32:48 Evaluated model "openrouter/01-ai/yi-6b" using language "golang" and repository "golang/plain": encountered 1 problems: [exit status 1
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/util/exec.go:36
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/language/golang/language.go:84
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:204
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/zimmski/symflower/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/language/golang/language.go:94
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:204
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/zimmski/symflower/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+plain.go]

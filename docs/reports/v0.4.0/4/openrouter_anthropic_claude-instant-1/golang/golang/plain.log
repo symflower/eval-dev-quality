@@ -1,0 +1,35 @@
+2024/04/25 19:32:49 Evaluating model "openrouter/anthropic/claude-instant-1" using language "golang" and repository "golang/plain"
+2024/04/25 19:32:49 Querying model "openrouter/anthropic/claude-instant-1" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/04/25 19:32:50 Evaluated model "openrouter/anthropic/claude-instant-1" using language "golang" and repository "golang/plain": encountered 1 problems: [empty LLM "anthropic/claude-instant-1" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[87a01317f9fa5abd-VIE] Content-Type:[application/json] Date:[Thu, 25 Apr 2024 17:32:50 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::c7dvw-1714066369294-f9962f61ddbe]]}
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/provider/openrouter/openrouter.go:85
+github.com/symflower/eval-dev-quality/model/llm.(*Model).GenerateTestsForFile
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/model/llm/llm.go:102
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/evaluate/repository.go:58
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:204
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/zimmski/symflower/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+plain.go]
