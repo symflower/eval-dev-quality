@@ -1,0 +1,37 @@
+2024/04/25 19:28:17 Evaluating model "openrouter/mistralai/mistral-tiny" using language "java" and repository "java/plain"
+2024/04/25 19:28:17 Querying model "openrouter/mistralai/mistral-tiny" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/04/25 19:28:22 Model "openrouter/mistralai/mistral-tiny" responded with:
+	Here's an example of a JUnit 5 test file for the given `Plain.java` code. This test file covers the static `plain()` method.
+
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+	class PlainTest {
+
+	    @Test
+	    public void testPlainMethod() {
+	        assertDoesNotThrow(() -> Plain.plain());
+	    }
+	}
+	```
+
+	This test file contains a single test `testPlainMethod()` that checks the `plain()` method doesn't throw any exception when called. The `assertDoesNotThrow` method is used to assert the execution of the given lambda expression (in this case, `Plain.plain()`) does not throw an exception.
+2024/04/25 19:28:22 $ symflower test --language java --workspace /tmp/eval-dev-quality4041981817/plain
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/04/25 19:28:27 Evaluated model "openrouter/mistralai/mistral-tiny" using language "java" and repository "java/plain": encountered 0 problems: []

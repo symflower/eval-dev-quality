@@ -1,0 +1,197 @@
+2024/04/25 19:37:17 Evaluating model "openrouter/togethercomputer/stripedhyena-hessian-7b" using language "java" and repository "java/plain"
+2024/04/25 19:37:17 Querying model "openrouter/togethercomputer/stripedhyena-hessian-7b" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/04/25 19:37:27 Model "openrouter/togethercomputer/stripedhyena-hessian-7b" responded with:
+	I have tried separating the package and the class:
+	src/main/java/com/eval/Plain.java
+
+	### Using Mockito
+	    import org.junit.After;
+	    import org.junit.Assert;
+	    import org.junit.Before;
+	    import org.junit.Test;
+	    import org.junit.runner.RunWith;
+	    import play.test.JavaTest;
+	    import org.mockito.InjectMocks;
+	    import org.mockito.Mock;
+	    import org.mockito.MockitoAnnotations;
+	    import org.mockito.Mockito;
+
+	    MockIndeterminacy mockIndeterminacy = Mockito.mock(MockIndeterminacy.class);
+	    public interface MockIndeterminacy {
+	        MockIndeterminacy mock(String field);
+	    }
+
+	.
+	.
+	.
+	.
+	...
+	    
+	    @Test
+	    public void test_customPlugin() {
+	            Map<String, String> cur = mapOf("path" -> "v0");
+	            Path path = Paths.get(cur.get("path"));
+
+	            File file = Paths.get(path + "/file.txt");
+
+	            Assert.assertTrue(VerifyDataSourceEventSystemPlugins.launchSourceFiles(file, "v0"));
+	            Assert.assertNotNull(path);
+
+
+	     }
+
+	The rest of the prodigies work except for this one. I'm sure I'm missing something here.
+
+	A: I believe the write up based on the existing answer is correct and if you use Test in Kotlin, it will work. Have not tried with Java test but it is there too. I still do not have a proper simulation to match original class.
+	You may cold start spring Boot application in Mockito (in Kotlin):
+	import assertj.core.api.Assertions
+	import io.mockk.MockKAnnotations
+	import io.mockk.coEvery
+	import io.mockk.mockk
+	import io.mockk.mockkConstructor
+	import io.mockk.mockkObject
+	import org.assertj.core.api.WithAssertions
+	import org.assertj.core.api.AbstractAssert
+	import org.junit.jupiter.api.BeforeAll
+	import org.junit.jupiter.api.Test
+	import org.junit.jupiter.api.TestInstance
+	import org.junit.jupiter.api.TestInstance.Lifecycle
+	import org.mockito.MockitoAnnotations
+	import org.mockito.Mockito.Answers
+	import org.mockito.Mockito.Answers.RETURNS_DEEP_STUBS
+	import org.mockito.junit.jupiter.MockitoExtension
+	import org.mockito.junit.jupiter.MockitoSettings
+
+	@TestInstance(Lifecycle.PER_CLASS)
+	@MockitoSettings(verbose = true, verboseStreams = true)
+	@MockitoExtension
+	class `Test` {
+
+	    @BeforeAll
+	    fun beforeAll() {
+	        MockitoAnnotations.initMocks(this)
+	    }
+
+	    // Given some source file which you don't want to mock in any test in Test
+
+	    @Test
+	    fun testSource() {
+	        // When Spring Boot app and JUnit mock describe code
+	        /**
+	         *
+	         */
+
+	    }
+	}
+
+	qref:
+	https://www.baeldung.com/mockito-java-test-02/
+
+	A: I was able to resolve it by making a Change Request on the JUnit code test file:
+	Abandoned class definition:
+
+	public class Test extends org.junit.Test {
+	    
+	    @Test
+	    void test_nestedClass() {
+	        Class<Test> clazz = Test.class;
+	    }
+	}
+
+	That fails the build since the whole class is not being compiled. Altered to:
+
+	public class Test extends AbstractKClassTest {
+	    
+	    @Test
+	    void test_nestedClass() {
+	        Class<Test> clazz = Test.class;
+	    }
+	}
+
+	I might have got the wrong person with answer but the solution works for me
+2024/04/25 19:37:27 $ symflower test --language java --workspace /tmp/eval-dev-quality2157651392/plain
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality2157651392/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2157651392/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2157651392/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2157651392/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2157651392/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2157651392/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2157651392/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[1,1] class, interface, or enum expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[1,50] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[4,1] illegal character: '#'\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[4,2] illegal character: '#'\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[4,3] illegal character: '#'\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[6,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[6,28] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[7,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[7,28] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[8,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[8,26] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[9,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[9,36] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[10,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[10,30] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[11,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[11,35] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[12,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[12,28] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[13,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[13,42] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[14,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[14,31] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[21,1] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[29,51] ')' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,9] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,16] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,31] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,38] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,54] unclosed character literal\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,63] unclosed character literal\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,83] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,2] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,13] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,23] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,32] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,39] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,55] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,66] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,70] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,81] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,89] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,96] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,100] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,110] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,120] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,131] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,141] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,148] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,157] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,170] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,182] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,191] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,205] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,220] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,226] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[65,7] illegal character: '`'\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[65,12] illegal character: '`'\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[69,43] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[84,5] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[85,6] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,2] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,9] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,17] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,28] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,38] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,47] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,58] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,68] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,78] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,83] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[88,10] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[88,27] '{' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[98,11] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[98,21] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[98,31] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[98,37] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[98,46] '{' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,8] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,17] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,27] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,39] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,50] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,63] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,69] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,76] reached end of file while parsing\n[INFO] 86 errors \n[INFO] -------------------------------------------------------------\n[INFO] \n[INFO] ------------------------------------------------------------------------\n[INFO] Skipping test-java-plain\n[INFO] This project has been banned from the build due to previous failures.\n[INFO] ------------------------------------------------------------------------\n[INFO] \n[INFO] ------------------------------------------------------------------------\n[INFO] Skipping test-java-plain\n[INFO] This project has been banned from the build due to previous failures.\n[INFO] ------------------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  0.991 s\n[INFO] Finished at: 2024-04-25T19:37:29+02:00\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[1,1] class, interface, or enum expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[1,50] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[4,1] illegal character: '#'\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[4,2] illegal character: '#'\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[4,3] illegal character: '#'\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[6,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[6,28] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[7,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[7,28] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[8,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[8,26] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[9,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[9,36] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[10,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[10,30] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[11,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[11,35] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[12,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[12,28] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[13,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[13,42] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[14,5] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[14,31] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[21,1] illegal start of type\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[29,51] ')' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,9] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,16] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,31] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,38] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,54] unclosed character literal\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,63] unclosed character literal\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[40,83] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,2] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,13] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,23] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,32] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,39] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,55] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,66] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,70] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,81] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,89] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,96] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,100] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,110] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,120] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,131] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,141] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,148] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,157] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,170] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,182] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,191] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,205] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,220] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[42,226] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[65,7] illegal character: '`'\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[65,12] illegal character: '`'\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[69,43] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[84,5] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[85,6] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,2] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,9] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,17] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,28] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,38] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,47] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,58] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,68] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,78] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[87,83] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[88,10] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[88,27] '{' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[98,11] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[98,21] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[98,31] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[98,37] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[98,46] '{' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,8] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,17] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,27] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,39] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,50] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,63] ';' expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,69] <identifier> expected\n[ERROR] /tmp/eval-dev-quality2157651392/plain/src/test/java/com/eval/PlainTest.java:[108,76] reached end of file while parsing\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1ef1a40?, 0xc0000a6160}, {0xfbd660?, 0xc000652090})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0004cf890, {0xc0004cf878, 0x3, 0x2712660?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00014a3c0, 0x26}, 0x0, {0xc0002a0000, 0x8, 0x8})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00014a3c0, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:133 +0xef
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc00062e4a0, {0xc00062e380?, 0x7f9d3cb7f6d8?, 0xc00062e4a0?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:111 +0x56f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1ef12a0?, 0xc00062e380}, {0xc000140120?, 0x0?, 0xc0000fded8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1ef12a0?, 0xc00062e380?}, {0xc000140120?, 0x26dbe00?, 0xc00062e380?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00010e058?, 0x25c6968?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:182 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+2024/04/25 19:37:29 Evaluated model "openrouter/togethercomputer/stripedhyena-hessian-7b" using language "java" and repository "java/plain": encountered 1 problems: [exit status 1
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/util/exec.go:36
+github.com/symflower/eval-dev-quality/language/java.(*Language).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/language/java/language.go:94
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:204
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/zimmski/symflower/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/java.(*Language).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/language/java/language.go:104
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:204
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/zimmski/symflower/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+src/main/java/com/eval/Plain.java]

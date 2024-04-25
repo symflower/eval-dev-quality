@@ -1,0 +1,113 @@
+2024/04/25 18:26:31 Evaluating model "openrouter/mistralai/mistral-7b-instruct" using language "golang" and repository "golang/plain"
+2024/04/25 18:26:31 Querying model "openrouter/mistralai/mistral-7b-instruct" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/04/25 18:26:39 Model "openrouter/mistralai/mistral-7b-instruct" responded with:
+	 ```go
+	package plain
+
+	import (
+		"testing"
+	)
+
+	func TestPlain(t *testing.T) {
+	}
+
+	func TestEnv(t *testing.T) {
+		env := make(map[string]interface{}, 4)
+		env["a"] = "5"
+		env["b"] = "6"
+		env["c"] = "7"
+		env["d"] = "8"
+
+		res := plain(env)
+		t.AssertStringEqual(t, res, "5678")
+	}
+
+	func TestFunc(t *testing.T) {
+		res := plain()
+		t.AssertStringEqual(t, res, "5678")
+	}
+
+	func TestVal(t *testing.T) {
+		res := plain()
+		t.AssertStringEqual(t, res, "5678")
+	}
+	```
+2024/04/25 18:26:39 $ symflower test --language golang --workspace /tmp/eval-dev-quality2408089503/plain
+# plain [plain.test]
+./plain_test.go:17:9: plain(env) (no value) used as value
+./plain_test.go:17:15: too many arguments in call to plain
+	have (map[string]interface{})
+	want ()
+./plain_test.go:18:4: t.AssertStringEqual undefined (type *testing.T has no field or method AssertStringEqual)
+./plain_test.go:22:9: plain() (no value) used as value
+./plain_test.go:23:4: t.AssertStringEqual undefined (type *testing.T has no field or method AssertStringEqual)
+./plain_test.go:27:9: plain() (no value) used as value
+./plain_test.go:28:4: t.AssertStringEqual undefined (type *testing.T has no field or method AssertStringEqual)
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:17:9: plain(env) (no value) used as value
+./plain_test.go:17:15: too many arguments in call to plain
+	have (map[string]interface{})
+	want ()
+./plain_test.go:18:4: t.AssertStringEqual undefined (type *testing.T has no field or method AssertStringEqual)
+./plain_test.go:22:9: plain() (no value) used as value
+./plain_test.go:23:4: t.AssertStringEqual undefined (type *testing.T has no field or method AssertStringEqual)
+./plain_test.go:27:9: plain() (no value) used as value
+./plain_test.go:28:4: t.AssertStringEqual undefined (type *testing.T has no field or method AssertStringEqual)
+
+DONE 0 tests, 7 errors in 0.051s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/04/25 18:26:39 Evaluated model "openrouter/mistralai/mistral-7b-instruct" using language "golang" and repository "golang/plain": encountered 1 problems: [exit status 1
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/util/exec.go:36
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/language/golang/language.go:84
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:204
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/zimmski/symflower/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/language/golang/language.go:94
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:204
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/zimmski/symflower/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/zimmski/symflower/src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/zimmski/symflower/.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+plain.go]

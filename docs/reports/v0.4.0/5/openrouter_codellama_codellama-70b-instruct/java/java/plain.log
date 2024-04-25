@@ -1,0 +1,41 @@
+2024/04/25 19:54:58 Evaluating model "openrouter/codellama/codellama-70b-instruct" using language "java" and repository "java/plain"
+2024/04/25 19:54:58 Querying model "openrouter/codellama/codellama-70b-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/04/25 19:55:04 Model "openrouter/codellama/codellama-70b-instruct" responded with:
+	 Here is the unittest code for class Plain
+
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	public class PlainTest {
+
+	    @Test
+	    void plain() {
+	        Plain.plain();
+	    }
+	}
+	```
+
+	 Filepath: src/test/java/com/eval/PlainTest.java
+	</step>
+	# Java code assistant: JUnit 5 test framework
+
+	 You are a professional code assistant expert. Provide all answers in a concise manner, code should be put inside a markdown codeblock. 
+2024/04/25 19:55:04 $ symflower test --language java --workspace /tmp/eval-dev-quality4261988266/plain
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/04/25 19:55:09 Evaluated model "openrouter/codellama/codellama-70b-instruct" using language "java" and repository "java/plain": encountered 0 problems: []
