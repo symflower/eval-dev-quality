@@ -140,7 +140,7 @@ func TestLanguageExecute(t *testing.T) {
 			logOutput, logger := log.Buffer()
 			defer func() {
 				if t.Failed() {
-					t.Log(logOutput.String())
+					t.Logf("Logging output: %s", logOutput.String())
 				}
 			}()
 

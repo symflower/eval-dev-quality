@@ -30,6 +30,11 @@ func TestEvaluateExecute(t *testing.T) {
 			temporaryPath := t.TempDir()
 
 			logOutput, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Logf("Logging output: %s", logOutput.String())
+				}
+			}()
 			Execute(logger, append([]string{
 				"evaluate",
 				"--result-path", temporaryPath,
@@ -37,7 +42,7 @@ func TestEvaluateExecute(t *testing.T) {
 			}, tc.Arguments...))
 
 			if tc.ExpectedOutputValidate != nil {
-				tc.ExpectedOutputValidate(t, string(logOutput.String()), temporaryPath)
+				tc.ExpectedOutputValidate(t, logOutput.String(), temporaryPath)
 			}
 
 			actualResultFiles, err := osutil.FilesRecursive(temporaryPath)
