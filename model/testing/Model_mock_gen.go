@@ -3,9 +3,8 @@
 package modeltesting
 
 import (
-	log "log"
-
 	language "github.com/symflower/eval-dev-quality/language"
+	log "github.com/symflower/eval-dev-quality/log"
 
 	metrics "github.com/symflower/eval-dev-quality/evaluate/metrics"
 
