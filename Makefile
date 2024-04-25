@@ -71,5 +71,5 @@ require-clean-worktree: # Check if there are uncommitted changes.
 .PHONY: require-clean-worktree
 
 test: # [<Go package] - # Test everything, or only the specified package.
-	gotestsum --format standard-verbose --hide-summary skipped -- $(NO_UNIT_TEST_CACHE) -race -test.timeout $(UNIT_TEST_TIMEOUT)s -v $(PACKAGE)
+	gotestsum --format standard-verbose --hide-summary skipped -- $(NO_UNIT_TEST_CACHE) -race -test.timeout $(UNIT_TEST_TIMEOUT)s -test.run='$(word 2,$(ARGS))' -v $(if $(ARGS), $(word 1,$(ARGS)), $(PACKAGE))
 .PHONY: test

@@ -1,4 +1,4 @@
-package golang
+package java
 
 import (
 	"errors"
@@ -17,7 +17,7 @@ import (
 	"github.com/symflower/eval-dev-quality/util"
 )
 
-// Language holds a Go language to evaluate a repository.
+// Language holds a Java language to evaluate a repository.
 type Language struct{}
 
 func init() {
@@ -28,12 +28,12 @@ var _ language.Language = (*Language)(nil)
 
 // ID returns the unique ID of this language.
 func (l *Language) ID() (id string) {
-	return "golang"
+	return "java"
 }
 
 // Name is the prose name of this language.
 func (l *Language) Name() (id string) {
-	return "Go"
+	return "Java"
 }
 
 // Files returns a list of relative file paths of the repository that should be evaluated.
@@ -50,7 +50,7 @@ func (l *Language) Files(logger *log.Logger, repositoryPath string) (filePaths [
 
 	repositoryPath = repositoryPath + string(os.PathSeparator)
 	for _, f := range fs {
-		if !strings.HasSuffix(f, ".go") {
+		if !strings.HasSuffix(f, ".java") {
 			continue
 		}
 
@@ -62,29 +62,39 @@ func (l *Language) Files(logger *log.Logger, repositoryPath string) (filePaths [
 
 // ImportPath returns the import path of the given source file.
 func (l *Language) ImportPath(projectRootPath string, filePath string) (importPath string) {
-	return filepath.Join(filepath.Base(projectRootPath), filepath.Dir(filePath))
+	importPath = strings.ReplaceAll(filepath.Dir(filePath), string(os.PathSeparator), ".")
+
+	t := "src.main.java"
+	if l := strings.LastIndex(importPath, t); l != -1 {
+		return importPath[l+len(t)+1:]
+	}
+
+	return importPath
 }
 
 // TestFilePath returns the file path of a test file given the corresponding file path of the test's source file.
 func (l *Language) TestFilePath(projectRootPath string, filePath string) (testFilePath string) {
-	return strings.TrimSuffix(filePath, ".go") + "_test.go"
+	if l := strings.LastIndex(filePath, "src/main/java"); l != -1 {
+		t := "src/test/java"
+		filePath = filePath[:l] + t + filePath[l+len(t):]
+	}
+
+	return strings.TrimSuffix(filePath, ".java") + "Test.java"
 }
 
 // TestFramework returns the human-readable name of the test framework that should be used.
 func (l *Language) TestFramework() (testFramework string) {
-	return ""
+	return "JUnit 5"
 }
 
-var languageGoNoTestsMatch = regexp.MustCompile(`(?m)^DONE (\d+) tests.*in (.+?)$`)
-var languageGoCoverageMatch = regexp.MustCompile(`(?m)^coverage: (\d+\.?\d+)% of statements`)
-var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statements\]$`)
+var languageJavaCoverageMatch = regexp.MustCompile(`Total coverage (.+?)%`)
 
 // Execute invokes the language specific testing on the given repository.
 func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
 	commandOutput, err := util.CommandWithResult(logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "test",
-			"--language", "golang",
+			"--language", "java",
 			"--workspace", repositoryPath,
 		},
 
@@ -94,22 +104,7 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		return 0.0, pkgerrors.WithStack(err)
 	}
 
-	ms := languageGoNoTestsMatch.FindStringSubmatch(commandOutput)
-	if ms == nil {
-		return 0.0, pkgerrors.WithStack(errors.New("could not find Go test summary"))
-	}
-	testCount, err := strconv.ParseUint(ms[1], 10, 64)
-	if err != nil {
-		return 0.0, pkgerrors.WithStack(err)
-	} else if testCount == 0 {
-		return 0.0, pkgerrors.WithStack(language.ErrNoTestFound)
-	}
-
-	if languageGoNoCoverageMatch.MatchString(commandOutput) {
-		return 0.0, nil
-	}
-
-	mc := languageGoCoverageMatch.FindStringSubmatch(commandOutput)
+	mc := languageJavaCoverageMatch.FindStringSubmatch(commandOutput)
 	if mc == nil {
 		return 0.0, pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("could not find coverage report"), commandOutput))
 	}

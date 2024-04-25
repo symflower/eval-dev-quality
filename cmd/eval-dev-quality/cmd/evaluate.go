@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -15,6 +16,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/language"
 	_ "github.com/symflower/eval-dev-quality/language/golang" // Register language.
+	_ "github.com/symflower/eval-dev-quality/language/java"   // Register language.
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
@@ -96,11 +98,27 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	}
 
 	commandRepositories := map[string]bool{}
+	commandRepositoriesLanguages := map[string]bool{}
 	for _, r := range command.Repositories {
-		commandRepositories[r] = true
+		languageIDOfRepository := strings.SplitN(r, string(os.PathSeparator), 2)[0]
+		commandRepositoriesLanguages[languageIDOfRepository] = true
+
+		if _, ok := languagesSelected[languageIDOfRepository]; ok {
+			commandRepositories[r] = true
+		} else {
+			log.Printf("Excluded repository %s because its language %q is not enabled for this evaluation", r, languageIDOfRepository)
+		}
 	}
 	for languageID := range languagesSelected {
-		commandRepositories[filepath.Join(languageID, repositoryPlainName)] = true
+		if len(command.Repositories) == 0 || commandRepositoriesLanguages[languageID] {
+			commandRepositories[filepath.Join(languageID, repositoryPlainName)] = true
+		} else {
+			command.Languages = slices.DeleteFunc(command.Languages, func(l string) bool {
+				return l == languageID
+			})
+			delete(languagesSelected, languageID)
+			log.Printf("Excluded language %q because it is not part of the selected repositories", languageID)
+		}
 	}
 	command.Repositories = maps.Keys(commandRepositories)
 	sort.Strings(command.Repositories)

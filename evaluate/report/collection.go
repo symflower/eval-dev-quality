@@ -2,8 +2,10 @@ package report
 
 import (
 	"cmp"
+	"os"
 	"slices"
 	"sort"
+	"strings"
 
 	"golang.org/x/exp/maps"
 
@@ -27,6 +29,11 @@ func NewAssessmentPerModelPerLanguagePerRepository(models []model.Model, languag
 				a[m][l] = map[string]metrics.Assessments{}
 			}
 			for _, r := range repositories {
+				// Ensure the repository path matches the language.
+				if !strings.HasPrefix(r, l.ID()+string(os.PathSeparator)) {
+					continue
+				}
+
 				a[m][l][r] = metrics.NewAssessments()
 			}
 		}
