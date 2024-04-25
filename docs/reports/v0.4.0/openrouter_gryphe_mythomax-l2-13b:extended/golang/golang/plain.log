@@ -1,0 +1,36 @@
+2024/04/25 13:57:33 Evaluating model "openrouter/gryphe/mythomax-l2-13b:extended" using language "golang" and repository "golang/plain"
+2024/04/25 13:57:33 Querying model "openrouter/gryphe/mythomax-l2-13b:extended" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/04/25 13:57:35 Model "openrouter/gryphe/mythomax-l2-13b:extended" responded with:
+	 ```golang
+	package plain
+
+	import (
+		"testing"
+	)
+
+	func TestPlain(t *testing.T) {
+		t.Log("plain")
+	}
+	```
+2024/04/25 13:57:35 $ symflower test --language golang --workspace /tmp/eval-dev-quality3765971035/plain
+=== RUN   TestPlain
+    plain_test.go:8: plain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 0.0% of statements
+ok  	plain	0.001s	coverage: 0.0% of statements
+
+DONE 1 tests in 0.184s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/04/25 13:57:36 Evaluated model "openrouter/gryphe/mythomax-l2-13b:extended" using language "golang" and repository "golang/plain": encountered 0 problems: []

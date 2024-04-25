@@ -1,0 +1,78 @@
+2024/04/25 13:57:13 Evaluating model "openrouter/google/palm-2-chat-bison" using language "golang" and repository "golang/plain"
+2024/04/25 13:57:13 Querying model "openrouter/google/palm-2-chat-bison" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/04/25 13:57:15 Model "openrouter/google/palm-2-chat-bison" responded with:
+	 ```golang
+	package plain_test
+
+	import (
+		"testing"
+		"plain"
+	)
+
+	func TestPlain(t *testing.T) {
+		plain.plain() // Invoking the plain function to achieve 100% coverage.
+	}
+	```
+2024/04/25 13:57:15 $ symflower test --language golang --workspace /tmp/eval-dev-quality3800621128/plain
+# plain_test [plain.test]
+./plain_test.go:9:8: undefined: plain.plain
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:9:8: undefined: plain.plain
+
+DONE 0 tests, 1 error in 0.075s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/04/25 13:57:15 Evaluated model "openrouter/google/palm-2-chat-bison" using language "golang" and repository "golang/plain": encountered 1 problems: [exit status 1
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	src/github.com/symflower/eval-dev-quality/util/exec.go:36
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	src/github.com/symflower/eval-dev-quality/language/golang/language.go:84
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:205
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	src/github.com/symflower/eval-dev-quality/language/golang/language.go:94
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:205
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+plain.go]

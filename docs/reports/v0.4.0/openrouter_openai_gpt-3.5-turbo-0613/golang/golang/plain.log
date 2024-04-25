@@ -1,0 +1,86 @@
+2024/04/25 14:04:51 Evaluating model "openrouter/openai/gpt-3.5-turbo-0613" using language "golang" and repository "golang/plain"
+2024/04/25 14:04:51 Querying model "openrouter/openai/gpt-3.5-turbo-0613" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/04/25 14:04:53 Model "openrouter/openai/gpt-3.5-turbo-0613" responded with:
+	```golang
+	package plain_test
+
+	import (
+		"testing"
+
+		"github.com/stretchr/testify/assert"
+		"github.com/your-username/package-name/plain"
+	)
+
+	func TestPlain(t *testing.T) {
+		plain.Plain()
+
+		// Add test assertions here
+		assert.True(t, true)
+	}
+	```
+	Note: Replace `your-username` with your actual GitHub username and `package-name` with the name of your Go package.
+2024/04/25 14:04:53 $ symflower test --language golang --workspace /tmp/eval-dev-quality4057264687/plain
+# plain
+plain_test.go:6:2: no required module provides package github.com/stretchr/testify/assert; to add it:
+	go get github.com/stretchr/testify/assert
+WARN invalid TestEvent: FAIL	plain [setup failed]
+bad output from test2json: FAIL	plain [setup failed]
+
+=== Errors
+plain_test.go:6:2: no required module provides package github.com/stretchr/testify/assert; to add it:
+	go get github.com/stretchr/testify/assert
+
+DONE 0 tests, 1 error in 0.017s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/04/25 14:04:53 Evaluated model "openrouter/openai/gpt-3.5-turbo-0613" using language "golang" and repository "golang/plain": encountered 1 problems: [exit status 1
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	src/github.com/symflower/eval-dev-quality/util/exec.go:36
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	src/github.com/symflower/eval-dev-quality/language/golang/language.go:84
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:205
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	src/github.com/symflower/eval-dev-quality/language/golang/language.go:94
+github.com/symflower/eval-dev-quality/evaluate.Repository
+	src/github.com/symflower/eval-dev-quality/evaluate/repository.go:67
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:205
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	src/github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	.devenv/go@1.21.5/go/src/runtime/proc.go:267
+runtime.goexit
+	.devenv/go@1.21.5/go/src/runtime/asm_amd64.s:1650
+plain.go]
