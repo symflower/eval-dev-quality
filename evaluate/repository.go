@@ -13,11 +13,12 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
+	"github.com/symflower/eval-dev-quality/provider"
 )
 
 // Repository evaluate a repository with the given model and language.
 func Repository(logger *log.Logger, resultPath string, model model.Model, language language.Language, testDataPath string, repositoryPath string) (repositoryAssessment metrics.Assessments, problems []error, err error) {
-	log, logClose, err := log.WithFile(logger, filepath.Join(resultPath, strings.ReplaceAll(model.ID(), "/", "_"), language.ID(), repositoryPath+".log"))
+	log, logClose, err := log.WithFile(logger, filepath.Join(resultPath, strings.ReplaceAll(model.ID(), provider.ProviderModelSeparator, "_"), language.ID(), repositoryPath+".log"))
 	if err != nil {
 		return nil, nil, err
 	}

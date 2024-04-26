@@ -56,9 +56,10 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			DateTime: testTime,
 			Version:  "1234",
 
-			CSVPath: "./file.csv",
-			LogPath: "./file.log",
-			SVGPath: "./file.svg",
+			CSVPath:       "./file.csv",
+			LogPath:       "./file.log",
+			ModelLogsPath: ".",
+			SVGPath:       "./file.svg",
 		},
 
 		ExpectedReport: `
@@ -95,14 +96,15 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			DateTime: testTime,
 			Version:  "1234",
 
-			CSVPath: "./file.csv",
-			LogPath: "./file.log",
-			SVGPath: "./file.svg",
+			CSVPath:       "./file.csv",
+			LogPath:       "./file.log",
+			ModelLogsPath: ".",
+			SVGPath:       "./file.svg",
 
 			TotalScore: 1,
 			AssessmentPerModel: map[string]metrics.Assessments{
-				"ModelResponseError": metrics.NewAssessments(),
-				"ModelNoCode": metrics.Assessments{
+				"model/response/error": metrics.NewAssessments(),
+				"model/no/code": metrics.Assessments{
 					metrics.AssessmentKeyResponseNoError:  1,
 					metrics.AssessmentKeyResponseNotEmpty: 1,
 				},
@@ -136,13 +138,13 @@ func TestMarkdownWriteToFile(t *testing.T) {
 
 			Models in this category encountered an error.
 
-			- ` + "`ModelResponseError`" + `
+			- [` + "`model/response/error`" + `](./model_response_error/)
 
 			### Result category "no code"
 
 			Models in this category produced no code.
 
-			- ` + "`ModelNoCode`" + `
+			- [` + "`model/no/code`" + `](./model_no_code/)
 
 		`,
 		ExpectedSVGFile: "testdata/two_models.svg",

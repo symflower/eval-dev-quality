@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"text/template"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	"github.com/symflower/eval-dev-quality/provider"
 )
 
 // Markdown holds the values for exporting a Markdown report.
@@ -26,6 +28,8 @@ type Markdown struct {
 	CSVPath string
 	// LogPath holds the path of detailed logs.
 	LogPath string
+	// ModelLogsPath holds the path of the model logs.
+	ModelLogsPath string
 	// SVGPath holds the path of the charted results.
 	SVGPath string
 
@@ -41,6 +45,17 @@ type markdownTemplateContext struct {
 
 	Categories        []*metrics.AssessmentCategory
 	ModelsPerCategory map[*metrics.AssessmentCategory][]string
+}
+
+// ModelLogName formats a model name to match the logging structure.
+func (c markdownTemplateContext) ModelLogName(modelName string) string {
+	modelPath := filepath.Join(c.ModelLogsPath, strings.ReplaceAll(modelName, provider.ProviderModelSeparator, "_")) + string(os.PathSeparator)
+	if !filepath.IsAbs(modelPath) {
+		// Ensure we reference the models relative to the Markdown file itself.
+		modelPath = "." + string(os.PathSeparator) + modelPath
+	}
+
+	return modelPath
 }
 
 // markdownTemplate holds the template for a Markdown report.
@@ -68,7 +83,7 @@ var markdownTemplate = template.Must(template.New("template-report").Parse(bytes
 	{{ $category.Description }}
 
 	{{ range $modelName := $modelNames -}}
-	- ` + "`" + `{{ $modelName }}` + "`" + `
+	- [` + "`" + `{{ $modelName }}` + "`" + `]({{ $.ModelLogName $modelName }})
 	{{ end }}
 	{{ end }}
 	{{- end -}}

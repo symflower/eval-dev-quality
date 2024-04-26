@@ -18,10 +18,13 @@ import (
 )
 
 // validateReportLinks checks if the Markdown report data contains all the links to other relevant report files.
-func validateReportLinks(t *testing.T, data string) {
+func validateReportLinks(t *testing.T, data string, modelLogNames []string) {
 	assert.Contains(t, data, "](./categories.svg)")
 	assert.Contains(t, data, "](./evaluation.csv)")
 	assert.Contains(t, data, "](./evaluation.log)")
+	for _, m := range modelLogNames {
+		assert.Contains(t, data, fmt.Sprintf("](./%s/)", m))
+	}
 }
 
 // validateSVGContent checks if the SVG data contains all given categories and an axis label for the maximal model count.
@@ -122,7 +125,7 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 				"evaluation.log": nil,
 				"README.md": func(t *testing.T, filePath, data string) {
-					validateReportLinks(t, data)
+					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
 				"symflower_symbolic-execution/golang/golang/plain.log": nil,
 			},
@@ -153,7 +156,7 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 				"evaluation.log": nil,
 				"README.md": func(t *testing.T, filePath, data string) {
-					validateReportLinks(t, data)
+					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
 				"symflower_symbolic-execution/golang/golang/plain.log": nil,
 				"symflower_symbolic-execution/java/java/plain.log":     nil,
@@ -190,7 +193,7 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 					"evaluation.log": nil,
 					"README.md": func(t *testing.T, filePath, data string) {
-						validateReportLinks(t, data)
+						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
 					"symflower_symbolic-execution/golang/golang/plain.log": nil,
 				},
@@ -221,7 +224,7 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 					"evaluation.log": nil,
 					"README.md": func(t *testing.T, filePath, data string) {
-						validateReportLinks(t, data)
+						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
 					"symflower_symbolic-execution/golang/golang/plain.log": nil,
 				},
