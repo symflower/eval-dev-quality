@@ -279,9 +279,10 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		DateTime: evaluationTimestamp,
 		Version:  evaluate.Version,
 
-		CSVPath: "./evaluation.csv",
-		LogPath: "./evaluation.log",
-		SVGPath: "./categories.svg",
+		CSVPath:       "./evaluation.csv",
+		LogPath:       "./evaluation.log",
+		ModelLogsPath: ".",
+		SVGPath:       "./categories.svg",
 
 		AssessmentPerModel: assessmentsPerModel,
 		TotalScore:         totalScore,
