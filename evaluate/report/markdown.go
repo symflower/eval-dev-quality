@@ -161,7 +161,7 @@ func (m Markdown) format(writer io.Writer, markdownFileDirectoryPath string) err
 
 // WriteToFile renders the Markdown to the given file.
 func (m Markdown) WriteToFile(path string) (err error) {
-	if err = os.MkdirAll(filepath.Base(path), 0755); err != nil {
+	if err = os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 		return pkgerrors.WithStack(err)
 	}
 	file, err := os.Create(path)

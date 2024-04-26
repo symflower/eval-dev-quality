@@ -36,6 +36,9 @@ func TestEvaluateExecute(t *testing.T) {
 	type testCase struct {
 		Name string
 
+		Before func(t *testing.T, resultPath string)
+		After  func(t *testing.T, resultPath string)
+
 		Arguments []string
 
 		ExpectedOutputValidate func(t *testing.T, output string, resultPath string)
@@ -45,6 +48,13 @@ func TestEvaluateExecute(t *testing.T) {
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
 			temporaryPath := t.TempDir()
+
+			if tc.Before != nil {
+				tc.Before(t, temporaryPath)
+			}
+			if tc.After != nil {
+				defer tc.After(t, temporaryPath)
+			}
 
 			logOutput, logger := log.Buffer()
 			defer func() {
@@ -217,5 +227,33 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 			})
 		})
+	})
+
+	// This case cehcks a beautiful bug where the Markdown export crashed when the current working directory contained a README.md file. While this is not the case during the tests (as the current work directory is the directory of this file), it certainly caused problems when our binary was executed from the repository root (which of course contained a README.md). Therefore, we sadly have to modify the current work directory right within the tests of this case to reproduce the problem and fix it forever.
+	validate(t, &testCase{
+		Name: "Current work directory contains a README.md",
+
+		Before: func(t *testing.T, resultPath string) {
+			if err := os.Remove("README.md"); err != nil {
+				require.Contains(t, err.Error(), "no such file or directory")
+			}
+			require.NoError(t, os.WriteFile("README.md", []byte(""), 0644))
+		},
+		After: func(t *testing.T, resultPath string) {
+			require.NoError(t, os.Remove("README.md"))
+		},
+
+		Arguments: []string{
+			"--language", "golang",
+			"--model", "symflower/symbolic-execution",
+		},
+
+		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+			"categories.svg": nil,
+			"evaluation.csv": nil,
+			"evaluation.log": nil,
+			"README.md":      nil,
+			"symflower_symbolic-execution/golang/golang/plain.log": nil,
+		},
 	})
 }
