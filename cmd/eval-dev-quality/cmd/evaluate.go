@@ -62,7 +62,8 @@ const repositoryPlainName = "plain"
 
 // Execute executes the command.
 func (command *Evaluate) Execute(args []string) (err error) {
-	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", time.Now().Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
+	evaluationTimestamp := time.Now()
+	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", evaluationTimestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
 	command.logger.Printf("Writing results to %s", command.ResultPath)
 
 	log, logClose, err := log.WithFile(command.logger, filepath.Join(command.ResultPath, "evaluation.log"))
@@ -273,8 +274,23 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		totalScore = uint(len(languagesSelected))
 	}
 
-	_ = metrics.WalkByScore(assessments.Collapse(), func(model string, assessment metrics.Assessments, score uint) error {
-		log.Printf("Evaluation score for %q (%q): %s", model, assessment.Category(totalScore), assessment)
+	assessmentsPerModel := assessments.Collapse()
+	if err := (report.Markdown{
+		DateTime: evaluationTimestamp,
+		Version:  evaluate.Version,
+
+		CSVPath: "./evaluation.csv",
+		LogPath: "./evaluation.log",
+		SVGPath: "./categories.svg",
+
+		AssessmentPerModel: assessmentsPerModel,
+		TotalScore:         totalScore,
+	}).WriteToFile(filepath.Join(command.ResultPath, "README.md")); err != nil {
+		return err
+	}
+
+	_ = metrics.WalkByScore(assessmentsPerModel, func(model string, assessment metrics.Assessments, score uint) error {
+		log.Printf("Evaluation score for %q (%q): %s", model, assessment.Category(totalScore).ID, assessment)
 
 		return nil
 	})

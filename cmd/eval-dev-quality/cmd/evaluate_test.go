@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -12,12 +13,31 @@ import (
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/log"
 )
+
+// validateReportLinks checks if the Markdown report data contains all the links to other relevant report files.
+func validateReportLinks(t *testing.T, data string) {
+	assert.Contains(t, data, "](./categories.svg)")
+	assert.Contains(t, data, "](./evaluation.csv)")
+	assert.Contains(t, data, "](./evaluation.log)")
+}
+
+// validateSVGContent checks if the SVG data contains all given categories and an axis label for the maximal model count.
+func validateSVGContent(t *testing.T, data string, categories []*metrics.AssessmentCategory, maxModelCount uint) {
+	for _, category := range categories {
+		assert.Contains(t, data, fmt.Sprintf("%s</text>", category.Name))
+	}
+	assert.Contains(t, data, fmt.Sprintf("%d</text>", maxModelCount))
+}
 
 func TestEvaluateExecute(t *testing.T) {
 	type testCase struct {
 		Name string
+
+		Before func(t *testing.T, resultPath string)
+		After  func(t *testing.T, resultPath string)
 
 		Arguments []string
 
@@ -28,6 +48,13 @@ func TestEvaluateExecute(t *testing.T) {
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
 			temporaryPath := t.TempDir()
+
+			if tc.Before != nil {
+				tc.Before(t, temporaryPath)
+			}
+			if tc.After != nil {
+				defer tc.After(t, temporaryPath)
+			}
 
 			logOutput, logger := log.Buffer()
 			defer func() {
@@ -84,6 +111,9 @@ func TestEvaluateExecute(t *testing.T) {
 				}
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+				"categories.svg": func(t *testing.T, filePath, data string) {
+					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
+				},
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
 					assert.Equal(t, bytesutil.StringTrimIndentations(`
 						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -91,6 +121,9 @@ func TestEvaluateExecute(t *testing.T) {
 					`), data)
 				},
 				"evaluation.log": nil,
+				"README.md": func(t *testing.T, filePath, data string) {
+					validateReportLinks(t, data)
+				},
 				"symflower_symbolic-execution/golang/golang/plain.log": nil,
 			},
 		})
@@ -108,6 +141,9 @@ func TestEvaluateExecute(t *testing.T) {
 				}
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+				"categories.svg": func(t *testing.T, filePath, data string) {
+					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
+				},
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
 					assert.Equal(t, bytesutil.StringTrimIndentations(`
 						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -116,6 +152,9 @@ func TestEvaluateExecute(t *testing.T) {
 					`), data)
 				},
 				"evaluation.log": nil,
+				"README.md": func(t *testing.T, filePath, data string) {
+					validateReportLinks(t, data)
+				},
 				"symflower_symbolic-execution/golang/golang/plain.log": nil,
 				"symflower_symbolic-execution/java/java/plain.log":     nil,
 			},
@@ -140,6 +179,9 @@ func TestEvaluateExecute(t *testing.T) {
 					}
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					"categories.svg": func(t *testing.T, filePath, data string) {
+						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
+					},
 					"evaluation.csv": func(t *testing.T, filePath, data string) {
 						assert.Equal(t, bytesutil.StringTrimIndentations(`
 							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -147,6 +189,9 @@ func TestEvaluateExecute(t *testing.T) {
 						`), data)
 					},
 					"evaluation.log": nil,
+					"README.md": func(t *testing.T, filePath, data string) {
+						validateReportLinks(t, data)
+					},
 					"symflower_symbolic-execution/golang/golang/plain.log": nil,
 				},
 			})
@@ -165,6 +210,9 @@ func TestEvaluateExecute(t *testing.T) {
 					}
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					"categories.svg": func(t *testing.T, filePath, data string) {
+						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
+					},
 					"evaluation.csv": func(t *testing.T, filePath, data string) {
 						assert.Equal(t, bytesutil.StringTrimIndentations(`
 							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -172,9 +220,40 @@ func TestEvaluateExecute(t *testing.T) {
 						`), data)
 					},
 					"evaluation.log": nil,
+					"README.md": func(t *testing.T, filePath, data string) {
+						validateReportLinks(t, data)
+					},
 					"symflower_symbolic-execution/golang/golang/plain.log": nil,
 				},
 			})
 		})
+	})
+
+	// This case cehcks a beautiful bug where the Markdown export crashed when the current working directory contained a README.md file. While this is not the case during the tests (as the current work directory is the directory of this file), it certainly caused problems when our binary was executed from the repository root (which of course contained a README.md). Therefore, we sadly have to modify the current work directory right within the tests of this case to reproduce the problem and fix it forever.
+	validate(t, &testCase{
+		Name: "Current work directory contains a README.md",
+
+		Before: func(t *testing.T, resultPath string) {
+			if err := os.Remove("README.md"); err != nil {
+				require.Contains(t, err.Error(), "no such file or directory")
+			}
+			require.NoError(t, os.WriteFile("README.md", []byte(""), 0644))
+		},
+		After: func(t *testing.T, resultPath string) {
+			require.NoError(t, os.Remove("README.md"))
+		},
+
+		Arguments: []string{
+			"--language", "golang",
+			"--model", "symflower/symbolic-execution",
+		},
+
+		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+			"categories.svg": nil,
+			"evaluation.csv": nil,
+			"evaluation.log": nil,
+			"README.md":      nil,
+			"symflower_symbolic-execution/golang/golang/plain.log": nil,
+		},
 	})
 }
