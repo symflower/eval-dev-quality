@@ -1,10 +1,8 @@
 # DevQualityEval
 
-An evaluation benchmark 📈 and framework for LLMs and friends to compare and evolve the quality of code generation.
+An evaluation benchmark 📈 and framework to compare and evolve the quality of code generation of LLMs.
 
-In recent years AI made great advances in all areas, from art to enhancing productivity in real-world tasks. One of the most notable technologies that brought these advancements is of course the [Large Language model (LLM)](https://en.wikipedia.org/wiki/Large_language_model). LLMs are useful in many areas but it seems that they are especially useful for the generation of source code. However, benchmarks for this area have been lacking, while benchmarks for general software development tasks are almost non-existent.
-
-This repository gives developers of LLMs (and other code generation tools) a standardized benchmark and framework to improve real-world usage in the software development domain and provides users of LLMs with metrics to check if a given LLM is useful for their tasks.
+This repository gives developers of LLMs (and other code generation tools) a standardized benchmark and framework to improve real-world usage in the software development domain and provides users of LLMs with metrics and comparisions to check if a given LLM is useful for their tasks.
 
 ## Installation
 
