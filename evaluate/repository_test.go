@@ -77,7 +77,7 @@ func TestRepository(t *testing.T) {
 		RepositoryPath: "golang/plain",
 
 		ExpectedRepositoryAssessment: metrics.Assessments{
-			metrics.AssessmentKeyCoverageStatement: 1,
+			metrics.AssessmentKeyCoverageStatement: 10,
 			metrics.AssessmentKeyFilesExecuted:     1,
 			metrics.AssessmentKeyResponseNoError:   1,
 			metrics.AssessmentKeyResponseNoExcess:  1,

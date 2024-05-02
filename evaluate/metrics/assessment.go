@@ -39,7 +39,7 @@ var (
 	AssessmentKeyFilesExecuted = RegisterAssessmentKey("files-executed", 1)
 
 	// AssessmentKeyCoverageStatement counts the cases where 100% coverage was reached.
-	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement", 1)
+	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement", 10)
 
 	// AssessmentKeyResponseNoError indicates that a model responded without error.
 	AssessmentKeyResponseNoError = RegisterAssessmentKey("response-no-error", 1)

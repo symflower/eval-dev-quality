@@ -113,7 +113,7 @@ func TestAssessmentsCategory(t *testing.T) {
 			AssessmentKeyResponseNotEmpty:  1,
 			AssessmentKeyResponseWithCode:  1,
 			AssessmentKeyFilesExecuted:     1,
-			AssessmentKeyCoverageStatement: 1,
+			AssessmentKeyCoverageStatement: 10,
 		},
 		Total: 1,
 
@@ -128,7 +128,7 @@ func TestAssessmentsCategory(t *testing.T) {
 			AssessmentKeyResponseNotEmpty:  1,
 			AssessmentKeyResponseWithCode:  1,
 			AssessmentKeyFilesExecuted:     1,
-			AssessmentKeyCoverageStatement: 1,
+			AssessmentKeyCoverageStatement: 10,
 			AssessmentKeyResponseNoExcess:  1,
 		},
 		Total: 1,

@@ -108,7 +108,7 @@ func TestEvaluateExecute(t *testing.T) {
 			},
 
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-				assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=6, coverage-statement=1, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`)
+				assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=15, coverage-statement=10, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`)
 				if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
 					t.Logf("Output: %s", output)
 				}
@@ -120,7 +120,7 @@ func TestEvaluateExecute(t *testing.T) {
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
 					assert.Equal(t, bytesutil.StringTrimIndentations(`
 						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-						symflower/symbolic-execution,golang,golang/plain,6,1,1,1,1,1,1
+						symflower/symbolic-execution,golang,golang/plain,15,10,1,1,1,1,1
 					`), data)
 				},
 				"evaluation.log": nil,
@@ -138,7 +138,7 @@ func TestEvaluateExecute(t *testing.T) {
 			},
 
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-				assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=12, coverage-statement=2, files-executed=2, response-no-error=2, response-no-excess=2, response-not-empty=2, response-with-code=2`)
+				assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=30, coverage-statement=20, files-executed=2, response-no-error=2, response-no-excess=2, response-not-empty=2, response-with-code=2`)
 				if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
 					t.Logf("Output: %s", output)
 				}
@@ -150,8 +150,8 @@ func TestEvaluateExecute(t *testing.T) {
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
 					assert.Equal(t, bytesutil.StringTrimIndentations(`
 						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-						symflower/symbolic-execution,golang,golang/plain,6,1,1,1,1,1,1
-						symflower/symbolic-execution,java,java/plain,6,1,1,1,1,1,1
+						symflower/symbolic-execution,golang,golang/plain,15,10,1,1,1,1,1
+						symflower/symbolic-execution,java,java/plain,15,10,1,1,1,1,1
 					`), data)
 				},
 				"evaluation.log": nil,
@@ -176,7 +176,7 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-					assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=6, coverage-statement=1, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`)
+					assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=15, coverage-statement=10, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`)
 					if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
 						t.Logf("Output: %s", output)
 					}
@@ -188,7 +188,7 @@ func TestEvaluateExecute(t *testing.T) {
 					"evaluation.csv": func(t *testing.T, filePath, data string) {
 						assert.Equal(t, bytesutil.StringTrimIndentations(`
 							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-							symflower/symbolic-execution,golang,golang/plain,6,1,1,1,1,1,1
+							symflower/symbolic-execution,golang,golang/plain,15,10,1,1,1,1,1
 						`), data)
 					},
 					"evaluation.log": nil,
@@ -207,7 +207,7 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-					assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=6, coverage-statement=1, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`)
+					assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=15, coverage-statement=10, files-executed=1, response-no-error=1, response-no-excess=1, response-not-empty=1, response-with-code=1`)
 					if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
 						t.Logf("Output: %s", output)
 					}
@@ -219,7 +219,7 @@ func TestEvaluateExecute(t *testing.T) {
 					"evaluation.csv": func(t *testing.T, filePath, data string) {
 						assert.Equal(t, bytesutil.StringTrimIndentations(`
 							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-							symflower/symbolic-execution,golang,golang/plain,6,1,1,1,1,1,1
+							symflower/symbolic-execution,golang,golang/plain,15,10,1,1,1,1,1
 						`), data)
 					},
 					"evaluation.log": nil,
