@@ -22,7 +22,7 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 	if bytesutil.IsWhitespace(response) {
 		return assessment, response
 	}
-	assessment[metrics.AssessmentKeyResponseNotEmpty]++
+	assessment.Award(metrics.AssessmentKeyResponseNotEmpty)
 
 	// Some models produce duplicated code tags, so unify them if needed.
 	response = codeTagDuplicatedMatch.ReplaceAllString(response, "```")
@@ -40,7 +40,7 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 
 		return assessment, strings.TrimSpace(response)
 	}
-	assessment[metrics.AssessmentKeyResponseWithCode]++
+	assessment.Award(metrics.AssessmentKeyResponseWithCode)
 
 	// Assume the first code block contains the response code fragment.
 	block := blocks[0]
@@ -48,7 +48,7 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 	// Check if the response contained only that single code block.
 	responseWithoutBlock := strings.Replace(response, block, "", 1)
 	if bytesutil.IsWhitespace(responseWithoutBlock) {
-		assessment[metrics.AssessmentKeyResponseNoExcess]++
+		assessment.Award(metrics.AssessmentKeyResponseNoExcess)
 	}
 
 	return assessment, strings.TrimSpace(codeTagMatch.ReplaceAllString(block, ""))

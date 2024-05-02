@@ -17,35 +17,39 @@ var (
 	allAssessmentKeys []AssessmentKey
 	// AllAssessmentKeysStrings returns all registered assessment keys as strings.
 	AllAssessmentKeysStrings []string
+
+	// pointsPerAssessment holds the points awarded for a specific assessment.
+	pointsPerAssessment = map[AssessmentKey]uint{}
 )
 
 // RegisterAssessmentKey registers a new assessment key.
-func RegisterAssessmentKey(key string) AssessmentKey {
+func RegisterAssessmentKey(key string, points uint) AssessmentKey {
 	assessment := AssessmentKey(key)
 	i := sort.SearchStrings(AllAssessmentKeysStrings, key)
 
 	allAssessmentKeys = slices.Insert(allAssessmentKeys, i, assessment)
 	AllAssessmentKeysStrings = slices.Insert(AllAssessmentKeysStrings, i, key)
+	pointsPerAssessment[assessment] = points
 
 	return assessment
 }
 
 var (
 	// AssessmentKeyFilesExecuted holds the successfully executed files.
-	AssessmentKeyFilesExecuted = RegisterAssessmentKey("files-executed")
+	AssessmentKeyFilesExecuted = RegisterAssessmentKey("files-executed", 1)
 
 	// AssessmentKeyCoverageStatement counts the cases where 100% coverage was reached.
-	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement")
+	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement", 1)
 
 	// AssessmentKeyResponseNoError indicates that a model responded without error.
-	AssessmentKeyResponseNoError = RegisterAssessmentKey("response-no-error")
+	AssessmentKeyResponseNoError = RegisterAssessmentKey("response-no-error", 1)
 	// AssessmentKeyResponseNotEmpty indicates that a model response was not empty.
-	AssessmentKeyResponseNotEmpty = RegisterAssessmentKey("response-not-empty")
+	AssessmentKeyResponseNotEmpty = RegisterAssessmentKey("response-not-empty", 1)
 	// AssessmentKeyResponseWithCode indicates that a model responded with code.
-	AssessmentKeyResponseWithCode = RegisterAssessmentKey("response-with-code")
+	AssessmentKeyResponseWithCode = RegisterAssessmentKey("response-with-code", 1)
 	// AssessmentKeyResponseNoExcess indicates that a model did not produce more content as requested.
 	// TODO Infer if a model produced "too much" code. https://github.com/symflower/eval-dev-quality/issues/44
-	AssessmentKeyResponseNoExcess = RegisterAssessmentKey("response-no-excess")
+	AssessmentKeyResponseNoExcess = RegisterAssessmentKey("response-no-excess", 1)
 )
 
 // Assessments holds a collection of numerical assessment metrics.
@@ -102,6 +106,11 @@ func (a Assessments) Score() (score uint) {
 	}
 
 	return score
+}
+
+// Award yields the score points defined for the given key.
+func (a Assessments) Award(key AssessmentKey) {
+	a[key] += pointsPerAssessment[key]
 }
 
 // String returns a string representation of the metrics.
