@@ -131,12 +131,7 @@ Total coverage 100.000000%
 
 </details>
 
-The execution by default also creates an evaluation file `evaluation.csv` that contains:
-
-```
-model,files-total,files-executed,files-problems,coverage-statement
-openrouter/anthropic/claude-3-opus,1,1,0,100
-```
+The execution by default also creates an report file `REPORT.md` that contains additional evaluation results and links to individual result files.
 
 # How to extend the benchmark?
 
