@@ -4,9 +4,9 @@ An evaluation benchmark 📈 and framework to compare and evolve the quality of 
 
 This repository gives developers of LLMs (and other code generation tools) a standardized benchmark and framework to improve real-world usage in the software development domain and provides users of LLMs with metrics and comparisions to check if a given LLM is useful for their tasks.
 
-The [latest results](docs/reports/v0.2.0) are discussed in a deep dive: [Can LLMs test a Go function that does nothing?](https://symflower.com/en/company/blog/2024/can-ai-test-a-go-function-that-does-nothing/).
+The [latest results](docs/reports/v0.4.0) are discussed in a deep dive: [Is Llama-3 better than GPT-4 for generating tests?](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.4.0-is-llama-3-better-than-gpt-4-for-generating-tests/)
 
-![Bar chart that categorizes all evaluated LLMs of the v0.2.0 deep dive.](https://symflower.com/en/company/blog/2024/can-ai-test-a-go-function-that-does-nothing/images/header.png)
+![Scatter plot that shows the best LLMs aligned with their capability on the y-axis to costs with a logarithmic scale on the x-axis of the v0.4.0 deep dive.](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.4.0-is-llama-3-better-than-gpt-4-for-generating-tests/images/header.png)
 
 ## Installation
 
