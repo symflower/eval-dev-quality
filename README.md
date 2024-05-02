@@ -45,15 +45,20 @@ In the case you only want to evaluate only one or more models you can use the `-
 Executing the following output:
 
 ```bash
-eval-dev-quality evaluate --model=openrouter/anthropic/claude-3-opus
+eval-dev-quality evaluate --model=openrouter/meta-llama/llama-3-70b-instruct
 ```
 
-Should return an evaluation log like this:
+Should return an evaluation log similar to this:
+
+<details>
+<summary>Log for the above command.</summary>
 
 ````plain
-2024/04/04 13:16:12 Checking that models and languages can be used for evaluation
-2024/04/04 13:16:12 Evaluating model "openrouter/anthropic/claude-3-opus" using language "golang" and repository "golang/plain"
-2024/04/04 13:16:15 Model "openrouter/anthropic/claude-3-opus" responded to query       Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+2024/05/02 10:01:58 Writing results to evaluation-2024-05-02-10:01:58
+2024/05/02 10:01:58 Checking that models and languages can be used for evaluation
+2024/05/02 10:01:58 Evaluating model "openrouter/meta-llama/llama-3-70b-instruct" using language "golang" and repository "golang/plain"
+2024/05/02 10:01:58 Querying model "openrouter/meta-llama/llama-3-70b-instruct" with:
+        Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
         The tests should produce 100 percent code coverage and must compile.
         The response must contain only the test code and nothing else.
 
@@ -64,29 +69,67 @@ Should return an evaluation log like this:
                 return // This does not do anything but it gives us a line to cover.
         }
         ```
- with:  Here's the test file for the given Go code that provides 100 percent code coverage:
-
-        ```golang
+2024/05/02 10:02:00 Model "openrouter/meta-llama/llama-3-70b-instruct" responded with:
+        ```go
         package plain
 
         import "testing"
 
-        func Test_plain(t *testing.T) {
+        func TestPlain(t *testing.T) {
                 plain()
         }
         ```
-2024/04/04 13:16:15 $ gotestsum --format standard-verbose --hide-summary skipped -- -cover -v -vet=off ./...
-=== RUN   Test_plain
---- PASS: Test_plain (0.00s)
+2024/05/02 10:02:00 $ symflower test --language golang --workspace /tmp/eval-dev-quality2330727502/plain
+Checking for updates
+There is a new version of symflower available! Please run `symflower update`.
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
 PASS
 coverage: 100.0% of statements
-ok      plain   0.001s  coverage: 100.0% of statements
+ok      plain   0.002s  coverage: 100.0% of statements
 
-DONE 1 tests in 0.169s
-2024/04/04 13:16:15 Evaluated model "openrouter/anthropic/claude-3-opus" using language "golang" and repository "golang/plain": encountered 0 problems
-2024/04/04 13:16:15 Evaluating models and languages
-2024/04/04 13:16:15 Evaluation score for "openrouter/anthropic/claude-3-opus": #executed=100.0%(1/1), #problems=0.0%(0/1), average statement coverage=100.0%
+DONE 1 tests in 0.348s
+2024/05/02 10:02:01 Evaluated model "openrouter/meta-llama/llama-3-70b-instruct" using language "golang" and repository "golang/plain": encountered 0 problems: []
+2024/05/02 10:02:01 Evaluating model "openrouter/meta-llama/llama-3-70b-instruct" using language "java" and repository "java/plain"
+2024/05/02 10:02:01 Querying model "openrouter/meta-llama/llama-3-70b-instruct" with:
+        Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+        The tests should produce 100 percent code coverage and must compile.
+        The response must contain only the test code and nothing else.
+
+        ```java
+        package com.eval;
+
+        class Plain {
+            static void plain() {
+            }
+        }
+        ```
+2024/05/02 10:02:02 Model "openrouter/meta-llama/llama-3-70b-instruct" responded with:
+        ```java
+        package com.eval;
+
+        import org.junit.jupiter.api.Test;
+
+        import static org.junit.jupiter.api.Assertions.assertFalse;
+        import static org.junit.jupiter.api.Assertions.assertTrue;
+
+        public class PlainTest {
+            @Test
+            void testPlain() {
+                Plain.plain();
+                // Since the method is empty, we can only assert that it doesn't throw an exception
+                assertTrue(true);
+            }
+        }
+        ```
+2024/05/02 10:02:02 $ symflower test --language java --workspace /tmp/eval-dev-quality1094965069/plain
+Total coverage 100.000000%
+2024/05/02 10:02:09 Evaluated model "openrouter/meta-llama/llama-3-70b-instruct" using language "java" and repository "java/plain": encountered 0 problems: []
+2024/05/02 10:02:09 Evaluating models and languages
+2024/05/02 10:02:09 Evaluation score for "openrouter/meta-llama/llama-3-70b-instruct" ("code-no-excess"): score=12, coverage-statement=2, files-executed=2, response-no-error=2, response-no-excess=2, response-not-empty=2, response-with-code=2
 ````
+
+</details>
 
 The execution by default also creates an evaluation file `evaluation.csv` that contains:
 
