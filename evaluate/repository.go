@@ -63,7 +63,7 @@ func Repository(logger *log.Logger, resultPath string, model model.Model, langua
 			continue
 		}
 		repositoryAssessment.Add(assessments)
-		repositoryAssessment[metrics.AssessmentKeyResponseNoError]++
+		repositoryAssessment.Award(metrics.AssessmentKeyResponseNoError)
 
 		coverage, err := language.Execute(log, temporaryRepositoryPath)
 		if err != nil {
@@ -71,9 +71,9 @@ func Repository(logger *log.Logger, resultPath string, model model.Model, langua
 
 			continue
 		}
-		repositoryAssessment[metrics.AssessmentKeyFilesExecuted]++
+		repositoryAssessment.Award(metrics.AssessmentKeyFilesExecuted)
 		if coverage == 100 {
-			repositoryAssessment[metrics.AssessmentKeyCoverageStatement]++
+			repositoryAssessment.Award(metrics.AssessmentKeyCoverageStatement)
 		}
 	}
 

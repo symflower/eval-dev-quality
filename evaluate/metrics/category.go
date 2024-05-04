@@ -82,23 +82,23 @@ var (
 // Category infers a categorical ranking of a model based on assessment values.
 // A models overall category corresponds to the criterion where the model was consistently able to receive "total" amount of points. I.e. if there were 3 tasks in total and a model was able to produce executing code for all tasks, but only in one case the coverage goal was reached, then the category is only "CodeExecuted" because the coverage goal was not reached consistently.
 // The returned category is never "nil".
-func (a Assessments) Category(total uint) *AssessmentCategory {
-	if total == 0 {
+func (a Assessments) Category(totalTasks uint) *AssessmentCategory {
+	if totalTasks == 0 {
 		return AssessmentCategoryUnknown
 	}
 
 	switch {
-	case a[AssessmentKeyResponseNoError] != total:
+	case a[AssessmentKeyResponseNoError] != totalTasks*pointsPerAssessment[AssessmentKeyResponseNoError]:
 		return AssessmentCategoryResponseError
-	case a[AssessmentKeyResponseNotEmpty] != total:
+	case a[AssessmentKeyResponseNotEmpty] != totalTasks*pointsPerAssessment[AssessmentKeyResponseNotEmpty]:
 		return AssessmentCategoryResponseEmpty
-	case a[AssessmentKeyResponseWithCode] != total && a[AssessmentKeyFilesExecuted] != total: // TODO We cannot always detect yet if a model response contains source code, so ensure we don't categorize into "no code" if the code actually ran successfully all the time. https://github.com/symflower/eval-dev-quality/issues/43
+	case a[AssessmentKeyResponseWithCode] != totalTasks*pointsPerAssessment[AssessmentKeyResponseWithCode] && a[AssessmentKeyFilesExecuted] != totalTasks*pointsPerAssessment[AssessmentKeyFilesExecuted]: // TODO We cannot always detect yet if a model response contains source code, so ensure we don't categorize into "no code" if the code actually ran successfully all the time. https://github.com/symflower/eval-dev-quality/issues/43
 		return AssessmentCategoryResponseNoCode
-	case a[AssessmentKeyFilesExecuted] != total:
+	case a[AssessmentKeyFilesExecuted] != totalTasks*pointsPerAssessment[AssessmentKeyFilesExecuted]:
 		return AssessmentCategoryCodeInvalid
-	case a[AssessmentKeyCoverageStatement] != total:
+	case a[AssessmentKeyCoverageStatement] != totalTasks*pointsPerAssessment[AssessmentKeyCoverageStatement]:
 		return AssessmentCategoryCodeExecuted
-	case a[AssessmentKeyResponseNoExcess] != total:
+	case a[AssessmentKeyResponseNoExcess] != totalTasks*pointsPerAssessment[AssessmentKeyResponseNoExcess]:
 		return AssessmentCategoryCodeCoverageStatementReached
 	default:
 		return AssessmentCategoryCodeNoExcess
