@@ -1,29 +1,22 @@
 package tools
 
 import (
-	"os"
-	"path/filepath"
-
-	pkgerrors "github.com/pkg/errors"
-
 	"github.com/symflower/eval-dev-quality/log"
 )
 
-// InstallPathDefault returns the default installation path for tools.
-func InstallPathDefault() (installPath string, err error) {
-	homePath, err := os.UserHomeDir()
-	if err != nil {
-		return "", pkgerrors.WithStack(pkgerrors.WithMessage(err, "cannot query home directory"))
-	}
+// Tool defines an external tool.
+type Tool interface {
+	// BinaryName returns the name of the tool's binary.
+	BinaryName() string
+	// BinaryPath returns the file path of the tool's binary or the command name that should be executed.
+	// The binary path might also be just the binary name in case the tool is expected to be on the system path.
+	BinaryPath() string
 
-	return filepath.Join(homePath, ".eval-dev-quality", "bin"), nil
-}
+	// CheckVersion checks if the tool's version is compatible with the required version.
+	CheckVersion(logger *log.Logger, binaryPath string) error
+	// RequiredVersion returns the required version of the tool.
+	RequiredVersion() string
 
-// Install install all basic evaluation tools.
-func Install(logger *log.Logger, installPath string) (err error) {
-	if err := SymflowerInstall(logger, installPath); err != nil {
-		return pkgerrors.WithStack(pkgerrors.WithMessage(err, "cannot install Symflower"))
-	}
-
-	return nil
+	// Install installs the tool's binary to the given install path.
+	Install(logger *log.Logger, installPath string) error
 }
