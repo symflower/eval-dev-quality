@@ -30,8 +30,8 @@ func (command *InstallTools) Execute(args []string) (err error) {
 		}
 	}
 
-	if err := tools.Install(command.logger, command.InstallToolsPath); err != nil {
-		command.logger.Panicf("ERROR: %s", err)
+	if err := tools.InstallAll(command.logger, command.InstallToolsPath); err != nil {
+		command.logger.Panicf("ERROR: installing all tools unsuccessful: %s", err)
 	}
 
 	return nil

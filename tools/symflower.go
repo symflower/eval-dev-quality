@@ -18,6 +18,10 @@ import (
 // symflower holds the "Symflower" tool.
 type symflower struct{}
 
+func init() {
+	Register(NewSymflower())
+}
+
 // NewSymflower returns a new Symflower tool.
 func NewSymflower() Tool {
 	return &symflower{}

@@ -14,6 +14,10 @@ import (
 // ollama holds the "Ollama" tool.
 type ollama struct{}
 
+func init() {
+	Register(NewOllama())
+}
+
 // NewOllama returns a new Ollama tool.
 func NewOllama() Tool {
 	return &ollama{}

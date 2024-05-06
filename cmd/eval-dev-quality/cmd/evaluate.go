@@ -189,7 +189,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 			}
 		}
 
-		if err := tools.Install(log, command.InstallToolsPath); err != nil {
+		if err := tools.InstallEvaluation(log, command.InstallToolsPath); err != nil {
 			log.Panicf("ERROR: %s", err)
 		}
 	}
