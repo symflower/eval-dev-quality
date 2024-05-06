@@ -130,18 +130,19 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	{
 		models := map[string]model.Model{}
 		for _, p := range provider.Providers {
+			if t, ok := p.(provider.InjectToken); ok {
+				token, ok := command.ProviderTokens[p.ID()]
+				if ok {
+					t.SetToken(token)
+				}
+			}
+
 			ms, err := p.Models()
 			if err != nil {
 				log.Panicf("ERROR: could not query models for provider %q: %s", p.ID(), err)
 			}
-			for _, m := range ms {
-				if t, ok := p.(provider.InjectToken); ok {
-					token, ok := command.ProviderTokens[p.ID()]
-					if ok {
-						t.SetToken(token)
-					}
-				}
 
+			for _, m := range ms {
 				models[m.ID()] = m
 			}
 		}
