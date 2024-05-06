@@ -295,3 +295,89 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 		},
 	})
 }
+
+func TestAssessmentCollapseByLanguage(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Assessments AssessmentPerModelPerLanguagePerRepository
+
+		ExpectedAssessmentPerLanguagePerModel AssessmentPerLanguagePerModel
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualAssessmentPerLanguagePerModel := tc.Assessments.CollapseByLanguage()
+
+			assert.Equal(t, tc.ExpectedAssessmentPerLanguagePerModel, actualAssessmentPerLanguagePerModel)
+		})
+	}
+
+	modelA := modeltesting.NewMockModelNamed(t, "some-model-a")
+	modelB := modeltesting.NewMockModelNamed(t, "some-model-b")
+
+	languageA := languagetesting.NewMockLanguageNamed(t, "some-language-a")
+	languageB := languagetesting.NewMockLanguageNamed(t, "some-language-b")
+
+	validate(t, &testCase{
+		Name: "Collapse",
+
+		Assessments: AssessmentPerModelPerLanguagePerRepository{
+			modelA: {
+				languageA: {
+					"some-repository-a": metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 1,
+					},
+					"some-repository-b": metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 2,
+					},
+				},
+				languageB: {
+					"some-repository-a": metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 3,
+					},
+					"some-repository-b": metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 4,
+					},
+				},
+			},
+			modelB: {
+				languageA: {
+					"some-repository-a": metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 5,
+					},
+					"some-repository-b": metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 6,
+					},
+				},
+				languageB: {
+					"some-repository-a": metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 7,
+					},
+					"some-repository-b": metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 8,
+					},
+				},
+			},
+		},
+
+		ExpectedAssessmentPerLanguagePerModel: AssessmentPerLanguagePerModel{
+			languageA: map[model.Model]metrics.Assessments{
+				modelA: {
+					metrics.AssessmentKeyResponseNoExcess: 3,
+				},
+				modelB: {
+					metrics.AssessmentKeyResponseNoExcess: 11,
+				},
+			},
+			languageB: map[model.Model]metrics.Assessments{
+				modelA: {
+					metrics.AssessmentKeyResponseNoExcess: 7,
+				},
+				modelB: {
+					metrics.AssessmentKeyResponseNoExcess: 15,
+				},
+			},
+		},
+	})
+}

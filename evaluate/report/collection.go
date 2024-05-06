@@ -14,6 +14,9 @@ import (
 	"github.com/symflower/eval-dev-quality/model"
 )
 
+// AssessmentPerLanguagePerModel holds a collection of assessments per language and model.
+type AssessmentPerLanguagePerModel map[language.Language]AssessmentPerModel
+
 // AssessmentPerModel holds a collection of assessments per model.
 type AssessmentPerModel map[model.Model]metrics.Assessments
 
@@ -107,4 +110,24 @@ func (a AssessmentPerModelPerLanguagePerRepository) CollapseByModel() Assessment
 	})
 
 	return perModel
+}
+
+// CollapseByLanguage returns all assessments aggregated per language and model.
+func (a AssessmentPerModelPerLanguagePerRepository) CollapseByLanguage() AssessmentPerLanguagePerModel {
+	assessments := AssessmentPerLanguagePerModel{}
+	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) error {
+		if _, ok := assessments[l]; !ok {
+			assessments[l] = map[model.Model]metrics.Assessments{}
+		}
+
+		if _, ok := assessments[l][m]; !ok {
+			assessments[l][m] = metrics.NewAssessments()
+		}
+
+		assessments[l][m].Add(a)
+
+		return nil
+	})
+
+	return assessments
 }
