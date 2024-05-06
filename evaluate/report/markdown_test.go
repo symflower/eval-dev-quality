@@ -12,6 +12,7 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 )
 
 func TestMarkdownWriteToFile(t *testing.T) {
@@ -102,9 +103,9 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			SVGPath:       "./file.svg",
 
 			TotalScore: 1,
-			AssessmentPerModel: map[string]metrics.Assessments{
-				"model/response/error": metrics.NewAssessments(),
-				"model/no/code": metrics.Assessments{
+			AssessmentPerModel: AssessmentPerModel{
+				modeltesting.NewMockModelNamed(t, "model/response/error"): metrics.NewAssessments(),
+				modeltesting.NewMockModelNamed(t, "model/no/code"): metrics.Assessments{
 					metrics.AssessmentKeyResponseNoError:  1,
 					metrics.AssessmentKeyResponseNotEmpty: 1,
 				},

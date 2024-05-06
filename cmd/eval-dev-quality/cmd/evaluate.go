@@ -274,7 +274,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		totalScore = uint(len(languagesSelected))
 	}
 
-	assessmentsPerModel := assessments.Collapse()
+	assessmentsPerModel := assessments.CollapseByModel()
 	if err := (report.Markdown{
 		DateTime: evaluationTimestamp,
 		Version:  evaluate.Version,
@@ -290,8 +290,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		return err
 	}
 
-	_ = metrics.WalkByScore(assessmentsPerModel, func(model string, assessment metrics.Assessments, score uint) error {
-		log.Printf("Evaluation score for %q (%q): %s", model, assessment.Category(totalScore).ID, assessment)
+	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint) error {
+		log.Printf("Evaluation score for %q (%q): %s", model.ID(), assessment.Category(totalScore).ID, assessment)
 
 		return nil
 	})
