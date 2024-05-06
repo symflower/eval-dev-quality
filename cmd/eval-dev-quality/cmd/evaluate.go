@@ -136,6 +136,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 					t.SetToken(token)
 				}
 			}
+			if err := p.Available(log); err != nil {
+				log.Printf("skipping unavailable provider %q cause: %s", p.ID(), err)
+
+				continue
+			}
 
 			ms, err := p.Models()
 			if err != nil {
