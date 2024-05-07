@@ -124,6 +124,12 @@ func TestEvaluateExecute(t *testing.T) {
 					`), data)
 				},
 				"evaluation.log": nil,
+				"models-summed.csv": func(t *testing.T, filePath, data string) {
+					assert.Equal(t, bytesutil.StringTrimIndentations(`
+						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+						symflower/symbolic-execution,15,10,1,1,1,1,1
+					`), data)
+				},
 				"README.md": func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
@@ -152,6 +158,12 @@ func TestEvaluateExecute(t *testing.T) {
 						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
 						symflower/symbolic-execution,golang,golang/plain,15,10,1,1,1,1,1
 						symflower/symbolic-execution,java,java/plain,15,10,1,1,1,1,1
+					`), data)
+				},
+				"models-summed.csv": func(t *testing.T, filePath, data string) {
+					assert.Equal(t, bytesutil.StringTrimIndentations(`
+						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+						symflower/symbolic-execution,30,20,2,2,2,2,2
 					`), data)
 				},
 				"evaluation.log": nil,
@@ -192,6 +204,12 @@ func TestEvaluateExecute(t *testing.T) {
 						`), data)
 					},
 					"evaluation.log": nil,
+					"models-summed.csv": func(t *testing.T, filePath, data string) {
+						assert.Equal(t, bytesutil.StringTrimIndentations(`
+							model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+							symflower/symbolic-execution,15,10,1,1,1,1,1
+						`), data)
+					},
 					"README.md": func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
@@ -223,6 +241,12 @@ func TestEvaluateExecute(t *testing.T) {
 						`), data)
 					},
 					"evaluation.log": nil,
+					"models-summed.csv": func(t *testing.T, filePath, data string) {
+						assert.Equal(t, bytesutil.StringTrimIndentations(`
+							model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+							symflower/symbolic-execution,15,10,1,1,1,1,1
+						`), data)
+					},
 					"README.md": func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
@@ -252,10 +276,11 @@ func TestEvaluateExecute(t *testing.T) {
 		},
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			"categories.svg": nil,
-			"evaluation.csv": nil,
-			"evaluation.log": nil,
-			"README.md":      nil,
+			"categories.svg":    nil,
+			"evaluation.csv":    nil,
+			"evaluation.log":    nil,
+			"models-summed.csv": nil,
+			"README.md":         nil,
 			"symflower_symbolic-execution/golang/golang/plain.log": nil,
 		},
 	})

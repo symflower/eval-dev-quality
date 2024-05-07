@@ -59,3 +59,21 @@ func (a AssessmentPerModelPerLanguagePerRepository) Rows() (rows [][]string) {
 
 	return rows
 }
+
+// Header returns the header description as a CSV row.
+func (a AssessmentPerModel) Header() (header []string) {
+	return append([]string{"model", "score"}, metrics.AllAssessmentKeysStrings...)
+}
+
+// Rows returns all data as CSV rows.
+func (a AssessmentPerModel) Rows() (rows [][]string) {
+	for model, assessment := range a {
+		metrics := assessment.StringCSV()
+		score := assessment.Score()
+
+		row := append([]string{model.ID(), strconv.FormatUint(uint64(score), 10)}, metrics...)
+		rows = append(rows, row)
+	}
+
+	return rows
+}

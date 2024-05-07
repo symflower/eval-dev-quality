@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
 	"golang.org/x/exp/maps"
 
@@ -252,14 +253,6 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 
-	csv, err := report.GenerateCSV(assessments)
-	if err != nil {
-		log.Panicf("ERROR: could not create result summary: %s", err)
-	}
-	if err := os.WriteFile(filepath.Join(command.ResultPath, "evaluation.csv"), []byte(csv), 0644); err != nil {
-		log.Panicf("ERROR: could not write result summary: %s", err)
-	}
-
 	totalScore := uint(0)
 	// Set the total score to the number of evaluated languages if we are just checking the "plain" repositories since there is only one task to solve per language.
 	isOnlyPlainRepositories := true
@@ -295,6 +288,34 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 		return nil
 	})
+
+	if err := writeCSVs(command.ResultPath, assessments); err != nil {
+		log.Panicf("ERROR: %s", err)
+	}
+
+	return nil
+}
+
+// WriteCSVs writes the various CSV reports to disk.
+func writeCSVs(resultPath string, assessments report.AssessmentPerModelPerLanguagePerRepository) (err error) {
+	// Write the "evaluation.csv" containing all data.
+	csv, err := report.GenerateCSV(assessments)
+	if err != nil {
+		return pkgerrors.Wrap(err, "could not create evaluation.csv summary")
+	}
+	if err := os.WriteFile(filepath.Join(resultPath, "evaluation.csv"), []byte(csv), 0644); err != nil {
+		return pkgerrors.Wrap(err, "could not write evaluation.csv summary")
+	}
+
+	// Write the "models-summed.csv" containing the summary per model.
+	byModel := assessments.CollapseByModel()
+	csvByModel, err := report.GenerateCSV(byModel)
+	if err != nil {
+		return pkgerrors.Wrap(err, "could not create models-summed.csv summary")
+	}
+	if err := os.WriteFile(filepath.Join(resultPath, "models-summed.csv"), []byte(csvByModel), 0644); err != nil {
+		return pkgerrors.Wrap(err, "could not write models-summed.csv summary")
+	}
 
 	return nil
 }
