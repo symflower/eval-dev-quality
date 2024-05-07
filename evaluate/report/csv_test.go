@@ -41,8 +41,8 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 		},
 
 		ExpectedString: `
-			model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-			some-model,some-language,some-repository,0,0,0,0,0,0,0
+			model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
+			some-model,some-language,some-repository,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
@@ -56,8 +56,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 						metrics.AssessmentKeyFilesExecuted:     2,
 						metrics.AssessmentKeyResponseNoError:   3,
 						metrics.AssessmentKeyResponseNoExcess:  4,
-						metrics.AssessmentKeyResponseNotEmpty:  5,
-						metrics.AssessmentKeyResponseWithCode:  6,
+						metrics.AssessmentKeyResponseWithCode:  5,
 					},
 				},
 			},
@@ -68,17 +67,16 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 						metrics.AssessmentKeyFilesExecuted:     2,
 						metrics.AssessmentKeyResponseNoError:   3,
 						metrics.AssessmentKeyResponseNoExcess:  4,
-						metrics.AssessmentKeyResponseNotEmpty:  5,
-						metrics.AssessmentKeyResponseWithCode:  6,
+						metrics.AssessmentKeyResponseWithCode:  5,
 					},
 				},
 			},
 		},
 
 		ExpectedString: `
-			model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-			some-model-a,some-language,some-repository,21,1,2,3,4,5,6
-			some-model-b,some-language,some-repository,21,1,2,3,4,5,6
+			model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
+			some-model-a,some-language,some-repository,15,1,2,3,4,5
+			some-model-b,some-language,some-repository,15,1,2,3,4,5
 		`,
 	})
 }
@@ -109,8 +107,8 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 		},
 
 		ExpectedString: `
-			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-			some-model,0,0,0,0,0,0,0
+			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
+			some-model,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
@@ -122,23 +120,21 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 				metrics.AssessmentKeyFilesExecuted:     2,
 				metrics.AssessmentKeyResponseNoError:   3,
 				metrics.AssessmentKeyResponseNoExcess:  4,
-				metrics.AssessmentKeyResponseNotEmpty:  5,
-				metrics.AssessmentKeyResponseWithCode:  6,
+				metrics.AssessmentKeyResponseWithCode:  5,
 			},
 			modeltesting.NewMockModelNamed(t, "some-model-b"): {
 				metrics.AssessmentKeyCoverageStatement: 1,
 				metrics.AssessmentKeyFilesExecuted:     2,
 				metrics.AssessmentKeyResponseNoError:   3,
 				metrics.AssessmentKeyResponseNoExcess:  4,
-				metrics.AssessmentKeyResponseNotEmpty:  5,
-				metrics.AssessmentKeyResponseWithCode:  6,
+				metrics.AssessmentKeyResponseWithCode:  5,
 			},
 		},
 
 		ExpectedString: `
-			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
-			some-model-a,21,1,2,3,4,5,6
-			some-model-b,21,1,2,3,4,5,6
+			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
+			some-model-a,15,1,2,3,4,5
+			some-model-b,15,1,2,3,4,5
 		`,
 	})
 }

@@ -81,7 +81,6 @@ func TestRepository(t *testing.T) {
 			metrics.AssessmentKeyFilesExecuted:     1,
 			metrics.AssessmentKeyResponseNoError:   1,
 			metrics.AssessmentKeyResponseNoExcess:  1,
-			metrics.AssessmentKeyResponseNotEmpty:  1,
 			metrics.AssessmentKeyResponseWithCode:  1,
 		},
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){

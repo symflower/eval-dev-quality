@@ -19,11 +19,17 @@ func TestParseResponse(t *testing.T) {
 
 		ExpectedAssessment metrics.Assessments
 		ExpectedCode       string
+		ExpectedError      bool
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualAssessment, actualCode := ParseResponse(tc.Response)
+			actualAssessment, actualCode, err := ParseResponse(tc.Response)
+			if !tc.ExpectedError {
+				assert.NoError(t, err)
+			} else {
+				assert.Error(t, err)
+			}
 
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 			assert.Equal(t, strings.TrimSpace(tc.ExpectedCode), actualCode)
@@ -41,23 +47,11 @@ func TestParseResponse(t *testing.T) {
 	`)
 
 	validate(t, &testCase{
-		Name: "Empty Response",
-
-		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyResponseNotEmpty: 0,
-			metrics.AssessmentKeyResponseNoExcess: 0,
-			metrics.AssessmentKeyResponseWithCode: 0,
-		},
-		ExpectedCode: "",
-	})
-
-	validate(t, &testCase{
 		Name: "Only Code",
 
 		Response: code,
 
 		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyResponseNotEmpty: 1,
 			// If there are no code fences, we currently cannot determine what is code and what is (excessive) text.
 			metrics.AssessmentKeyResponseNoExcess: 0,
 			metrics.AssessmentKeyResponseWithCode: 0,
@@ -71,12 +65,21 @@ func TestParseResponse(t *testing.T) {
 		Response: "```\n" + code,
 
 		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyResponseNotEmpty: 1,
 			// If there are incorrect code fences, we currently cannot determine what is code and what is (excessive) text.
 			metrics.AssessmentKeyResponseNoExcess: 0,
 			metrics.AssessmentKeyResponseWithCode: 0,
 		},
 		ExpectedCode: code,
+	})
+
+	validate(t, &testCase{
+		Name: "Expected error on empty response",
+
+		Response: "",
+
+		ExpectedAssessment: metrics.Assessments{},
+		ExpectedCode:       "",
+		ExpectedError:      true,
 	})
 
 	t.Run("Formatted Code", func(t *testing.T) {
@@ -86,7 +89,6 @@ func TestParseResponse(t *testing.T) {
 			Response: "```\n" + code + "\n```\n",
 
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNotEmpty: 1,
 				metrics.AssessmentKeyResponseNoExcess: 1,
 				metrics.AssessmentKeyResponseWithCode: 1,
 			},
@@ -99,7 +101,6 @@ func TestParseResponse(t *testing.T) {
 			Response: "```\n" + code + "\n```",
 
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNotEmpty: 1,
 				metrics.AssessmentKeyResponseNoExcess: 1,
 				metrics.AssessmentKeyResponseWithCode: 1,
 			},
@@ -112,7 +113,6 @@ func TestParseResponse(t *testing.T) {
 			Response: "Some text...\n\n```\n" + code + "\n```\n\nSome more text...",
 
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNotEmpty: 1,
 				metrics.AssessmentKeyResponseNoExcess: 0,
 				metrics.AssessmentKeyResponseWithCode: 1,
 			},
@@ -125,7 +125,6 @@ func TestParseResponse(t *testing.T) {
 			Response: "```go\n" + code + "\n```\n",
 
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNotEmpty: 1,
 				metrics.AssessmentKeyResponseNoExcess: 1,
 				metrics.AssessmentKeyResponseWithCode: 1,
 			},
@@ -137,7 +136,6 @@ func TestParseResponse(t *testing.T) {
 
 			Response: " ```\n" + code + "\n\t```\n",
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNotEmpty: 1,
 				metrics.AssessmentKeyResponseNoExcess: 1,
 				metrics.AssessmentKeyResponseWithCode: 1,
 			},
@@ -149,7 +147,6 @@ func TestParseResponse(t *testing.T) {
 
 			Response: "``` \n" + code + "\n``` ",
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNotEmpty: 1,
 				metrics.AssessmentKeyResponseNoExcess: 1,
 				metrics.AssessmentKeyResponseWithCode: 1,
 			},
@@ -161,7 +158,6 @@ func TestParseResponse(t *testing.T) {
 
 			Response: "```\n```\n" + code + "\n```\n```\n",
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNotEmpty: 1,
 				metrics.AssessmentKeyResponseNoExcess: 1,
 				metrics.AssessmentKeyResponseWithCode: 1,
 			},

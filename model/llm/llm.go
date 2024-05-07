@@ -105,7 +105,10 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	}
 	logger.Printf("Model %q responded with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
 
-	assessment, testContent := prompt.ParseResponse(response)
+	assessment, testContent, err := prompt.ParseResponse(response)
+	if err != nil {
+		return nil, err
+	}
 
 	testFilePath := language.TestFilePath(repositoryPath, filePath)
 	if err := os.MkdirAll(filepath.Join(repositoryPath, filepath.Dir(testFilePath)), 0755); err != nil {

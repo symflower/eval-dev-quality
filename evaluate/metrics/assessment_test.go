@@ -137,7 +137,7 @@ func TestAssessmentString(t *testing.T) {
 
 		Assessment: NewAssessments(),
 
-		ExpectedString: "score=0, coverage-statement=0, files-executed=0, response-no-error=0, response-no-excess=0, response-not-empty=0, response-with-code=0",
+		ExpectedString: "score=0, coverage-statement=0, files-executed=0, response-no-error=0, response-no-excess=0, response-with-code=0",
 	})
 
 	validate(t, &testCase{
@@ -148,11 +148,10 @@ func TestAssessmentString(t *testing.T) {
 			AssessmentKeyFilesExecuted:     2,
 			AssessmentKeyResponseNoError:   3,
 			AssessmentKeyResponseNoExcess:  4,
-			AssessmentKeyResponseNotEmpty:  5,
-			AssessmentKeyResponseWithCode:  6,
+			AssessmentKeyResponseWithCode:  5,
 		},
 
-		ExpectedString: "score=21, coverage-statement=1, files-executed=2, response-no-error=3, response-no-excess=4, response-not-empty=5, response-with-code=6",
+		ExpectedString: "score=15, coverage-statement=1, files-executed=2, response-no-error=3, response-no-excess=4, response-with-code=5",
 	})
 }
 

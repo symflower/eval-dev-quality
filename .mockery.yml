@@ -12,5 +12,6 @@ packages:
       Model:
   github.com/symflower/eval-dev-quality/provider:
     interfaces:
+      Provider:
       Query:
 replace-type: 'log=github.com/symflower/eval-dev-quality/log'

@@ -4,6 +4,7 @@ import (
 	"regexp"
 	"strings"
 
+	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
@@ -15,14 +16,13 @@ var (
 )
 
 // ParseResponse parses code from a model's response.
-func ParseResponse(response string) (assessment metrics.Assessments, code string) {
+func ParseResponse(response string) (assessment metrics.Assessments, code string, err error) {
 	assessment = metrics.Assessments{}
 
 	// Check for empty responses.
-	if bytesutil.IsWhitespace(response) {
-		return assessment, response
+	if strings.TrimSpace(response) == "" {
+		return assessment, "", pkgerrors.New("empty response from model")
 	}
-	assessment.Award(metrics.AssessmentKeyResponseNotEmpty)
 
 	// Some models produce duplicated code tags, so unify them if needed.
 	response = codeTagDuplicatedMatch.ReplaceAllString(response, "```")
@@ -38,7 +38,7 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 			response = strings.ReplaceAll(response, "```", "")
 		}
 
-		return assessment, strings.TrimSpace(response)
+		return assessment, strings.TrimSpace(response), nil
 	}
 	assessment.Award(metrics.AssessmentKeyResponseWithCode)
 
@@ -51,5 +51,5 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 		assessment.Award(metrics.AssessmentKeyResponseNoExcess)
 	}
 
-	return assessment, strings.TrimSpace(codeTagMatch.ReplaceAllString(block, ""))
+	return assessment, strings.TrimSpace(codeTagMatch.ReplaceAllString(block, "")), nil
 }
