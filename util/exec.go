@@ -5,8 +5,10 @@ import (
 	"io"
 	"os/exec"
 	"strings"
+	"time"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/log"
@@ -43,6 +45,8 @@ func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command
 	}
 	c.Stdout = io.MultiWriter(logger.Writer(), &writer)
 	c.Stderr = c.Stdout
+
+	c.WaitDelay = 3 * time.Second // Some binaries do not like to be killed, e.g. "ollama", so we kill them after some time automatically.
 
 	if err := c.Run(); err != nil {
 		return writer.String(), pkgerrors.WithStack(err)
