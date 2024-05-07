@@ -11,7 +11,7 @@ import (
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 )
 
-func TestFormatCSV(t *testing.T) {
+func TestGenerateCSV(t *testing.T) {
 	type testCase struct {
 		Name string
 
@@ -22,7 +22,7 @@ func TestFormatCSV(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualString, err := FormatCSV(tc.Assessments)
+			actualString, err := GenerateCSV(tc.Assessments)
 			assert.NoError(t, err)
 
 			assert.Equal(t, bytesutil.StringTrimIndentations(tc.ExpectedString), actualString)

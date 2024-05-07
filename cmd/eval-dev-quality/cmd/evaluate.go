@@ -252,7 +252,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 
-	csv, err := report.FormatCSV(assessments)
+	csv, err := report.GenerateCSV(assessments)
 	if err != nil {
 		log.Panicf("ERROR: could not create result summary: %s", err)
 	}
