@@ -141,24 +141,3 @@ func (a Assessments) StringCSV() (row []string) {
 
 	return row
 }
-
-// WalkByScore walks the given assessment metrics by their score.
-func WalkByScore(assessmentsPerModel map[string]Assessments, function func(model string, assessment Assessments, score uint) error) error {
-	models := maps.Keys(assessmentsPerModel)
-	sort.Strings(models)
-	scores := make(map[string]uint, len(models))
-	for _, model := range models {
-		scores[model] = assessmentsPerModel[model].Score()
-	}
-	sort.SliceStable(models, func(i, j int) bool {
-		return scores[models[i]] < scores[models[j]]
-	})
-
-	for _, model := range models {
-		if err := function(model, assessmentsPerModel[model], scores[model]); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}

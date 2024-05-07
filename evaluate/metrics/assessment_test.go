@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAssessmentsAdd(t *testing.T) {
@@ -268,92 +267,5 @@ func TestAssessmentsScore(t *testing.T) {
 		},
 
 		ExpectedScore: 9,
-	})
-}
-
-func TestWalkByScore(t *testing.T) {
-	type testCase struct {
-		Name string
-
-		AssessmentPerModel map[string]Assessments
-
-		ExpectedModelOrder []string
-		ExpectedScoreOrder []uint
-	}
-
-	validate := func(t *testing.T, tc *testCase) {
-		t.Run(tc.Name, func(t *testing.T) {
-			require.Equal(t, len(tc.ExpectedModelOrder), len(tc.ExpectedScoreOrder), "expected order needs equal lengths")
-
-			actualModelOrder := make([]string, 0, len(tc.ExpectedModelOrder))
-			actualAssessmentOrder := make([]Assessments, 0, len(tc.ExpectedModelOrder))
-			actualScoreOrder := make([]uint, 0, len(tc.ExpectedScoreOrder))
-			assert.NoError(t, WalkByScore(tc.AssessmentPerModel, func(model string, assessment Assessments, score uint) error {
-				actualModelOrder = append(actualModelOrder, model)
-				actualAssessmentOrder = append(actualAssessmentOrder, assessment)
-				actualScoreOrder = append(actualScoreOrder, score)
-
-				return nil
-			}))
-
-			assert.Equal(t, tc.ExpectedModelOrder, actualModelOrder)
-			assert.Equal(t, tc.ExpectedScoreOrder, actualScoreOrder)
-			for i, model := range tc.ExpectedModelOrder {
-				assert.Equal(t, tc.AssessmentPerModel[model], actualAssessmentOrder[i])
-			}
-		})
-	}
-
-	validate(t, &testCase{
-		Name: "No Assessment",
-
-		AssessmentPerModel: map[string]Assessments{},
-
-		ExpectedModelOrder: []string{},
-		ExpectedScoreOrder: []uint{},
-	})
-
-	validate(t, &testCase{
-		Name: "Single Assessment",
-
-		AssessmentPerModel: map[string]Assessments{
-			"Model": Assessments{
-				AssessmentKeyFilesExecuted: 1,
-			},
-		},
-
-		ExpectedModelOrder: []string{
-			"Model",
-		},
-		ExpectedScoreOrder: []uint{
-			1,
-		},
-	})
-
-	validate(t, &testCase{
-		Name: "Multiple Assessments",
-
-		AssessmentPerModel: map[string]Assessments{
-			"ModelA": Assessments{
-				AssessmentKeyFilesExecuted: 1,
-			},
-			"ModelB": Assessments{
-				AssessmentKeyFilesExecuted: 2,
-			},
-			"ModelC": Assessments{
-				AssessmentKeyFilesExecuted: 3,
-			},
-		},
-
-		ExpectedModelOrder: []string{
-			"ModelA",
-			"ModelB",
-			"ModelC",
-		},
-		ExpectedScoreOrder: []uint{
-			1,
-			2,
-			3,
-		},
 	})
 }

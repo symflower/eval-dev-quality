@@ -11,7 +11,7 @@ import (
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 )
 
-func TestFormatCSV(t *testing.T) {
+func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) {
 	type testCase struct {
 		Name string
 
@@ -22,7 +22,7 @@ func TestFormatCSV(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualString, err := FormatCSV(tc.Assessments)
+			actualString, err := GenerateCSV(tc.Assessments)
 			assert.NoError(t, err)
 
 			assert.Equal(t, bytesutil.StringTrimIndentations(tc.ExpectedString), actualString)
@@ -79,6 +79,66 @@ func TestFormatCSV(t *testing.T) {
 			model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
 			some-model-a,some-language,some-repository,21,1,2,3,4,5,6
 			some-model-b,some-language,some-repository,21,1,2,3,4,5,6
+		`,
+	})
+}
+
+func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Assessments AssessmentPerModel
+
+		ExpectedString string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualString, err := GenerateCSV(tc.Assessments)
+			assert.NoError(t, err)
+
+			assert.Equal(t, bytesutil.StringTrimIndentations(tc.ExpectedString), actualString)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Single Empty Model",
+
+		Assessments: AssessmentPerModel{
+			modeltesting.NewMockModelNamed(t, "some-model"): {},
+		},
+
+		ExpectedString: `
+			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+			some-model,0,0,0,0,0,0,0
+		`,
+	})
+	validate(t, &testCase{
+		Name: "Multiple Models",
+
+		Assessments: AssessmentPerModel{
+			modeltesting.NewMockModelNamed(t, "some-model-a"): {
+				metrics.AssessmentKeyCoverageStatement: 1,
+				metrics.AssessmentKeyFilesExecuted:     2,
+				metrics.AssessmentKeyResponseNoError:   3,
+				metrics.AssessmentKeyResponseNoExcess:  4,
+				metrics.AssessmentKeyResponseNotEmpty:  5,
+				metrics.AssessmentKeyResponseWithCode:  6,
+			},
+			modeltesting.NewMockModelNamed(t, "some-model-b"): {
+				metrics.AssessmentKeyCoverageStatement: 1,
+				metrics.AssessmentKeyFilesExecuted:     2,
+				metrics.AssessmentKeyResponseNoError:   3,
+				metrics.AssessmentKeyResponseNoExcess:  4,
+				metrics.AssessmentKeyResponseNotEmpty:  5,
+				metrics.AssessmentKeyResponseWithCode:  6,
+			},
+		},
+
+		ExpectedString: `
+			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+			some-model-a,21,1,2,3,4,5,6
+			some-model-b,21,1,2,3,4,5,6
 		`,
 	})
 }

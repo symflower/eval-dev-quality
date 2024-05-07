@@ -33,8 +33,8 @@ type Markdown struct {
 	// SVGPath holds the path of the charted results.
 	SVGPath string
 
-	// AssessmentPerModel holds
-	AssessmentPerModel map[string]metrics.Assessments
+	// AssessmentPerModel holds a collection of assessments per model.
+	AssessmentPerModel AssessmentPerModel
 	// TotalScore holds the total reachable score per task.
 	TotalScore uint
 }
@@ -148,7 +148,7 @@ func (m Markdown) format(writer io.Writer, markdownFileDirectoryPath string) err
 	templateContext.ModelsPerCategory = make(map[*metrics.AssessmentCategory][]string, len(metrics.AllAssessmentCategories))
 	for model, assessment := range m.AssessmentPerModel {
 		category := assessment.Category(m.TotalScore)
-		templateContext.ModelsPerCategory[category] = append(templateContext.ModelsPerCategory[category], model)
+		templateContext.ModelsPerCategory[category] = append(templateContext.ModelsPerCategory[category], model.ID())
 	}
 
 	svgFile, err := os.Create(filepath.Join(markdownFileDirectoryPath, m.SVGPath))

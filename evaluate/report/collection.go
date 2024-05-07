@@ -14,6 +14,36 @@ import (
 	"github.com/symflower/eval-dev-quality/model"
 )
 
+// AssessmentPerLanguagePerModel holds a collection of assessments per language and model.
+type AssessmentPerLanguagePerModel map[language.Language]AssessmentPerModel
+
+// AssessmentPerModel holds a collection of assessments per model.
+type AssessmentPerModel map[model.Model]metrics.Assessments
+
+// WalkByScore walks the given assessment metrics by their score.
+func (a AssessmentPerModel) WalkByScore(function func(model model.Model, assessment metrics.Assessments, score uint) error) error {
+	models := maps.Keys(a)
+	slices.SortStableFunc(models, func(a, b model.Model) int {
+		return cmp.Compare(a.ID(), b.ID())
+	})
+
+	scores := make(map[model.Model]uint, len(models))
+	for _, model := range models {
+		scores[model] = a[model].Score()
+	}
+	sort.SliceStable(models, func(i, j int) bool {
+		return scores[models[i]] < scores[models[j]]
+	})
+
+	for _, model := range models {
+		if err := function(model, a[model], scores[model]); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // AssessmentPerModelPerLanguagePerRepository holds a collection of assessments per model per language and per repository.
 type AssessmentPerModelPerLanguagePerRepository map[model.Model]map[language.Language]map[string]metrics.Assessments
 
@@ -67,17 +97,37 @@ func (a AssessmentPerModelPerLanguagePerRepository) Walk(function func(m model.M
 	return nil
 }
 
-// Collapse returns all assessments aggregated per model ID.
-func (a AssessmentPerModelPerLanguagePerRepository) Collapse() map[string]metrics.Assessments {
-	perModel := make(map[string]metrics.Assessments, len(a))
+// CollapseByModel returns all assessments aggregated per model ID.
+func (a AssessmentPerModelPerLanguagePerRepository) CollapseByModel() AssessmentPerModel {
+	perModel := make(AssessmentPerModel, len(a))
 	for _, m := range maps.Keys(a) {
-		perModel[m.ID()] = metrics.NewAssessments()
+		perModel[m] = metrics.NewAssessments()
 	}
 	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) error {
-		perModel[m.ID()].Add(a)
+		perModel[m].Add(a)
 
 		return nil
 	})
 
 	return perModel
+}
+
+// CollapseByLanguage returns all assessments aggregated per language and model.
+func (a AssessmentPerModelPerLanguagePerRepository) CollapseByLanguage() AssessmentPerLanguagePerModel {
+	assessments := AssessmentPerLanguagePerModel{}
+	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) error {
+		if _, ok := assessments[l]; !ok {
+			assessments[l] = map[model.Model]metrics.Assessments{}
+		}
+
+		if _, ok := assessments[l][m]; !ok {
+			assessments[l][m] = metrics.NewAssessments()
+		}
+
+		assessments[l][m].Add(a)
+
+		return nil
+	})
+
+	return assessments
 }
