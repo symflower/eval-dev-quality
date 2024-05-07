@@ -19,11 +19,17 @@ func TestParseResponse(t *testing.T) {
 
 		ExpectedAssessment metrics.Assessments
 		ExpectedCode       string
+		ExpectedError      bool
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualAssessment, actualCode := ParseResponse(tc.Response)
+			actualAssessment, actualCode, err := ParseResponse(tc.Response)
+			if !tc.ExpectedError {
+				assert.NoError(t, err)
+			} else {
+				assert.Error(t, err)
+			}
 
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 			assert.Equal(t, strings.TrimSpace(tc.ExpectedCode), actualCode)
@@ -64,6 +70,16 @@ func TestParseResponse(t *testing.T) {
 			metrics.AssessmentKeyResponseWithCode: 0,
 		},
 		ExpectedCode: code,
+	})
+
+	validate(t, &testCase{
+		Name: "Expected error on empty response",
+
+		Response: "",
+
+		ExpectedAssessment: metrics.Assessments{},
+		ExpectedCode:       "",
+		ExpectedError:      true,
 	})
 
 	t.Run("Formatted Code", func(t *testing.T) {

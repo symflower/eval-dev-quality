@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,12 +10,17 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
+	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
+	"github.com/symflower/eval-dev-quality/provider"
+	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 )
 
 // validateReportLinks checks if the Markdown report data contains all the links to other relevant report files.
@@ -313,6 +319,56 @@ func TestEvaluateExecute(t *testing.T) {
 			"models-summed.csv": nil,
 			"README.md":         nil,
 			"symflower_symbolic-execution/golang/golang/plain.log": nil,
+		},
+	})
+
+	validate(t, &testCase{
+		Name: "Empty model responses are errors",
+
+		Before: func(t *testing.T, resultPath string) {
+			// Setup provider and model mocking
+			modelMock := modeltesting.NewMockModelNamed(t, "empty-response")
+			providerMock := providertesting.NewMockProviderNamedWithModels(t, "testing", []model.Model{modelMock})
+			provider.Register(providerMock)
+
+			modelMock.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, errors.New("empty response from model"))
+		},
+		After: func(t *testing.T, resultPath string) {
+			delete(provider.Providers, "testing")
+		},
+
+		Arguments: []string{
+			"--language", "golang",
+			"--model", "empty-response",
+		},
+
+		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+			"categories.svg": func(t *testing.T, filePath, data string) {
+				validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryResponseError}, 1)
+			},
+			"evaluation.csv": func(t *testing.T, filePath, data string) {
+				assert.Equal(t, bytesutil.StringTrimIndentations(`
+					model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
+					empty-response,golang,golang/plain,0,0,0,0,0,0
+				`), data)
+			},
+			"evaluation.log": nil,
+			"golang-summed.csv": func(t *testing.T, filePath, data string) {
+				assert.Equal(t, bytesutil.StringTrimIndentations(`
+					model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
+					empty-response,0,0,0,0,0,0
+				`), data)
+			},
+			"models-summed.csv": func(t *testing.T, filePath, data string) {
+				assert.Equal(t, bytesutil.StringTrimIndentations(`
+					model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
+					empty-response,0,0,0,0,0,0
+				`), data)
+			},
+			"README.md": func(t *testing.T, filePath, data string) {
+				validateReportLinks(t, data, []string{"empty-response"})
+			},
+			"empty-response/golang/golang/plain.log": nil,
 		},
 	})
 }
