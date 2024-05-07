@@ -50,18 +50,6 @@ func TestAssessmentsCategory(t *testing.T) {
 		},
 		Total: 1,
 
-		ExpectedAssessmentCategory: AssessmentCategoryResponseEmpty,
-	})
-
-	validate(t, &testCase{
-		Name: "No Empty Response",
-
-		Assessments: Assessments{
-			AssessmentKeyResponseNoError:  1,
-			AssessmentKeyResponseNotEmpty: 1,
-		},
-		Total: 1,
-
 		ExpectedAssessmentCategory: AssessmentCategoryResponseNoCode,
 	})
 
@@ -70,7 +58,6 @@ func TestAssessmentsCategory(t *testing.T) {
 
 		Assessments: Assessments{
 			AssessmentKeyResponseNoError:  1,
-			AssessmentKeyResponseNotEmpty: 1,
 			AssessmentKeyResponseWithCode: 1,
 		},
 		Total: 1,
@@ -82,9 +69,8 @@ func TestAssessmentsCategory(t *testing.T) {
 		Name: "Code not Detected but Executes", // TODO We cannot always detect yet if a model response contains source code, so ensure we don't categorize into "no code" if the code actually ran successfully. https://github.com/symflower/eval-dev-quality/issues/43
 
 		Assessments: Assessments{
-			AssessmentKeyResponseNoError:  1,
-			AssessmentKeyResponseNotEmpty: 1,
-			AssessmentKeyFilesExecuted:    1,
+			AssessmentKeyResponseNoError: 1,
+			AssessmentKeyFilesExecuted:   1,
 		},
 		Total: 1,
 
@@ -96,7 +82,6 @@ func TestAssessmentsCategory(t *testing.T) {
 
 		Assessments: Assessments{
 			AssessmentKeyResponseNoError:  1,
-			AssessmentKeyResponseNotEmpty: 1,
 			AssessmentKeyResponseWithCode: 1,
 			AssessmentKeyFilesExecuted:    1,
 		},
@@ -110,7 +95,6 @@ func TestAssessmentsCategory(t *testing.T) {
 
 		Assessments: Assessments{
 			AssessmentKeyResponseNoError:   1,
-			AssessmentKeyResponseNotEmpty:  1,
 			AssessmentKeyResponseWithCode:  1,
 			AssessmentKeyFilesExecuted:     1,
 			AssessmentKeyCoverageStatement: 10,
@@ -125,7 +109,6 @@ func TestAssessmentsCategory(t *testing.T) {
 
 		Assessments: Assessments{
 			AssessmentKeyResponseNoError:   1,
-			AssessmentKeyResponseNotEmpty:  1,
 			AssessmentKeyResponseWithCode:  1,
 			AssessmentKeyFilesExecuted:     1,
 			AssessmentKeyCoverageStatement: 10,
@@ -141,7 +124,6 @@ func TestAssessmentsCategory(t *testing.T) {
 
 		Assessments: Assessments{
 			AssessmentKeyResponseNoError:   2,
-			AssessmentKeyResponseNotEmpty:  2,
 			AssessmentKeyResponseWithCode:  2,
 			AssessmentKeyFilesExecuted:     2,
 			AssessmentKeyCoverageStatement: 1,

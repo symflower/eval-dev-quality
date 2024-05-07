@@ -43,8 +43,6 @@ var (
 
 	// AssessmentKeyResponseNoError indicates that a model responded without error.
 	AssessmentKeyResponseNoError = RegisterAssessmentKey("response-no-error", 1)
-	// AssessmentKeyResponseNotEmpty indicates that a model response was not empty.
-	AssessmentKeyResponseNotEmpty = RegisterAssessmentKey("response-not-empty", 1)
 	// AssessmentKeyResponseWithCode indicates that a model responded with code.
 	AssessmentKeyResponseWithCode = RegisterAssessmentKey("response-with-code", 1)
 	// AssessmentKeyResponseNoExcess indicates that a model did not produce more content as requested.

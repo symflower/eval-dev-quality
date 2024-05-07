@@ -99,7 +99,6 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 
 		ExpectedAssessment: metrics.Assessments{
 			metrics.AssessmentKeyResponseNoExcess: 1,
-			metrics.AssessmentKeyResponseNotEmpty: 1,
 			metrics.AssessmentKeyResponseWithCode: 1,
 		},
 		ExpectedTestFileContent: `

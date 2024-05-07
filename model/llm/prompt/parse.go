@@ -20,9 +20,9 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 
 	// Check for empty responses.
 	if bytesutil.IsWhitespace(response) {
-		return assessment, response
+		// TODO return an error
+		return assessment, ""
 	}
-	assessment.Award(metrics.AssessmentKeyResponseNotEmpty)
 
 	// Some models produce duplicated code tags, so unify them if needed.
 	response = codeTagDuplicatedMatch.ReplaceAllString(response, "```")

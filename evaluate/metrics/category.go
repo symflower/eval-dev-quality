@@ -41,12 +41,6 @@ var (
 		Name:        "response error",
 		Description: "Models in this category encountered an error.",
 	})
-	// AssessmentCategoryResponseEmpty indicates that a model has returned an empty response.
-	AssessmentCategoryResponseEmpty = registerAssessmentCategory(AssessmentCategory{
-		ID:          "response-empty",
-		Name:        "response empty",
-		Description: "Models in this category produced an empty response.",
-	})
 	// AssessmentCategoryResponseNoCode indicates that a model's response did not contain any source code.
 	AssessmentCategoryResponseNoCode = registerAssessmentCategory(AssessmentCategory{
 		ID:          "response-no-code",
@@ -90,8 +84,6 @@ func (a Assessments) Category(totalTasks uint) *AssessmentCategory {
 	switch {
 	case a[AssessmentKeyResponseNoError] != totalTasks*pointsPerAssessment[AssessmentKeyResponseNoError]:
 		return AssessmentCategoryResponseError
-	case a[AssessmentKeyResponseNotEmpty] != totalTasks*pointsPerAssessment[AssessmentKeyResponseNotEmpty]:
-		return AssessmentCategoryResponseEmpty
 	case a[AssessmentKeyResponseWithCode] != totalTasks*pointsPerAssessment[AssessmentKeyResponseWithCode] && a[AssessmentKeyFilesExecuted] != totalTasks*pointsPerAssessment[AssessmentKeyFilesExecuted]: // TODO We cannot always detect yet if a model response contains source code, so ensure we don't categorize into "no code" if the code actually ran successfully all the time. https://github.com/symflower/eval-dev-quality/issues/43
 		return AssessmentCategoryResponseNoCode
 	case a[AssessmentKeyFilesExecuted] != totalTasks*pointsPerAssessment[AssessmentKeyFilesExecuted]:

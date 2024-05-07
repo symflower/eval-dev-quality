@@ -77,7 +77,6 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			The results of all models have been divided into the following categories:
 			- category unknown: Models in this category could not be categorized.
 			- response error: Models in this category encountered an error.
-			- response empty: Models in this category produced an empty response.
 			- no code: Models in this category produced no code.
 			- invalid code: Models in this category produced invalid code.
 			- executable code: Models in this category produced executable code.
@@ -106,8 +105,7 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			AssessmentPerModel: AssessmentPerModel{
 				modeltesting.NewMockModelNamed(t, "model/response/error"): metrics.NewAssessments(),
 				modeltesting.NewMockModelNamed(t, "model/no/code"): metrics.Assessments{
-					metrics.AssessmentKeyResponseNoError:  1,
-					metrics.AssessmentKeyResponseNotEmpty: 1,
+					metrics.AssessmentKeyResponseNoError: 1,
 				},
 			},
 		},
@@ -126,7 +124,6 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			The results of all models have been divided into the following categories:
 			- category unknown: Models in this category could not be categorized.
 			- response error: Models in this category encountered an error.
-			- response empty: Models in this category produced an empty response.
 			- no code: Models in this category produced no code.
 			- invalid code: Models in this category produced invalid code.
 			- executable code: Models in this category produced executable code.
@@ -201,12 +198,11 @@ func TestBarChartModelsPerCategoriesSVG(t *testing.T) {
 		Categories: metrics.AllAssessmentCategories,
 		ModelsPerCategory: map[*metrics.AssessmentCategory]uint{
 			metrics.AssessmentCategoryResponseError:                1,
-			metrics.AssessmentCategoryResponseEmpty:                2,
-			metrics.AssessmentCategoryResponseNoCode:               3,
-			metrics.AssessmentCategoryCodeInvalid:                  4,
-			metrics.AssessmentCategoryCodeExecuted:                 5,
-			metrics.AssessmentCategoryCodeCoverageStatementReached: 6,
-			metrics.AssessmentCategoryCodeNoExcess:                 7,
+			metrics.AssessmentCategoryResponseNoCode:               2,
+			metrics.AssessmentCategoryCodeInvalid:                  3,
+			metrics.AssessmentCategoryCodeExecuted:                 4,
+			metrics.AssessmentCategoryCodeCoverageStatementReached: 5,
+			metrics.AssessmentCategoryCodeNoExcess:                 6,
 		},
 
 		ExpectedFile: "testdata/all_categories.svg",
