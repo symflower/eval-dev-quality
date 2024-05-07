@@ -124,6 +124,12 @@ func TestEvaluateExecute(t *testing.T) {
 					`), data)
 				},
 				"evaluation.log": nil,
+				"golang-summed.csv": func(t *testing.T, filePath, data string) {
+					assert.Equal(t, bytesutil.StringTrimIndentations(`
+						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+						symflower/symbolic-execution,15,10,1,1,1,1,1
+					`), data)
+				},
 				"models-summed.csv": func(t *testing.T, filePath, data string) {
 					assert.Equal(t, bytesutil.StringTrimIndentations(`
 						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -158,6 +164,18 @@ func TestEvaluateExecute(t *testing.T) {
 						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
 						symflower/symbolic-execution,golang,golang/plain,15,10,1,1,1,1,1
 						symflower/symbolic-execution,java,java/plain,15,10,1,1,1,1,1
+					`), data)
+				},
+				"golang-summed.csv": func(t *testing.T, filePath, data string) {
+					assert.Equal(t, bytesutil.StringTrimIndentations(`
+						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+						symflower/symbolic-execution,15,10,1,1,1,1,1
+					`), data)
+				},
+				"java-summed.csv": func(t *testing.T, filePath, data string) {
+					assert.Equal(t, bytesutil.StringTrimIndentations(`
+						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+						symflower/symbolic-execution,15,10,1,1,1,1,1
 					`), data)
 				},
 				"models-summed.csv": func(t *testing.T, filePath, data string) {
@@ -204,6 +222,12 @@ func TestEvaluateExecute(t *testing.T) {
 						`), data)
 					},
 					"evaluation.log": nil,
+					"golang-summed.csv": func(t *testing.T, filePath, data string) {
+						assert.Equal(t, bytesutil.StringTrimIndentations(`
+							model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+							symflower/symbolic-execution,15,10,1,1,1,1,1
+						`), data)
+					},
 					"models-summed.csv": func(t *testing.T, filePath, data string) {
 						assert.Equal(t, bytesutil.StringTrimIndentations(`
 							model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -241,6 +265,12 @@ func TestEvaluateExecute(t *testing.T) {
 						`), data)
 					},
 					"evaluation.log": nil,
+					"golang-summed.csv": func(t *testing.T, filePath, data string) {
+						assert.Equal(t, bytesutil.StringTrimIndentations(`
+							model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
+							symflower/symbolic-execution,15,10,1,1,1,1,1
+						`), data)
+					},
 					"models-summed.csv": func(t *testing.T, filePath, data string) {
 						assert.Equal(t, bytesutil.StringTrimIndentations(`
 							model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-not-empty,response-with-code
@@ -279,6 +309,7 @@ func TestEvaluateExecute(t *testing.T) {
 			"categories.svg":    nil,
 			"evaluation.csv":    nil,
 			"evaluation.log":    nil,
+			"golang-summed.csv": nil,
 			"models-summed.csv": nil,
 			"README.md":         nil,
 			"symflower_symbolic-execution/golang/golang/plain.log": nil,

@@ -317,5 +317,17 @@ func writeCSVs(resultPath string, assessments report.AssessmentPerModelPerLangua
 		return pkgerrors.Wrap(err, "could not write models-summed.csv summary")
 	}
 
+	// Write the individual "language-summed.csv" containing the summary per model per language.
+	byLanguage := assessments.CollapseByLanguage()
+	for language, modelsByLanguage := range byLanguage {
+		csvByLanguage, err := report.GenerateCSV(modelsByLanguage)
+		if err != nil {
+			return pkgerrors.Wrap(err, "could not create "+language.ID()+"-summed.csv summary")
+		}
+		if err := os.WriteFile(filepath.Join(resultPath, language.ID()+"-summed.csv"), []byte(csvByLanguage), 0644); err != nil {
+			return pkgerrors.Wrap(err, "could not write "+language.ID()+"-summed.csv summary")
+		}
+	}
+
 	return nil
 }
