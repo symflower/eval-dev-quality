@@ -145,9 +145,10 @@ func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("unkown architecture %s", a)))
 	}
 
-	logger.Printf("Install \"symflower\" to %s", symflowerInstallPath)
-	if err := osutil.DownloadFileWithProgress("https://download.symflower.com/local/v"+SymflowerVersion+"/symflower-"+osIdentifier+"-"+architectureIdentifier, symflowerInstallPath); err != nil {
-		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot download to %s", symflowerInstallPath)))
+	symflowerDownloadURL := "https://download.symflower.com/local/v" + SymflowerVersion + "/symflower-" + osIdentifier + "-" + architectureIdentifier
+	logger.Printf("Install \"symflower\" to %s from %s", symflowerInstallPath, symflowerDownloadURL)
+	if err := osutil.DownloadFileWithProgress(symflowerDownloadURL, symflowerInstallPath); err != nil {
+		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot download to %s from %s", symflowerInstallPath, symflowerDownloadURL)))
 	}
 	if _, err := util.CommandWithResult(logger, &util.Command{
 		Command: []string{"chmod", "+x", symflowerInstallPath},
