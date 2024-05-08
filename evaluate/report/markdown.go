@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"text/template"
 	"time"
 
@@ -14,7 +13,7 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	"github.com/symflower/eval-dev-quality/provider"
+	"github.com/symflower/eval-dev-quality/model"
 )
 
 // Markdown holds the values for exporting a Markdown report.
@@ -49,7 +48,7 @@ type markdownTemplateContext struct {
 
 // ModelLogName formats a model name to match the logging structure.
 func (c markdownTemplateContext) ModelLogName(modelName string) string {
-	modelPath := filepath.Join(c.ModelLogsPath, strings.ReplaceAll(modelName, provider.ProviderModelSeparator, "_")) + string(os.PathSeparator)
+	modelPath := filepath.Join(c.ModelLogsPath, model.CleanModelNameForFileSystem(modelName)) + string(os.PathSeparator)
 	if !filepath.IsAbs(modelPath) {
 		// Ensure we reference the models relative to the Markdown file itself.
 		modelPath = "." + string(os.PathSeparator) + modelPath

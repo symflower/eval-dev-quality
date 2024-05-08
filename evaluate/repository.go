@@ -4,7 +4,6 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
-	"strings"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
@@ -12,13 +11,12 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/model"
-	"github.com/symflower/eval-dev-quality/provider"
+	evalmodel "github.com/symflower/eval-dev-quality/model"
 )
 
 // Repository evaluate a repository with the given model and language.
-func Repository(logger *log.Logger, resultPath string, model model.Model, language language.Language, testDataPath string, repositoryPath string) (repositoryAssessment metrics.Assessments, problems []error, err error) {
-	log, logClose, err := log.WithFile(logger, filepath.Join(resultPath, strings.ReplaceAll(model.ID(), provider.ProviderModelSeparator, "_"), language.ID(), repositoryPath+".log"))
+func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, language language.Language, testDataPath string, repositoryPath string) (repositoryAssessment metrics.Assessments, problems []error, err error) {
+	log, logClose, err := log.WithFile(logger, filepath.Join(resultPath, evalmodel.CleanModelNameForFileSystem(model.ID()), language.ID(), repositoryPath+".log"))
 	if err != nil {
 		return nil, nil, err
 	}
