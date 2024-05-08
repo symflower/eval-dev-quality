@@ -1,11 +1,14 @@
 package report
 
 import (
+	"cmp"
 	"encoding/csv"
+	"slices"
 	"strconv"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
+	"golang.org/x/exp/maps"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
@@ -67,9 +70,14 @@ func (a AssessmentPerModel) Header() (header []string) {
 
 // Rows returns all data as CSV rows.
 func (a AssessmentPerModel) Rows() (rows [][]string) {
-	for model, assessment := range a {
-		metrics := assessment.StringCSV()
-		score := assessment.Score()
+	models := maps.Keys(a)
+	slices.SortStableFunc(models, func(a, b model.Model) int {
+		return cmp.Compare(a.ID(), b.ID())
+	})
+
+	for _, model := range models {
+		metrics := a[model].StringCSV()
+		score := a[model].Score()
 
 		row := append([]string{model.ID(), strconv.FormatUint(uint64(score), 10)}, metrics...)
 		rows = append(rows, row)
