@@ -42,7 +42,7 @@ jobs:
       - name: Install testing tools
         run: |
           make install-tools-testing
-          echo "PATH=$HOME/.eval-dev-quality/bin:$PATH" >> $GITHUB_ENV
+          go run scripts/gitlab-ci/main.go
 
       - name: Lint Build
         run: make lint-build-ci
