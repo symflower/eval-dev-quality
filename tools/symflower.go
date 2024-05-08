@@ -21,7 +21,7 @@ import (
 )
 
 // SymflowerPath holds the file path to the Symflower binary or the command name that should be executed.
-var SymflowerPath = "symflower"
+var SymflowerPath = "symflower" + osutil.BinaryExtension()
 
 // SymflowerVersion holds the version of Symflower required for this revision of the evaluation.
 const SymflowerVersion = "35902"
@@ -29,7 +29,7 @@ const SymflowerVersion = "35902"
 // SymflowerInstall checks if the "symflower" binary has been installed, and if yes, updates it if necessary and possible.
 func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 	// If the Symflower binary is overwritten, make sure it is a file path.
-	if SymflowerPath != "symflower" {
+	if SymflowerPath != "symflower"+osutil.BinaryExtension() {
 		if osutil.FileExists(SymflowerPath) != nil {
 			return pkgerrors.WithStack(pkgerrors.WithMessage(err, "Symflower binary is not a valid file path"))
 		}
@@ -82,7 +82,7 @@ func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 	}
 
 	// Check if the "symflower" binary can already be used.
-	symflowerPath, err := exec.LookPath("symflower")
+	symflowerPath, err := exec.LookPath("symflower" + osutil.BinaryExtension())
 	if err == nil {
 		logger.Printf("Checking \"symflower\" binary %s", symflowerPath)
 
@@ -129,7 +129,7 @@ func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 	}
 
 	// Install Symflower, as it is either outdated or not installed at all.
-	symflowerInstallPath := filepath.Join(installPath, "symflower")
+	symflowerInstallPath := filepath.Join(installPath, "symflower"+osutil.BinaryExtension())
 	osIdentifier := runtime.GOOS
 	var architectureIdentifier string
 	switch a := runtime.GOARCH; a {
