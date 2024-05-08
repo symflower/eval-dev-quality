@@ -145,15 +145,19 @@ func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("unkown architecture %s", a)))
 	}
 
-	symflowerDownloadURL := "https://download.symflower.com/local/v" + SymflowerVersion + "/symflower-" + osIdentifier + "-" + architectureIdentifier
+	symflowerDownloadURL := "https://download.symflower.com/local/v" + SymflowerVersion + "/symflower-" + osIdentifier + "-" + architectureIdentifier + osutil.BinaryExtension()
 	logger.Printf("Install \"symflower\" to %s from %s", symflowerInstallPath, symflowerDownloadURL)
 	if err := osutil.DownloadFileWithProgress(symflowerDownloadURL, symflowerInstallPath); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot download to %s from %s", symflowerInstallPath, symflowerDownloadURL)))
 	}
-	if _, err := util.CommandWithResult(logger, &util.Command{
-		Command: []string{"chmod", "+x", symflowerInstallPath},
-	}); err != nil {
-		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot make %s executable", symflowerInstallPath)))
+
+	// Non-Windows binaries need to be made executable because the executable bit is not set for downloads.
+	if !osutil.IsWindows() {
+		if _, err := util.CommandWithResult(logger, &util.Command{
+			Command: []string{"chmod", "+x", symflowerInstallPath},
+		}); err != nil {
+			return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot make %s executable", symflowerInstallPath)))
+		}
 	}
 
 	return nil
