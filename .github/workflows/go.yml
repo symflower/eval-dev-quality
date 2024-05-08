@@ -1,4 +1,4 @@
-name: Test
+name: CI
 
 on:
   push:
@@ -7,8 +7,13 @@ on:
     branches: ['main']
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  ci:
+    name: 'Run CI'
+    strategy:
+      fail-fast: false # Run the whole matrix for maximum information, no matter if we fail in one entry early
+      matrix:
+        os: ['ubuntu-latest', 'macOS-latest']
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
