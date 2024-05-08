@@ -73,8 +73,8 @@ func TestRepository(t *testing.T) {
 
 		Model:          symflower.NewModel(),
 		Language:       &golang.Language{},
-		TestDataPath:   "../testdata",
-		RepositoryPath: "golang/plain",
+		TestDataPath:   filepath.Join("..", "testdata"),
+		RepositoryPath: filepath.Join("golang", "plain"),
 
 		ExpectedRepositoryAssessment: metrics.Assessments{
 			metrics.AssessmentKeyCoverageStatement: 10,
@@ -84,7 +84,7 @@ func TestRepository(t *testing.T) {
 			metrics.AssessmentKeyResponseWithCode:  1,
 		},
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			"symflower_symbolic-execution/golang/golang/plain.log": func(t *testing.T, filePath, data string) {
+			filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 				assert.Contains(t, data, "Evaluating model \"symflower/symbolic-execution\"")
 				assert.Contains(t, data, "Generated 1 test")
 				assert.Contains(t, data, "PASS: TestSymflowerPlain")

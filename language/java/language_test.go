@@ -47,10 +47,10 @@ func TestLanguageFiles(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Plain",
 
-		RepositoryPath: "../../testdata/java/plain",
+		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
 
 		ExpectedFilePaths: []string{
-			"src/main/java/com/eval/Plain.java",
+			filepath.Join("src", "main", "java", "com", "eval", "Plain.java"),
 		},
 	})
 }
@@ -171,7 +171,7 @@ func TestLanguageExecute(t *testing.T) {
 	validate(t, &testCase{
 		Name: "No test files",
 
-		RepositoryPath: "../../testdata/java/plain/",
+		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
 
 		ExpectedCoverage: 0, // TODO Let the test case identify and error that there are no test files (needs to be implemented in `symflower test`). https://github.com/symflower/eval-dev-quality/issues/35
 	})
@@ -180,7 +180,7 @@ func TestLanguageExecute(t *testing.T) {
 		validate(t, &testCase{
 			Name: "Valid",
 
-			RepositoryPath: "../../testdata/java/plain/",
+			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
 			RepositoryChange: func(t *testing.T, repositoryPath string) {
 				javaTestFilePath := filepath.Join(repositoryPath, "src/test/java/com/eval/PlainSymflowerTest.java")
 				require.NoError(t, os.MkdirAll(filepath.Dir(javaTestFilePath), 0755))
@@ -204,7 +204,7 @@ func TestLanguageExecute(t *testing.T) {
 		validate(t, &testCase{
 			Name: "Syntax error",
 
-			RepositoryPath: "../../testdata/java/plain/",
+			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
 			RepositoryChange: func(t *testing.T, repositoryPath string) {
 				javaTestFilePath := filepath.Join(repositoryPath, "src/test/java/com/eval/PlainSymflowerTest.java")
 				require.NoError(t, os.MkdirAll(filepath.Dir(javaTestFilePath), 0755))

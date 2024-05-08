@@ -74,7 +74,7 @@ func TestEvaluateExecute(t *testing.T) {
 			Execute(logger, append([]string{
 				"evaluate",
 				"--result-path", temporaryPath,
-				"--testdata", "../../../testdata",
+				"--testdata", filepath.Join("..", "..", "..", "testdata"),
 			}, tc.Arguments...))
 
 			if tc.ExpectedOutputValidate != nil {
@@ -126,7 +126,7 @@ func TestEvaluateExecute(t *testing.T) {
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
 					assert.Equal(t, bytesutil.StringTrimIndentations(`
 						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-						symflower/symbolic-execution,golang,golang/plain,14,10,1,1,1,1
+						symflower/symbolic-execution,golang,`+filepath.Join("golang", "plain")+`,14,10,1,1,1,1
 					`), data)
 				},
 				"evaluation.log": nil,
@@ -145,7 +145,7 @@ func TestEvaluateExecute(t *testing.T) {
 				"README.md": func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				"symflower_symbolic-execution/golang/golang/plain.log": nil,
+				filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 			},
 		})
 		validate(t, &testCase{
@@ -168,8 +168,8 @@ func TestEvaluateExecute(t *testing.T) {
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
 					assert.Equal(t, bytesutil.StringTrimIndentations(`
 						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-						symflower/symbolic-execution,golang,golang/plain,14,10,1,1,1,1
-						symflower/symbolic-execution,java,java/plain,14,10,1,1,1,1
+						symflower/symbolic-execution,golang,`+filepath.Join("golang", "plain")+`,14,10,1,1,1,1
+						symflower/symbolic-execution,java,`+filepath.Join("java", "plain")+`,14,10,1,1,1,1
 					`), data)
 				},
 				"golang-summed.csv": func(t *testing.T, filePath, data string) {
@@ -194,8 +194,8 @@ func TestEvaluateExecute(t *testing.T) {
 				"README.md": func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				"symflower_symbolic-execution/golang/golang/plain.log": nil,
-				"symflower_symbolic-execution/java/java/plain.log":     nil,
+				filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+				filepath.Join("symflower_symbolic-execution", "java", "java", "plain.log"):     nil,
 			},
 		})
 	})
@@ -208,7 +208,7 @@ func TestEvaluateExecute(t *testing.T) {
 				Arguments: []string{
 					"--language", "golang",
 					"--model", "symflower/symbolic-execution",
-					"--repository", "golang/plain",
+					"--repository", filepath.Join("golang", "plain"),
 				},
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
@@ -224,7 +224,7 @@ func TestEvaluateExecute(t *testing.T) {
 					"evaluation.csv": func(t *testing.T, filePath, data string) {
 						assert.Equal(t, bytesutil.StringTrimIndentations(`
 							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-							symflower/symbolic-execution,golang,golang/plain,14,10,1,1,1,1
+							symflower/symbolic-execution,golang,`+filepath.Join("golang", "plain")+`,14,10,1,1,1,1
 						`), data)
 					},
 					"evaluation.log": nil,
@@ -243,7 +243,7 @@ func TestEvaluateExecute(t *testing.T) {
 					"README.md": func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
-					"symflower_symbolic-execution/golang/golang/plain.log": nil,
+					filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 				},
 			})
 			validate(t, &testCase{
@@ -251,7 +251,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 				Arguments: []string{
 					"--model", "symflower/symbolic-execution",
-					"--repository", "golang/plain",
+					"--repository", filepath.Join("golang", "plain"),
 				},
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
@@ -267,7 +267,7 @@ func TestEvaluateExecute(t *testing.T) {
 					"evaluation.csv": func(t *testing.T, filePath, data string) {
 						assert.Equal(t, bytesutil.StringTrimIndentations(`
 							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-							symflower/symbolic-execution,golang,golang/plain,14,10,1,1,1,1
+							symflower/symbolic-execution,golang,`+filepath.Join("golang", "plain")+`,14,10,1,1,1,1
 						`), data)
 					},
 					"evaluation.log": nil,
@@ -286,7 +286,7 @@ func TestEvaluateExecute(t *testing.T) {
 					"README.md": func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
-					"symflower_symbolic-execution/golang/golang/plain.log": nil,
+					filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 				},
 			})
 		})
@@ -318,7 +318,7 @@ func TestEvaluateExecute(t *testing.T) {
 			"golang-summed.csv": nil,
 			"models-summed.csv": nil,
 			"README.md":         nil,
-			"symflower_symbolic-execution/golang/golang/plain.log": nil,
+			filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 		},
 	})
 
@@ -349,7 +349,7 @@ func TestEvaluateExecute(t *testing.T) {
 			"evaluation.csv": func(t *testing.T, filePath, data string) {
 				assert.Equal(t, bytesutil.StringTrimIndentations(`
 					model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-					empty-response,golang,golang/plain,0,0,0,0,0,0
+					empty-response,golang,`+filepath.Join("golang", "plain")+`,0,0,0,0,0,0
 				`), data)
 			},
 			"evaluation.log": nil,
@@ -368,7 +368,7 @@ func TestEvaluateExecute(t *testing.T) {
 			"README.md": func(t *testing.T, filePath, data string) {
 				validateReportLinks(t, data, []string{"empty-response"})
 			},
-			"empty-response/golang/golang/plain.log": nil,
+			filepath.Join("empty-response", "golang", "golang", "plain.log"): nil,
 		},
 	})
 }

@@ -5,11 +5,13 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"text/template"
 	"time"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/wcharczuk/go-chart/v2"
+	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
@@ -52,6 +54,11 @@ func (c markdownTemplateContext) ModelLogName(modelName string) string {
 	if !filepath.IsAbs(modelPath) {
 		// Ensure we reference the models relative to the Markdown file itself.
 		modelPath = "." + string(os.PathSeparator) + modelPath
+	}
+
+	if osutil.IsWindows() {
+		// Markdown should be able to handle "/" for file paths.
+		modelPath = strings.ReplaceAll(modelPath, "\\", "/")
 	}
 
 	return modelPath
