@@ -36,9 +36,9 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 	defer func() {
 		if e := os.RemoveAll(temporaryPath); e != nil {
 			if err != nil {
-				err = errors.Join(err, e)
+				err = errors.Join(err, pkgerrors.WithStack(e))
 			} else {
-				err = e
+				err = pkgerrors.WithStack(e)
 			}
 		}
 	}()
