@@ -24,7 +24,7 @@ import (
 var SymflowerPath = "symflower" + osutil.BinaryExtension()
 
 // SymflowerVersion holds the version of Symflower required for this revision of the evaluation.
-const SymflowerVersion = "35902"
+const SymflowerVersion = "36486"
 
 // SymflowerInstall checks if the "symflower" binary has been installed, and if yes, updates it if necessary and possible.
 func SymflowerInstall(logger *log.Logger, installPath string) (err error) {
