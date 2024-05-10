@@ -48,7 +48,7 @@ func TestLanguageFiles(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Plain",
 
-		RepositoryPath: "../../testdata/golang/plain/",
+		RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "plain"),
 
 		ExpectedFilePaths: []string{
 			"plain.go",
@@ -106,7 +106,7 @@ func TestLanguageExecute(t *testing.T) {
 	validate(t, &testCase{
 		Name: "No test files",
 
-		RepositoryPath: "../../testdata/golang/plain/",
+		RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "plain"),
 
 		ExpectedError: language.ErrNoTestFound,
 	})
@@ -115,7 +115,7 @@ func TestLanguageExecute(t *testing.T) {
 		validate(t, &testCase{
 			Name: "Valid",
 
-			RepositoryPath: "../../testdata/golang/plain/",
+			RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "plain"),
 			RepositoryChange: func(t *testing.T, repositoryPath string) {
 				require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "plain_test.go"), []byte(bytesutil.StringTrimIndentations(`
 					package plain
@@ -136,7 +136,7 @@ func TestLanguageExecute(t *testing.T) {
 		validate(t, &testCase{
 			Name: "Syntax error",
 
-			RepositoryPath: "../../testdata/golang/plain/",
+			RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "plain"),
 			RepositoryChange: func(t *testing.T, repositoryPath string) {
 				require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "plain_test.go"), []byte(bytesutil.StringTrimIndentations(`
 					foobar

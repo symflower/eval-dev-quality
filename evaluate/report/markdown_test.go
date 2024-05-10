@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
@@ -42,7 +44,11 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			assert.NoError(t, err)
 			expectedSVGContent, err := os.ReadFile(tc.ExpectedSVGFile)
 			require.NoError(t, err)
-			assert.Equal(t, string(expectedSVGContent), string(actualSVGContent))
+			expectedSVGContentCleaned := string(expectedSVGContent)
+			if osutil.IsWindows() {
+				expectedSVGContentCleaned = strings.ReplaceAll(expectedSVGContentCleaned, "\r", "")
+			}
+			assert.Equal(t, expectedSVGContentCleaned, string(actualSVGContent))
 		})
 	}
 
@@ -173,7 +179,11 @@ func TestBarChartModelsPerCategoriesSVG(t *testing.T) {
 
 			expectedSVGContent, err := os.ReadFile(tc.ExpectedFile)
 			require.NoError(t, err)
-			assert.Equal(t, string(expectedSVGContent), actualSVGContent.String())
+			expectedSVGContentCleaned := string(expectedSVGContent)
+			if osutil.IsWindows() {
+				expectedSVGContentCleaned = strings.ReplaceAll(expectedSVGContentCleaned, "\r", "")
+			}
+			assert.Equal(t, expectedSVGContentCleaned, actualSVGContent.String())
 		})
 	}
 

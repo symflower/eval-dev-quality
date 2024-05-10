@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/log"
 )
@@ -15,12 +16,16 @@ import (
 func TestInstallToolsExecute(t *testing.T) {
 	temporaryPath := t.TempDir()
 
-	chmodPath, err := exec.LookPath("chmod")
-	require.NoError(t, err)
-	t.Setenv("PATH", strings.Join([]string{temporaryPath, filepath.Dir(chmodPath)}, string(os.PathListSeparator)))
+	if osutil.IsWindows() {
+		t.Setenv("PATH", temporaryPath)
+	} else {
+		chmodPath, err := exec.LookPath("chmod")
+		require.NoError(t, err)
+		t.Setenv("PATH", strings.Join([]string{temporaryPath, filepath.Dir(chmodPath)}, string(os.PathListSeparator)))
+	}
 
 	t.Run("Tools are not yet installed", func(t *testing.T) {
-		symflowerPath, err := exec.LookPath("symflower")
+		symflowerPath, err := exec.LookPath("symflower" + osutil.BinaryExtension())
 		require.Error(t, err)
 		require.Empty(t, symflowerPath)
 	})
@@ -33,7 +38,7 @@ func TestInstallToolsExecute(t *testing.T) {
 		})
 
 		require.Contains(t, logOutput.String(), `Install "symflower" to`)
-		symflowerPath, err := exec.LookPath("symflower")
+		symflowerPath, err := exec.LookPath("symflower" + osutil.BinaryExtension())
 		require.NoError(t, err)
 		require.NotEmpty(t, symflowerPath)
 	})
@@ -46,7 +51,7 @@ func TestInstallToolsExecute(t *testing.T) {
 		})
 
 		require.NotContains(t, logOutput.String(), `Install "symflower" to`)
-		symflowerPath, err := exec.LookPath("symflower")
+		symflowerPath, err := exec.LookPath("symflower" + osutil.BinaryExtension())
 		require.NoError(t, err)
 		require.NotEmpty(t, symflowerPath)
 	})

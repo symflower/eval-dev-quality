@@ -12,7 +12,10 @@ jobs:
     strategy:
       fail-fast: false # Run the whole matrix for maximum information, no matter if we fail in one entry early
       matrix:
-        os: ['ubuntu-latest', 'macOS-latest']
+        os:
+          - 'macOS-latest'
+          - 'ubuntu-latest'
+          - 'windows-latest'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +42,7 @@ jobs:
       - name: Install testing tools
         run: |
           make install-tools-testing
-          echo "PATH=$HOME/.eval-dev-quality/bin:$PATH" >> $GITHUB_ENV
+          go run scripts/gitlab-ci/main.go
 
       - name: Lint Build
         run: make lint-build-ci

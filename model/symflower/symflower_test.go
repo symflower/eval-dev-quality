@@ -72,7 +72,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 
 		Language: &golang.Language{},
 
-		RepositoryPath: "../../testdata/golang/plain/",
+		RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "plain"),
 		FilePath:       "plain.go",
 
 		ExpectedAssessment: metrics.Assessments{

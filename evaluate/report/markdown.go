@@ -1,6 +1,7 @@
 package report
 
 import (
+	"errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -11,10 +12,11 @@ import (
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/wcharczuk/go-chart/v2"
+	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	"github.com/symflower/eval-dev-quality/provider"
+	"github.com/symflower/eval-dev-quality/model"
 )
 
 // Markdown holds the values for exporting a Markdown report.
@@ -49,10 +51,15 @@ type markdownTemplateContext struct {
 
 // ModelLogName formats a model name to match the logging structure.
 func (c markdownTemplateContext) ModelLogName(modelName string) string {
-	modelPath := filepath.Join(c.ModelLogsPath, strings.ReplaceAll(modelName, provider.ProviderModelSeparator, "_")) + string(os.PathSeparator)
+	modelPath := filepath.Join(c.ModelLogsPath, model.CleanModelNameForFileSystem(modelName)) + string(os.PathSeparator)
 	if !filepath.IsAbs(modelPath) {
 		// Ensure we reference the models relative to the Markdown file itself.
 		modelPath = "." + string(os.PathSeparator) + modelPath
+	}
+
+	if osutil.IsWindows() {
+		// Markdown should be able to handle "/" for file paths.
+		modelPath = strings.ReplaceAll(modelPath, "\\", "/")
 	}
 
 	return modelPath
@@ -156,8 +163,13 @@ func (m Markdown) format(writer io.Writer, markdownFileDirectoryPath string) err
 		return pkgerrors.WithStack(err)
 	}
 	defer func() {
-		if err := svgFile.Close(); err != nil {
-			panic(err)
+		if e := svgFile.Close(); e != nil {
+			e = pkgerrors.WithStack(e)
+			if err == nil {
+				err = e
+			} else {
+				err = errors.Join(err, e)
+			}
 		}
 	}()
 
@@ -183,6 +195,16 @@ func (m Markdown) WriteToFile(path string) (err error) {
 	if err != nil {
 		return pkgerrors.WithStack(err)
 	}
+	defer func() {
+		if e := file.Close(); e != nil {
+			e = pkgerrors.WithStack(e)
+			if err == nil {
+				err = e
+			} else {
+				err = errors.Join(err, e)
+			}
+		}
+	}()
 
 	if err := m.format(file, filepath.Dir(path)); err != nil {
 		return pkgerrors.WithStack(err)
