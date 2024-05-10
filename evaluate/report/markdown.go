@@ -1,6 +1,7 @@
 package report
 
 import (
+	"errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -162,8 +163,13 @@ func (m Markdown) format(writer io.Writer, markdownFileDirectoryPath string) err
 		return pkgerrors.WithStack(err)
 	}
 	defer func() {
-		if err := svgFile.Close(); err != nil {
-			panic(err)
+		if e := svgFile.Close(); e != nil {
+			e = pkgerrors.WithStack(e)
+			if err == nil {
+				err = e
+			} else {
+				err = errors.Join(err, e)
+			}
 		}
 	}()
 
@@ -189,6 +195,16 @@ func (m Markdown) WriteToFile(path string) (err error) {
 	if err != nil {
 		return pkgerrors.WithStack(err)
 	}
+	defer func() {
+		if e := file.Close(); e != nil {
+			e = pkgerrors.WithStack(e)
+			if err == nil {
+				err = e
+			} else {
+				err = errors.Join(err, e)
+			}
+		}
+	}()
 
 	if err := m.format(file, filepath.Dir(path)); err != nil {
 		return pkgerrors.WithStack(err)
