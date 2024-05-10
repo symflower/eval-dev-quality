@@ -298,7 +298,11 @@ func TestEvaluateExecute(t *testing.T) {
 
 		Before: func(t *testing.T, resultPath string) {
 			if err := os.Remove("README.md"); err != nil {
-				require.Contains(t, err.Error(), "no such file or directory")
+				if osutil.IsWindows() {
+					require.Contains(t, err.Error(), "The system cannot find the file specified")
+				} else {
+					require.Contains(t, err.Error(), "no such file or directory")
+				}
 			}
 			require.NoError(t, os.WriteFile("README.md", []byte(""), 0644))
 		},
