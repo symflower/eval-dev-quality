@@ -97,7 +97,7 @@ var markdownTemplate = template.Must(template.New("template-report").Parse(bytes
 `)))
 
 // barChartModelsPerCategoriesSVG generates a bar chart showing models per category and writes it out as an SVG.
-func barChartModelsPerCategoriesSVG(writer io.Writer, categories []*metrics.AssessmentCategory, modelsPerCategory map[*metrics.AssessmentCategory][]string) error {
+func barChartModelsPerCategoriesSVG(writer io.Writer, categories []*metrics.AssessmentCategory, modelsPerCategory map[*metrics.AssessmentCategory][]string) (err error) {
 	bars := make([]chart.Value, 0, len(categories))
 	maxCount := 0
 	for _, category := range categories {
@@ -147,7 +147,7 @@ func barChartModelsPerCategoriesSVG(writer io.Writer, categories []*metrics.Asse
 }
 
 // format formats the markdown values in the template to the given writer.
-func (m Markdown) format(writer io.Writer, markdownFileDirectoryPath string) error {
+func (m Markdown) format(writer io.Writer, markdownFileDirectoryPath string) (err error) {
 	templateContext := markdownTemplateContext{
 		Markdown:   m,
 		Categories: metrics.AllAssessmentCategories,

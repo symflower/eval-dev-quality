@@ -26,7 +26,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
 			actualOrder := []metrics.Assessments{}
-			assert.NoError(t, tc.Assessments.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) error {
+			assert.NoError(t, tc.Assessments.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) (err error) {
 				actualOrder = append(actualOrder, a)
 				metricstesting.AssertAssessmentsEqual(t, tc.Assessments[m][l][r], a)
 
@@ -149,7 +149,7 @@ func TestWalkByScore(t *testing.T) {
 			actualModelOrder := make([]model.Model, 0, len(tc.ExpectedModelOrder))
 			actualAssessmentOrder := make([]metrics.Assessments, 0, len(tc.ExpectedModelOrder))
 			actualScoreOrder := make([]uint, 0, len(tc.ExpectedScoreOrder))
-			assert.NoError(t, tc.AssessmentPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint) error {
+			assert.NoError(t, tc.AssessmentPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint) (err error) {
 				actualModelOrder = append(actualModelOrder, model)
 				actualAssessmentOrder = append(actualAssessmentOrder, assessment)
 				actualScoreOrder = append(actualScoreOrder, score)

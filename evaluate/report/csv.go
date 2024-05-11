@@ -50,7 +50,7 @@ func (a AssessmentPerModelPerLanguagePerRepository) Header() (header []string) {
 
 // Rows returns all data as CSV rows.
 func (a AssessmentPerModelPerLanguagePerRepository) Rows() (rows [][]string) {
-	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) error {
+	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) (err error) {
 		metrics := a.StringCSV()
 		score := a.Score()
 

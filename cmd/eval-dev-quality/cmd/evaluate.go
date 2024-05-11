@@ -284,7 +284,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		return err
 	}
 
-	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint) error {
+	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint) (err error) {
 		log.Printf("Evaluation score for %q (%q): %s", model.ID(), assessment.Category(totalScore).ID, assessment)
 
 		return nil
