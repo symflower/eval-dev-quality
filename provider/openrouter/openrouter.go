@@ -2,12 +2,14 @@ package openrouter
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/sashabaranov/go-openai"
 
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm"
 	"github.com/symflower/eval-dev-quality/provider"
@@ -31,6 +33,16 @@ func NewProvider() (provider provider.Provider) {
 }
 
 var _ provider.Provider = (*Provider)(nil)
+
+// Available checks if the provider is ready to be used.
+// This might include checking for an installation or making sure an API access token is valid.
+func (p *Provider) Available(logger *log.Logger) (err error) {
+	if p.token == "" {
+		return pkgerrors.WithStack(errors.New("missing access token"))
+	}
+
+	return nil
+}
 
 // ID returns the unique ID of this provider.
 func (p *Provider) ID() (id string) {

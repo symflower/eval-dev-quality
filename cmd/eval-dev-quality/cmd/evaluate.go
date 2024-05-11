@@ -136,6 +136,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 					t.SetToken(token)
 				}
 			}
+			if err := p.Available(log); err != nil {
+				log.Printf("skipping unavailable provider %q cause: %s", p.ID(), err)
+
+				continue
+			}
 
 			ms, err := p.Models()
 			if err != nil {
@@ -184,7 +189,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 			}
 		}
 
-		if err := tools.Install(log, command.InstallToolsPath); err != nil {
+		if err := tools.InstallEvaluation(log, command.InstallToolsPath); err != nil {
 			log.Panicf("ERROR: %s", err)
 		}
 	}
@@ -284,7 +289,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		return err
 	}
 
-	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint) error {
+	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint) (err error) {
 		log.Printf("Evaluation score for %q (%q): %s", model.ID(), assessment.Category(totalScore).ID, assessment)
 
 		return nil

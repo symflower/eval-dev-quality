@@ -22,7 +22,7 @@ func Execute(logger *log.Logger, arguments []string) {
 	// Print the help, when there is no active command.
 	parser.SubcommandsOptional = true
 
-	parser.CommandHandler = func(command flags.Commander, args []string) error {
+	parser.CommandHandler = func(command flags.Commander, args []string) (err error) {
 		if command == nil {
 			return nil
 		}

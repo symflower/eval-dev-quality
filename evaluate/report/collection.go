@@ -21,7 +21,7 @@ type AssessmentPerLanguagePerModel map[language.Language]AssessmentPerModel
 type AssessmentPerModel map[model.Model]metrics.Assessments
 
 // WalkByScore walks the given assessment metrics by their score.
-func (a AssessmentPerModel) WalkByScore(function func(model model.Model, assessment metrics.Assessments, score uint) error) error {
+func (a AssessmentPerModel) WalkByScore(function func(model model.Model, assessment metrics.Assessments, score uint) error) (err error) {
 	models := maps.Keys(a)
 	slices.SortStableFunc(models, func(a, b model.Model) int {
 		return cmp.Compare(a.ID(), b.ID())
@@ -73,7 +73,7 @@ func NewAssessmentPerModelPerLanguagePerRepository(models []model.Model, languag
 }
 
 // Walk walks over all entries.
-func (a AssessmentPerModelPerLanguagePerRepository) Walk(function func(m model.Model, l language.Language, r string, a metrics.Assessments) error) error {
+func (a AssessmentPerModelPerLanguagePerRepository) Walk(function func(m model.Model, l language.Language, r string, a metrics.Assessments) error) (err error) {
 	models := maps.Keys(a)
 	slices.SortStableFunc(models, func(a, b model.Model) int {
 		return cmp.Compare(a.ID(), b.ID())
@@ -103,7 +103,7 @@ func (a AssessmentPerModelPerLanguagePerRepository) CollapseByModel() Assessment
 	for _, m := range maps.Keys(a) {
 		perModel[m] = metrics.NewAssessments()
 	}
-	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) error {
+	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) (err error) {
 		perModel[m].Add(a)
 
 		return nil
@@ -115,7 +115,7 @@ func (a AssessmentPerModelPerLanguagePerRepository) CollapseByModel() Assessment
 // CollapseByLanguage returns all assessments aggregated per language and model.
 func (a AssessmentPerModelPerLanguagePerRepository) CollapseByLanguage() AssessmentPerLanguagePerModel {
 	assessments := AssessmentPerLanguagePerModel{}
-	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) error {
+	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) (err error) {
 		if _, ok := assessments[l]; !ok {
 			assessments[l] = map[model.Model]metrics.Assessments{}
 		}

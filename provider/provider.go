@@ -5,6 +5,7 @@ import (
 
 	pkgerrors "github.com/pkg/errors"
 
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 )
 
@@ -13,6 +14,9 @@ const ProviderModelSeparator = "/"
 
 // Provider defines a provider to query models such as LLMs.
 type Provider interface {
+	// Available checks if the provider is ready to be used.
+	// This might include checking for an installation or making sure an API access token is valid.
+	Available(logger *log.Logger) (err error)
 	// ID returns the unique ID of this provider.
 	ID() (id string)
 	// Models returns which models are available to be queried via this provider.

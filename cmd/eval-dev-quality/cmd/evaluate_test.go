@@ -52,6 +52,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 		ExpectedOutputValidate func(t *testing.T, output string, resultPath string)
 		ExpectedResultFiles    map[string]func(t *testing.T, filePath string, data string)
+		ExpectedPanic          string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -71,11 +72,22 @@ func TestEvaluateExecute(t *testing.T) {
 					t.Logf("Logging output: %s", logOutput.String())
 				}
 			}()
-			Execute(logger, append([]string{
+
+			arguments := append([]string{
 				"evaluate",
 				"--result-path", temporaryPath,
 				"--testdata", filepath.Join("..", "..", "..", "testdata"),
-			}, tc.Arguments...))
+			}, tc.Arguments...)
+
+			if tc.ExpectedPanic == "" {
+				assert.NotPanics(t, func() {
+					Execute(logger, arguments)
+				})
+			} else {
+				assert.PanicsWithValue(t, tc.ExpectedPanic, func() {
+					Execute(logger, arguments)
+				})
+			}
 
 			if tc.ExpectedOutputValidate != nil {
 				tc.ExpectedOutputValidate(t, logOutput.String(), temporaryPath)
@@ -288,6 +300,26 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 					filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 				},
+			})
+		})
+	})
+	t.Run("Model filter", func(t *testing.T) {
+		t.Run("openrouter.ai", func(t *testing.T) {
+			validate(t, &testCase{
+				Name: "Unavailable",
+
+				Arguments: []string{
+					"--model", "openrouter/auto",
+					"--tokens", "openrouter:",
+				},
+
+				ExpectedOutputValidate: func(t *testing.T, output, resultPath string) {
+					assert.Contains(t, output, "skipping unavailable provider \"openrouter\"")
+				},
+				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					"evaluation.log": nil,
+				},
+				ExpectedPanic: "ERROR: model openrouter/auto does not exist. Valid models are: symflower/symbolic-execution",
 			})
 		})
 	})
