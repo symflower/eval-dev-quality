@@ -45,8 +45,8 @@ func TestEvaluateExecute(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		Before func(t *testing.T, resultPath string)
-		After  func(t *testing.T, resultPath string)
+		Before func(t *testing.T, logger *log.Logger, resultPath string)
+		After  func(t *testing.T, logger *log.Logger, resultPath string)
 
 		Arguments []string
 
@@ -59,19 +59,19 @@ func TestEvaluateExecute(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			temporaryPath := t.TempDir()
 
-			if tc.Before != nil {
-				tc.Before(t, temporaryPath)
-			}
-			if tc.After != nil {
-				defer tc.After(t, temporaryPath)
-			}
-
 			logOutput, logger := log.Buffer()
 			defer func() {
 				if t.Failed() {
 					t.Logf("Logging output: %s", logOutput.String())
 				}
 			}()
+
+			if tc.Before != nil {
+				tc.Before(t, logger, temporaryPath)
+			}
+			if tc.After != nil {
+				defer tc.After(t, logger, temporaryPath)
+			}
 
 			arguments := append([]string{
 				"evaluate",
@@ -328,7 +328,7 @@ func TestEvaluateExecute(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Current work directory contains a README.md",
 
-		Before: func(t *testing.T, resultPath string) {
+		Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 			if err := os.Remove("README.md"); err != nil {
 				if osutil.IsWindows() {
 					require.Contains(t, err.Error(), "The system cannot find the file specified")
@@ -338,7 +338,7 @@ func TestEvaluateExecute(t *testing.T) {
 			}
 			require.NoError(t, os.WriteFile("README.md", []byte(""), 0644))
 		},
-		After: func(t *testing.T, resultPath string) {
+		After: func(t *testing.T, logger *log.Logger, resultPath string) {
 			require.NoError(t, os.Remove("README.md"))
 		},
 
@@ -361,7 +361,7 @@ func TestEvaluateExecute(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Empty model responses are errors",
 
-		Before: func(t *testing.T, resultPath string) {
+		Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 			// Setup provider and model mocking
 			modelMock := modeltesting.NewMockModelNamed(t, "empty-response")
 			providerMock := providertesting.NewMockProviderNamedWithModels(t, "testing", []model.Model{modelMock})
@@ -369,7 +369,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 			modelMock.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, errors.New("empty response from model"))
 		},
-		After: func(t *testing.T, resultPath string) {
+		After: func(t *testing.T, logger *log.Logger, resultPath string) {
 			delete(provider.Providers, "testing")
 		},
 
