@@ -38,14 +38,18 @@ jobs:
 
       - name: Build
         run: make install
+        shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
 
       - name: Install testing tools
         run: |
           make install-tools-testing
           go run scripts/gitlab-ci/main.go
+        shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
 
       - name: Lint Build
         run: make lint-build-ci
+        shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
 
       - name: Test
         run: make test
+        shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
