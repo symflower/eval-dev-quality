@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -16,6 +18,7 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
@@ -40,6 +43,54 @@ func validateSVGContent(t *testing.T, data string, categories []*metrics.Assessm
 		assert.Contains(t, data, fmt.Sprintf("%s</text>", category.Name))
 	}
 	assert.Contains(t, data, fmt.Sprintf("%d</text>", maxModelCount))
+}
+
+func atoiUint(t *testing.T, s string) uint {
+	value, err := strconv.ParseUint(s, 10, 32)
+	assert.NoErrorf(t, err, "parsing unsigned integer from: %q", s)
+
+	return uint(value)
+}
+
+// extractMetricsMatch is a regular expression that maps metrics to it's subgroups.
+type extractMetricsMatch *regexp.Regexp
+
+// extractMetricsLogsMatch is a regular expression to extract metrics from log messages.
+var extractMetricsLogsMatch = extractMetricsMatch(regexp.MustCompile(`score=(\d+), coverage-statement=(\d+), files-executed=(\d+), processing-time=(\d+), response-no-error=(\d+), response-no-excess=(\d+), response-with-code=(\d+)`))
+
+// extractMetricsCSVMatch is a regular expression to extract metrics from CSV rows.
+var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
+
+// extractMetrics extracts multiple assessment metrics from the given string according to a given regular expression.
+func extractMetrics(t *testing.T, regex extractMetricsMatch, data string) (assessments []metrics.Assessments, scores []uint) {
+	matches := (*regexp.Regexp)(regex).FindAllStringSubmatch(data, -1)
+
+	for _, match := range matches {
+		assessments = append(assessments, metrics.Assessments{
+			metrics.AssessmentKeyCoverageStatement: atoiUint(t, match[2]),
+			metrics.AssessmentKeyFilesExecuted:     atoiUint(t, match[3]),
+			metrics.AssessmentKeyProcessingTime:    atoiUint(t, match[4]),
+			metrics.AssessmentKeyResponseNoError:   atoiUint(t, match[5]),
+			metrics.AssessmentKeyResponseNoExcess:  atoiUint(t, match[6]),
+			metrics.AssessmentKeyResponseWithCode:  atoiUint(t, match[7]),
+		})
+		scores = append(scores, atoiUint(t, match[1]))
+	}
+
+	return assessments, scores
+}
+
+func validateMetrics(t *testing.T, regex *regexp.Regexp, data string, expectedAssessments []metrics.Assessments, expectedScores []uint) (actual []metrics.Assessments) {
+	require.Equal(t, len(expectedAssessments), len(expectedScores), "expected assessment and scores length")
+
+	actualAssessments, actualScores := extractMetrics(t, regex, data)
+	require.Equal(t, len(expectedAssessments), len(actualAssessments), "expected and actual assessment length")
+	for i := range actualAssessments {
+		metricstesting.AssertAssessmentsEqual(t, expectedAssessments[i], actualAssessments[i])
+	}
+	assert.Equal(t, expectedScores, actualScores)
+
+	return actualAssessments
 }
 
 func TestEvaluateExecute(t *testing.T) {
@@ -137,7 +188,16 @@ func TestEvaluateExecute(t *testing.T) {
 			},
 
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-				assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=14, coverage-statement=10, files-executed=1, response-no-error=1, response-no-excess=1, response-with-code=1`)
+				actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
+					metrics.Assessments{
+						metrics.AssessmentKeyCoverageStatement: 10,
+						metrics.AssessmentKeyFilesExecuted:     1,
+						metrics.AssessmentKeyResponseNoError:   1,
+						metrics.AssessmentKeyResponseNoExcess:  1,
+						metrics.AssessmentKeyResponseWithCode:  1,
+					},
+				}, []uint{14})
+				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 				if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
 					t.Logf("Output: %s", output)
 				}
@@ -147,23 +207,41 @@ func TestEvaluateExecute(t *testing.T) {
 					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 				},
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
-					assert.Equal(t, bytesutil.StringTrimIndentations(`
-						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-						symflower/symbolic-execution,golang,`+filepath.Join("golang", "plain")+`,14,10,1,1,1,1
-					`), data)
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 10,
+							metrics.AssessmentKeyFilesExecuted:     1,
+							metrics.AssessmentKeyResponseNoError:   1,
+							metrics.AssessmentKeyResponseNoExcess:  1,
+							metrics.AssessmentKeyResponseWithCode:  1,
+						},
+					}, []uint{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 				},
 				"evaluation.log": nil,
 				"golang-summed.csv": func(t *testing.T, filePath, data string) {
-					assert.Equal(t, bytesutil.StringTrimIndentations(`
-						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-						symflower/symbolic-execution,14,10,1,1,1,1
-					`), data)
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 10,
+							metrics.AssessmentKeyFilesExecuted:     1,
+							metrics.AssessmentKeyResponseNoError:   1,
+							metrics.AssessmentKeyResponseNoExcess:  1,
+							metrics.AssessmentKeyResponseWithCode:  1,
+						},
+					}, []uint{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 				},
 				"models-summed.csv": func(t *testing.T, filePath, data string) {
-					assert.Equal(t, bytesutil.StringTrimIndentations(`
-						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-						symflower/symbolic-execution,14,10,1,1,1,1
-					`), data)
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 10,
+							metrics.AssessmentKeyFilesExecuted:     1,
+							metrics.AssessmentKeyResponseNoError:   1,
+							metrics.AssessmentKeyResponseNoExcess:  1,
+							metrics.AssessmentKeyResponseWithCode:  1,
+						},
+					}, []uint{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 				},
 				"README.md": func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
@@ -179,7 +257,16 @@ func TestEvaluateExecute(t *testing.T) {
 			},
 
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-				assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=28, coverage-statement=20, files-executed=2, response-no-error=2, response-no-excess=2, response-with-code=2`)
+				actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
+					metrics.Assessments{
+						metrics.AssessmentKeyCoverageStatement: 20,
+						metrics.AssessmentKeyFilesExecuted:     2,
+						metrics.AssessmentKeyResponseNoError:   2,
+						metrics.AssessmentKeyResponseNoExcess:  2,
+						metrics.AssessmentKeyResponseWithCode:  2,
+					},
+				}, []uint{28})
+				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 				if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
 					t.Logf("Output: %s", output)
 				}
@@ -189,29 +276,60 @@ func TestEvaluateExecute(t *testing.T) {
 					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 				},
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
-					assert.Equal(t, bytesutil.StringTrimIndentations(`
-						model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-						symflower/symbolic-execution,golang,`+filepath.Join("golang", "plain")+`,14,10,1,1,1,1
-						symflower/symbolic-execution,java,`+filepath.Join("java", "plain")+`,14,10,1,1,1,1
-					`), data)
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 10,
+							metrics.AssessmentKeyFilesExecuted:     1,
+							metrics.AssessmentKeyResponseNoError:   1,
+							metrics.AssessmentKeyResponseNoExcess:  1,
+							metrics.AssessmentKeyResponseWithCode:  1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 10,
+							metrics.AssessmentKeyFilesExecuted:     1,
+							metrics.AssessmentKeyResponseNoError:   1,
+							metrics.AssessmentKeyResponseNoExcess:  1,
+							metrics.AssessmentKeyResponseWithCode:  1,
+						},
+					}, []uint{14, 14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+					assert.Greater(t, actualAssessments[1][metrics.AssessmentKeyProcessingTime], uint(0))
 				},
 				"golang-summed.csv": func(t *testing.T, filePath, data string) {
-					assert.Equal(t, bytesutil.StringTrimIndentations(`
-						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-						symflower/symbolic-execution,14,10,1,1,1,1
-					`), data)
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 10,
+							metrics.AssessmentKeyFilesExecuted:     1,
+							metrics.AssessmentKeyResponseNoError:   1,
+							metrics.AssessmentKeyResponseNoExcess:  1,
+							metrics.AssessmentKeyResponseWithCode:  1,
+						},
+					}, []uint{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 				},
 				"java-summed.csv": func(t *testing.T, filePath, data string) {
-					assert.Equal(t, bytesutil.StringTrimIndentations(`
-						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-						symflower/symbolic-execution,14,10,1,1,1,1
-					`), data)
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 10,
+							metrics.AssessmentKeyFilesExecuted:     1,
+							metrics.AssessmentKeyResponseNoError:   1,
+							metrics.AssessmentKeyResponseNoExcess:  1,
+							metrics.AssessmentKeyResponseWithCode:  1,
+						},
+					}, []uint{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 				},
 				"models-summed.csv": func(t *testing.T, filePath, data string) {
-					assert.Equal(t, bytesutil.StringTrimIndentations(`
-						model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-						symflower/symbolic-execution,28,20,2,2,2,2
-					`), data)
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 20,
+							metrics.AssessmentKeyFilesExecuted:     2,
+							metrics.AssessmentKeyResponseNoError:   2,
+							metrics.AssessmentKeyResponseNoExcess:  2,
+							metrics.AssessmentKeyResponseWithCode:  2,
+						},
+					}, []uint{28})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 				},
 				"evaluation.log": nil,
 				"README.md": func(t *testing.T, filePath, data string) {
@@ -235,7 +353,16 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-					assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=14, coverage-statement=10, files-executed=1, response-no-error=1, response-no-excess=1, response-with-code=1`)
+					actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 10,
+							metrics.AssessmentKeyFilesExecuted:     1,
+							metrics.AssessmentKeyResponseNoError:   1,
+							metrics.AssessmentKeyResponseNoExcess:  1,
+							metrics.AssessmentKeyResponseWithCode:  1,
+						},
+					}, []uint{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 					if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
 						t.Logf("Output: %s", output)
 					}
@@ -245,23 +372,41 @@ func TestEvaluateExecute(t *testing.T) {
 						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 					},
 					"evaluation.csv": func(t *testing.T, filePath, data string) {
-						assert.Equal(t, bytesutil.StringTrimIndentations(`
-							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-							symflower/symbolic-execution,golang,`+filepath.Join("golang", "plain")+`,14,10,1,1,1,1
-						`), data)
+						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+							metrics.Assessments{
+								metrics.AssessmentKeyCoverageStatement: 10,
+								metrics.AssessmentKeyFilesExecuted:     1,
+								metrics.AssessmentKeyResponseNoError:   1,
+								metrics.AssessmentKeyResponseNoExcess:  1,
+								metrics.AssessmentKeyResponseWithCode:  1,
+							},
+						}, []uint{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 					},
 					"evaluation.log": nil,
 					"golang-summed.csv": func(t *testing.T, filePath, data string) {
-						assert.Equal(t, bytesutil.StringTrimIndentations(`
-							model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-							symflower/symbolic-execution,14,10,1,1,1,1
-						`), data)
+						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+							metrics.Assessments{
+								metrics.AssessmentKeyCoverageStatement: 10,
+								metrics.AssessmentKeyFilesExecuted:     1,
+								metrics.AssessmentKeyResponseNoError:   1,
+								metrics.AssessmentKeyResponseNoExcess:  1,
+								metrics.AssessmentKeyResponseWithCode:  1,
+							},
+						}, []uint{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 					},
 					"models-summed.csv": func(t *testing.T, filePath, data string) {
-						assert.Equal(t, bytesutil.StringTrimIndentations(`
-							model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-							symflower/symbolic-execution,14,10,1,1,1,1
-						`), data)
+						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+							metrics.Assessments{
+								metrics.AssessmentKeyCoverageStatement: 10,
+								metrics.AssessmentKeyFilesExecuted:     1,
+								metrics.AssessmentKeyResponseNoError:   1,
+								metrics.AssessmentKeyResponseNoExcess:  1,
+								metrics.AssessmentKeyResponseWithCode:  1,
+							},
+						}, []uint{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 					},
 					"README.md": func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
@@ -278,7 +423,7 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-					assert.Contains(t, output, `Evaluation score for "symflower/symbolic-execution" ("code-no-excess"): score=14, coverage-statement=10, files-executed=1, response-no-error=1, response-no-excess=1, response-with-code=1`)
+					assert.Regexp(t, `Evaluation score for "symflower/symbolic-execution" \("code-no-excess"\): score=14, coverage-statement=10, files-executed=1, processing-time=\d+, response-no-error=1, response-no-excess=1, response-with-code=1`, output)
 					if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
 						t.Logf("Output: %s", output)
 					}
@@ -288,23 +433,41 @@ func TestEvaluateExecute(t *testing.T) {
 						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 					},
 					"evaluation.csv": func(t *testing.T, filePath, data string) {
-						assert.Equal(t, bytesutil.StringTrimIndentations(`
-							model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-							symflower/symbolic-execution,golang,`+filepath.Join("golang", "plain")+`,14,10,1,1,1,1
-						`), data)
+						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+							metrics.Assessments{
+								metrics.AssessmentKeyCoverageStatement: 10,
+								metrics.AssessmentKeyFilesExecuted:     1,
+								metrics.AssessmentKeyResponseNoError:   1,
+								metrics.AssessmentKeyResponseNoExcess:  1,
+								metrics.AssessmentKeyResponseWithCode:  1,
+							},
+						}, []uint{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 					},
 					"evaluation.log": nil,
 					"golang-summed.csv": func(t *testing.T, filePath, data string) {
-						assert.Equal(t, bytesutil.StringTrimIndentations(`
-							model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-							symflower/symbolic-execution,14,10,1,1,1,1
-						`), data)
+						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+							metrics.Assessments{
+								metrics.AssessmentKeyCoverageStatement: 10,
+								metrics.AssessmentKeyFilesExecuted:     1,
+								metrics.AssessmentKeyResponseNoError:   1,
+								metrics.AssessmentKeyResponseNoExcess:  1,
+								metrics.AssessmentKeyResponseWithCode:  1,
+							},
+						}, []uint{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 					},
 					"models-summed.csv": func(t *testing.T, filePath, data string) {
-						assert.Equal(t, bytesutil.StringTrimIndentations(`
-							model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-							symflower/symbolic-execution,14,10,1,1,1,1
-						`), data)
+						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+							metrics.Assessments{
+								metrics.AssessmentKeyCoverageStatement: 10,
+								metrics.AssessmentKeyFilesExecuted:     1,
+								metrics.AssessmentKeyResponseNoError:   1,
+								metrics.AssessmentKeyResponseNoExcess:  1,
+								metrics.AssessmentKeyResponseWithCode:  1,
+							},
+						}, []uint{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
 					},
 					"README.md": func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
@@ -440,21 +603,21 @@ func TestEvaluateExecute(t *testing.T) {
 			},
 			"evaluation.csv": func(t *testing.T, filePath, data string) {
 				assert.Equal(t, bytesutil.StringTrimIndentations(`
-					model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-					empty-response,golang,`+filepath.Join("golang", "plain")+`,0,0,0,0,0,0
+					model,language,repository,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
+					empty-response,golang,`+filepath.Join("golang", "plain")+`,0,0,0,0,0,0,0
 				`), data)
 			},
 			"evaluation.log": nil,
 			"golang-summed.csv": func(t *testing.T, filePath, data string) {
 				assert.Equal(t, bytesutil.StringTrimIndentations(`
-					model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-					empty-response,0,0,0,0,0,0
+					model,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
+					empty-response,0,0,0,0,0,0,0
 				`), data)
 			},
 			"models-summed.csv": func(t *testing.T, filePath, data string) {
 				assert.Equal(t, bytesutil.StringTrimIndentations(`
-					model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-					empty-response,0,0,0,0,0,0
+					model,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
+					empty-response,0,0,0,0,0,0,0
 				`), data)
 			},
 			"README.md": func(t *testing.T, filePath, data string) {

@@ -2,6 +2,7 @@ package symflower
 
 import (
 	"context"
+	"time"
 
 	pkgerrors "github.com/pkg/errors"
 
@@ -31,6 +32,8 @@ func (m *Model) ID() (id string) {
 
 // GenerateTestsForFile generates test files for the given implementation file in a repository.
 func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
+	start := time.Now()
+
 	_, err = util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "unit-tests",
@@ -48,5 +51,6 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	return metrics.Assessments{ // Symflower always generates just source code when it does not fail, so no need to check the assessment properties.
 		metrics.AssessmentKeyResponseNoExcess: 1,
 		metrics.AssessmentKeyResponseWithCode: 1,
+		metrics.AssessmentKeyProcessingTime:   uint(time.Since(start).Milliseconds()),
 	}, nil
 }

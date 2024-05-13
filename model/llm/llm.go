@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+	"time"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil/bytesutil"
@@ -99,16 +100,19 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	}
 
 	logger.Printf("Querying model %q with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
+	start := time.Now()
 	response, err := m.provider.Query(context.Background(), m.model, request)
 	if err != nil {
 		return nil, err
 	}
-	logger.Printf("Model %q responded with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
+	duration := time.Since(start)
+	logger.Printf("Model %q responded (%d ms) with:\n%s", m.ID(), duration.Milliseconds(), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
 
 	assessment, testContent, err := prompt.ParseResponse(response)
 	if err != nil {
 		return nil, err
 	}
+	assessment[metrics.AssessmentKeyProcessingTime] = uint(duration.Milliseconds())
 
 	testFilePath := language.TestFilePath(repositoryPath, filePath)
 	if err := os.MkdirAll(filepath.Join(repositoryPath, filepath.Dir(testFilePath)), 0755); err != nil {

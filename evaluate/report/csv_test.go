@@ -41,8 +41,8 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 		},
 
 		ExpectedString: `
-			model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-			some-model,some-language,some-repository,0,0,0,0,0,0
+			model,language,repository,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
+			some-model,some-language,some-repository,0,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
@@ -57,6 +57,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 						metrics.AssessmentKeyResponseNoError:   3,
 						metrics.AssessmentKeyResponseNoExcess:  4,
 						metrics.AssessmentKeyResponseWithCode:  5,
+						metrics.AssessmentKeyProcessingTime:    200,
 					},
 				},
 			},
@@ -68,15 +69,16 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 						metrics.AssessmentKeyResponseNoError:   3,
 						metrics.AssessmentKeyResponseNoExcess:  4,
 						metrics.AssessmentKeyResponseWithCode:  5,
+						metrics.AssessmentKeyProcessingTime:    300,
 					},
 				},
 			},
 		},
 
 		ExpectedString: `
-			model,language,repository,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-			some-model-a,some-language,some-repository,15,1,2,3,4,5
-			some-model-b,some-language,some-repository,15,1,2,3,4,5
+			model,language,repository,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
+			some-model-a,some-language,some-repository,15,1,2,200,3,4,5
+			some-model-b,some-language,some-repository,15,1,2,300,3,4,5
 		`,
 	})
 }
@@ -107,8 +109,8 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 		},
 
 		ExpectedString: `
-			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-			some-model,0,0,0,0,0,0
+			model,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
+			some-model,0,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
@@ -121,6 +123,7 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 				metrics.AssessmentKeyResponseNoError:   3,
 				metrics.AssessmentKeyResponseNoExcess:  4,
 				metrics.AssessmentKeyResponseWithCode:  5,
+				metrics.AssessmentKeyProcessingTime:    200,
 			},
 			modeltesting.NewMockModelNamed(t, "some-model-b"): {
 				metrics.AssessmentKeyCoverageStatement: 1,
@@ -128,13 +131,14 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 				metrics.AssessmentKeyResponseNoError:   3,
 				metrics.AssessmentKeyResponseNoExcess:  4,
 				metrics.AssessmentKeyResponseWithCode:  5,
+				metrics.AssessmentKeyProcessingTime:    300,
 			},
 		},
 
 		ExpectedString: `
-			model,score,coverage-statement,files-executed,response-no-error,response-no-excess,response-with-code
-			some-model-a,15,1,2,3,4,5
-			some-model-b,15,1,2,3,4,5
+			model,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
+			some-model-a,15,1,2,200,3,4,5
+			some-model-b,15,1,2,300,3,4,5
 		`,
 	})
 }
