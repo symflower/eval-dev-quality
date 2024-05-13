@@ -46,6 +46,8 @@ type Evaluate struct {
 	Repositories []string `long:"repository" description:"Evaluate with this repository. By default all repositories are used."`
 	// ResultPath holds the directory path where results should be written to.
 	ResultPath string `long:"result-path" description:"Directory path where results should be written to. The placeholder \"%datetime%\" can be used for the current date and time." default:"evaluation-%datetime%"`
+	// Runs holds the number of runs to perform.
+	Runs uint `long:"runs" description:"Number of runs to perform." default:"1"`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
 
@@ -96,6 +98,10 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 		if command.SymflowerBinaryPath != "" {
 			tools.SymflowerPath = command.SymflowerBinaryPath
+		}
+
+		if command.Runs == 0 {
+			log.Panicf("number of configured runs is 0")
 		}
 	}
 
@@ -229,21 +235,27 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	assessments := report.NewAssessmentPerModelPerLanguagePerRepository(maps.Values(modelsSelected), maps.Values(languagesSelected), command.Repositories)
 	problemsPerModel := map[string][]error{}
 	{
-		for _, languageID := range command.Languages {
-			for _, modelID := range command.Models {
-				model := modelsSelected[modelID]
-				language := languagesSelected[languageID]
+		for r := uint(0); r < command.Runs; r++ {
+			if command.Runs > 1 {
+				log.Printf("Run %d/%d", r+1, command.Runs)
+			}
 
-				repositoryPath := filepath.Join(languageID, repositoryPlainName)
+			for _, languageID := range command.Languages {
+				for _, modelID := range command.Models {
+					model := modelsSelected[modelID]
+					language := languagesSelected[languageID]
 
-				assessment, ps, err := evaluate.Repository(command.logger, command.ResultPath, model, language, command.TestdataPath, repositoryPath)
-				assessments[model][language][repositoryPath].Add(assessment)
-				if err != nil {
-					ps = append(ps, err)
-				}
-				if len(ps) > 0 {
-					log.Printf("Excluding model %q since it was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
-					problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+					repositoryPath := filepath.Join(languageID, repositoryPlainName)
+
+					assessment, ps, err := evaluate.Repository(command.logger, command.ResultPath, model, language, command.TestdataPath, repositoryPath)
+					assessments[model][language][repositoryPath].Add(assessment)
+					if err != nil {
+						ps = append(ps, err)
+					}
+					if len(ps) > 0 {
+						log.Printf("Excluding model %q since it was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
+						problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+					}
 				}
 			}
 		}
@@ -251,38 +263,44 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Evaluating models and languages.
 	log.Printf("Evaluating models and languages")
-	for _, languageID := range command.Languages {
-		languagePath := filepath.Join(command.TestdataPath, languageID)
-		repositories, err := os.ReadDir(languagePath)
-		if err != nil {
-			log.Panicf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
+	for r := uint(0); r < command.Runs; r++ {
+		if command.Runs > 1 {
+			log.Printf("Run %d/%d", r+1, command.Runs)
 		}
 
-		for _, repository := range repositories {
-			repositoryPath := filepath.Join(languageID, repository.Name())
-
-			if !repository.IsDir() || (len(commandRepositories) > 0 && !commandRepositories[repositoryPath]) {
-				continue
+		for _, languageID := range command.Languages {
+			languagePath := filepath.Join(command.TestdataPath, languageID)
+			repositories, err := os.ReadDir(languagePath)
+			if err != nil {
+				log.Panicf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
 			}
 
-			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
-			if repository.Name() == repositoryPlainName {
-				continue
-			}
+			for _, repository := range repositories {
+				repositoryPath := filepath.Join(languageID, repository.Name())
 
-			for _, modelID := range command.Models {
-				if len(problemsPerModel[modelID]) > 0 {
+				if !repository.IsDir() || (len(commandRepositories) > 0 && !commandRepositories[repositoryPath]) {
 					continue
 				}
 
-				model := modelsSelected[modelID]
-				language := languagesSelected[languageID]
+				// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
+				if repository.Name() == repositoryPlainName {
+					continue
+				}
 
-				assessment, ps, err := evaluate.Repository(command.logger, command.ResultPath, model, language, command.TestdataPath, repositoryPath)
-				assessments[model][language][repositoryPath].Add(assessment)
-				problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
-				if err != nil {
-					log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
+				for _, modelID := range command.Models {
+					if len(problemsPerModel[modelID]) > 0 {
+						continue
+					}
+
+					model := modelsSelected[modelID]
+					language := languagesSelected[languageID]
+
+					assessment, ps, err := evaluate.Repository(command.logger, command.ResultPath, model, language, command.TestdataPath, repositoryPath)
+					assessments[model][language][repositoryPath].Add(assessment)
+					problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+					if err != nil {
+						log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
+					}
 				}
 			}
 		}
@@ -299,7 +317,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 	if isOnlyPlainRepositories {
-		totalScore = uint(len(languagesSelected))
+		totalScore = uint(len(languagesSelected)) * command.Runs
 	}
 
 	assessmentsPerModel := assessments.CollapseByModel()

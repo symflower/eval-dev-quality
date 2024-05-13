@@ -543,6 +543,60 @@ func TestEvaluateExecute(t *testing.T) {
 		})
 	})
 
+	t.Run("Runs", func(t *testing.T) {
+		validate(t, &testCase{
+			Name: "Multiple",
+
+			Arguments: []string{
+				"--model", "symflower/symbolic-execution",
+				"--repository", filepath.Join("golang", "plain"),
+				"--runs=3",
+			},
+
+			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
+				actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
+					metrics.Assessments{
+						metrics.AssessmentKeyCoverageStatement: 30,
+						metrics.AssessmentKeyFilesExecuted:     3,
+						metrics.AssessmentKeyResponseNoError:   3,
+						metrics.AssessmentKeyResponseNoExcess:  3,
+						metrics.AssessmentKeyResponseWithCode:  3,
+					},
+				}, []uint{42})
+				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+				if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
+					t.Logf("Output: %s", output)
+				}
+			},
+			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+				"categories.svg": nil,
+				"evaluation.csv": func(t *testing.T, filePath, data string) {
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 30,
+							metrics.AssessmentKeyFilesExecuted:     3,
+							metrics.AssessmentKeyResponseNoError:   3,
+							metrics.AssessmentKeyResponseNoExcess:  3,
+							metrics.AssessmentKeyResponseWithCode:  3,
+						},
+					}, []uint{42})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+				},
+				"evaluation.log": func(t *testing.T, filePath, data string) {
+					assert.Contains(t, data, "Run 1/3")
+					assert.Contains(t, data, "Run 2/3")
+					assert.Contains(t, data, "Run 3/3")
+				},
+				"golang-summed.csv": nil,
+				"models-summed.csv": nil,
+				"README.md":         nil,
+				filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Equal(t, 3, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+				},
+			},
+		})
+	})
+
 	// This case checks a beautiful bug where the Markdown export crashed when the current working directory contained a README.md file. While this is not the case during the tests (as the current work directory is the directory of this file), it certainly caused problems when our binary was executed from the repository root (which of course contained a README.md). Therefore, we sadly have to modify the current work directory right within the tests of this case to reproduce the problem and fix it forever.
 	validate(t, &testCase{
 		Name: "Current work directory contains a README.md",
