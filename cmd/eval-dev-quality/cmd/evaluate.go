@@ -213,7 +213,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 					ps = append(ps, err)
 				}
 				if len(ps) > 0 {
-					log.Printf("Excluding model %q since it was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
+					log.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
 					problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 				}
 			}
