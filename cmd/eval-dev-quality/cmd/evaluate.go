@@ -40,11 +40,10 @@ type Evaluate struct {
 
 	// Languages determines which language should be used for the evaluation, or empty if all languages should be used.
 	Languages []string `long:"language" description:"Evaluate with this language. By default all languages are used."`
-
 	// Models determines which models should be used for the evaluation, or empty if all models should be used.
 	Models []string `long:"model" description:"Evaluate with this model. By default all models are used."`
 	// ProviderTokens holds all API tokens for the providers.
-	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token,...')." env:"PROVIDER_TOKEN"`
+	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token'). When using the environment variable, separate multiple definitions with ','." env:"PROVIDER_TOKEN" env-delim:","`
 	// QueryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	QueryAttempts uint `long:"attempts" description:"Number of query attempts to perform when a model request errors in the process of solving a task." default:"3"`
 
