@@ -20,8 +20,10 @@ import (
 	_ "github.com/symflower/eval-dev-quality/language/java"   // Register language.
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
+	"github.com/symflower/eval-dev-quality/model/llm"
 	"github.com/symflower/eval-dev-quality/provider"
-	_ "github.com/symflower/eval-dev-quality/provider/ollama"     // Register provider.
+	_ "github.com/symflower/eval-dev-quality/provider/ollama" // Register provider.
+	openaiapi "github.com/symflower/eval-dev-quality/provider/openai-api"
 	_ "github.com/symflower/eval-dev-quality/provider/openrouter" // Register provider.
 	_ "github.com/symflower/eval-dev-quality/provider/symflower"  // Register provider.
 	"github.com/symflower/eval-dev-quality/tools"
@@ -44,6 +46,8 @@ type Evaluate struct {
 	Models []string `long:"model" description:"Evaluate with this model. By default all models are used."`
 	// ProviderTokens holds all API tokens for the providers.
 	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token'). When using the environment variable, separate multiple definitions with ','." env:"PROVIDER_TOKEN" env-delim:","`
+	// ProviderUrls holds all custom inference endpoint urls for the providers.
+	ProviderUrls map[string]string `long:"urls" description:"Custom OpenAI API compatible inference endpoints (of the form '$provider:$url,...'). Use '$provider=custom-$name' to manually register a custom OpenAI API endpoint provider. Note that the models of a custom OpenAI API endpoint provider must be declared explicitly using the '--model' option. When using the environment variable, separate multiple definitions with ','." env:"PROVIDER_URL" env-delim:","`
 	// QueryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	QueryAttempts uint `long:"attempts" description:"Number of query attempts to perform when a model request errors in the process of solving a task." default:"3"`
 
@@ -108,6 +112,36 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 		if command.Runs == 0 {
 			log.Panicf("number of configured runs must be greater than zero")
+		}
+	}
+
+	// Register custom OpenAI API providers and models.
+	{
+		customProviders := map[string]*openaiapi.Provider{}
+		for providerID, providerURL := range command.ProviderUrls {
+			if !strings.HasPrefix(providerID, "custom-") {
+				continue
+			}
+
+			p := openaiapi.NewProvider(providerID, providerURL)
+			provider.Register(p)
+			customProviders[providerID] = p
+		}
+		for _, model := range command.Models {
+			if !strings.HasPrefix(model, "custom-") {
+				continue
+			}
+
+			providerID, _, ok := strings.Cut(model, provider.ProviderModelSeparator)
+			if !ok {
+				log.Panicf("ERROR: cannot split %q into provider and model name by %q", model, provider.ProviderModelSeparator)
+			}
+			modelProvider, ok := customProviders[providerID]
+			if !ok {
+				log.Panicf("ERROR: unknown custom provider %q for model %q", providerID, model)
+			}
+
+			modelProvider.AddModel(llm.NewModel(modelProvider, model))
 		}
 	}
 
