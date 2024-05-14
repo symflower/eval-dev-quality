@@ -1,7 +1,9 @@
 package evaluate
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -12,6 +14,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // Repository evaluate a repository with the given model and language.
@@ -79,4 +82,87 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 	}
 
 	return repositoryAssessment, problems, nil
+}
+
+// TemporaryRepository creates a temporary repository and initializes a git repo in it.
+func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryRepositoryPath string, cleanup func(), err error) {
+	temporaryPath, err := os.MkdirTemp("", "eval-dev-quality")
+	if err != nil {
+		return "", cleanup, pkgerrors.WithStack(err)
+	}
+
+	cleanup = func() {
+		if e := os.RemoveAll(temporaryPath); e != nil {
+			if err != nil {
+				err = errors.Join(err, pkgerrors.WithStack(e))
+			} else {
+				err = pkgerrors.WithStack(e)
+			}
+		}
+	}
+
+	temporaryRepositoryPath = filepath.Join(temporaryPath, filepath.Base(dataPath))
+	if err := osutil.CopyTree(dataPath, temporaryRepositoryPath); err != nil {
+		return "", cleanup, pkgerrors.WithStack(err)
+	}
+
+	// Add git repository and commit changes.
+	out, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{
+			"git",
+			"init",
+		},
+
+		Directory: temporaryRepositoryPath,
+	})
+	if err != nil {
+		return "", cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to initialize git repository", out)))
+	}
+
+	out, err = util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{
+			"git",
+			"add",
+			".",
+		},
+
+		Directory: temporaryRepositoryPath,
+	})
+	if err != nil {
+		return "", cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to add files", out)))
+	}
+
+	out, err = util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{
+			"git",
+			"commit",
+			"-m",
+			"initial",
+		},
+
+		Directory: temporaryRepositoryPath,
+	})
+	if err != nil {
+		return "", cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to commit", out)))
+	}
+
+	return temporaryRepositoryPath, cleanup, nil
+}
+
+// ResetTemporaryRepository resets a temporary repository back to its "initial" commit.
+func ResetTemporaryRepository(logger *log.Logger, path string) (err error) {
+	out, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{
+			"git",
+			"clean",
+			"-df",
+		},
+
+		Directory: path,
+	})
+	if err != nil {
+		return pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to clean git repository", out)))
+	}
+
+	return nil
 }
