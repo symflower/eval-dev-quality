@@ -39,7 +39,11 @@ func TestRepository(t *testing.T) {
 			temporaryPath := t.TempDir()
 
 			_, logger := log.Buffer()
-			actualRepositoryAssessment, actualProblems, actualErr := Repository(logger, temporaryPath, tc.Model, tc.Language, tc.TestDataPath, tc.RepositoryPath)
+			temporaryRepositoryPath, cleanup, err := TemporaryRepository(logger, filepath.Join(tc.TestDataPath, tc.RepositoryPath))
+			assert.NoError(t, err)
+			defer cleanup()
+
+			actualRepositoryAssessment, actualProblems, actualErr := Repository(logger, temporaryPath, tc.Model, tc.Language, temporaryRepositoryPath, tc.RepositoryPath)
 
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 			assert.Equal(t, tc.ExpectedProblems, actualProblems)
