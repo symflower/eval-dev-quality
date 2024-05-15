@@ -1,6 +1,7 @@
 package util
 
 import (
+	"context"
 	"io"
 	"os/exec"
 	"strings"
@@ -21,11 +22,11 @@ type Command struct {
 }
 
 // CommandWithResult executes a command and returns its output, while printing the same output to the given logger.
-func CommandWithResult(logger *log.Logger, command *Command) (output string, err error) {
+func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command) (output string, err error) {
 	logger.Printf("$ %s", strings.Join(command.Command, " "))
 
 	var writer bytesutil.SynchronizedBuffer
-	c := exec.Command(command.Command[0], command.Command[1:]...)
+	c := exec.CommandContext(ctx, command.Command[0], command.Command[1:]...)
 	if command.Directory != "" {
 		c.Dir = command.Directory
 	}

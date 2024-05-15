@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"path/filepath"
@@ -45,7 +46,7 @@ func (*symflower) BinaryPath() string {
 
 // CheckVersion checks if the tool's version is compatible with the required version.
 func (*symflower) CheckVersion(logger *log.Logger, binaryPath string) (err error) {
-	symflowerVersionOutput, err := util.CommandWithResult(logger, &util.Command{
+	symflowerVersionOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{binaryPath, "version"},
 	})
 	if err != nil {
@@ -118,7 +119,7 @@ func (*symflower) Install(logger *log.Logger, installPath string) (err error) {
 
 	// Non-Windows binaries need to be made executable because the executable bit is not set for downloads.
 	if !osutil.IsWindows() {
-		if _, err := util.CommandWithResult(logger, &util.Command{
+		if _, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 			Command: []string{"chmod", "+x", symflowerInstallPath},
 		}); err != nil {
 			return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot make %s executable", symflowerInstallPath)))

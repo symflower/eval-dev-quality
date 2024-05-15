@@ -30,7 +30,7 @@ import (
 type Evaluate struct {
 	// InstallToolsPath determines where tools for the evaluation are installed.
 	InstallToolsPath string `long:"install-tools-path" description:"Install tools for the evaluation into this path."`
-	// SymflowerBinaryPath overwites the Symflower binary path.
+	// SymflowerBinaryPath overwrites the Symflower binary path.
 	SymflowerBinaryPath string `long:"symflower-binary-path" description:"Overwrite the Symflower binary with this specific path instead of installing and using a global one." env:"SYMFLOWER_BINARY_PATH"`
 
 	// Languages determines which language should be used for the evaluation, or empty if all languages should be used.

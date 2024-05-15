@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -77,7 +78,7 @@ func (*ollama) Install(logger *log.Logger, installPath string) (err error) {
 
 	// Non-Windows binaries need to be made executable because the executable bit is not set for downloads.
 	if !osutil.IsWindows() {
-		if _, err := util.CommandWithResult(logger, &util.Command{
+		if _, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 			Command: []string{"chmod", "+x", ollamaInstallPath},
 		}); err != nil {
 			return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot make %s executable", ollamaInstallPath)))

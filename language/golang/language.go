@@ -1,6 +1,7 @@
 package golang
 
 import (
+	"context"
 	"errors"
 	"os"
 	"path/filepath"
@@ -81,7 +82,7 @@ var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statemen
 
 // Execute invokes the language specific testing on the given repository.
 func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
-	commandOutput, err := util.CommandWithResult(logger, &util.Command{
+	commandOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "test",
 			"--language", "golang",
