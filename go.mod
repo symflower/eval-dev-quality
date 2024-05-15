@@ -11,6 +11,7 @@ require (
 	github.com/wcharczuk/go-chart/v2 v2.1.1
 	github.com/zimmski/osutil v1.2.0
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8
+	golang.org/x/mod v0.16.0
 )
 
 require (
