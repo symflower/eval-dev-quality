@@ -5,8 +5,6 @@ import (
 	"slices"
 	"sort"
 	"strings"
-
-	"golang.org/x/exp/maps"
 )
 
 // AssessmentKey defines a key for a numerical key-value assessment pair.
@@ -23,6 +21,7 @@ var (
 )
 
 // RegisterAssessmentKey registers a new assessment key.
+// If the points for this assessment type are zero, it is ignored for the score computation.
 func RegisterAssessmentKey(key string, points uint) AssessmentKey {
 	assessment := AssessmentKey(key)
 	i := sort.SearchStrings(AllAssessmentKeysStrings, key)
@@ -37,6 +36,8 @@ func RegisterAssessmentKey(key string, points uint) AssessmentKey {
 var (
 	// AssessmentKeyFilesExecuted holds the successfully executed files.
 	AssessmentKeyFilesExecuted = RegisterAssessmentKey("files-executed", 1)
+	// AssessmentKeyProcessingTime holds the time in milliseconds that it took to complete the task.
+	AssessmentKeyProcessingTime = RegisterAssessmentKey("processing-time", 0)
 
 	// AssessmentKeyCoverageStatement counts the cases where 100% coverage was reached.
 	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement", 10)
@@ -99,8 +100,10 @@ func (a Assessments) Score() (score uint) {
 		return 0
 	}
 
-	for _, value := range maps.Values(a) {
-		score += value
+	for key, value := range a {
+		if pointsPerAssessment[key] != 0 {
+			score += value
+		}
 	}
 
 	return score

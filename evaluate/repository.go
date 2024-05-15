@@ -60,6 +60,9 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 
 			continue
 		}
+		if assessments[metrics.AssessmentKeyProcessingTime] == 0 {
+			return nil, nil, pkgerrors.Errorf("no model response time measurement present for %q at repository %q", model.ID(), repositoryPath)
+		}
 		repositoryAssessment.Add(assessments)
 		repositoryAssessment.Award(metrics.AssessmentKeyResponseNoError)
 
