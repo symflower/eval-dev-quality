@@ -2,14 +2,18 @@ package tools
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"path/filepath"
+	"regexp"
 	"runtime"
 
 	pkgerrors "github.com/pkg/errors"
-	"github.com/symflower/eval-dev-quality/util"
 	"github.com/zimmski/osutil"
+	"golang.org/x/mod/semver"
+
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // ollama holds the "Ollama" tool.
@@ -42,11 +46,40 @@ func (*ollama) BinaryPath() string {
 
 // CheckVersion checks if the tool's version is compatible with the required version.
 func (*ollama) CheckVersion(logger *log.Logger, binaryPath string) (err error) {
-	return nil // Currently we don't depend on special Ollama features so any version will do.
+	output, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{
+			binaryPath,
+			"--version",
+		},
+	})
+	if err != nil {
+		return pkgerrors.WithStack(pkgerrors.WithMessage(err, `unable to verify "Ollama" installation`))
+	}
+
+	m := regexp.MustCompile(`version is (\d+\.\d+\.\d+)`).FindStringSubmatch(output)
+	if m == nil {
+		return pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("cannot find version"), output))
+	}
+
+	versionPresent := "v" + m[1]
+	if !semver.IsValid(versionPresent) {
+		pkgerrors.New(fmt.Sprintf("invalid semantic version string %q", versionPresent))
+	}
+	versionRequired := "v" + ollamaVersion
+	if !semver.IsValid(versionRequired) {
+		pkgerrors.New(fmt.Sprintf("invalid semantic version string %q", versionRequired))
+	}
+
+	// Check if binary is compatible.
+	if semver.Compare(versionPresent, versionRequired) < 0 {
+		return pkgerrors.WithStack(ErrToolVersionOutdated)
+	}
+
+	return nil
 }
 
 // ollamaVersion holds the version of Ollama required for this revision of the evaluation.
-var ollamaVersion = "any" // Currently we don't depend on special Ollama features so any version will do.
+var ollamaVersion = "0.1.38"
 
 // RequiredVersion returns the required version of the tool.
 func (*ollama) RequiredVersion() string {
@@ -69,7 +102,7 @@ func (*ollama) Install(logger *log.Logger, installPath string) (err error) {
 		return pkgerrors.WithStack(fmt.Errorf("unsupported architecture %s", a))
 	}
 
-	ollamaDownloadURL := "https://ollama.com/download/ollama-linux-" + architectureIdentifier
+	ollamaDownloadURL := "https://github.com/ollama/ollama/releases/download/v" + ollamaVersion + "/ollama-linux-" + architectureIdentifier
 	ollamaInstallPath := filepath.Join(installPath, "ollama")
 	logger.Printf("Install \"ollama\" to %s from %s", ollamaInstallPath, ollamaDownloadURL)
 	if err := osutil.DownloadFileWithProgress(ollamaDownloadURL, ollamaInstallPath); err != nil {
