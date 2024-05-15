@@ -47,3 +47,9 @@ type Query interface {
 	// Query queries the provider with the given model name.
 	Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error)
 }
+
+// Service is a provider that requires background services.
+type Service interface {
+	// Start starts necessary background services to use this provider and returns a shutdown function.
+	Start(logger *log.Logger) (shutdown func() (err error), err error)
+}

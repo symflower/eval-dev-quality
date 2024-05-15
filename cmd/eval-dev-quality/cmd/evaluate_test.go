@@ -21,6 +21,7 @@ import (
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	"github.com/symflower/eval-dev-quality/provider"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
+	"github.com/symflower/eval-dev-quality/tools"
 )
 
 // validateReportLinks checks if the Markdown report data contains all the links to other relevant report files.
@@ -52,7 +53,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 		ExpectedOutputValidate func(t *testing.T, output string, resultPath string)
 		ExpectedResultFiles    map[string]func(t *testing.T, filePath string, data string)
-		ExpectedPanic          string
+		ExpectedPanicContains  string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -79,14 +80,24 @@ func TestEvaluateExecute(t *testing.T) {
 				"--testdata", filepath.Join("..", "..", "..", "testdata"),
 			}, tc.Arguments...)
 
-			if tc.ExpectedPanic == "" {
+			if tc.ExpectedPanicContains == "" {
 				assert.NotPanics(t, func() {
 					Execute(logger, arguments)
 				})
 			} else {
-				assert.PanicsWithValue(t, tc.ExpectedPanic, func() {
+				didPanic := true
+				var recovered any
+				func() {
+					defer func() {
+						recovered = recover()
+					}()
+
 					Execute(logger, arguments)
-				})
+
+					didPanic = false
+				}()
+				assert.True(t, didPanic)
+				assert.Contains(t, recovered, tc.ExpectedPanicContains)
 			}
 
 			if tc.ExpectedOutputValidate != nil {
@@ -314,13 +325,58 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 
 				ExpectedOutputValidate: func(t *testing.T, output, resultPath string) {
-					assert.Contains(t, output, "skipping unavailable provider \"openrouter\"")
+					assert.Contains(t, output, "Skipping unavailable provider \"openrouter\"")
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 				},
-				ExpectedPanic: "ERROR: model openrouter/auto does not exist. Valid models are: symflower/symbolic-execution",
+				ExpectedPanicContains: "ERROR: model openrouter/auto does not exist",
 			})
+		})
+		t.Run("Ollama", func(t *testing.T) {
+			if !osutil.IsLinux() {
+				t.Skipf("Installation of Ollama is not supported on this OS")
+			}
+
+			{
+				var shutdown func() (err error)
+				defer func() { // Defer the shutdown in case there is a panic.
+					if shutdown != nil {
+						require.NoError(t, shutdown())
+					}
+				}()
+				validate(t, &testCase{
+					Name: "Pulled Model",
+
+					Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+						var err error
+						shutdown, err = tools.OllamaStart(logger, tools.OllamaPath, tools.OllamaURL)
+						require.NoError(t, err)
+
+						require.NoError(t, tools.OllamaPull(logger, tools.OllamaPath, tools.OllamaURL, "qwen:0.5b"))
+					},
+
+					Arguments: []string{
+						"--language", "golang",
+						"--model", "ollama/qwen:0.5b",
+						"--repository", filepath.Join("golang", "plain"),
+					},
+
+					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+						"categories.svg": nil,
+						"evaluation.csv": nil,
+						"evaluation.log": func(t *testing.T, filePath, data string) {
+							// Since the model is non-deterministic, we can only assert that the model did at least not error.
+							assert.Contains(t, data, `Evaluation score for "ollama/qwen:0.5b"`)
+							assert.Contains(t, data, "response-no-error=1")
+						},
+						"golang-summed.csv": nil,
+						"models-summed.csv": nil,
+						"README.md":         nil,
+						"ollama_qwen:0.5b/golang/golang/plain.log": nil,
+					},
+				})
+			}
 		})
 	})
 

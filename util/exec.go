@@ -5,8 +5,10 @@ import (
 	"io"
 	"os/exec"
 	"strings"
+	"time"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/log"
@@ -19,6 +21,8 @@ type Command struct {
 
 	// Directory defines the directory the execution should run in, without changing the working directory of the caller.
 	Directory string
+	// Env overwrites the environment variables of the executed command.
+	Env map[string]string
 }
 
 // CommandWithResult executes a command and returns its output, while printing the same output to the given logger.
@@ -30,8 +34,19 @@ func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command
 	if command.Directory != "" {
 		c.Dir = command.Directory
 	}
+	if command.Env != nil {
+		envs := osutil.EnvironMap()
+		for k, v := range command.Env {
+			envs[k] = v
+		}
+		for k, v := range envs {
+			c.Env = append(c.Env, k+"="+v)
+		}
+	}
 	c.Stdout = io.MultiWriter(logger.Writer(), &writer)
 	c.Stderr = c.Stdout
+
+	c.WaitDelay = 3 * time.Second // Some binaries do not like to be killed, e.g. "ollama", so we kill them after some time automatically.
 
 	if err := c.Run(); err != nil {
 		return writer.String(), pkgerrors.WithStack(err)

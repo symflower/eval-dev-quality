@@ -3,6 +3,7 @@ module github.com/symflower/eval-dev-quality
 go 1.21.5
 
 require (
+	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/jessevdk/go-flags v1.5.1-0.20210607101731-3927b71304df
 	github.com/pkg/errors v0.9.1
 	github.com/sashabaranov/go-openai v1.20.4
@@ -15,7 +16,6 @@ require (
 )
 
 require (
-	github.com/avast/retry-go v3.0.0+incompatible // indirect
 	github.com/blend/go-sdk v1.20220411.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect

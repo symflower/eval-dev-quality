@@ -21,6 +21,7 @@ import (
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
+	_ "github.com/symflower/eval-dev-quality/provider/ollama"     // Register provider.
 	_ "github.com/symflower/eval-dev-quality/provider/openrouter" // Register provider.
 	_ "github.com/symflower/eval-dev-quality/provider/symflower"  // Register provider.
 	"github.com/symflower/eval-dev-quality/tools"
@@ -30,6 +31,10 @@ import (
 type Evaluate struct {
 	// InstallToolsPath determines where tools for the evaluation are installed.
 	InstallToolsPath string `long:"install-tools-path" description:"Install tools for the evaluation into this path."`
+	// OllamaBinaryPath overwrites the Ollama binary path.
+	OllamaBinaryPath string `long:"ollama-binary-path" description:"Overwrite the Ollama binary with this specific path instead of using a global one." env:"OLLAMA_BINARY_PATH"`
+	// OllamaURL overwrites the Ollama URL.
+	OllamaURL string `long:"ollama-url" description:"Overwrite the URL of the Ollama service." env:"OLLAMA_URL"`
 	// SymflowerBinaryPath overwrites the Symflower binary path.
 	SymflowerBinaryPath string `long:"symflower-binary-path" description:"Overwrite the Symflower binary with this specific path instead of installing and using a global one." env:"SYMFLOWER_BINARY_PATH"`
 
@@ -72,6 +77,27 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		return err
 	}
 	defer logClose()
+
+	// Check common options.
+	{
+		if command.InstallToolsPath == "" {
+			command.InstallToolsPath, err = tools.InstallPathDefault()
+			if err != nil {
+				log.Panicf("ERROR: %s", err)
+			}
+		}
+
+		if command.OllamaBinaryPath != "" {
+			tools.OllamaPath = command.OllamaBinaryPath
+		}
+		if command.OllamaURL != "" {
+			tools.OllamaURL = command.OllamaURL
+		}
+
+		if command.SymflowerBinaryPath != "" {
+			tools.SymflowerPath = command.SymflowerBinaryPath
+		}
+	}
 
 	// Gather languages.
 	languagesSelected := map[string]language.Language{}
@@ -130,6 +156,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	{
 		models := map[string]model.Model{}
 		for _, p := range provider.Providers {
+			log.Printf("Checking provider %q for models", p.ID())
+
 			if t, ok := p.(provider.InjectToken); ok {
 				token, ok := command.ProviderTokens[p.ID()]
 				if ok {
@@ -137,9 +165,23 @@ func (command *Evaluate) Execute(args []string) (err error) {
 				}
 			}
 			if err := p.Available(log); err != nil {
-				log.Printf("skipping unavailable provider %q cause: %s", p.ID(), err)
+				log.Printf("Skipping unavailable provider %q cause: %s", p.ID(), err)
 
 				continue
+			}
+
+			// Start services of providers.
+			if service, ok := p.(provider.Service); ok {
+				log.Printf("Starting services for provider %q", p.ID())
+				shutdown, err := service.Start(log)
+				if err != nil {
+					log.Panicf("ERROR: could not start services for provider %q: %s", p, err)
+				}
+				defer func() {
+					if err := shutdown(); err != nil {
+						log.Panicf("ERROR: could not shutdown services of provider %q: %s", p, err)
+					}
+				}()
 			}
 
 			ms, err := p.Models()
@@ -177,21 +219,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	}
 
 	// Install required tools for the basic evaluation.
-	{
-		if command.SymflowerBinaryPath != "" {
-			tools.SymflowerPath = command.SymflowerBinaryPath
-		}
-
-		if command.InstallToolsPath == "" {
-			command.InstallToolsPath, err = tools.InstallPathDefault()
-			if err != nil {
-				log.Panicf("ERROR: %s", err)
-			}
-		}
-
-		if err := tools.InstallEvaluation(log, command.InstallToolsPath); err != nil {
-			log.Panicf("ERROR: %s", err)
-		}
+	if err := tools.InstallEvaluation(log, command.InstallToolsPath); err != nil {
+		log.Panicf("ERROR: %s", err)
 	}
 
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
