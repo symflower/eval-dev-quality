@@ -19,6 +19,8 @@ type Command struct {
 
 	// Directory defines the directory the execution should run in, without changing the working directory of the caller.
 	Directory string
+	// Env overwrites the environment variables of the executed command.
+	Env map[string]string
 }
 
 // CommandWithResult executes a command and returns its output, while printing the same output to the given logger.
@@ -29,6 +31,15 @@ func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command
 	c := exec.CommandContext(ctx, command.Command[0], command.Command[1:]...)
 	if command.Directory != "" {
 		c.Dir = command.Directory
+	}
+	if command.Env != nil {
+		envs := osutil.EnvironMap()
+		for k, v := range command.Env {
+			envs[k] = v
+		}
+		for k, v := range envs {
+			c.Env = append(c.Env, k+"="+v)
+		}
 	}
 	c.Stdout = io.MultiWriter(logger.Writer(), &writer)
 	c.Stderr = c.Stdout
