@@ -1,8 +1,11 @@
+dir: "{{.PackageName}}/testing"
+filename: "{{.InterfaceName}}_mock_gen.go"
+mockname: "Mock{{.InterfaceName}}"
+outpkg: "{{.PackageName}}testing"
+replace-type:
+  - "log=github.com/symflower/eval-dev-quality/log"
 with-expecter: false
-dir: '{{.PackageName}}/testing'
-filename: '{{.InterfaceName}}_mock_gen.go'
-mockname: 'Mock{{.InterfaceName}}'
-outpkg: '{{.PackageName}}testing'
+
 packages:
   github.com/symflower/eval-dev-quality/language:
     interfaces:
@@ -14,4 +17,3 @@ packages:
     interfaces:
       Provider:
       Query:
-replace-type: 'log=github.com/symflower/eval-dev-quality/log'
