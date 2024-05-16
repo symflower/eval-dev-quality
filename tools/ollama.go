@@ -194,7 +194,7 @@ func ollamaProcessStateRemove(url string) {
 }
 
 // OllamaCheck checks that an Ollama service is running at the given URL.
-func OllamaCheck(logger *log.Logger, url string) (err error) {
+func OllamaCheck(url string) (err error) {
 	if err := retry.Do(func() error {
 		response, err := http.Get(url)
 		if err != nil {
@@ -224,7 +224,7 @@ func OllamaStart(logger *log.Logger, binaryPath string, url string) (shutdown fu
 	defer ollamaProcessStatesLock.Unlock()
 
 	// Check if the URL has already a running service.
-	if err := OllamaCheck(logger, url); err == nil {
+	if err := OllamaCheck(url); err == nil {
 		logger.Printf("Reusing existing Ollama service on %q", url)
 
 		ollamaProcessStateAdd(url, nil)
@@ -261,7 +261,7 @@ func OllamaStart(logger *log.Logger, binaryPath string, url string) (shutdown fu
 		}
 	}()
 
-	if err := OllamaCheck(logger, url); err != nil {
+	if err := OllamaCheck(url); err != nil {
 		cancel()
 		serverWaitGroup.Wait()
 
