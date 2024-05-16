@@ -16,7 +16,7 @@ var Tools = map[string]Tool{}
 
 // Register adds a tool to the common tool list.
 func Register(tool Tool) {
-	id := tool.BinaryName()
+	id := tool.ID()
 	if _, ok := Tools[id]; ok {
 		panic(pkgerrors.WithMessage(pkgerrors.New("tool was already registered"), id))
 	}
@@ -26,6 +26,8 @@ func Register(tool Tool) {
 
 // Tool defines an external tool.
 type Tool interface {
+	// ID returns the unique ID of this tool.
+	ID() (id string)
 	// BinaryName returns the name of the tool's binary.
 	BinaryName() string
 	// BinaryPath returns the file path of the tool's binary or the command name that should be executed.
@@ -52,12 +54,12 @@ func InstallAll(logger *log.Logger, installPath string) (err error) {
 		if err := InstallTool(logger, tool, installPath); err != nil {
 			// Log if a tool is not supported by the operating system, but do not fail as it is not a necessary tool.
 			if pkgerrors.Is(err, ErrUnsupportedOperatingSystem) {
-				logger.Printf("WARNING: tool %s is not supported by the operating system", tool.BinaryName())
+				logger.Printf("WARNING: tool %s is not supported by the operating system", tool.ID())
 
 				continue
 			}
 
-			err = pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot install %q", tool.BinaryName())))
+			err = pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot install %q", tool.ID())))
 			installErrors = append(installErrors, err)
 		}
 	}

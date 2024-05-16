@@ -30,6 +30,11 @@ func NewSymflower() Tool {
 
 var _ Tool = &symflower{}
 
+// ID returns the unique ID of this tool.
+func (*symflower) ID() (id string) {
+	return "symflower"
+}
+
 // BinaryName returns the name of the tool's binary.
 func (*symflower) BinaryName() string {
 	return "symflower" + osutil.BinaryExtension()

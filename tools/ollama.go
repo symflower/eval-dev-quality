@@ -38,6 +38,11 @@ func NewOllama() Tool {
 
 var _ Tool = &Ollama{}
 
+// ID returns the unique ID of this tool.
+func (*Ollama) ID() (id string) {
+	return "ollama"
+}
+
 // BinaryName returns the name of the tool's binary.
 func (*Ollama) BinaryName() string {
 	return "ollama" + osutil.BinaryExtension()
