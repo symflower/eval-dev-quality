@@ -198,9 +198,7 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 				}, []uint{14})
 				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
-				if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
-					t.Logf("Output: %s", output)
-				}
+				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				"categories.svg": func(t *testing.T, filePath, data string) {
@@ -267,9 +265,7 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 				}, []uint{28})
 				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
-				if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
-					t.Logf("Output: %s", output)
-				}
+				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				"categories.svg": func(t *testing.T, filePath, data string) {
@@ -363,9 +359,7 @@ func TestEvaluateExecute(t *testing.T) {
 						},
 					}, []uint{14})
 					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
-					if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
-						t.Logf("Output: %s", output)
-					}
+					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"categories.svg": func(t *testing.T, filePath, data string) {
@@ -424,9 +418,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 					assert.Regexp(t, `Evaluation score for "symflower/symbolic-execution" \("code-no-excess"\): score=14, coverage-statement=10, files-executed=1, processing-time=\d+, response-no-error=1, response-no-excess=1, response-with-code=1`, output)
-					if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
-						t.Logf("Output: %s", output)
-					}
+					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"categories.svg": func(t *testing.T, filePath, data string) {
@@ -564,9 +556,7 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 				}, []uint{42})
 				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
-				if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
-					t.Logf("Output: %s", output)
-				}
+				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				"categories.svg": nil,
