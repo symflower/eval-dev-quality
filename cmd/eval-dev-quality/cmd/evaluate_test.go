@@ -198,9 +198,7 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 				}, []uint{14})
 				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
-				if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
-					t.Logf("Output: %s", output)
-				}
+				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				"categories.svg": func(t *testing.T, filePath, data string) {
@@ -267,9 +265,7 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 				}, []uint{28})
 				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
-				if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
-					t.Logf("Output: %s", output)
-				}
+				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				"categories.svg": func(t *testing.T, filePath, data string) {
@@ -363,9 +359,7 @@ func TestEvaluateExecute(t *testing.T) {
 						},
 					}, []uint{14})
 					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
-					if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
-						t.Logf("Output: %s", output)
-					}
+					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"categories.svg": func(t *testing.T, filePath, data string) {
@@ -424,9 +418,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 					assert.Regexp(t, `Evaluation score for "symflower/symbolic-execution" \("code-no-excess"\): score=14, coverage-statement=10, files-executed=1, processing-time=\d+, response-no-error=1, response-no-excess=1, response-with-code=1`, output)
-					if !assert.Equal(t, 1, strings.Count(output, "Evaluation score for")) {
-						t.Logf("Output: %s", output)
-					}
+					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"categories.svg": func(t *testing.T, filePath, data string) {
@@ -540,6 +532,58 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 				})
 			}
+		})
+	})
+
+	t.Run("Runs", func(t *testing.T) {
+		validate(t, &testCase{
+			Name: "Multiple",
+
+			Arguments: []string{
+				"--model", "symflower/symbolic-execution",
+				"--repository", filepath.Join("golang", "plain"),
+				"--runs=3",
+			},
+
+			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
+				actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
+					metrics.Assessments{
+						metrics.AssessmentKeyCoverageStatement: 30,
+						metrics.AssessmentKeyFilesExecuted:     3,
+						metrics.AssessmentKeyResponseNoError:   3,
+						metrics.AssessmentKeyResponseNoExcess:  3,
+						metrics.AssessmentKeyResponseWithCode:  3,
+					},
+				}, []uint{42})
+				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
+			},
+			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+				"categories.svg": nil,
+				"evaluation.csv": func(t *testing.T, filePath, data string) {
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverageStatement: 30,
+							metrics.AssessmentKeyFilesExecuted:     3,
+							metrics.AssessmentKeyResponseNoError:   3,
+							metrics.AssessmentKeyResponseNoExcess:  3,
+							metrics.AssessmentKeyResponseWithCode:  3,
+						},
+					}, []uint{42})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+				},
+				"evaluation.log": func(t *testing.T, filePath, data string) {
+					assert.Contains(t, data, "Run 1/3")
+					assert.Contains(t, data, "Run 2/3")
+					assert.Contains(t, data, "Run 3/3")
+				},
+				"golang-summed.csv": nil,
+				"models-summed.csv": nil,
+				"README.md":         nil,
+				filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Equal(t, 3, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+				},
+			},
 		})
 	})
 
