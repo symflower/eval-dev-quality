@@ -119,6 +119,8 @@ func (p *Provider) client() (client *openai.Client) {
 	return openai.NewClientWithConfig(config)
 }
 
+var _ provider.Service = (*Provider)(nil)
+
 // Start starts necessary background services to use this provider and returns a shutdown function.
 func (p *Provider) Start(logger *log.Logger) (shutdown func() (err error), err error) {
 	return tools.OllamaStart(logger, p.binaryPath, p.url)
