@@ -507,4 +507,117 @@ func TestEvaluate(t *testing.T) {
 			})
 		}
 	})
+	t.Run("Runs", func(t *testing.T) {
+		generateTestsForFilePlainSuccess := func(args mock.Arguments) {
+			require.NoError(t, os.WriteFile(filepath.Join(args.String(2), "plain_test.go"), []byte("package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}"), 0600))
+		}
+		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
+			metrics.AssessmentKeyProcessingTime: 1,
+		}
+		generateSuccess := func(mockedModel *modeltesting.MockModel) {
+			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(generateTestsForFilePlainSuccessMetrics, nil).Run(generateTestsForFilePlainSuccess)
+		}
+		{
+			languageGolang := &golang.Language{}
+			mockedModelID := "mocked-generation-model"
+			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			repositoryPath := filepath.Join("golang", "plain")
+			validate(t, &testCase{
+				Name: "Interleaved",
+
+				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+					generateSuccess(mockedModel)
+				},
+
+				Context: &Context{
+					Languages: []language.Language{
+						&golang.Language{},
+					},
+
+					Models: []evalmodel.Model{
+						mockedModel,
+					},
+
+					RepositoryPaths: []string{
+						repositoryPath,
+					},
+
+					Runs:           3,
+					RunsSequential: false,
+				},
+
+				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+					mockedModel: map[language.Language]map[string]metrics.Assessments{
+						languageGolang: map[string]metrics.Assessments{
+							repositoryPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyFilesExecuted:   3,
+								metrics.AssessmentKeyResponseNoError: 3,
+							},
+						},
+					},
+				},
+				ExpectedTotalScore: 3,
+				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+				},
+				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
+					assert.Contains(t, output, "Run 1/3")
+					assert.Contains(t, output, "Run 2/3")
+					assert.Contains(t, output, "Run 3/3")
+					assert.NotRegexp(t, `Run \d+/\d+ for model`, output)
+				},
+			})
+		}
+		{
+			languageGolang := &golang.Language{}
+			mockedModelID := "mocked-generation-model"
+			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			repositoryPath := filepath.Join("golang", "plain")
+			validate(t, &testCase{
+				Name: "Sequential",
+
+				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+					generateSuccess(mockedModel)
+				},
+
+				Context: &Context{
+					Languages: []language.Language{
+						&golang.Language{},
+					},
+
+					Models: []evalmodel.Model{
+						mockedModel,
+					},
+
+					RepositoryPaths: []string{
+						repositoryPath,
+					},
+
+					Runs:           3,
+					RunsSequential: true,
+				},
+
+				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+					mockedModel: map[language.Language]map[string]metrics.Assessments{
+						languageGolang: map[string]metrics.Assessments{
+							repositoryPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyFilesExecuted:   3,
+								metrics.AssessmentKeyResponseNoError: 3,
+							},
+						},
+					},
+				},
+				ExpectedTotalScore: 3,
+				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+				},
+				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
+					assert.Contains(t, output, "Run 1/3 for model")
+					assert.Contains(t, output, "Run 2/3 for model")
+					assert.Contains(t, output, "Run 3/3 for model")
+					assert.NotRegexp(t, `Run \d+/\d+$`, output)
+				},
+			})
+		}
+	})
 }
