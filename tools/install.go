@@ -49,7 +49,7 @@ func InstallTool(logger *log.Logger, tool Tool, installPath string) (err error) 
 			return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("%s binary is not a valid file path", tool.BinaryPath())))
 		}
 
-		logger.Printf("Using %q binary %s", tool.BinaryName(), tool.BinaryPath())
+		logger.Printf("Using %q binary %s", tool.ID(), tool.BinaryPath())
 
 		return nil
 	}
@@ -64,7 +64,7 @@ func InstallTool(logger *log.Logger, tool Tool, installPath string) (err error) 
 	}
 
 	// Make sure only one process is installing a tool at the same time.
-	lock, err := lockfile.New(filepath.Join(installPath, "install"+tool.BinaryName()+".lock"))
+	lock, err := lockfile.New(filepath.Join(installPath, "install"+tool.ID()+".lock"))
 	if err != nil {
 		return pkgerrors.WithStack(err)
 	}
@@ -73,7 +73,7 @@ func InstallTool(logger *log.Logger, tool Tool, installPath string) (err error) 
 			break
 		}
 
-		logger.Printf("Try to lock %q for installing %q but need to wait for another process", installPath, tool.BinaryName())
+		logger.Printf("Try to lock %q for installing %q but need to wait for another process", installPath, tool.ID())
 		time.Sleep(time.Second)
 	}
 	defer func() {
@@ -100,7 +100,7 @@ func InstallTool(logger *log.Logger, tool Tool, installPath string) (err error) 
 
 	// Check if the binary can already be used.
 	if toolPath, err := exec.LookPath(tool.BinaryName()); err == nil {
-		logger.Printf("Checking %q binary %q version", tool.BinaryName(), toolPath)
+		logger.Printf("Checking %q binary %q version", tool.ID(), toolPath)
 
 		err := tool.CheckVersion(logger, toolPath)
 		if err == nil || !pkgerrors.Is(err, ErrToolVersionOutdated) {
@@ -109,14 +109,14 @@ func InstallTool(logger *log.Logger, tool Tool, installPath string) (err error) 
 
 		// If the binary got installed by the user, let the user handle the update.
 		if filepath.Dir(toolPath) != installPath {
-			return pkgerrors.WithStack(fmt.Errorf("%q binary outdated, need at least %q", tool.BinaryName(), tool.RequiredVersion()))
+			return pkgerrors.WithStack(fmt.Errorf("%q binary outdated, need at least %q", tool.ID(), tool.RequiredVersion()))
 		}
 
-		logger.Printf("Updating %q to %q", tool.BinaryName(), tool.RequiredVersion())
+		logger.Printf("Updating %q to %q", tool.ID(), tool.RequiredVersion())
 	}
 
 	// Install the tool as it is either outdated or not installed at all.
-	logger.Printf("Install %q to %q", tool.BinaryName(), installPath)
+	logger.Printf("Install %q to %q", tool.ID(), installPath)
 	if err := tool.Install(logger, installPath); err != nil {
 		return err
 	}
