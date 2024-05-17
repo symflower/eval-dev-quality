@@ -8,6 +8,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/avast/retry-go"
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil/bytesutil"
 
@@ -25,6 +26,8 @@ type Model struct {
 	provider provider.Query
 	// model holds the identifier for the LLM model.
 	model string
+	// attempts holds the number of attempts to perform when a model errors.
+	attempts uint
 }
 
 // NewModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
@@ -32,6 +35,7 @@ func NewModel(provider provider.Query, modelIdentifier string) model.Model {
 	return &Model{
 		provider: provider,
 		model:    modelIdentifier,
+		attempts: 1,
 	}
 }
 
@@ -99,14 +103,33 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 		return nil, err
 	}
 
-	logger.Printf("Querying model %q with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
-	start := time.Now()
-	response, err := m.provider.Query(context.Background(), m.model, request)
-	if err != nil {
+	var response string
+	var duration time.Duration
+	if err := retry.Do(
+		func() error {
+			logger.Printf("Querying model %q with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
+			start := time.Now()
+			response, err = m.provider.Query(context.Background(), m.model, request)
+			if err != nil {
+				return err
+			}
+			duration = time.Since(start)
+			logger.Printf("Model %q responded (%d ms) with:\n%s", m.ID(), duration.Milliseconds(), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
+
+			return nil
+		},
+		retry.Attempts(m.attempts),
+		retry.Delay(2*time.Second),
+		retry.LastErrorOnly(true),
+		retry.OnRetry(func(n uint, err error) {
+			logger.Printf("Attempt %d/%d: %s", n+1, m.attempts, err)
+		}),
+		retry.RetryIf(func(err error) bool {
+			return true
+		}),
+	); err != nil {
 		return nil, err
 	}
-	duration := time.Since(start)
-	logger.Printf("Model %q responded (%d ms) with:\n%s", m.ID(), duration.Milliseconds(), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
 
 	assessment, testContent, err := prompt.ParseResponse(response)
 	if err != nil {
@@ -123,4 +146,9 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	}
 
 	return assessment, nil
+}
+
+// SetAttempts sets the number of attempts to perform when a model errors in the process of solving a task.
+func (m *Model) SetAttempts(retries uint) {
+	m.attempts = retries
 }
