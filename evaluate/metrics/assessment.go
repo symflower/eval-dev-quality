@@ -17,12 +17,12 @@ var (
 	AllAssessmentKeysStrings []string
 
 	// pointsPerAssessment holds the points awarded for a specific assessment.
-	pointsPerAssessment = map[AssessmentKey]uint{}
+	pointsPerAssessment = map[AssessmentKey]uint64{}
 )
 
 // RegisterAssessmentKey registers a new assessment key.
 // If the points for this assessment type are zero, it is ignored for the score computation.
-func RegisterAssessmentKey(key string, points uint) AssessmentKey {
+func RegisterAssessmentKey(key string, points uint64) AssessmentKey {
 	assessment := AssessmentKey(key)
 	i := sort.SearchStrings(AllAssessmentKeysStrings, key)
 
@@ -52,11 +52,11 @@ var (
 )
 
 // Assessments holds a collection of numerical assessment metrics.
-type Assessments map[AssessmentKey]uint
+type Assessments map[AssessmentKey]uint64
 
 // NewAssessments creates a new assessment collection.
 func NewAssessments() Assessments {
-	return map[AssessmentKey]uint{}
+	return map[AssessmentKey]uint64{}
 }
 
 // Add adds the given assessment collection to the current one.
@@ -95,7 +95,7 @@ func Merge(a Assessments, b Assessments) (c Assessments) {
 }
 
 // Score computes the score over all assessments in the collection.
-func (a Assessments) Score() (score uint) {
+func (a Assessments) Score() (score uint64) {
 	if len(a) == 0 {
 		return 0
 	}

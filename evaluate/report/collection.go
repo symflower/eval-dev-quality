@@ -21,13 +21,13 @@ type AssessmentPerLanguagePerModel map[language.Language]AssessmentPerModel
 type AssessmentPerModel map[model.Model]metrics.Assessments
 
 // WalkByScore walks the given assessment metrics by their score.
-func (a AssessmentPerModel) WalkByScore(function func(model model.Model, assessment metrics.Assessments, score uint) error) (err error) {
+func (a AssessmentPerModel) WalkByScore(function func(model model.Model, assessment metrics.Assessments, score uint64) error) (err error) {
 	models := maps.Keys(a)
 	slices.SortStableFunc(models, func(a, b model.Model) int {
 		return cmp.Compare(a.ID(), b.ID())
 	})
 
-	scores := make(map[model.Model]uint, len(models))
+	scores := make(map[model.Model]uint64, len(models))
 	for _, model := range models {
 		scores[model] = a[model].Score()
 	}

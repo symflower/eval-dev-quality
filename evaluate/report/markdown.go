@@ -38,7 +38,7 @@ type Markdown struct {
 	// AssessmentPerModel holds a collection of assessments per model.
 	AssessmentPerModel AssessmentPerModel
 	// TotalScore holds the total reachable score per task.
-	TotalScore uint
+	TotalScore uint64
 }
 
 // markdownTemplateContext holds the template for a Markdown report.

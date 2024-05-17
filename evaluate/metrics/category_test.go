@@ -11,7 +11,7 @@ func TestAssessmentsCategory(t *testing.T) {
 		Name string
 
 		Assessments Assessments
-		Total       uint
+		Total       uint64
 
 		ExpectedAssessmentCategory *AssessmentCategory
 	}

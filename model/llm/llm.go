@@ -112,7 +112,7 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	if err != nil {
 		return nil, err
 	}
-	assessment[metrics.AssessmentKeyProcessingTime] = uint(duration.Milliseconds())
+	assessment[metrics.AssessmentKeyProcessingTime] = uint64(duration.Milliseconds())
 
 	testFilePath := language.TestFilePath(repositoryPath, filePath)
 	if err := os.MkdirAll(filepath.Join(repositoryPath, filepath.Dir(testFilePath)), 0755); err != nil {

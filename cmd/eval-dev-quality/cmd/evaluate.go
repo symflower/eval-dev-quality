@@ -47,7 +47,7 @@ type Evaluate struct {
 	// ResultPath holds the directory path where results should be written to.
 	ResultPath string `long:"result-path" description:"Directory path where results should be written to. The placeholder \"%datetime%\" can be used for the current date and time." default:"evaluation-%datetime%"`
 	// Runs holds the number of runs to perform.
-	Runs uint `long:"runs" description:"Number of runs to perform." default:"1"`
+	Runs uint64 `long:"runs" description:"Number of runs to perform." default:"1"`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
 
@@ -235,7 +235,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	assessments := report.NewAssessmentPerModelPerLanguagePerRepository(maps.Values(modelsSelected), maps.Values(languagesSelected), command.Repositories)
 	problemsPerModel := map[string][]error{}
 	{
-		for r := uint(0); r < command.Runs; r++ {
+		for r := uint64(0); r < command.Runs; r++ {
 			if command.Runs > 1 {
 				log.Printf("Run %d/%d", r+1, command.Runs)
 			}
@@ -263,7 +263,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Evaluating models and languages.
 	log.Printf("Evaluating models and languages")
-	for r := uint(0); r < command.Runs; r++ {
+	for r := uint64(0); r < command.Runs; r++ {
 		if command.Runs > 1 {
 			log.Printf("Run %d/%d", r+1, command.Runs)
 		}
@@ -306,7 +306,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 
-	totalScore := uint(0)
+	totalScore := uint64(0)
 	// Set the total score to the number of evaluated languages if we are just checking the "plain" repositories since there is only one task to solve per language.
 	isOnlyPlainRepositories := true
 	for repository := range commandRepositories {
@@ -317,7 +317,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 	if isOnlyPlainRepositories {
-		totalScore = uint(len(languagesSelected)) * command.Runs
+		totalScore = uint64(len(languagesSelected)) * command.Runs
 	}
 
 	assessmentsPerModel := assessments.CollapseByModel()
@@ -336,7 +336,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		return err
 	}
 
-	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint) (err error) {
+	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint64) (err error) {
 		log.Printf("Evaluation score for %q (%q): %s", model.ID(), assessment.Category(totalScore).ID, assessment)
 
 		return nil

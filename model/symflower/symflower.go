@@ -51,6 +51,6 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	return metrics.Assessments{ // Symflower always generates just source code when it does not fail, so no need to check the assessment properties.
 		metrics.AssessmentKeyResponseNoExcess: 1,
 		metrics.AssessmentKeyResponseWithCode: 1,
-		metrics.AssessmentKeyProcessingTime:   uint(time.Since(start).Milliseconds()),
+		metrics.AssessmentKeyProcessingTime:   uint64(time.Since(start).Milliseconds()),
 	}, nil
 }
