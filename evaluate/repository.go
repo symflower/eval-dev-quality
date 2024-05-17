@@ -29,24 +29,6 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 
 	dataPath := filepath.Join(testDataPath, repositoryPath)
 
-	temporaryPath, err := os.MkdirTemp("", "eval-dev-quality")
-	if err != nil {
-		return nil, problems, pkgerrors.WithStack(err)
-	}
-	defer func() {
-		if e := os.RemoveAll(temporaryPath); e != nil {
-			if err != nil {
-				err = errors.Join(err, pkgerrors.WithStack(e))
-			} else {
-				err = pkgerrors.WithStack(e)
-			}
-		}
-	}()
-	temporaryRepositoryPath := filepath.Join(temporaryPath, filepath.Base(repositoryPath))
-	if err := osutil.CopyTree(dataPath, temporaryRepositoryPath); err != nil {
-		return nil, problems, pkgerrors.WithStack(err)
-	}
-
 	filePaths, err := language.Files(log, dataPath)
 	if err != nil {
 		return nil, problems, pkgerrors.WithStack(err)
@@ -54,6 +36,24 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 
 	repositoryAssessment = metrics.NewAssessments()
 	for _, filePath := range filePaths {
+		temporaryPath, err := os.MkdirTemp("", "eval-dev-quality")
+		if err != nil {
+			return nil, problems, pkgerrors.WithStack(err)
+		}
+		defer func() {
+			if e := os.RemoveAll(temporaryPath); e != nil {
+				if err != nil {
+					err = errors.Join(err, pkgerrors.WithStack(e))
+				} else {
+					err = pkgerrors.WithStack(e)
+				}
+			}
+		}()
+		temporaryRepositoryPath := filepath.Join(temporaryPath, filepath.Base(repositoryPath))
+		if err := osutil.CopyTree(dataPath, temporaryRepositoryPath); err != nil {
+			return nil, problems, pkgerrors.WithStack(err)
+		}
+
 		assessments, err := model.GenerateTestsForFile(log, language, temporaryRepositoryPath, filePath)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
