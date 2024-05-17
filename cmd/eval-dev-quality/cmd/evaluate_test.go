@@ -47,11 +47,11 @@ func validateSVGContent(t *testing.T, data string, categories []*metrics.Assessm
 	assert.Contains(t, data, fmt.Sprintf("%d</text>", maxModelCount))
 }
 
-func atoiUint(t *testing.T, s string) uint {
-	value, err := strconv.ParseUint(s, 10, 32)
+func atoiUint64(t *testing.T, s string) uint64 {
+	value, err := strconv.ParseUint(s, 10, 64)
 	assert.NoErrorf(t, err, "parsing unsigned integer from: %q", s)
 
-	return uint(value)
+	return uint64(value)
 }
 
 // extractMetricsMatch is a regular expression that maps metrics to it's subgroups.
@@ -64,25 +64,25 @@ var extractMetricsLogsMatch = extractMetricsMatch(regexp.MustCompile(`score=(\d+
 var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
 
 // extractMetrics extracts multiple assessment metrics from the given string according to a given regular expression.
-func extractMetrics(t *testing.T, regex extractMetricsMatch, data string) (assessments []metrics.Assessments, scores []uint) {
+func extractMetrics(t *testing.T, regex extractMetricsMatch, data string) (assessments []metrics.Assessments, scores []uint64) {
 	matches := (*regexp.Regexp)(regex).FindAllStringSubmatch(data, -1)
 
 	for _, match := range matches {
 		assessments = append(assessments, metrics.Assessments{
-			metrics.AssessmentKeyCoverageStatement: atoiUint(t, match[2]),
-			metrics.AssessmentKeyFilesExecuted:     atoiUint(t, match[3]),
-			metrics.AssessmentKeyProcessingTime:    atoiUint(t, match[4]),
-			metrics.AssessmentKeyResponseNoError:   atoiUint(t, match[5]),
-			metrics.AssessmentKeyResponseNoExcess:  atoiUint(t, match[6]),
-			metrics.AssessmentKeyResponseWithCode:  atoiUint(t, match[7]),
+			metrics.AssessmentKeyCoverageStatement: atoiUint64(t, match[2]),
+			metrics.AssessmentKeyFilesExecuted:     atoiUint64(t, match[3]),
+			metrics.AssessmentKeyProcessingTime:    atoiUint64(t, match[4]),
+			metrics.AssessmentKeyResponseNoError:   atoiUint64(t, match[5]),
+			metrics.AssessmentKeyResponseNoExcess:  atoiUint64(t, match[6]),
+			metrics.AssessmentKeyResponseWithCode:  atoiUint64(t, match[7]),
 		})
-		scores = append(scores, atoiUint(t, match[1]))
+		scores = append(scores, atoiUint64(t, match[1]))
 	}
 
 	return assessments, scores
 }
 
-func validateMetrics(t *testing.T, regex *regexp.Regexp, data string, expectedAssessments []metrics.Assessments, expectedScores []uint) (actual []metrics.Assessments) {
+func validateMetrics(t *testing.T, regex *regexp.Regexp, data string, expectedAssessments []metrics.Assessments, expectedScores []uint64) (actual []metrics.Assessments) {
 	require.Equal(t, len(expectedAssessments), len(expectedScores), "expected assessment and scores length")
 
 	actualAssessments, actualScores := extractMetrics(t, regex, data)
@@ -198,8 +198,8 @@ func TestEvaluateExecute(t *testing.T) {
 						metrics.AssessmentKeyResponseNoExcess:  1,
 						metrics.AssessmentKeyResponseWithCode:  1,
 					},
-				}, []uint{14})
-				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+				}, []uint64{14})
+				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -215,8 +215,8 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseNoExcess:  1,
 							metrics.AssessmentKeyResponseWithCode:  1,
 						},
-					}, []uint{14})
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+					}, []uint64{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 				},
 				"evaluation.log": nil,
 				"golang-summed.csv": func(t *testing.T, filePath, data string) {
@@ -228,8 +228,8 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseNoExcess:  1,
 							metrics.AssessmentKeyResponseWithCode:  1,
 						},
-					}, []uint{14})
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+					}, []uint64{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 				},
 				"models-summed.csv": func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
@@ -240,8 +240,8 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseNoExcess:  1,
 							metrics.AssessmentKeyResponseWithCode:  1,
 						},
-					}, []uint{14})
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+					}, []uint64{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 				},
 				"README.md": func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
@@ -265,8 +265,8 @@ func TestEvaluateExecute(t *testing.T) {
 						metrics.AssessmentKeyResponseNoExcess:  2,
 						metrics.AssessmentKeyResponseWithCode:  2,
 					},
-				}, []uint{28})
-				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+				}, []uint64{28})
+				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -289,9 +289,9 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseNoExcess:  1,
 							metrics.AssessmentKeyResponseWithCode:  1,
 						},
-					}, []uint{14, 14})
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
-					assert.Greater(t, actualAssessments[1][metrics.AssessmentKeyProcessingTime], uint(0))
+					}, []uint64{14, 14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
+					assert.Greater(t, actualAssessments[1][metrics.AssessmentKeyProcessingTime], uint64(0))
 				},
 				"golang-summed.csv": func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
@@ -302,8 +302,8 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseNoExcess:  1,
 							metrics.AssessmentKeyResponseWithCode:  1,
 						},
-					}, []uint{14})
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+					}, []uint64{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 				},
 				"java-summed.csv": func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
@@ -314,8 +314,8 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseNoExcess:  1,
 							metrics.AssessmentKeyResponseWithCode:  1,
 						},
-					}, []uint{14})
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+					}, []uint64{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 				},
 				"models-summed.csv": func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
@@ -326,8 +326,8 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseNoExcess:  2,
 							metrics.AssessmentKeyResponseWithCode:  2,
 						},
-					}, []uint{28})
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+					}, []uint64{28})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 				},
 				"evaluation.log": nil,
 				"README.md": func(t *testing.T, filePath, data string) {
@@ -359,8 +359,8 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseNoExcess:  1,
 							metrics.AssessmentKeyResponseWithCode:  1,
 						},
-					}, []uint{14})
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+					}, []uint64{14})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -376,8 +376,8 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseNoExcess:  1,
 								metrics.AssessmentKeyResponseWithCode:  1,
 							},
-						}, []uint{14})
-						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+						}, []uint64{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 					},
 					"evaluation.log": nil,
 					"golang-summed.csv": func(t *testing.T, filePath, data string) {
@@ -389,8 +389,8 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseNoExcess:  1,
 								metrics.AssessmentKeyResponseWithCode:  1,
 							},
-						}, []uint{14})
-						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+						}, []uint64{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 					},
 					"models-summed.csv": func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
@@ -401,8 +401,8 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseNoExcess:  1,
 								metrics.AssessmentKeyResponseWithCode:  1,
 							},
-						}, []uint{14})
-						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+						}, []uint64{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 					},
 					"README.md": func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
@@ -435,8 +435,8 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseNoExcess:  1,
 								metrics.AssessmentKeyResponseWithCode:  1,
 							},
-						}, []uint{14})
-						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+						}, []uint64{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 					},
 					"evaluation.log": nil,
 					"golang-summed.csv": func(t *testing.T, filePath, data string) {
@@ -448,8 +448,8 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseNoExcess:  1,
 								metrics.AssessmentKeyResponseWithCode:  1,
 							},
-						}, []uint{14})
-						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+						}, []uint64{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 					},
 					"models-summed.csv": func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
@@ -460,8 +460,8 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseNoExcess:  1,
 								metrics.AssessmentKeyResponseWithCode:  1,
 							},
-						}, []uint{14})
-						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+						}, []uint64{14})
+						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 					},
 					"README.md": func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
@@ -556,8 +556,8 @@ func TestEvaluateExecute(t *testing.T) {
 						metrics.AssessmentKeyResponseNoExcess:  3,
 						metrics.AssessmentKeyResponseWithCode:  3,
 					},
-				}, []uint{42})
-				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+				}, []uint64{42})
+				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -571,8 +571,8 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseNoExcess:  3,
 							metrics.AssessmentKeyResponseWithCode:  3,
 						},
-					}, []uint{42})
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint(0))
+					}, []uint64{42})
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
 				},
 				"evaluation.log": func(t *testing.T, filePath, data string) {
 					assert.Contains(t, data, "Run 1/3")

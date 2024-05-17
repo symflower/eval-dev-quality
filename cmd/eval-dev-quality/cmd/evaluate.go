@@ -317,7 +317,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 
-	totalScore := uint(0)
+	totalScore := uint64(0)
 	// Set the total score to the number of evaluated languages if we are just checking the "plain" repositories since there is only one task to solve per language.
 	isOnlyPlainRepositories := true
 	for repository := range commandRepositories {
@@ -328,7 +328,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 	}
 	if isOnlyPlainRepositories {
-		totalScore = uint(len(languagesSelected)) * command.Runs
+		totalScore = uint64(len(languagesSelected)) * uint64(command.Runs)
 	}
 
 	assessmentsPerModel := assessments.CollapseByModel()
@@ -347,7 +347,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		return err
 	}
 
-	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint) (err error) {
+	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint64) (err error) {
 		log.Printf("Evaluation score for %q (%q): %s", model.ID(), assessment.Category(totalScore).ID, assessment)
 
 		return nil
