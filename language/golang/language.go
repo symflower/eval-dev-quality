@@ -81,7 +81,7 @@ var languageGoCoverageMatch = regexp.MustCompile(`(?m)^coverage: (\d+\.?\d+)% of
 var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statements\]$`)
 
 // Execute invokes the language specific testing on the given repository.
-func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
+func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage uint64, err error) {
 	commandOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "test",
@@ -114,10 +114,11 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 	if mc == nil {
 		return 0.0, pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("could not find coverage report"), commandOutput))
 	}
-	coverage, err = strconv.ParseFloat(mc[1], 64)
+	c, err := strconv.ParseFloat(mc[1], 64)
 	if err != nil {
 		return 0.0, pkgerrors.WithStack(err)
 	}
+	coverage = uint64(c / 10.0)
 
 	return coverage, nil
 }

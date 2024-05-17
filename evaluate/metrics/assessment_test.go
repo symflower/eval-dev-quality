@@ -144,12 +144,12 @@ func TestAssessmentString(t *testing.T) {
 		Name: "Non-empty Metrics",
 
 		Assessment: Assessments{
-			AssessmentKeyCoverageStatement: 1,
-			AssessmentKeyFilesExecuted:     2,
-			AssessmentKeyResponseNoError:   3,
-			AssessmentKeyResponseNoExcess:  4,
-			AssessmentKeyResponseWithCode:  5,
-			AssessmentKeyProcessingTime:    200,
+			AssessmentKeyCoverage:         1,
+			AssessmentKeyFilesExecuted:    2,
+			AssessmentKeyResponseNoError:  3,
+			AssessmentKeyResponseNoExcess: 4,
+			AssessmentKeyResponseWithCode: 5,
+			AssessmentKeyProcessingTime:   200,
 		},
 
 		ExpectedString: "score=15, coverage-statement=1, files-executed=2, processing-time=200, response-no-error=3, response-no-excess=4, response-with-code=5",
@@ -262,9 +262,9 @@ func TestAssessmentsScore(t *testing.T) {
 		Name: "Values Assessment",
 
 		Assessments: Assessments{
-			AssessmentKeyFilesExecuted:     5,
-			AssessmentKeyCoverageStatement: 4,
-			AssessmentKeyProcessingTime:    200,
+			AssessmentKeyFilesExecuted:  5,
+			AssessmentKeyCoverage:       4,
+			AssessmentKeyProcessingTime: 200,
 		},
 
 		ExpectedScore: uint64(9),

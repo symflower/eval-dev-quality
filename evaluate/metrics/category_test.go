@@ -94,10 +94,10 @@ func TestAssessmentsCategory(t *testing.T) {
 		Name: "Full Statement Coverage",
 
 		Assessments: Assessments{
-			AssessmentKeyResponseNoError:   1,
-			AssessmentKeyResponseWithCode:  1,
-			AssessmentKeyFilesExecuted:     1,
-			AssessmentKeyCoverageStatement: 10,
+			AssessmentKeyResponseNoError:  1,
+			AssessmentKeyResponseWithCode: 1,
+			AssessmentKeyFilesExecuted:    1,
+			AssessmentKeyCoverage:         10,
 		},
 		Total: 1,
 
@@ -108,11 +108,11 @@ func TestAssessmentsCategory(t *testing.T) {
 		Name: "No Excess",
 
 		Assessments: Assessments{
-			AssessmentKeyResponseNoError:   1,
-			AssessmentKeyResponseWithCode:  1,
-			AssessmentKeyFilesExecuted:     1,
-			AssessmentKeyCoverageStatement: 10,
-			AssessmentKeyResponseNoExcess:  1,
+			AssessmentKeyResponseNoError:  1,
+			AssessmentKeyResponseWithCode: 1,
+			AssessmentKeyFilesExecuted:    1,
+			AssessmentKeyCoverage:         10,
+			AssessmentKeyResponseNoExcess: 1,
 		},
 		Total: 1,
 
@@ -123,11 +123,11 @@ func TestAssessmentsCategory(t *testing.T) {
 		Name: "Inconsistent",
 
 		Assessments: Assessments{
-			AssessmentKeyResponseNoError:   2,
-			AssessmentKeyResponseWithCode:  2,
-			AssessmentKeyFilesExecuted:     2,
-			AssessmentKeyCoverageStatement: 1,
-			AssessmentKeyResponseNoExcess:  0,
+			AssessmentKeyResponseNoError:  2,
+			AssessmentKeyResponseWithCode: 2,
+			AssessmentKeyFilesExecuted:    2,
+			AssessmentKeyCoverage:         1,
+			AssessmentKeyResponseNoExcess: 0,
 		},
 		Total: 2,
 

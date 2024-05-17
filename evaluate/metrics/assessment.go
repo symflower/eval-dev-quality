@@ -16,19 +16,19 @@ var (
 	// AllAssessmentKeysStrings returns all registered assessment keys as strings.
 	AllAssessmentKeysStrings []string
 
-	// pointsPerAssessment holds the points awarded for a specific assessment.
-	pointsPerAssessment = map[AssessmentKey]uint64{}
+	// multiplierPerAssessment holds the multipliers awarded for a specific assessment.
+	multiplierPerAssessment = map[AssessmentKey]uint64{}
 )
 
 // RegisterAssessmentKey registers a new assessment key.
-// If the points for this assessment type are zero, it is ignored for the score computation.
-func RegisterAssessmentKey(key string, points uint64) AssessmentKey {
+// If the multiplier for this assessment type is zero, it is ignored for the score computation.
+func RegisterAssessmentKey(key string, multiplier uint64) AssessmentKey {
 	assessment := AssessmentKey(key)
 	i := sort.SearchStrings(AllAssessmentKeysStrings, key)
 
 	allAssessmentKeys = slices.Insert(allAssessmentKeys, i, assessment)
 	AllAssessmentKeysStrings = slices.Insert(AllAssessmentKeysStrings, i, key)
-	pointsPerAssessment[assessment] = points
+	multiplierPerAssessment[assessment] = multiplier
 
 	return assessment
 }
@@ -39,8 +39,8 @@ var (
 	// AssessmentKeyProcessingTime holds the time in milliseconds that it took to complete the task.
 	AssessmentKeyProcessingTime = RegisterAssessmentKey("processing-time", 0)
 
-	// AssessmentKeyCoverageStatement counts the cases where 100% coverage was reached.
-	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement", 10)
+	// AssessmentKeyCoverage counts execution coverage objects.
+	AssessmentKeyCoverage = RegisterAssessmentKey("coverage", 2)
 
 	// AssessmentKeyResponseNoError indicates that a model responded without error.
 	AssessmentKeyResponseNoError = RegisterAssessmentKey("response-no-error", 1)
@@ -101,7 +101,7 @@ func (a Assessments) Score() (score uint64) {
 	}
 
 	for key, value := range a {
-		if pointsPerAssessment[key] != 0 {
+		if multiplierPerAssessment[key] != 0 {
 			score += value
 		}
 	}
@@ -111,7 +111,12 @@ func (a Assessments) Score() (score uint64) {
 
 // Award yields the score points defined for the given key.
 func (a Assessments) Award(key AssessmentKey) {
-	a[key] += pointsPerAssessment[key]
+	a[key] += multiplierPerAssessment[key]
+}
+
+// Award yields multiple score points defined for the given key.
+func (a Assessments) AwardPoints(key AssessmentKey, count uint64) {
+	a[key] += multiplierPerAssessment[key] * count
 }
 
 // String returns a string representation of the metrics.
