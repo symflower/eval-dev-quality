@@ -1,13 +1,16 @@
 package tools
 
 import (
+	"context"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 func TestOllamaInstall(t *testing.T) {
@@ -38,4 +41,59 @@ func TestStartOllama(t *testing.T) {
 
 	time.Sleep(3 * time.Second)
 	assert.NoError(t, shutdown())
+}
+
+func TestOllamaLoading(t *testing.T) {
+	if !osutil.IsLinux() {
+		t.Skipf("Installation of Ollama is not supported on this OS")
+	}
+
+	logBuffer, log := log.Buffer()
+	defer func() {
+		if t.Failed() {
+			t.Logf("Log output:\n%s", logBuffer.String())
+		}
+	}()
+
+	url := "http://127.0.0.1:11436" // Use a unique URL for these tests, to not cache or get in the way of already running instances.
+	shutdown, err := OllamaStart(log, OllamaPath, url)
+	require.NoError(t, err)
+	defer func() {
+		require.NoError(t, shutdown())
+	}()
+	require.NoError(t, OllamaPull(log, OllamaPath, url, "qwen:0.5b"))
+
+	t.Run("Load Model", func(t *testing.T) {
+		assert.NoError(t, OllamaLoad(url, "qwen:0.5b"))
+
+		output, err := util.CommandWithResult(context.Background(), log, &util.Command{
+			Command: []string{
+				OllamaPath,
+				"ps",
+			},
+			Env: map[string]string{
+				"OLLAMA_HOST": url,
+			},
+		})
+		assert.NoError(t, err)
+		assert.Contains(t, output, "qwen:0.5b")
+	})
+	t.Run("unload Model", func(t *testing.T) {
+		assert.NoError(t, OllamaUnload(url, "qwen:0.5b"))
+
+		// Give it a few seconds for the unloading completes.
+		time.Sleep(2 * time.Second)
+
+		output, err := util.CommandWithResult(context.Background(), log, &util.Command{
+			Command: []string{
+				OllamaPath,
+				"ps",
+			},
+			Env: map[string]string{
+				"OLLAMA_HOST": url,
+			},
+		})
+		assert.NoError(t, err)
+		assert.NotContains(t, output, "qwen:0.5b")
+	})
 }

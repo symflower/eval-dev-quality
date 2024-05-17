@@ -125,3 +125,15 @@ var _ provider.Service = (*Provider)(nil)
 func (p *Provider) Start(logger *log.Logger) (shutdown func() (err error), err error) {
 	return tools.OllamaStart(logger, p.binaryPath, p.url)
 }
+
+var _ provider.Loader = (*Provider)(nil)
+
+// Load loads the given model.
+func (p *Provider) Load(modelIdentifier string) error {
+	return tools.OllamaLoad(p.url, strings.TrimPrefix(modelIdentifier, p.ID()+provider.ProviderModelSeparator))
+}
+
+// Unload unloads the given model.
+func (p *Provider) Unload(modelIdentifier string) error {
+	return tools.OllamaUnload(p.url, strings.TrimPrefix(modelIdentifier, p.ID()+provider.ProviderModelSeparator))
+}

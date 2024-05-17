@@ -8,6 +8,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	evallanguage "github.com/symflower/eval-dev-quality/language"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
+	"github.com/symflower/eval-dev-quality/provider"
 )
 
 // Context holds an evaluation context.
@@ -20,6 +21,8 @@ type Context struct {
 
 	// Models determines which models should be used for the evaluation, or empty if all models should be used.
 	Models []evalmodel.Model
+	// ProviderForModel holds the models and their associated provider.
+	ProviderForModel map[evalmodel.Model]provider.Provider
 	// QueryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	QueryAttempts uint
 
@@ -101,27 +104,29 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 						r.SetQueryAttempts(ctx.QueryAttempts)
 					}
 
-					for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
-						if err := ResetTemporaryRepository(ctx.Log, temporaryRepositoryPath); err != nil {
-							ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
-						}
+					withLoadedModel(ctx.Log, model, ctx.ProviderForModel[model], func() {
+						for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
+							if err := ResetTemporaryRepository(ctx.Log, temporaryRepositoryPath); err != nil {
+								ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+							}
 
-						if ctx.Runs > 1 && ctx.RunsSequential {
-							ctx.Log.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
-						}
+							if ctx.Runs > 1 && ctx.RunsSequential {
+								ctx.Log.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+							}
 
-						assessment, ps, err := Repository(ctx.Log, ctx.ResultPath, model, language, temporaryRepositoryPath, repositoryPath)
-						assessments[model][language][repositoryPath].Add(assessment)
-						if err != nil {
-							ps = append(ps, err)
+							assessment, ps, err := Repository(ctx.Log, ctx.ResultPath, model, language, temporaryRepositoryPath, repositoryPath)
+							assessments[model][language][repositoryPath].Add(assessment)
+							if err != nil {
+								ps = append(ps, err)
+							}
+							if len(ps) > 0 {
+								ctx.Log.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
+								problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+							} else {
+								modelSucceededBasicChecksOfLanguage[model][language] = true
+							}
 						}
-						if len(ps) > 0 {
-							ctx.Log.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
-							problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
-						} else {
-							modelSucceededBasicChecksOfLanguage[model][language] = true
-						}
-					}
+					})
 				}
 			}
 		}
@@ -189,23 +194,24 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 
 						continue
 					}
+					withLoadedModel(ctx.Log, model, ctx.ProviderForModel[model], func() {
+						for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
+							if ctx.Runs > 1 && ctx.RunsSequential {
+								ctx.Log.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+							}
 
-					for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
-						if ctx.Runs > 1 && ctx.RunsSequential {
-							ctx.Log.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
-						}
+							if err := ResetTemporaryRepository(ctx.Log, temporaryRepositoryPath); err != nil {
+								ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+							}
 
-						if err := ResetTemporaryRepository(ctx.Log, temporaryRepositoryPath); err != nil {
-							ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+							assessment, ps, err := Repository(ctx.Log, ctx.ResultPath, model, language, temporaryRepositoryPath, repositoryPath)
+							assessments[model][language][repositoryPath].Add(assessment)
+							problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+							if err != nil {
+								ctx.Log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
+							}
 						}
-
-						assessment, ps, err := Repository(ctx.Log, ctx.ResultPath, model, language, temporaryRepositoryPath, repositoryPath)
-						assessments[model][language][repositoryPath].Add(assessment)
-						problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
-						if err != nil {
-							ctx.Log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
-						}
-					}
+					})
 				}
 			}
 		}
@@ -225,4 +231,22 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 	}
 
 	return assessments, totalScore
+}
+
+// withLoadedModel loads the model for the duration of the given task if supported by the model's provider.
+func withLoadedModel(log *log.Logger, model evalmodel.Model, modelProvider provider.Provider, task func()) {
+	if loader, ok := modelProvider.(provider.Loader); ok {
+		log.Printf("preloading model %q", model.ID())
+		if err := loader.Load(model.ID()); err != nil {
+			log.Panicf("ERROR: could not load model %q with provider %q", model.ID(), modelProvider.ID())
+		}
+		defer func() {
+			log.Printf("unloading model %q", model.ID())
+			if err := loader.Unload(model.ID()); err != nil {
+				log.Panicf("ERROR: could not unload model %q with provider %q", model.ID(), modelProvider.ID())
+			}
+		}()
+	}
+
+	task()
 }

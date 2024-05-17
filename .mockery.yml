@@ -15,5 +15,6 @@ packages:
       Model:
   github.com/symflower/eval-dev-quality/provider:
     interfaces:
+      Loader:
       Provider:
       Query:

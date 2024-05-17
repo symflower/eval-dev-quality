@@ -517,6 +517,8 @@ func TestEvaluateExecute(t *testing.T) {
 							// Since the model is non-deterministic, we can only assert that the model did at least not error.
 							assert.Contains(t, data, `Evaluation score for "ollama/qwen:0.5b"`)
 							assert.Contains(t, data, "response-no-error=1")
+							assert.Contains(t, data, "preloading model")
+							assert.Contains(t, data, "unloading model")
 						},
 						"golang-summed.csv": nil,
 						"models-summed.csv": nil,

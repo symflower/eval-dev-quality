@@ -166,6 +166,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 	// Gather models.
 	modelsSelected := map[string]model.Model{}
+	providerForModel := map[model.Model]provider.Provider{}
 	{
 		models := map[string]model.Model{}
 		for _, p := range provider.Providers {
@@ -204,6 +205,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 			for _, m := range ms {
 				models[m.ID()] = m
+				providerForModel[m] = p
 			}
 		}
 		modelIDs := maps.Keys(models)
@@ -249,8 +251,9 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 		Languages: ls,
 
-		Models:        ms,
-		QueryAttempts: command.QueryAttempts,
+		Models:           ms,
+		ProviderForModel: providerForModel,
+		QueryAttempts:    command.QueryAttempts,
 
 		RepositoryPaths: command.Repositories,
 		ResultPath:      command.ResultPath,
