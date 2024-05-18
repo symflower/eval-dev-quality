@@ -103,11 +103,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		}
 
 		if command.Attempts == 0 {
-			log.Panicf("number of configured attempts is 0")
+			log.Panicf("number of configured attempts must be greater than zero")
 		}
 
 		if command.Runs == 0 {
-			log.Panicf("number of configured runs is 0")
+			log.Panicf("number of configured runs must be greater than zero")
 		}
 	}
 
