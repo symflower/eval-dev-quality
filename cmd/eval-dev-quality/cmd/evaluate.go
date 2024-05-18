@@ -47,7 +47,7 @@ type Evaluate struct {
 	// ResultPath holds the directory path where results should be written to.
 	ResultPath string `long:"result-path" description:"Directory path where results should be written to. The placeholder \"%datetime%\" can be used for the current date and time." default:"evaluation-%datetime%"`
 	// Attempts holds the number of attempts to perform when a model errors in the process of solving a task.
-	Attempts uint `long:"attempts" description:"Number of attempts to perform when a model errors in the process of solving a task." default:"2"`
+	Attempts uint `long:"attempts" description:"Number of attempts to perform when a model errors in the process of solving a task." default:"3"`
 	// Runs holds the number of runs to perform.
 	Runs uint `long:"runs" description:"Number of runs to perform." default:"1"`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
