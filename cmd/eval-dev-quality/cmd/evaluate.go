@@ -40,21 +40,23 @@ type Evaluate struct {
 
 	// Languages determines which language should be used for the evaluation, or empty if all languages should be used.
 	Languages []string `long:"language" description:"Evaluate with this language. By default all languages are used."`
+
 	// Models determines which models should be used for the evaluation, or empty if all models should be used.
 	Models []string `long:"model" description:"Evaluate with this model. By default all models are used."`
+	// ProviderTokens holds all API tokens for the providers.
+	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token,...')." env:"PROVIDER_TOKEN"`
+	// QueryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
+	QueryAttempts uint `long:"attempts" description:"Number of query attempts to perform when a model request errors in the process of solving a task." default:"3"`
+
 	// Repositories determines which repository should be used for the evaluation, or empty if all repositories should be used.
 	Repositories []string `long:"repository" description:"Evaluate with this repository. By default all repositories are used."`
 	// ResultPath holds the directory path where results should be written to.
 	ResultPath string `long:"result-path" description:"Directory path where results should be written to. The placeholder \"%datetime%\" can be used for the current date and time." default:"evaluation-%datetime%"`
-	// Attempts holds the number of attempts to perform when a model errors in the process of solving a task.
-	Attempts uint `long:"attempts" description:"Number of attempts to perform when a model errors in the process of solving a task." default:"3"`
-	// Runs holds the number of runs to perform.
-	Runs uint `long:"runs" description:"Number of runs to perform." default:"1"`
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
 
-	// ProviderTokens holds all API tokens for the providers.
-	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token,...')." env:"PROVIDER_TOKEN"`
+	// Runs holds the number of runs to perform.
+	Runs uint `long:"runs" description:"Number of runs to perform." default:"1"`
 
 	// logger holds the logger of the command.
 	logger *log.Logger
@@ -102,8 +104,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 			tools.SymflowerPath = command.SymflowerBinaryPath
 		}
 
-		if command.Attempts == 0 {
-			log.Panicf("number of configured attempts must be greater than zero")
+		if command.QueryAttempts == 0 {
+			log.Panicf("number of configured query attempts must be greater than zero")
 		}
 
 		if command.Runs == 0 {
@@ -202,8 +204,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 			}
 
 			for _, m := range ms {
-				if r, ok := m.(model.SetAttempts); ok {
-					r.SetAttempts(command.Attempts)
+				if r, ok := m.(model.SetQueryAttempts); ok {
+					r.SetQueryAttempts(command.QueryAttempts)
 				}
 				models[m.ID()] = m
 			}
