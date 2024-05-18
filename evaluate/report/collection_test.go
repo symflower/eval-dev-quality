@@ -139,7 +139,7 @@ func TestWalkByScore(t *testing.T) {
 		AssessmentPerModel AssessmentPerModel
 
 		ExpectedModelOrder []model.Model
-		ExpectedScoreOrder []uint
+		ExpectedScoreOrder []uint64
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -148,8 +148,8 @@ func TestWalkByScore(t *testing.T) {
 
 			actualModelOrder := make([]model.Model, 0, len(tc.ExpectedModelOrder))
 			actualAssessmentOrder := make([]metrics.Assessments, 0, len(tc.ExpectedModelOrder))
-			actualScoreOrder := make([]uint, 0, len(tc.ExpectedScoreOrder))
-			assert.NoError(t, tc.AssessmentPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint) (err error) {
+			actualScoreOrder := make([]uint64, 0, len(tc.ExpectedScoreOrder))
+			assert.NoError(t, tc.AssessmentPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint64) (err error) {
 				actualModelOrder = append(actualModelOrder, model)
 				actualAssessmentOrder = append(actualAssessmentOrder, assessment)
 				actualScoreOrder = append(actualScoreOrder, score)
@@ -175,7 +175,7 @@ func TestWalkByScore(t *testing.T) {
 		AssessmentPerModel: AssessmentPerModel{},
 
 		ExpectedModelOrder: []model.Model{},
-		ExpectedScoreOrder: []uint{},
+		ExpectedScoreOrder: []uint64{},
 	})
 
 	validate(t, &testCase{
@@ -190,7 +190,7 @@ func TestWalkByScore(t *testing.T) {
 		ExpectedModelOrder: []model.Model{
 			modelA,
 		},
-		ExpectedScoreOrder: []uint{
+		ExpectedScoreOrder: []uint64{
 			1,
 		},
 	})
@@ -215,7 +215,7 @@ func TestWalkByScore(t *testing.T) {
 			modelB,
 			modelC,
 		},
-		ExpectedScoreOrder: []uint{
+		ExpectedScoreOrder: []uint64{
 			1,
 			2,
 			3,

@@ -76,7 +76,7 @@ var (
 // Category infers a categorical ranking of a model based on assessment values.
 // A models overall category corresponds to the criterion where the model was consistently able to receive "total" amount of points. I.e. if there were 3 tasks in total and a model was able to produce executing code for all tasks, but only in one case the coverage goal was reached, then the category is only "CodeExecuted" because the coverage goal was not reached consistently.
 // The returned category is never "nil".
-func (a Assessments) Category(totalTasks uint) *AssessmentCategory {
+func (a Assessments) Category(totalTasks uint64) *AssessmentCategory {
 	if totalTasks == 0 {
 		return AssessmentCategoryUnknown
 	}

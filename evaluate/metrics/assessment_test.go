@@ -37,11 +37,11 @@ func TestAssessmentsAdd(t *testing.T) {
 		Name: "Non existing key",
 
 		Assessments: NewAssessments(),
-		X: map[AssessmentKey]uint{
+		X: map[AssessmentKey]uint64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
 
-		ExpectedAssessments: map[AssessmentKey]uint{
+		ExpectedAssessments: map[AssessmentKey]uint64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
 	})
@@ -49,14 +49,14 @@ func TestAssessmentsAdd(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Existing key",
 
-		Assessments: map[AssessmentKey]uint{
+		Assessments: map[AssessmentKey]uint64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
-		X: map[AssessmentKey]uint{
+		X: map[AssessmentKey]uint64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
 
-		ExpectedAssessments: map[AssessmentKey]uint{
+		ExpectedAssessments: map[AssessmentKey]uint64{
 			AssessmentKeyResponseNoExcess: 2,
 		},
 	})
@@ -90,11 +90,11 @@ func TestAssessmentsMerge(t *testing.T) {
 		Name: "Non existing key",
 
 		A: NewAssessments(),
-		B: map[AssessmentKey]uint{
+		B: map[AssessmentKey]uint64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
 
-		ExpectedC: map[AssessmentKey]uint{
+		ExpectedC: map[AssessmentKey]uint64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
 	})
@@ -102,14 +102,14 @@ func TestAssessmentsMerge(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Existing key",
 
-		A: map[AssessmentKey]uint{
+		A: map[AssessmentKey]uint64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
-		B: map[AssessmentKey]uint{
+		B: map[AssessmentKey]uint64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
 
-		ExpectedC: map[AssessmentKey]uint{
+		ExpectedC: map[AssessmentKey]uint64{
 			AssessmentKeyResponseNoExcess: 2,
 		},
 	})
@@ -239,7 +239,7 @@ func TestAssessmentsScore(t *testing.T) {
 
 		Assessments Assessments
 
-		ExpectedScore uint
+		ExpectedScore uint64
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -255,7 +255,7 @@ func TestAssessmentsScore(t *testing.T) {
 
 		Assessments: NewAssessments(),
 
-		ExpectedScore: 0,
+		ExpectedScore: uint64(0),
 	})
 
 	validate(t, &testCase{
@@ -267,6 +267,6 @@ func TestAssessmentsScore(t *testing.T) {
 			AssessmentKeyProcessingTime:    200,
 		},
 
-		ExpectedScore: 9,
+		ExpectedScore: uint64(9),
 	})
 }
