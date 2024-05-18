@@ -19,6 +19,7 @@
 					<generateJson>false</generateJson>
 					<generatePdf>false</generatePdf>
 					<generateXml>true</generateXml>
+					<includeFailedTestCoverage>true</includeFailedTestCoverage>
 					<showInnerFunctions>true</showInnerFunctions>
 					<showLambdaFunctions>true</showLambdaFunctions>
 					<singleCloverDatabase>true</singleCloverDatabase>
