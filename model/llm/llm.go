@@ -26,8 +26,9 @@ type Model struct {
 	provider provider.Query
 	// model holds the identifier for the LLM model.
 	model string
-	// attempts holds the number of attempts to perform when a model errors.
-	attempts uint
+
+	// queryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
+	queryAttempts uint
 }
 
 // NewModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
@@ -35,7 +36,8 @@ func NewModel(provider provider.Query, modelIdentifier string) model.Model {
 	return &Model{
 		provider: provider,
 		model:    modelIdentifier,
-		attempts: 1,
+
+		queryAttempts: 1,
 	}
 }
 
@@ -118,11 +120,11 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 
 			return nil
 		},
-		retry.Attempts(m.attempts),
+		retry.Attempts(m.queryAttempts),
 		retry.Delay(2*time.Second),
 		retry.LastErrorOnly(true),
 		retry.OnRetry(func(n uint, err error) {
-			logger.Printf("Attempt %d/%d: %s", n+1, m.attempts, err)
+			logger.Printf("Attempt %d/%d: %s", n+1, m.queryAttempts, err)
 		}),
 		retry.RetryIf(func(err error) bool {
 			return true
@@ -148,7 +150,7 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	return assessment, nil
 }
 
-// SetAttempts sets the number of attempts to perform when a model errors in the process of solving a task.
-func (m *Model) SetAttempts(retries uint) {
-	m.attempts = retries
+// SetQueryAttempts sets the number of query attempts to perform when a model request errors in the process of solving a task.
+func (m *Model) SetQueryAttempts(attempts uint) {
+	m.queryAttempts = attempts
 }

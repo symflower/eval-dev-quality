@@ -15,8 +15,8 @@ type Model interface {
 	GenerateTestsForFile(logger *log.Logger, language language.Language, repositoryPath string, filePath string) (assessments metrics.Assessments, err error)
 }
 
-// SetAttempts defines a model that can set the number of attempts when errors in the process of solving a task.
-type SetAttempts interface {
-	// SetAttempts sets the number of attempts to perform when a model errors in the process of solving a task.
-	SetAttempts(retries uint)
+// SetQueryAttempts defines a model that can set the number of query attempts when a model request errors in the process of solving a task.
+type SetQueryAttempts interface {
+	// SetQueryAttempts sets the number of query attempts to perform when a model request errors in the process of solving a task.
+	SetQueryAttempts(attempts uint)
 }
