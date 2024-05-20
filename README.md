@@ -128,7 +128,7 @@ DONE 1 tests in 0.348s
 Total coverage 100.000000%
 2024/05/02 10:02:09 Evaluated model "openrouter/meta-llama/llama-3-70b-instruct" using language "java" and repository "java/plain": encountered 0 problems: []
 2024/05/02 10:02:09 Evaluating models and languages
-2024/05/02 10:02:09 Evaluation score for "openrouter/meta-llama/llama-3-70b-instruct" ("code-no-excess"): score=12, coverage-statement=2, files-executed=2, response-no-error=2, response-no-excess=2, response-not-empty=2, response-with-code=2
+2024/05/02 10:02:09 Evaluation score for "openrouter/meta-llama/llama-3-70b-instruct" ("code-no-excess"): score=12, coverage=2, files-executed=2, response-no-error=2, response-no-excess=2, response-not-empty=2, response-with-code=2
 ````
 
 </details>
@@ -139,8 +139,8 @@ The execution by default also creates an report file `REPORT.md` that contains a
 
 With `DevQualityEval` we answer answer the following questions:
 
-- Which LLMs can solve software development tasks?
-- How good is the quality of their results?
+-   Which LLMs can solve software development tasks?
+-   How good is the quality of their results?
 
 Programming is a non-trivial profession. Even writing tests for an empty function requires substantial knowledge of the used programming language and its conventions. We already investigated this challenge and how many LLMs failed at it in our [first `DevQualityEval` report](https://symflower.com/en/company/blog/2024/can-ai-test-a-go-function-that-does-nothing/#why-evaluate-an-empty-function). This highlights the need for a **benchmarking framework for evaluating AI performance on software development task solving**.
 
@@ -165,21 +165,21 @@ On a high level, `DevQualityEval` asks the model to produce tests for an example
 
 Currently, the following points are awarded for this task:
 
-- `response-no-error`: `+1` if the response did not encounter an error
-- `response-not-empty`: `+1` if the response is not empty
-- `response-with-code`: `+1` if the response contained source code
-- `compiled`: `+1` if the source code compiled
-- `statement-coverage-reached`: `+10` if the generated tests reach 100% coverage
-- `no-excess`: `+1` if the response did not contain more content than requested
+-   `response-no-error`: `+1` if the response did not encounter an error
+-   `response-not-empty`: `+1` if the response is not empty
+-   `response-with-code`: `+1` if the response contained source code
+-   `compiled`: `+1` if the source code compiled
+-   `statement-coverage-reached`: `+10` if the generated tests reach 100% coverage
+-   `no-excess`: `+1` if the response did not contain more content than requested
 
 #### Cases
 
 Currently, the following cases are available for this task:
 
-- Java
-  - `plain/src/main/java/plain.java`: An empty function that does nothing.
-- Go
-  - `plain/plain.go`: An empty function that does nothing.
+-   Java
+    -   `plain/src/main/java/plain.java`: An empty function that does nothing.
+-   Go
+    -   `plain/plain.go`: An empty function that does nothing.
 
 ## Results
 

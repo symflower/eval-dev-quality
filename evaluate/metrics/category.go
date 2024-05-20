@@ -82,15 +82,15 @@ func (a Assessments) Category(totalTasks uint64) *AssessmentCategory {
 	}
 
 	switch {
-	case a[AssessmentKeyResponseNoError] != totalTasks*pointsPerAssessment[AssessmentKeyResponseNoError]:
+	case a[AssessmentKeyResponseNoError] != totalTasks*multiplierPerAssessment[AssessmentKeyResponseNoError]:
 		return AssessmentCategoryResponseError
-	case a[AssessmentKeyResponseWithCode] != totalTasks*pointsPerAssessment[AssessmentKeyResponseWithCode] && a[AssessmentKeyFilesExecuted] != totalTasks*pointsPerAssessment[AssessmentKeyFilesExecuted]: // TODO We cannot always detect yet if a model response contains source code, so ensure we don't categorize into "no code" if the code actually ran successfully all the time. https://github.com/symflower/eval-dev-quality/issues/43
+	case a[AssessmentKeyResponseWithCode] != totalTasks*multiplierPerAssessment[AssessmentKeyResponseWithCode] && a[AssessmentKeyFilesExecuted] != totalTasks*multiplierPerAssessment[AssessmentKeyFilesExecuted]: // TODO We cannot always detect yet if a model response contains source code, so ensure we don't categorize into "no code" if the code actually ran successfully all the time. https://github.com/symflower/eval-dev-quality/issues/43
 		return AssessmentCategoryResponseNoCode
-	case a[AssessmentKeyFilesExecuted] != totalTasks*pointsPerAssessment[AssessmentKeyFilesExecuted]:
+	case a[AssessmentKeyFilesExecuted] != totalTasks*multiplierPerAssessment[AssessmentKeyFilesExecuted]:
 		return AssessmentCategoryCodeInvalid
-	case a[AssessmentKeyCoverageStatement] != totalTasks*pointsPerAssessment[AssessmentKeyCoverageStatement]:
+	case a[AssessmentKeyCoverage] != totalTasks*multiplierPerAssessment[AssessmentKeyCoverage]:
 		return AssessmentCategoryCodeExecuted
-	case a[AssessmentKeyResponseNoExcess] != totalTasks*pointsPerAssessment[AssessmentKeyResponseNoExcess]:
+	case a[AssessmentKeyResponseNoExcess] != totalTasks*multiplierPerAssessment[AssessmentKeyResponseNoExcess]:
 		return AssessmentCategoryCodeCoverageStatementReached
 	default:
 		return AssessmentCategoryCodeNoExcess

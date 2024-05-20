@@ -41,7 +41,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 		},
 
 		ExpectedString: `
-			model,language,repository,score,coverage-statement,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+			model,language,repository,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
 			some-model,some-language,some-repository,0,0,0,0,0,0,0,0,0
 		`,
 	})
@@ -54,7 +54,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 					"some-repository": metrics.Assessments{
 						metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 50,
 						metrics.AssessmentKeyResponseCharacterCount:             100,
-						metrics.AssessmentKeyCoverageStatement:                  1,
+						metrics.AssessmentKeyCoverage:                           1,
 						metrics.AssessmentKeyFilesExecuted:                      2,
 						metrics.AssessmentKeyResponseNoError:                    3,
 						metrics.AssessmentKeyResponseNoExcess:                   4,
@@ -68,7 +68,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 					"some-repository": metrics.Assessments{
 						metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 100,
 						metrics.AssessmentKeyResponseCharacterCount:             200,
-						metrics.AssessmentKeyCoverageStatement:                  1,
+						metrics.AssessmentKeyCoverage:                           1,
 						metrics.AssessmentKeyFilesExecuted:                      2,
 						metrics.AssessmentKeyResponseNoError:                    3,
 						metrics.AssessmentKeyResponseNoExcess:                   4,
@@ -80,7 +80,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 		},
 
 		ExpectedString: `
-			model,language,repository,score,coverage-statement,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+			model,language,repository,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
 			some-model-a,some-language,some-repository,15,1,2,50,200,100,3,4,5
 			some-model-b,some-language,some-repository,15,1,2,100,300,200,3,4,5
 		`,
@@ -113,7 +113,7 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 		},
 
 		ExpectedString: `
-			model,score,coverage-statement,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+			model,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
 			some-model,0,0,0,0,0,0,0,0,0
 		`,
 	})
@@ -124,7 +124,7 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 			modeltesting.NewMockModelNamed(t, "some-model-a"): {
 				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 50,
 				metrics.AssessmentKeyResponseCharacterCount:             100,
-				metrics.AssessmentKeyCoverageStatement:                  1,
+				metrics.AssessmentKeyCoverage:                           1,
 				metrics.AssessmentKeyFilesExecuted:                      2,
 				metrics.AssessmentKeyResponseNoError:                    3,
 				metrics.AssessmentKeyResponseNoExcess:                   4,
@@ -134,7 +134,7 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 			modeltesting.NewMockModelNamed(t, "some-model-b"): {
 				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 100,
 				metrics.AssessmentKeyResponseCharacterCount:             200,
-				metrics.AssessmentKeyCoverageStatement:                  1,
+				metrics.AssessmentKeyCoverage:                           1,
 				metrics.AssessmentKeyFilesExecuted:                      2,
 				metrics.AssessmentKeyResponseNoError:                    3,
 				metrics.AssessmentKeyResponseNoExcess:                   4,
@@ -144,7 +144,7 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 		},
 
 		ExpectedString: `
-			model,score,coverage-statement,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+			model,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
 			some-model-a,15,1,2,50,200,100,3,4,5
 			some-model-b,15,1,2,100,300,200,3,4,5
 		`,

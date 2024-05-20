@@ -60,10 +60,9 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 
 			continue
 		}
+		log.Printf("Executes tests with %d coverage objects", coverage)
 		repositoryAssessment.Award(metrics.AssessmentKeyFilesExecuted)
-		if coverage == 100 {
-			repositoryAssessment.Award(metrics.AssessmentKeyCoverageStatement)
-		}
+		repositoryAssessment.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
 	}
 
 	return repositoryAssessment, problems, nil

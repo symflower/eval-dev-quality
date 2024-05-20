@@ -28,7 +28,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		FilePath         string
 
 		ExpectedAssessment metrics.Assessments
-		ExpectedCoverage   float64
+		ExpectedCoverage   uint64
 		ExpectedError      error
 		ExpectedErrorText  string
 	}
@@ -82,7 +82,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			metrics.AssessmentKeyResponseNoExcess:                   1,
 			metrics.AssessmentKeyResponseWithCode:                   1,
 		},
-		ExpectedCoverage: 100,
+		ExpectedCoverage: 1,
 	})
 	validate(t, &testCase{
 		Name: "Java",
@@ -98,7 +98,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			metrics.AssessmentKeyResponseNoExcess:                   1,
 			metrics.AssessmentKeyResponseWithCode:                   1,
 		},
-		ExpectedCoverage: 100,
+		ExpectedCoverage: 1,
 	})
 }
 

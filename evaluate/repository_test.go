@@ -95,7 +95,7 @@ func TestRepository(t *testing.T) {
 		ExpectedRepositoryAssessment: metrics.Assessments{
 			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
 			metrics.AssessmentKeyResponseCharacterCount:             254,
-			metrics.AssessmentKeyCoverageStatement:                  10,
+			metrics.AssessmentKeyCoverage:                           10,
 			metrics.AssessmentKeyFilesExecuted:                      1,
 			metrics.AssessmentKeyResponseNoError:                    1,
 			metrics.AssessmentKeyResponseNoExcess:                   1,

@@ -10,7 +10,6 @@ import (
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
-	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 )
 
@@ -65,7 +64,7 @@ func TestLanguageExecute(t *testing.T) {
 		RepositoryPath   string
 		RepositoryChange func(t *testing.T, repositoryPath string)
 
-		ExpectedCoverage  float64
+		ExpectedCoverage  uint64
 		ExpectedError     error
 		ExpectedErrorText string
 	}
@@ -108,7 +107,7 @@ func TestLanguageExecute(t *testing.T) {
 
 		RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "plain"),
 
-		ExpectedError: language.ErrNoTestFound,
+		ExpectedCoverage: 0,
 	})
 
 	t.Run("With test file", func(t *testing.T) {
@@ -130,7 +129,7 @@ func TestLanguageExecute(t *testing.T) {
 				`)), 0660))
 			},
 
-			ExpectedCoverage: 100,
+			ExpectedCoverage: 1,
 		})
 
 		validate(t, &testCase{

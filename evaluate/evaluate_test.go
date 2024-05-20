@@ -396,10 +396,12 @@ func TestEvaluate(t *testing.T) {
 					mockedModel: map[language.Language]map[string]metrics.Assessments{
 						languageGolang: map[string]metrics.Assessments{
 							repositoryPlainPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyCoverage:        0,
 								metrics.AssessmentKeyFilesExecuted:   2,
 								metrics.AssessmentKeyResponseNoError: 2,
 							},
 							repositoryNextPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyCoverage:        0,
 								metrics.AssessmentKeyFilesExecuted:   1,
 								metrics.AssessmentKeyResponseNoError: 1,
 							},
@@ -459,10 +461,12 @@ func TestEvaluate(t *testing.T) {
 					mockedModel: map[language.Language]map[string]metrics.Assessments{
 						languageGolang: map[string]metrics.Assessments{
 							repositoryPlainPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyCoverage:        0,
 								metrics.AssessmentKeyFilesExecuted:   1,
 								metrics.AssessmentKeyResponseNoError: 1,
 							},
 							repositoryNextPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyCoverage:        0,
 								metrics.AssessmentKeyFilesExecuted:   2,
 								metrics.AssessmentKeyResponseNoError: 2,
 							},
@@ -566,6 +570,7 @@ func TestEvaluate(t *testing.T) {
 					mockedModel: map[language.Language]map[string]metrics.Assessments{
 						languageGolang: map[string]metrics.Assessments{
 							repositoryPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyCoverage:        0,
 								metrics.AssessmentKeyFilesExecuted:   3,
 								metrics.AssessmentKeyResponseNoError: 3,
 							},
@@ -617,6 +622,7 @@ func TestEvaluate(t *testing.T) {
 					mockedModel: map[language.Language]map[string]metrics.Assessments{
 						languageGolang: map[string]metrics.Assessments{
 							repositoryPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyCoverage:        0,
 								metrics.AssessmentKeyFilesExecuted:   3,
 								metrics.AssessmentKeyResponseNoError: 3,
 							},
@@ -698,6 +704,7 @@ func TestEvaluate(t *testing.T) {
 					mockedModel: map[language.Language]map[string]metrics.Assessments{
 						languageGolang: map[string]metrics.Assessments{
 							repositoryPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyCoverage:        0,
 								metrics.AssessmentKeyFilesExecuted:   3,
 								metrics.AssessmentKeyResponseNoError: 3,
 							},
@@ -764,6 +771,7 @@ func TestEvaluate(t *testing.T) {
 					mockedModel: map[language.Language]map[string]metrics.Assessments{
 						languageGolang: map[string]metrics.Assessments{
 							repositoryPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyCoverage:        0,
 								metrics.AssessmentKeyFilesExecuted:   3,
 								metrics.AssessmentKeyResponseNoError: 3,
 							},
