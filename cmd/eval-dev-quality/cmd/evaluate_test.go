@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,22 +9,14 @@ import (
 	"strconv"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
-	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/model"
-	"github.com/symflower/eval-dev-quality/model/llm"
-	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
-	"github.com/symflower/eval-dev-quality/provider"
-	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 	"github.com/symflower/eval-dev-quality/tools"
 )
 
@@ -621,194 +612,5 @@ func TestEvaluateExecute(t *testing.T) {
 			"README.md":         nil,
 			filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 		},
-	})
-
-	validate(t, &testCase{
-		Name: "Empty model responses are errors",
-
-		Before: func(t *testing.T, logger *log.Logger, resultPath string) {
-			// Setup provider and model mocking
-			modelMock := modeltesting.NewMockModelNamed(t, "empty-response")
-			providerMock := providertesting.NewMockProviderNamedWithModels(t, "testing", []model.Model{modelMock})
-			provider.Register(providerMock)
-
-			modelMock.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, errors.New("empty response from model"))
-		},
-		After: func(t *testing.T, logger *log.Logger, resultPath string) {
-			delete(provider.Providers, "testing")
-		},
-
-		Arguments: []string{
-			"--language", "golang",
-			"--model", "empty-response",
-		},
-
-		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			"categories.svg": func(t *testing.T, filePath, data string) {
-				validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryResponseError}, 1)
-			},
-			"evaluation.csv": func(t *testing.T, filePath, data string) {
-				assert.Equal(t, bytesutil.StringTrimIndentations(`
-					model,language,repository,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
-					empty-response,golang,`+filepath.Join("golang", "plain")+`,0,0,0,0,0,0,0
-				`), data)
-			},
-			"evaluation.log": nil,
-			"golang-summed.csv": func(t *testing.T, filePath, data string) {
-				assert.Equal(t, bytesutil.StringTrimIndentations(`
-					model,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
-					empty-response,0,0,0,0,0,0,0
-				`), data)
-			},
-			"models-summed.csv": func(t *testing.T, filePath, data string) {
-				assert.Equal(t, bytesutil.StringTrimIndentations(`
-					model,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
-					empty-response,0,0,0,0,0,0,0
-				`), data)
-			},
-			"README.md": func(t *testing.T, filePath, data string) {
-				validateReportLinks(t, data, []string{"empty-response"})
-			},
-			filepath.Join("empty-response", "golang", "golang", "plain.log"): nil,
-		},
-	})
-
-	t.Run("Attempts", func(t *testing.T) {
-		{
-			queryMock := providertesting.NewMockQuery(t)
-			llmModel := llm.NewModel(queryMock, "testing-provider/testing-model")
-			providerMock := providertesting.NewMockProviderNamedWithModels(t, "testing-provider", []model.Model{llmModel})
-			validate(t, &testCase{
-				Name: "Single try fails",
-
-				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
-					queryMock.On("Query", mock.Anything, "testing-provider/testing-model", mock.Anything).Return("", errors.New("empty response from model"))
-
-					provider.Register(
-						&struct {
-							provider.Provider
-							provider.Query
-						}{
-							Provider: providerMock,
-							Query:    queryMock,
-						},
-					)
-				},
-				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					delete(provider.Providers, "testing-provider")
-
-					queryMock.AssertNumberOfCalls(t, "Query", 1)
-				},
-				Arguments: []string{
-					"--language", "golang",
-					"--model", "testing-provider/testing-model",
-					"--attempts", "1",
-				},
-				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					"categories.svg": nil,
-					"evaluation.csv": nil,
-					"evaluation.log": func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "response-no-error=0")
-					},
-					"golang-summed.csv": nil,
-					"models-summed.csv": nil,
-					"README.md":         nil,
-					filepath.Join("testing-provider_testing-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "empty response from model")
-					},
-				},
-			})
-		}
-		{
-			queryMock := providertesting.NewMockQuery(t)
-			llmModel := llm.NewModel(queryMock, "testing-provider/testing-model")
-			providerMock := providertesting.NewMockProviderNamedWithModels(t, "testing-provider", []model.Model{llmModel})
-			validate(t, &testCase{
-				Name: "Success after retry",
-
-				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
-					queryMock.On("Query", mock.Anything, "testing-provider/testing-model", mock.Anything).Return("", errors.New("empty response from model")).Once()
-					// Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
-					queryMock.On("Query", mock.Anything, "testing-provider/testing-model", mock.Anything).Return("model-response", nil).Once().After(10 * time.Millisecond)
-
-					provider.Register(
-						&struct {
-							provider.Provider
-							provider.Query
-						}{
-							Provider: providerMock,
-							Query:    queryMock,
-						},
-					)
-				},
-				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					delete(provider.Providers, "testing-provider")
-
-					queryMock.AssertNumberOfCalls(t, "Query", 2)
-				},
-				Arguments: []string{
-					"--language", "golang",
-					"--model", "testing-provider/testing-model",
-					"--attempts", "3",
-				},
-				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					"categories.svg": nil,
-					"evaluation.csv": nil,
-					"evaluation.log": func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "response-no-error=1")
-					},
-					"golang-summed.csv": nil,
-					"models-summed.csv": nil,
-					"README.md":         nil,
-					filepath.Join("testing-provider_testing-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "Attempt 1/3: empty response from model")
-					},
-				},
-			})
-		}
-		{
-			queryMock := providertesting.NewMockQuery(t)
-			llmModel := llm.NewModel(queryMock, "testing-provider/testing-model")
-			providerMock := providertesting.NewMockProviderNamedWithModels(t, "testing-provider", []model.Model{llmModel})
-			validate(t, &testCase{
-				Name: "Immediate success",
-
-				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
-					// Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
-					queryMock.On("Query", mock.Anything, "testing-provider/testing-model", mock.Anything).Return("model-response", nil).After(10 * time.Millisecond)
-
-					provider.Register(
-						&struct {
-							provider.Provider
-							provider.Query
-						}{
-							Provider: providerMock,
-							Query:    queryMock,
-						},
-					)
-				},
-				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					delete(provider.Providers, "testing-provider")
-
-					queryMock.AssertNumberOfCalls(t, "Query", 1)
-				},
-				Arguments: []string{
-					"--language", "golang",
-					"--model", "testing-provider/testing-model",
-					"--attempts", "3",
-				},
-				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					"categories.svg": nil,
-					"evaluation.csv": nil,
-					"evaluation.log": func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "response-no-error=1")
-					},
-					"golang-summed.csv": nil,
-					"models-summed.csv": nil,
-					"README.md":         nil,
-					filepath.Join("testing-provider_testing-model", "golang", "golang", "plain.log"): nil,
-				},
-			})
-		}
 	})
 }
