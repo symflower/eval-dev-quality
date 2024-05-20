@@ -7,9 +7,10 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/language"
-	"github.com/symflower/eval-dev-quality/model"
+	evalmodel "github.com/symflower/eval-dev-quality/model"
 )
 
+// Context holds an evaluation context.
 type Context struct {
 	// Log holds the logger of the context.
 	Log *log.Logger
@@ -18,7 +19,7 @@ type Context struct {
 	Languages []language.Language
 
 	// Models determines which models should be used for the evaluation, or empty if all models should be used.
-	Models []model.Model
+	Models []evalmodel.Model
 	// QueryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	QueryAttempts uint
 
@@ -53,6 +54,10 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 				for _, model := range ctx.Models {
 					modelID := model.ID()
 					languageID := language.ID()
+
+					if r, ok := model.(evalmodel.SetQueryAttempts); ok {
+						r.SetQueryAttempts(ctx.QueryAttempts)
+					}
 
 					repositoryPath := filepath.Join(languageID, RepositoryPlainName)
 

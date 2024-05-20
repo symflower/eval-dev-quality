@@ -17,7 +17,6 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/model"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
@@ -115,7 +114,7 @@ func TestEvaluate(t *testing.T) {
 					&golang.Language{},
 				},
 
-				Models: []model.Model{
+				Models: []evalmodel.Model{
 					mockedModel,
 				},
 			},
@@ -149,7 +148,7 @@ func TestEvaluate(t *testing.T) {
 						&golang.Language{},
 					},
 
-					Models: []model.Model{
+					Models: []evalmodel.Model{
 						mockedModel,
 					},
 					QueryAttempts: 1,
@@ -185,7 +184,7 @@ func TestEvaluate(t *testing.T) {
 						&golang.Language{},
 					},
 
-					Models: []model.Model{
+					Models: []evalmodel.Model{
 						mockedModel,
 					},
 					QueryAttempts: 3,
@@ -224,7 +223,7 @@ func TestEvaluate(t *testing.T) {
 						&golang.Language{},
 					},
 
-					Models: []model.Model{
+					Models: []evalmodel.Model{
 						mockedModel,
 					},
 					QueryAttempts: 3,
