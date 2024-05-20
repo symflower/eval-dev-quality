@@ -1,6 +1,7 @@
 package evaluate
 
 import (
+	"bytes"
 	"errors"
 	"os"
 	"path/filepath"
@@ -55,7 +56,9 @@ func TestEvaluate(t *testing.T) {
 				tc.Context.QueryAttempts = 1
 			}
 			tc.Context.ResultPath = temporaryPath
-			tc.Context.TestdataPath = filepath.Join("..", "testdata")
+			if tc.Context.TestdataPath == "" {
+				tc.Context.TestdataPath = filepath.Join("..", "testdata")
+			}
 			if tc.Context.Runs == 0 {
 				tc.Context.Runs = 1
 			}
@@ -146,7 +149,7 @@ func TestEvaluate(t *testing.T) {
 		})
 	}
 
-	t.Run("Failying model queries", func(t *testing.T) {
+	t.Run("Failing model queries", func(t *testing.T) {
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "testing-provider/empty-response-model"
@@ -286,6 +289,215 @@ func TestEvaluate(t *testing.T) {
 					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, "DONE 0 tests, 1 error")
 					},
+				},
+			})
+		}
+	})
+
+	t.Run("Failing basic language checks should exclude model", func(t *testing.T) {
+		repositoryPlainPath := filepath.Join("golang", "plain")
+		repositoryNextPath := filepath.Join("golang", "next")
+
+		temporaryTestdataPath := t.TempDir()
+		assert.NoError(t, osutil.CopyTree(filepath.Join("..", "testdata", repositoryPlainPath), filepath.Join(temporaryTestdataPath, repositoryPlainPath)))
+		assert.NoError(t, osutil.CopyTree(filepath.Join("..", "testdata", repositoryPlainPath), filepath.Join(temporaryTestdataPath, repositoryNextPath)))
+		repositoryNextConfigPath := filepath.Join(temporaryTestdataPath, repositoryNextPath, "go.mod")
+		d, err := os.ReadFile(repositoryNextConfigPath)
+		require.NoError(t, err)
+		d = bytes.ReplaceAll(d, []byte("plain"), []byte("next"))
+		require.NoError(t, os.WriteFile(repositoryNextConfigPath, d, 0))
+
+		generateTestsForFilePlainSuccess := func(args mock.Arguments) {
+			require.NoError(t, os.WriteFile(filepath.Join(args.String(2), "plain_test.go"), []byte("package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}"), 0600))
+		}
+		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
+			metrics.AssessmentKeyProcessingTime: 1,
+		}
+		generateTestsForFilePlainError := errors.New("generateTestsForFile error")
+
+		generateSuccess := func(mockedModel *modeltesting.MockModel) {
+			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(generateTestsForFilePlainSuccessMetrics, nil).Run(generateTestsForFilePlainSuccess).Once()
+		}
+		generateError := func(mockedModel *modeltesting.MockModel) {
+			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, generateTestsForFilePlainError).Once()
+		}
+
+		{
+			languageGolang := &golang.Language{}
+			mockedModelID := "mocked-generation-model"
+			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+
+			validate(t, &testCase{
+				Name: "Problems of previous runs shouldn't cancel successive runs",
+
+				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+					// Set up mocks, when test is running.
+					{
+						// Succeed on both "plain" runs.
+						generateSuccess(mockedModel)
+						generateSuccess(mockedModel)
+
+						// Error on the first run for the "next" repository.
+						generateError(mockedModel)
+						// Succeed on the second run for the "next" repository.
+						generateSuccess(mockedModel)
+					}
+				},
+				After: func(t *testing.T, logger *log.Logger, resultPath string) {
+					mockedModel.AssertNumberOfCalls(t, "GenerateTestsForFile", 4)
+				},
+
+				Context: &Context{
+					Languages: []language.Language{
+						&golang.Language{},
+					},
+
+					Models: []evalmodel.Model{
+						mockedModel,
+					},
+
+					RepositoryPaths: []string{
+						repositoryPlainPath,
+						repositoryNextPath,
+					},
+					TestdataPath: temporaryTestdataPath,
+
+					Runs: 2,
+				},
+
+				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+					mockedModel: map[language.Language]map[string]metrics.Assessments{
+						languageGolang: map[string]metrics.Assessments{
+							repositoryPlainPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyFilesExecuted:   2,
+								metrics.AssessmentKeyResponseNoError: 2,
+							},
+							repositoryNextPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyFilesExecuted:   1,
+								metrics.AssessmentKeyResponseNoError: 1,
+							},
+						},
+					},
+				},
+				ExpectedTotalScore: 0,
+				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "next.log"):  nil,
+				},
+			})
+		}
+		{
+			languageGolang := &golang.Language{}
+			mockedModelID := "mocked-generation-model"
+			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+
+			validate(t, &testCase{
+				Name: "Solving basic checks once is enough",
+
+				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+					// Set up mocks, when test is running.
+					{
+						// Succeed on only one "plain" run.
+						generateError(mockedModel)
+						generateSuccess(mockedModel)
+
+						// Succeed on both "next" runs.
+						generateSuccess(mockedModel)
+						generateSuccess(mockedModel)
+					}
+				},
+				After: func(t *testing.T, logger *log.Logger, resultPath string) {
+					mockedModel.AssertNumberOfCalls(t, "GenerateTestsForFile", 4)
+				},
+
+				Context: &Context{
+					Languages: []language.Language{
+						&golang.Language{},
+					},
+
+					Models: []evalmodel.Model{
+						mockedModel,
+					},
+
+					RepositoryPaths: []string{
+						repositoryPlainPath,
+						repositoryNextPath,
+					},
+					TestdataPath: temporaryTestdataPath,
+
+					Runs: 2,
+				},
+
+				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+					mockedModel: map[language.Language]map[string]metrics.Assessments{
+						languageGolang: map[string]metrics.Assessments{
+							repositoryPlainPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyFilesExecuted:   1,
+								metrics.AssessmentKeyResponseNoError: 1,
+							},
+							repositoryNextPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyFilesExecuted:   2,
+								metrics.AssessmentKeyResponseNoError: 2,
+							},
+						},
+					},
+				},
+				ExpectedTotalScore: 0,
+				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "next.log"):  nil,
+				},
+			})
+		}
+		{
+			languageGolang := &golang.Language{}
+			mockedModelID := "mocked-generation-model"
+			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+
+			validate(t, &testCase{
+				Name: "Never solving basic checks leads to exclusion",
+
+				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+					// Set up mocks, when test is running.
+					{
+						// Error on every "plain" run.
+						generateError(mockedModel)
+						generateError(mockedModel)
+					}
+				},
+				After: func(t *testing.T, logger *log.Logger, resultPath string) {
+					mockedModel.AssertNumberOfCalls(t, "GenerateTestsForFile", 2)
+				},
+
+				Context: &Context{
+					Languages: []language.Language{
+						&golang.Language{},
+					},
+
+					Models: []evalmodel.Model{
+						mockedModel,
+					},
+
+					RepositoryPaths: []string{
+						repositoryPlainPath,
+						repositoryNextPath,
+					},
+					TestdataPath: temporaryTestdataPath,
+
+					Runs: 2,
+				},
+
+				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+					mockedModel: map[language.Language]map[string]metrics.Assessments{
+						languageGolang: map[string]metrics.Assessments{
+							repositoryPlainPath: map[metrics.AssessmentKey]uint64{},
+							repositoryNextPath:  map[metrics.AssessmentKey]uint64{},
+						},
+					},
+				},
+				ExpectedTotalScore: 0,
+				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
 			})
 		}
