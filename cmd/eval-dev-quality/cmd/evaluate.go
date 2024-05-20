@@ -201,9 +201,6 @@ func (command *Evaluate) Execute(args []string) (err error) {
 			}
 
 			for _, m := range ms {
-				if r, ok := m.(model.SetQueryAttempts); ok {
-					r.SetQueryAttempts(command.QueryAttempts)
-				}
 				models[m.ID()] = m
 			}
 		}
