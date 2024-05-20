@@ -48,7 +48,7 @@ func (a AssessmentPerModel) WalkByScore(function func(model model.Model, assessm
 type AssessmentPerModelPerLanguagePerRepository map[model.Model]map[language.Language]map[string]metrics.Assessments
 
 // NewAssessmentPerModelPerLanguagePerRepository returns a new AssessmentPerModelPerLanguagePerRepository initialized with an empty assessment for each combination.
-func NewAssessmentPerModelPerLanguagePerRepository(models []model.Model, languages []language.Language, repositories []string) AssessmentPerModelPerLanguagePerRepository {
+func NewAssessmentPerModelPerLanguagePerRepository(models []model.Model, languages []language.Language, repositories []string) (assessments AssessmentPerModelPerLanguagePerRepository) {
 	a := AssessmentPerModelPerLanguagePerRepository{}
 	for _, m := range models {
 		if _, ok := a[m]; !ok {

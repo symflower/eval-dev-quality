@@ -69,9 +69,6 @@ func (command *Evaluate) SetLogger(logger *log.Logger) {
 	command.logger = logger
 }
 
-// repositoryPlainName holds the name of the plain repository.
-const repositoryPlainName = "plain"
-
 // Execute executes the command.
 func (command *Evaluate) Execute(args []string) (err error) {
 	evaluationTimestamp := time.Now()
@@ -153,7 +150,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	}
 	for languageID := range languagesSelected {
 		if len(command.Repositories) == 0 || commandRepositoriesLanguages[languageID] {
-			commandRepositories[filepath.Join(languageID, repositoryPlainName)] = true
+			commandRepositories[filepath.Join(languageID, evaluate.RepositoryPlainName)] = true
 		} else {
 			command.Languages = slices.DeleteFunc(command.Languages, func(l string) bool {
 				return l == languageID
@@ -240,96 +237,28 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		log.Panicf("ERROR: %s", err)
 	}
 
-	// Check that models and languages can be evaluated by executing the "plain" repositories.
-	log.Printf("Checking that models and languages can be used for evaluation")
-	// Ensure we report metrics for every model even if they are excluded.
-	assessments := report.NewAssessmentPerModelPerLanguagePerRepository(maps.Values(modelsSelected), maps.Values(languagesSelected), command.Repositories)
-	problemsPerModel := map[string][]error{}
-	{
-		for r := uint(0); r < command.Runs; r++ {
-			if command.Runs > 1 {
-				log.Printf("Run %d/%d", r+1, command.Runs)
-			}
-
-			for _, languageID := range command.Languages {
-				for _, modelID := range command.Models {
-					model := modelsSelected[modelID]
-					language := languagesSelected[languageID]
-
-					repositoryPath := filepath.Join(languageID, repositoryPlainName)
-
-					assessment, ps, err := evaluate.Repository(command.logger, command.ResultPath, model, language, command.TestdataPath, repositoryPath)
-					assessments[model][language][repositoryPath].Add(assessment)
-					if err != nil {
-						ps = append(ps, err)
-					}
-					if len(ps) > 0 {
-						log.Printf("Excluding model %q since it was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
-						problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
-					}
-				}
-			}
-		}
+	ls := make([]language.Language, len(command.Languages))
+	for i, languageID := range command.Languages {
+		ls[i] = languagesSelected[languageID]
 	}
-
-	// Evaluating models and languages.
-	log.Printf("Evaluating models and languages")
-	for r := uint(0); r < command.Runs; r++ {
-		if command.Runs > 1 {
-			log.Printf("Run %d/%d", r+1, command.Runs)
-		}
-
-		for _, languageID := range command.Languages {
-			languagePath := filepath.Join(command.TestdataPath, languageID)
-			repositories, err := os.ReadDir(languagePath)
-			if err != nil {
-				log.Panicf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
-			}
-
-			for _, repository := range repositories {
-				repositoryPath := filepath.Join(languageID, repository.Name())
-
-				if !repository.IsDir() || (len(commandRepositories) > 0 && !commandRepositories[repositoryPath]) {
-					continue
-				}
-
-				// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
-				if repository.Name() == repositoryPlainName {
-					continue
-				}
-
-				for _, modelID := range command.Models {
-					if len(problemsPerModel[modelID]) > 0 {
-						continue
-					}
-
-					model := modelsSelected[modelID]
-					language := languagesSelected[languageID]
-
-					assessment, ps, err := evaluate.Repository(command.logger, command.ResultPath, model, language, command.TestdataPath, repositoryPath)
-					assessments[model][language][repositoryPath].Add(assessment)
-					problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
-					if err != nil {
-						log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
-					}
-				}
-			}
-		}
+	ms := make([]model.Model, len(command.Models))
+	for i, modelID := range command.Models {
+		ms[i] = modelsSelected[modelID]
 	}
+	assessments, totalScore := evaluate.Evaluate(&evaluate.Context{
+		Log: log,
 
-	totalScore := uint64(0)
-	// Set the total score to the number of evaluated languages if we are just checking the "plain" repositories since there is only one task to solve per language.
-	isOnlyPlainRepositories := true
-	for repository := range commandRepositories {
-		if filepath.Base(repository) != repositoryPlainName {
-			isOnlyPlainRepositories = false
+		Languages: ls,
 
-			break
-		}
-	}
-	if isOnlyPlainRepositories {
-		totalScore = uint64(len(languagesSelected)) * uint64(command.Runs)
-	}
+		Models:        ms,
+		QueryAttempts: command.QueryAttempts,
+
+		RepositoryPaths: command.Repositories,
+		ResultPath:      command.ResultPath,
+		TestdataPath:    command.TestdataPath,
+
+		Runs: command.Runs,
+	})
 
 	assessmentsPerModel := assessments.CollapseByModel()
 	if err := (report.Markdown{
