@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/symflower/eval-dev-quality/evaluate/report"
-	"github.com/symflower/eval-dev-quality/language"
+	evallanguage "github.com/symflower/eval-dev-quality/language"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
 )
 
@@ -16,7 +16,7 @@ type Context struct {
 	Log *log.Logger
 
 	// Languages determines which language should be used for the evaluation, or empty if all languages should be used.
-	Languages []language.Language
+	Languages []evallanguage.Language
 
 	// Models determines which models should be used for the evaluation, or empty if all models should be used.
 	Models []evalmodel.Model
@@ -40,6 +40,7 @@ const RepositoryPlainName = "plain"
 // Evaluate runs an evaluation on the given context and returns its results.
 func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePerRepository, totalScore uint64) {
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
+	modelSucceededBasicChecksOfLanguage := map[evalmodel.Model]map[evallanguage.Language]bool{}
 	ctx.Log.Printf("Checking that models and languages can be used for evaluation")
 	// Ensure we report metrics for every model even if they are excluded.
 	assessments = report.NewAssessmentPerModelPerLanguagePerRepository(ctx.Models, ctx.Languages, ctx.RepositoryPaths)
@@ -55,6 +56,10 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 					modelID := model.ID()
 					languageID := language.ID()
 
+					if modelSucceededBasicChecksOfLanguage[model] == nil {
+						modelSucceededBasicChecksOfLanguage[model] = map[evallanguage.Language]bool{}
+					}
+
 					if r, ok := model.(evalmodel.SetQueryAttempts); ok {
 						r.SetQueryAttempts(ctx.QueryAttempts)
 					}
@@ -67,8 +72,10 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 						ps = append(ps, err)
 					}
 					if len(ps) > 0 {
-						ctx.Log.Printf("Excluding model %q since it was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
+						ctx.Log.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
 						problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+					} else {
+						modelSucceededBasicChecksOfLanguage[model][language] = true
 					}
 				}
 			}
@@ -111,7 +118,9 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 				for _, model := range ctx.Models {
 					modelID := model.ID()
 
-					if len(problemsPerModel[modelID]) > 0 {
+					if !modelSucceededBasicChecksOfLanguage[model][language] {
+						log.Printf("Excluding model %q for language %q cause it did not succeed basic checks", model.ID(), language.ID())
+
 						continue
 					}
 
