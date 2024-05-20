@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
@@ -44,9 +45,9 @@ func TestEvaluate(t *testing.T) {
 
 			logOutput, logger := log.Buffer()
 			defer func() {
-				//if t.Failed() { TODO
-				t.Logf("Logging output: %s", logOutput.String())
-				//}
+				if t.Failed() {
+					t.Logf("Logging output: %s", logOutput.String())
+				}
 			}()
 
 			tc.Context.Log = logger
@@ -55,7 +56,9 @@ func TestEvaluate(t *testing.T) {
 			}
 			tc.Context.ResultPath = temporaryPath
 			tc.Context.TestdataPath = filepath.Join("..", "testdata")
-			tc.Context.Runs = 1
+			if tc.Context.Runs == 0 {
+				tc.Context.Runs = 1
+			}
 
 			if tc.Before != nil {
 				tc.Before(t, logger, temporaryPath)
@@ -66,9 +69,20 @@ func TestEvaluate(t *testing.T) {
 
 			actualAssessments, actualTotalScore := Evaluate(tc.Context)
 
-			if false { // TODO
-				assert.Equal(t, tc.ExpectedAssessments, actualAssessments)
+			// Normalize assessments.
+			for _, ls := range actualAssessments {
+				for _, rs := range ls {
+					for _, a := range rs {
+						if v, ok := a[metrics.AssessmentKeyProcessingTime]; ok {
+							if assert.Greater(t, v, uint64(0)) {
+								delete(a, metrics.AssessmentKeyProcessingTime)
+							}
+						}
+					}
+				}
 			}
+
+			assert.Equal(t, tc.ExpectedAssessments, actualAssessments)
 			assert.Equal(t, tc.ExpectedTotalScore, actualTotalScore)
 
 			if tc.ExpectedOutputValidate != nil {
@@ -99,6 +113,7 @@ func TestEvaluate(t *testing.T) {
 	}
 
 	{
+		languageGolang := &golang.Language{}
 		mockedModel := modeltesting.NewMockModelNamed(t, "empty-response-model")
 
 		validate(t, &testCase{
@@ -119,6 +134,11 @@ func TestEvaluate(t *testing.T) {
 				},
 			},
 
+			ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+				mockedModel: map[language.Language]map[string]metrics.Assessments{
+					languageGolang: map[string]metrics.Assessments{},
+				},
+			},
 			ExpectedTotalScore: 1,
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				filepath.Join(mockedModel.ID(), "golang", "golang", "plain.log"): nil,
@@ -128,6 +148,7 @@ func TestEvaluate(t *testing.T) {
 
 	t.Run("Failying model queries", func(t *testing.T) {
 		{
+			languageGolang := &golang.Language{}
 			mockedModelID := "testing-provider/empty-response-model"
 			mockedQuery := providertesting.NewMockQuery(t)
 			mockedModel := llm.NewModel(mockedQuery, mockedModelID)
@@ -145,7 +166,7 @@ func TestEvaluate(t *testing.T) {
 
 				Context: &Context{
 					Languages: []language.Language{
-						&golang.Language{},
+						languageGolang,
 					},
 
 					Models: []evalmodel.Model{
@@ -154,6 +175,11 @@ func TestEvaluate(t *testing.T) {
 					QueryAttempts: 1,
 				},
 
+				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+					mockedModel: map[language.Language]map[string]metrics.Assessments{
+						languageGolang: map[string]metrics.Assessments{},
+					},
+				},
 				ExpectedTotalScore: 1,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
@@ -163,9 +189,11 @@ func TestEvaluate(t *testing.T) {
 			})
 		}
 		{
+			languageGolang := &golang.Language{}
 			mockedModelID := "testing-provider/empty-response-model"
 			mockedQuery := providertesting.NewMockQuery(t)
 			mockedModel := llm.NewModel(mockedQuery, mockedModelID)
+			repositoryPath := filepath.Join("golang", "plain")
 
 			validate(t, &testCase{
 				Name: "Success after retry",
@@ -190,10 +218,19 @@ func TestEvaluate(t *testing.T) {
 					QueryAttempts: 3,
 
 					RepositoryPaths: []string{
-						filepath.Join("golang", "plain"),
+						repositoryPath,
 					},
 				},
 
+				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+					mockedModel: map[language.Language]map[string]metrics.Assessments{
+						languageGolang: map[string]metrics.Assessments{
+							repositoryPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyResponseNoError: 1,
+							},
+						},
+					},
+				},
 				ExpectedTotalScore: 1,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
@@ -203,9 +240,11 @@ func TestEvaluate(t *testing.T) {
 			})
 		}
 		{
+			languageGolang := &golang.Language{}
 			mockedModelID := "testing-provider/empty-response-model"
 			mockedQuery := providertesting.NewMockQuery(t)
 			mockedModel := llm.NewModel(mockedQuery, mockedModelID)
+			repositoryPath := filepath.Join("golang", "plain")
 
 			validate(t, &testCase{
 				Name: "Immediate success",
@@ -229,13 +268,24 @@ func TestEvaluate(t *testing.T) {
 					QueryAttempts: 3,
 
 					RepositoryPaths: []string{
-						filepath.Join("golang", "plain"),
+						repositoryPath,
 					},
 				},
 
+				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+					mockedModel: map[language.Language]map[string]metrics.Assessments{
+						languageGolang: map[string]metrics.Assessments{
+							repositoryPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyResponseNoError: 1,
+							},
+						},
+					},
+				},
 				ExpectedTotalScore: 1,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+						assert.Contains(t, data, "DONE 0 tests, 1 error")
+					},
 				},
 			})
 		}
