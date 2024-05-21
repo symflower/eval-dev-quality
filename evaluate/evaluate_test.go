@@ -25,6 +25,11 @@ import (
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 )
 
+var (
+	// ErrEmptyResponseFromModel indicates the model returned an empty response.
+	ErrEmptyResponseFromModel = errors.New("empty response from model")
+)
+
 func TestEvaluate(t *testing.T) {
 	type testCase struct {
 		Name string
@@ -124,7 +129,7 @@ func TestEvaluate(t *testing.T) {
 
 			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 				// Set up mocks, when test is running.
-				mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, errors.New("empty response from model"))
+				mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, ErrEmptyResponseFromModel)
 			},
 
 			Context: &Context{
@@ -161,7 +166,7 @@ func TestEvaluate(t *testing.T) {
 
 				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 					// Set up mocks, when test is running.
-					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("", errors.New("empty response from model"))
+					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("", ErrEmptyResponseFromModel)
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
 					mockedQuery.AssertNumberOfCalls(t, "Query", 1)
@@ -186,7 +191,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedTotalScore: 1,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "empty response from model")
+						assert.Contains(t, data, ErrEmptyResponseFromModel.Error())
 					},
 				},
 			})
@@ -203,7 +208,7 @@ func TestEvaluate(t *testing.T) {
 
 				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 					// Set up mocks, when test is running.
-					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("", errors.New("empty response from model")).Once()
+					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("", ErrEmptyResponseFromModel).Once()
 					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("model-response", nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
@@ -237,7 +242,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedTotalScore: 1,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "Attempt 1/3: empty response from model")
+						assert.Contains(t, data, "Attempt 1/3: "+ErrEmptyResponseFromModel.Error())
 					},
 				},
 			})
