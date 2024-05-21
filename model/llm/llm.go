@@ -150,6 +150,8 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	return assessment, nil
 }
 
+var _ model.SetQueryAttempts = (*Model)(nil)
+
 // SetQueryAttempts sets the number of query attempts to perform when a model request errors in the process of solving a task.
 func (m *Model) SetQueryAttempts(queryAttempts uint) {
 	m.queryAttempts = queryAttempts
