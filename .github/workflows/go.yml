@@ -40,6 +40,12 @@ jobs:
         with:
           maven-version: '3.9.1'
 
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "<>"
+        shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
+
       - name: Build
         run: make install
         shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.

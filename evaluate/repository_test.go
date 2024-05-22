@@ -39,7 +39,11 @@ func TestRepository(t *testing.T) {
 			temporaryPath := t.TempDir()
 
 			_, logger := log.Buffer()
-			actualRepositoryAssessment, actualProblems, actualErr := Repository(logger, temporaryPath, tc.Model, tc.Language, tc.TestDataPath, tc.RepositoryPath)
+			temporaryRepositoryPath, cleanup, err := TemporaryRepository(logger, filepath.Join(tc.TestDataPath, tc.RepositoryPath))
+			assert.NoError(t, err)
+			defer cleanup()
+
+			actualRepositoryAssessment, actualProblems, actualErr := Repository(logger, temporaryPath, tc.Model, tc.Language, temporaryRepositoryPath, tc.RepositoryPath)
 
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 			assert.Equal(t, tc.ExpectedProblems, actualProblems)
@@ -90,6 +94,87 @@ func TestRepository(t *testing.T) {
 				assert.Contains(t, data, "PASS: TestSymflowerPlain")
 				assert.Contains(t, data, "Evaluated model \"symflower/symbolic-execution\"")
 			},
+		},
+	})
+}
+
+func TestTemporaryRepository(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		TestDataPath   string
+		RepositoryPath string
+
+		ExpectedTempPathRegex string
+		ExpectedErr           error
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			if osutil.IsWindows() {
+				t.Skipf("Regex tests with paths are not supported on this OS")
+			}
+
+			_, logger := log.Buffer()
+			actualTemporaryRepositoryPath, cleanup, actualErr := TemporaryRepository(logger, filepath.Join(tc.TestDataPath, tc.RepositoryPath))
+			defer cleanup()
+
+			assert.Regexp(t, filepath.Join(os.TempDir(), tc.ExpectedTempPathRegex), actualTemporaryRepositoryPath, actualTemporaryRepositoryPath)
+			assert.Equal(t, tc.ExpectedErr, actualErr)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Create temporary path with git repository",
+
+		TestDataPath:   filepath.Join("..", "testdata"),
+		RepositoryPath: filepath.Join("golang", "plain"),
+
+		ExpectedTempPathRegex: `eval-dev-quality\d+\/plain`,
+		ExpectedErr:           nil,
+	})
+}
+
+func TestResetTemporaryRepository(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		TestDataPath   string
+		RepositoryPath string
+
+		ExpectedErr    error
+		MutationBefore func(t *testing.T, path string)
+		ValidateAfter  func(t *testing.T, path string)
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			_, logger := log.Buffer()
+			temporaryRepositoryPath, cleanup, err := TemporaryRepository(logger, filepath.Join(tc.TestDataPath, tc.RepositoryPath))
+			assert.NoError(t, err)
+			defer cleanup()
+
+			tc.MutationBefore(t, temporaryRepositoryPath)
+
+			actualErr := ResetTemporaryRepository(logger, temporaryRepositoryPath)
+			assert.Equal(t, tc.ExpectedErr, actualErr)
+
+			tc.ValidateAfter(t, temporaryRepositoryPath)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Reset changes",
+
+		TestDataPath:   filepath.Join("..", "testdata"),
+		RepositoryPath: filepath.Join("golang", "plain"),
+
+		ExpectedErr: nil,
+		MutationBefore: func(t *testing.T, path string) {
+			assert.NoError(t, os.WriteFile(filepath.Join(path, "foo"), []byte("foo"), 0600))
+		},
+		ValidateAfter: func(t *testing.T, path string) {
+			assert.Error(t, osutil.FileExists(filepath.Join(path, "foo")))
 		},
 	})
 }
