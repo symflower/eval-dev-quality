@@ -32,6 +32,26 @@ type Context struct {
 
 	// Runs holds the number of runs to perform.
 	Runs uint
+	// RunsSequential indicates that interleaved runs are disabled and runs are performed sequentially.
+	RunsSequential bool
+}
+
+// runsAtLanguageLevel returns how many runs to perform on language level.
+func (ctx *Context) runsAtLanguageLevel() uint {
+	if ctx.RunsSequential {
+		return 1
+	}
+
+	return ctx.Runs
+}
+
+// runsAtModelLevel returns how many runs to perform on model level.
+func (ctx *Context) runsAtModelLevel() uint {
+	if ctx.RunsSequential {
+		return ctx.Runs
+	}
+
+	return 1
 }
 
 // RepositoryPlainName holds the name of the plain repository.
@@ -45,27 +65,33 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 	// Ensure we report metrics for every model even if they are excluded.
 	assessments = report.NewAssessmentPerModelPerLanguagePerRepository(ctx.Models, ctx.Languages, ctx.RepositoryPaths)
 	problemsPerModel := map[string][]error{}
+
 	{
-		for r := uint(0); r < ctx.Runs; r++ {
-			if ctx.Runs > 1 {
-				ctx.Log.Printf("Run %d/%d", r+1, ctx.Runs)
+		// Create temporary repositories for each language so the repository is copied only once per language.
+		temporaryRepositories := map[string]string{}
+		for _, language := range ctx.Languages {
+			repositoryPath := filepath.Join(language.ID(), RepositoryPlainName)
+			temporaryRepositoryPath, cleanup, err := TemporaryRepository(ctx.Log, filepath.Join(ctx.TestdataPath, repositoryPath))
+			if err != nil {
+				ctx.Log.Panicf("ERROR: unable to create temporary repository path: %s", err)
+			}
+
+			defer cleanup()
+
+			temporaryRepositories[repositoryPath] = temporaryRepositoryPath
+		}
+		for rl := uint(0); rl < ctx.runsAtLanguageLevel(); rl++ {
+			if ctx.Runs > 1 && !ctx.RunsSequential {
+				ctx.Log.Printf("Run %d/%d", rl+1, ctx.Runs)
 			}
 
 			for _, language := range ctx.Languages {
 				languageID := language.ID()
-
-				repositoryPath := filepath.Join(languageID, RepositoryPlainName)
-				temporaryRepositoryPath, cleanup, err := TemporaryRepository(ctx.Log, filepath.Join(ctx.TestdataPath, repositoryPath))
-				if err != nil {
-					ctx.Log.Panicf("ERROR: unable to create temporary repository path: %s", err)
-				}
+				repositoryPath := filepath.Join(language.ID(), RepositoryPlainName)
+				temporaryRepositoryPath := temporaryRepositories[repositoryPath]
 
 				for _, model := range ctx.Models {
 					modelID := model.ID()
-
-					if err := ResetTemporaryRepository(ctx.Log, temporaryRepositoryPath); err != nil {
-						ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
-					}
 
 					if modelSucceededBasicChecksOfLanguage[model] == nil {
 						modelSucceededBasicChecksOfLanguage[model] = map[evallanguage.Language]bool{}
@@ -75,20 +101,28 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 						r.SetQueryAttempts(ctx.QueryAttempts)
 					}
 
-					assessment, ps, err := Repository(ctx.Log, ctx.ResultPath, model, language, temporaryRepositoryPath, repositoryPath)
-					assessments[model][language][repositoryPath].Add(assessment)
-					if err != nil {
-						ps = append(ps, err)
-					}
-					if len(ps) > 0 {
-						ctx.Log.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
-						problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
-					} else {
-						modelSucceededBasicChecksOfLanguage[model][language] = true
+					for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
+						if err := ResetTemporaryRepository(ctx.Log, temporaryRepositoryPath); err != nil {
+							ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+						}
+
+						if ctx.Runs > 1 && ctx.RunsSequential {
+							ctx.Log.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+						}
+
+						assessment, ps, err := Repository(ctx.Log, ctx.ResultPath, model, language, temporaryRepositoryPath, repositoryPath)
+						assessments[model][language][repositoryPath].Add(assessment)
+						if err != nil {
+							ps = append(ps, err)
+						}
+						if len(ps) > 0 {
+							ctx.Log.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
+							problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+						} else {
+							modelSucceededBasicChecksOfLanguage[model][language] = true
+						}
 					}
 				}
-
-				cleanup() // Remove temporary directory.
 			}
 		}
 	}
@@ -100,9 +134,29 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 
 	// Evaluating models and languages.
 	ctx.Log.Printf("Evaluating models and languages")
-	for r := uint(0); r < ctx.Runs; r++ {
-		if ctx.Runs > 1 {
-			ctx.Log.Printf("Run %d/%d", r+1, ctx.Runs)
+	// Create temporary repositories for each language so the repository is copied only once per language.
+	temporaryRepositories := map[string]string{}
+	for _, language := range ctx.Languages {
+		languagePath := filepath.Join(ctx.TestdataPath, language.ID())
+		repositories, err := os.ReadDir(languagePath)
+		if err != nil {
+			ctx.Log.Panicf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
+		}
+		for _, repository := range repositories {
+			repositoryPath := filepath.Join(language.ID(), repository.Name())
+			temporaryRepositoryPath, cleanup, err := TemporaryRepository(ctx.Log, filepath.Join(ctx.TestdataPath, repositoryPath))
+			if err != nil {
+				ctx.Log.Panicf("ERROR: unable to create temporary repository path: %s", err)
+			}
+
+			defer cleanup()
+
+			temporaryRepositories[repositoryPath] = temporaryRepositoryPath
+		}
+	}
+	for rl := uint(0); rl < ctx.runsAtLanguageLevel(); rl++ {
+		if ctx.Runs > 1 && !ctx.RunsSequential {
+			ctx.Log.Printf("Run %d/%d", rl+1, ctx.Runs)
 		}
 
 		for _, language := range ctx.Languages {
@@ -116,6 +170,7 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 
 			for _, repository := range repositories {
 				repositoryPath := filepath.Join(languageID, repository.Name())
+				temporaryRepositoryPath := temporaryRepositories[repositoryPath]
 
 				if !repository.IsDir() || (len(ctx.RepositoryPaths) > 0 && !repositoriesLookup[repositoryPath]) {
 					continue
@@ -126,17 +181,8 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 					continue
 				}
 
-				temporaryRepositoryPath, cleanup, err := TemporaryRepository(ctx.Log, filepath.Join(ctx.TestdataPath, repositoryPath))
-				if err != nil {
-					ctx.Log.Panicf("ERROR: unable to create temporary repository path: %s", err)
-				}
-
 				for _, model := range ctx.Models {
 					modelID := model.ID()
-
-					if err := ResetTemporaryRepository(ctx.Log, temporaryRepositoryPath); err != nil {
-						ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
-					}
 
 					if !modelSucceededBasicChecksOfLanguage[model][language] {
 						log.Printf("Excluding model %q for language %q cause it did not succeed basic checks", model.ID(), language.ID())
@@ -144,15 +190,23 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 						continue
 					}
 
-					assessment, ps, err := Repository(ctx.Log, ctx.ResultPath, model, language, temporaryRepositoryPath, repositoryPath)
-					assessments[model][language][repositoryPath].Add(assessment)
-					problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
-					if err != nil {
-						ctx.Log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
+					for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
+						if ctx.Runs > 1 && ctx.RunsSequential {
+							ctx.Log.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+						}
+
+						if err := ResetTemporaryRepository(ctx.Log, temporaryRepositoryPath); err != nil {
+							ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+						}
+
+						assessment, ps, err := Repository(ctx.Log, ctx.ResultPath, model, language, temporaryRepositoryPath, repositoryPath)
+						assessments[model][language][repositoryPath].Add(assessment)
+						problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+						if err != nil {
+							ctx.Log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
+						}
 					}
 				}
-
-				cleanup() // Remove temporary directory.
 			}
 		}
 	}
