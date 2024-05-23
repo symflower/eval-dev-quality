@@ -119,7 +119,21 @@ func (p *Provider) client() (client *openai.Client) {
 	return openai.NewClientWithConfig(config)
 }
 
+var _ provider.Service = (*Provider)(nil)
+
 // Start starts necessary background services to use this provider and returns a shutdown function.
 func (p *Provider) Start(logger *log.Logger) (shutdown func() (err error), err error) {
 	return tools.OllamaStart(logger, p.binaryPath, p.url)
+}
+
+var _ provider.Loader = (*Provider)(nil)
+
+// Load loads the given model.
+func (p *Provider) Load(modelIdentifier string) error {
+	return tools.OllamaLoad(p.url, strings.TrimPrefix(modelIdentifier, p.ID()+provider.ProviderModelSeparator))
+}
+
+// Unload unloads the given model.
+func (p *Provider) Unload(modelIdentifier string) error {
+	return tools.OllamaUnload(p.url, strings.TrimPrefix(modelIdentifier, p.ID()+provider.ProviderModelSeparator))
 }

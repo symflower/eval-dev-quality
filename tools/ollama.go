@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -194,7 +195,7 @@ func ollamaProcessStateRemove(url string) {
 }
 
 // OllamaCheck checks that an Ollama service is running at the given URL.
-func OllamaCheck(logger *log.Logger, url string) (err error) {
+func OllamaCheck(url string) (err error) {
 	if err := retry.Do(func() error {
 		response, err := http.Get(url)
 		if err != nil {
@@ -224,7 +225,7 @@ func OllamaStart(logger *log.Logger, binaryPath string, url string) (shutdown fu
 	defer ollamaProcessStatesLock.Unlock()
 
 	// Check if the URL has already a running service.
-	if err := OllamaCheck(logger, url); err == nil {
+	if err := OllamaCheck(url); err == nil {
 		logger.Printf("Reusing existing Ollama service on %q", url)
 
 		ollamaProcessStateAdd(url, nil)
@@ -261,7 +262,7 @@ func OllamaStart(logger *log.Logger, binaryPath string, url string) (shutdown fu
 		}
 	}()
 
-	if err := OllamaCheck(logger, url); err != nil {
+	if err := OllamaCheck(url); err != nil {
 		cancel()
 		serverWaitGroup.Wait()
 
@@ -336,4 +337,40 @@ func OllamaPull(logger *log.Logger, binaryPath string, url string, modelName str
 	})
 
 	return err
+}
+
+// OllamaLoad loads a model into memory.
+func OllamaLoad(ollamaURL string, modelName string) (err error) {
+	ollamaURL, err = url.JoinPath(ollamaURL, "api", "generate")
+	if err != nil {
+		panic(err)
+	}
+
+	// Send an empty request with negative keep-alive time to load the model and keep it loaded indefinitely. https://github.com/ollama/ollama/blob/main/docs/faq.md#how-do-i-keep-a-model-loaded-in-memory-or-make-it-unload-immediately
+	response, err := http.Post(ollamaURL, "application/json", bytes.NewBufferString(fmt.Sprintf("{\"model\":%q,\"keep_alive\":-1}", modelName)))
+	if err != nil {
+		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("error loading model %q to Ollama server at %q", modelName, ollamaURL)))
+	} else if response.StatusCode != http.StatusOK {
+		return pkgerrors.Errorf("unexpected status code when trying to load model %q to Ollama server at %q: %d", modelName, ollamaURL, response.StatusCode)
+	}
+
+	return nil
+}
+
+// OllamaUnload unloads a model from memory.
+func OllamaUnload(ollamaURL string, modelName string) (err error) {
+	ollamaURL, err = url.JoinPath(ollamaURL, "api", "generate")
+	if err != nil {
+		panic(err)
+	}
+
+	// Send an empty request with zero keep-alive time to unload the model. https://github.com/ollama/ollama/blob/main/docs/faq.md#how-do-i-keep-a-model-loaded-in-memory-or-make-it-unload-immediately
+	response, err := http.Post(ollamaURL, "application/json", bytes.NewBufferString(fmt.Sprintf("{\"model\":%q,\"keep_alive\":0}", modelName)))
+	if err != nil {
+		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("error unloading model %q to Ollama server at %q", modelName, ollamaURL)))
+	} else if response.StatusCode != http.StatusOK {
+		return pkgerrors.Errorf("unexpected status code when trying to unloading model %q to Ollama server at %q: %d", modelName, ollamaURL, response.StatusCode)
+	}
+
+	return nil
 }

@@ -19,9 +19,11 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
+	"github.com/symflower/eval-dev-quality/provider"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 )
 
@@ -616,6 +618,153 @@ func TestEvaluate(t *testing.T) {
 					assert.Contains(t, output, "Run 2/3 for model")
 					assert.Contains(t, output, "Run 3/3 for model")
 					assert.NotRegexp(t, `Run \d+/\d+$`, output)
+				},
+			})
+		}
+	})
+
+	t.Run("Preloading", func(t *testing.T) {
+		generateTestsForFilePlainSuccess := func(args mock.Arguments) {
+			require.NoError(t, os.WriteFile(filepath.Join(args.String(2), "plain_test.go"), []byte("package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}"), 0600))
+		}
+		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
+			metrics.AssessmentKeyProcessingTime: 1,
+		}
+		generateSuccess := func(mockedModel *modeltesting.MockModel) {
+			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(generateTestsForFilePlainSuccessMetrics, nil).Run(generateTestsForFilePlainSuccess)
+		}
+
+		{
+			// Setup provider and model mocking.
+			languageGolang := &golang.Language{}
+			mockedModelID := "testing-provider/testing-model"
+			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			mockedProviderID := "testing-provider"
+			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []model.Model{mockedModel})
+			mockedLoader := providertesting.NewMockLoader(t)
+			embeddedProvider := &struct {
+				provider.Provider
+				provider.Loader
+			}{
+				Provider: mockedProvider,
+				Loader:   mockedLoader,
+			}
+			repositoryPath := filepath.Join("golang", "plain")
+
+			validate(t, &testCase{
+				Name: "Once for combined runs",
+
+				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+					generateSuccess(mockedModel)
+					mockedLoader.On("Load", mockedModelID).Return(nil)
+					mockedLoader.On("Unload", mockedModelID).Return(nil)
+				},
+				After: func(t *testing.T, logger *log.Logger, resultPath string) {
+					delete(provider.Providers, mockedProviderID)
+
+					mockedLoader.AssertNumberOfCalls(t, "Load", 1)
+					mockedLoader.AssertNumberOfCalls(t, "Unload", 1)
+				},
+
+				Context: &Context{
+					Languages: []language.Language{
+						languageGolang,
+					},
+
+					Models: []evalmodel.Model{
+						mockedModel,
+					},
+					ProviderForModel: map[evalmodel.Model]provider.Provider{
+						mockedModel: embeddedProvider,
+					},
+
+					RepositoryPaths: []string{
+						repositoryPath,
+					},
+
+					Runs:           3,
+					RunsSequential: true,
+				},
+
+				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+					mockedModel: map[language.Language]map[string]metrics.Assessments{
+						languageGolang: map[string]metrics.Assessments{
+							repositoryPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyFilesExecuted:   3,
+								metrics.AssessmentKeyResponseNoError: 3,
+							},
+						},
+					},
+				},
+				ExpectedTotalScore: 3,
+				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+				},
+			})
+		}
+		{
+			// Setup provider and model mocking.
+			languageGolang := &golang.Language{}
+			mockedModelID := "testing-provider/testing-model"
+			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			mockedProviderID := "testing-provider"
+			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []model.Model{mockedModel})
+			mockedLoader := providertesting.NewMockLoader(t)
+			embeddedProvider := &struct {
+				provider.Provider
+				provider.Loader
+			}{
+				Provider: mockedProvider,
+				Loader:   mockedLoader,
+			}
+			repositoryPath := filepath.Join("golang", "plain")
+			validate(t, &testCase{
+				Name: "Multiple times for interleaved runs",
+
+				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+					generateSuccess(mockedModel)
+					mockedLoader.On("Load", mockedModelID).Return(nil)
+					mockedLoader.On("Unload", mockedModelID).Return(nil)
+				},
+				After: func(t *testing.T, logger *log.Logger, resultPath string) {
+					delete(provider.Providers, "testing-provider")
+
+					mockedLoader.AssertNumberOfCalls(t, "Load", 3)
+					mockedLoader.AssertNumberOfCalls(t, "Unload", 3)
+				},
+
+				Context: &Context{
+					Languages: []language.Language{
+						languageGolang,
+					},
+
+					Models: []evalmodel.Model{
+						mockedModel,
+					},
+					ProviderForModel: map[evalmodel.Model]provider.Provider{
+						mockedModel: embeddedProvider,
+					},
+
+					RepositoryPaths: []string{
+						repositoryPath,
+					},
+
+					Runs: 3,
+				},
+
+				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+					mockedModel: map[language.Language]map[string]metrics.Assessments{
+						languageGolang: map[string]metrics.Assessments{
+							repositoryPath: map[metrics.AssessmentKey]uint64{
+								metrics.AssessmentKeyFilesExecuted:   3,
+								metrics.AssessmentKeyResponseNoError: 3,
+							},
+						},
+					},
+				},
+				ExpectedTotalScore: 3,
+				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+					filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
 			})
 		}

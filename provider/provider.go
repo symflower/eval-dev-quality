@@ -53,3 +53,11 @@ type Service interface {
 	// Start starts necessary background services to use this provider and returns a shutdown function.
 	Start(logger *log.Logger) (shutdown func() (err error), err error)
 }
+
+// Loader is a provider that is able to load and unload models.
+type Loader interface {
+	// Load loads the given model.
+	Load(modelIdentifier string) error
+	// Unload unloads the given model.
+	Unload(modelIdentifier string) error
+}
