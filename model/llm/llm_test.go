@@ -98,8 +98,10 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		SourceFilePath:    sourceFilePath,
 
 		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyResponseNoExcess: 1,
-			metrics.AssessmentKeyResponseWithCode: 1,
+			metrics.AssessmentKeyResponseNoExcess:                   1,
+			metrics.AssessmentKeyResponseWithCode:                   1,
+			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 34,
+			metrics.AssessmentKeyResponseCharacterCount:             43,
 		},
 		ExpectedTestFileContent: `
 			package native

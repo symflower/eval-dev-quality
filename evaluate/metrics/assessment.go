@@ -42,6 +42,11 @@ var (
 	// AssessmentKeyCoverageStatement counts the cases where 100% coverage was reached.
 	AssessmentKeyCoverageStatement = RegisterAssessmentKey("coverage-statement", 10)
 
+	// AssessmentKeyResponseCharacterCount counts the number of characters of a response.
+	AssessmentKeyResponseCharacterCount = RegisterAssessmentKey("response-character-count", 0)
+	// AssessmentKeyGenerateTestsForFileCharacterCount counts the number of characters of a generated test file.
+	AssessmentKeyGenerateTestsForFileCharacterCount = RegisterAssessmentKey("generate-tests-for-file-character-count", 0)
+
 	// AssessmentKeyResponseNoError indicates that a model responded without error.
 	AssessmentKeyResponseNoError = RegisterAssessmentKey("response-no-error", 1)
 	// AssessmentKeyResponseWithCode indicates that a model responded with code.

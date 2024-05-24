@@ -2,6 +2,9 @@ package symflower
 
 import (
 	"context"
+	"os"
+	"path/filepath"
+	"regexp"
 	"time"
 
 	pkgerrors "github.com/pkg/errors"
@@ -34,7 +37,7 @@ func (m *Model) ID() (id string) {
 func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
 	start := time.Now()
 
-	_, err = util.CommandWithResult(context.Background(), logger, &util.Command{
+	output, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "unit-tests",
 			"--code-disable-fetch-dependencies",
@@ -48,9 +51,44 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 		return nil, pkgerrors.WithStack(err)
 	}
 
+	processingTime := uint64(time.Since(start).Milliseconds())
+
+	characterCount, err := countCharactersOfGeneratedFiles(repositoryPath, extractGeneratedFilePaths(output))
+	if err != nil {
+		return nil, err
+	}
+
 	return metrics.Assessments{ // Symflower always generates just source code when it does not fail, so no need to check the assessment properties.
-		metrics.AssessmentKeyResponseNoExcess: 1,
-		metrics.AssessmentKeyResponseWithCode: 1,
-		metrics.AssessmentKeyProcessingTime:   uint64(time.Since(start).Milliseconds()),
+		metrics.AssessmentKeyProcessingTime:                     processingTime,
+		metrics.AssessmentKeyGenerateTestsForFileCharacterCount: characterCount,
+		metrics.AssessmentKeyResponseCharacterCount:             characterCount,
+		metrics.AssessmentKeyResponseNoExcess:                   1,
+		metrics.AssessmentKeyResponseWithCode:                   1,
 	}, nil
+}
+
+// unitTestFilePathsRe defines the regex to search for generated unit test file paths in a log output.
+var unitTestFilePathsRe = regexp.MustCompile(`(?m): generated unit test file (.+)$`)
+
+func extractGeneratedFilePaths(output string) (filePaths []string) {
+	matches := unitTestFilePathsRe.FindAllStringSubmatch(output, -1)
+
+	for _, match := range matches {
+		filePaths = append(filePaths, match[1])
+	}
+
+	return filePaths
+}
+
+func countCharactersOfGeneratedFiles(repositoryPath string, filePaths []string) (count uint64, err error) {
+	for _, filePath := range filePaths {
+		fileContent, err := os.ReadFile(filepath.Join(repositoryPath, filePath))
+		if err != nil {
+			return 0, pkgerrors.WithStack(err)
+		}
+
+		count += uint64(len(string(fileContent)))
+	}
+
+	return count, nil
 }

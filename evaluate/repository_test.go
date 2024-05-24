@@ -81,11 +81,13 @@ func TestRepository(t *testing.T) {
 		RepositoryPath: filepath.Join("golang", "plain"),
 
 		ExpectedRepositoryAssessment: metrics.Assessments{
-			metrics.AssessmentKeyCoverageStatement: 10,
-			metrics.AssessmentKeyFilesExecuted:     1,
-			metrics.AssessmentKeyResponseNoError:   1,
-			metrics.AssessmentKeyResponseNoExcess:  1,
-			metrics.AssessmentKeyResponseWithCode:  1,
+			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
+			metrics.AssessmentKeyResponseCharacterCount:             254,
+			metrics.AssessmentKeyCoverageStatement:                  10,
+			metrics.AssessmentKeyFilesExecuted:                      1,
+			metrics.AssessmentKeyResponseNoError:                    1,
+			metrics.AssessmentKeyResponseNoExcess:                   1,
+			metrics.AssessmentKeyResponseWithCode:                   1,
 		},
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 			filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {

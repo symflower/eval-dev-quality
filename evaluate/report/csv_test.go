@@ -41,8 +41,8 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 		},
 
 		ExpectedString: `
-			model,language,repository,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
-			some-model,some-language,some-repository,0,0,0,0,0,0,0
+			model,language,repository,score,coverage-statement,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+			some-model,some-language,some-repository,0,0,0,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
@@ -52,33 +52,37 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 			modeltesting.NewMockModelNamed(t, "some-model-a"): {
 				languagetesting.NewMockLanguageNamed(t, "some-language"): {
 					"some-repository": metrics.Assessments{
-						metrics.AssessmentKeyCoverageStatement: 1,
-						metrics.AssessmentKeyFilesExecuted:     2,
-						metrics.AssessmentKeyResponseNoError:   3,
-						metrics.AssessmentKeyResponseNoExcess:  4,
-						metrics.AssessmentKeyResponseWithCode:  5,
-						metrics.AssessmentKeyProcessingTime:    200,
+						metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 50,
+						metrics.AssessmentKeyResponseCharacterCount:             100,
+						metrics.AssessmentKeyCoverageStatement:                  1,
+						metrics.AssessmentKeyFilesExecuted:                      2,
+						metrics.AssessmentKeyResponseNoError:                    3,
+						metrics.AssessmentKeyResponseNoExcess:                   4,
+						metrics.AssessmentKeyResponseWithCode:                   5,
+						metrics.AssessmentKeyProcessingTime:                     200,
 					},
 				},
 			},
 			modeltesting.NewMockModelNamed(t, "some-model-b"): {
 				languagetesting.NewMockLanguageNamed(t, "some-language"): {
 					"some-repository": metrics.Assessments{
-						metrics.AssessmentKeyCoverageStatement: 1,
-						metrics.AssessmentKeyFilesExecuted:     2,
-						metrics.AssessmentKeyResponseNoError:   3,
-						metrics.AssessmentKeyResponseNoExcess:  4,
-						metrics.AssessmentKeyResponseWithCode:  5,
-						metrics.AssessmentKeyProcessingTime:    300,
+						metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 100,
+						metrics.AssessmentKeyResponseCharacterCount:             200,
+						metrics.AssessmentKeyCoverageStatement:                  1,
+						metrics.AssessmentKeyFilesExecuted:                      2,
+						metrics.AssessmentKeyResponseNoError:                    3,
+						metrics.AssessmentKeyResponseNoExcess:                   4,
+						metrics.AssessmentKeyResponseWithCode:                   5,
+						metrics.AssessmentKeyProcessingTime:                     300,
 					},
 				},
 			},
 		},
 
 		ExpectedString: `
-			model,language,repository,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
-			some-model-a,some-language,some-repository,15,1,2,200,3,4,5
-			some-model-b,some-language,some-repository,15,1,2,300,3,4,5
+			model,language,repository,score,coverage-statement,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+			some-model-a,some-language,some-repository,15,1,2,50,200,100,3,4,5
+			some-model-b,some-language,some-repository,15,1,2,100,300,200,3,4,5
 		`,
 	})
 }
@@ -109,8 +113,8 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 		},
 
 		ExpectedString: `
-			model,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
-			some-model,0,0,0,0,0,0,0
+			model,score,coverage-statement,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+			some-model,0,0,0,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
@@ -118,27 +122,31 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 
 		Assessments: AssessmentPerModel{
 			modeltesting.NewMockModelNamed(t, "some-model-a"): {
-				metrics.AssessmentKeyCoverageStatement: 1,
-				metrics.AssessmentKeyFilesExecuted:     2,
-				metrics.AssessmentKeyResponseNoError:   3,
-				metrics.AssessmentKeyResponseNoExcess:  4,
-				metrics.AssessmentKeyResponseWithCode:  5,
-				metrics.AssessmentKeyProcessingTime:    200,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 50,
+				metrics.AssessmentKeyResponseCharacterCount:             100,
+				metrics.AssessmentKeyCoverageStatement:                  1,
+				metrics.AssessmentKeyFilesExecuted:                      2,
+				metrics.AssessmentKeyResponseNoError:                    3,
+				metrics.AssessmentKeyResponseNoExcess:                   4,
+				metrics.AssessmentKeyResponseWithCode:                   5,
+				metrics.AssessmentKeyProcessingTime:                     200,
 			},
 			modeltesting.NewMockModelNamed(t, "some-model-b"): {
-				metrics.AssessmentKeyCoverageStatement: 1,
-				metrics.AssessmentKeyFilesExecuted:     2,
-				metrics.AssessmentKeyResponseNoError:   3,
-				metrics.AssessmentKeyResponseNoExcess:  4,
-				metrics.AssessmentKeyResponseWithCode:  5,
-				metrics.AssessmentKeyProcessingTime:    300,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 100,
+				metrics.AssessmentKeyResponseCharacterCount:             200,
+				metrics.AssessmentKeyCoverageStatement:                  1,
+				metrics.AssessmentKeyFilesExecuted:                      2,
+				metrics.AssessmentKeyResponseNoError:                    3,
+				metrics.AssessmentKeyResponseNoExcess:                   4,
+				metrics.AssessmentKeyResponseWithCode:                   5,
+				metrics.AssessmentKeyProcessingTime:                     300,
 			},
 		},
 
 		ExpectedString: `
-			model,score,coverage-statement,files-executed,processing-time,response-no-error,response-no-excess,response-with-code
-			some-model-a,15,1,2,200,3,4,5
-			some-model-b,15,1,2,300,3,4,5
+			model,score,coverage-statement,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+			some-model-a,15,1,2,50,200,100,3,4,5
+			some-model-b,15,1,2,100,300,200,3,4,5
 		`,
 	})
 }
