@@ -10,6 +10,7 @@ import (
 	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/log"
+	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
@@ -61,10 +62,10 @@ func TestOllamaLoading(t *testing.T) {
 	defer func() {
 		require.NoError(t, shutdown())
 	}()
-	require.NoError(t, OllamaPull(log, OllamaPath, url, "qwen:0.5b"))
+	require.NoError(t, OllamaPull(log, OllamaPath, url, providertesting.OllamaTestModel))
 
 	t.Run("Load Model", func(t *testing.T) {
-		assert.NoError(t, OllamaLoad(url, "qwen:0.5b"))
+		assert.NoError(t, OllamaLoad(url, providertesting.OllamaTestModel))
 
 		output, err := util.CommandWithResult(context.Background(), log, &util.Command{
 			Command: []string{
@@ -76,10 +77,10 @@ func TestOllamaLoading(t *testing.T) {
 			},
 		})
 		assert.NoError(t, err)
-		assert.Contains(t, output, "qwen:0.5b")
+		assert.Contains(t, output, providertesting.OllamaTestModel)
 	})
 	t.Run("unload Model", func(t *testing.T) {
-		assert.NoError(t, OllamaUnload(url, "qwen:0.5b"))
+		assert.NoError(t, OllamaUnload(url, providertesting.OllamaTestModel))
 
 		// Give it a few seconds for the unloading completes.
 		time.Sleep(2 * time.Second)
@@ -94,6 +95,6 @@ func TestOllamaLoading(t *testing.T) {
 			},
 		})
 		assert.NoError(t, err)
-		assert.NotContains(t, output, "qwen:0.5b")
+		assert.NotContains(t, output, providertesting.OllamaTestModel)
 	})
 }
