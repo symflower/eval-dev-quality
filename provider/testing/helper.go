@@ -16,3 +16,6 @@ func NewMockProviderNamedWithModels(t *testing.T, id string, models []model.Mode
 
 	return m
 }
+
+// OllamaTestModel holds the smallest Ollama model that we use for testing.
+const OllamaTestModel = "qwen:0.5b"

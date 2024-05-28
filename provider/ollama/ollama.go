@@ -2,7 +2,6 @@ package ollama
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 	"strings"
 
@@ -13,6 +12,7 @@ import (
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm"
 	"github.com/symflower/eval-dev-quality/provider"
+	openaiapi "github.com/symflower/eval-dev-quality/provider/openai-api"
 	"github.com/symflower/eval-dev-quality/tools"
 )
 
@@ -85,25 +85,7 @@ func (p *Provider) Query(ctx context.Context, modelIdentifier string, promptText
 	client := p.client()
 	modelIdentifier = strings.TrimPrefix(modelIdentifier, p.ID()+provider.ProviderModelSeparator)
 
-	apiResponse, err := client.CreateChatCompletion(
-		ctx,
-		openai.ChatCompletionRequest{
-			Model: modelIdentifier,
-			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: promptText,
-				},
-			},
-		},
-	)
-	if err != nil {
-		return "", pkgerrors.WithStack(err)
-	} else if len(apiResponse.Choices) == 0 {
-		return "", pkgerrors.WithStack(fmt.Errorf("empty LLM %q response: %+v", modelIdentifier, apiResponse))
-	}
-
-	return apiResponse.Choices[0].Message.Content, nil
+	return openaiapi.QueryOpenAIAPIModel(ctx, client, modelIdentifier, promptText)
 }
 
 // client returns a new client with the current configuration.

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -17,6 +18,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/log"
+	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 	"github.com/symflower/eval-dev-quality/tools"
 )
 
@@ -501,12 +503,12 @@ func TestEvaluateExecute(t *testing.T) {
 						shutdown, err = tools.OllamaStart(logger, tools.OllamaPath, tools.OllamaURL)
 						require.NoError(t, err)
 
-						require.NoError(t, tools.OllamaPull(logger, tools.OllamaPath, tools.OllamaURL, "qwen:0.5b"))
+						require.NoError(t, tools.OllamaPull(logger, tools.OllamaPath, tools.OllamaURL, providertesting.OllamaTestModel))
 					},
 
 					Arguments: []string{
 						"--language", "golang",
-						"--model", "ollama/qwen:0.5b",
+						"--model", "ollama/" + providertesting.OllamaTestModel,
 						"--repository", filepath.Join("golang", "plain"),
 					},
 
@@ -515,7 +517,7 @@ func TestEvaluateExecute(t *testing.T) {
 						"evaluation.csv": nil,
 						"evaluation.log": func(t *testing.T, filePath, data string) {
 							// Since the model is non-deterministic, we can only assert that the model did at least not error.
-							assert.Contains(t, data, `Evaluation score for "ollama/qwen:0.5b"`)
+							assert.Contains(t, data, fmt.Sprintf(`Evaluation score for "ollama/%s"`, providertesting.OllamaTestModel))
 							assert.Contains(t, data, "response-no-error=1")
 							assert.Contains(t, data, "preloading model")
 							assert.Contains(t, data, "unloading model")
@@ -523,7 +525,55 @@ func TestEvaluateExecute(t *testing.T) {
 						"golang-summed.csv": nil,
 						"models-summed.csv": nil,
 						"README.md":         nil,
-						"ollama_qwen:0.5b/golang/golang/plain.log": nil,
+						"ollama_" + providertesting.OllamaTestModel + "/golang/golang/plain.log": nil,
+					},
+				})
+			}
+		})
+		t.Run("OpenAI API", func(t *testing.T) {
+			if !osutil.IsLinux() {
+				t.Skipf("Installation of Ollama is not supported on this OS")
+			}
+
+			{
+				var shutdown func() (err error)
+				defer func() {
+					if shutdown != nil {
+						require.NoError(t, shutdown())
+					}
+				}()
+				ollamaOpenAIAPIUrl, err := url.JoinPath(tools.OllamaURL, "v1")
+				require.NoError(t, err)
+				validate(t, &testCase{
+					Name: "Ollama",
+
+					Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+						var err error
+						shutdown, err = tools.OllamaStart(logger, tools.OllamaPath, tools.OllamaURL)
+						require.NoError(t, err)
+
+						require.NoError(t, tools.OllamaPull(logger, tools.OllamaPath, tools.OllamaURL, providertesting.OllamaTestModel))
+					},
+
+					Arguments: []string{
+						"--language", "golang",
+						"--urls", "custom-ollama:" + ollamaOpenAIAPIUrl,
+						"--model", "custom-ollama/" + providertesting.OllamaTestModel,
+						"--repository", filepath.Join("golang", "plain"),
+					},
+
+					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+						"categories.svg": nil,
+						"evaluation.csv": nil,
+						"evaluation.log": func(t *testing.T, filePath, data string) {
+							// Since the model is non-deterministic, we can only assert that the model did at least not error.
+							assert.Contains(t, data, fmt.Sprintf(`Evaluation score for "custom-ollama/%s"`, providertesting.OllamaTestModel))
+							assert.Contains(t, data, "response-no-error=1")
+						},
+						"golang-summed.csv": nil,
+						"models-summed.csv": nil,
+						"README.md":         nil,
+						"custom-ollama_" + providertesting.OllamaTestModel + "/golang/golang/plain.log": nil,
 					},
 				})
 			}

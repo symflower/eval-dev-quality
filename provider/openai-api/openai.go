@@ -1,34 +1,29 @@
-package openrouter
+package openaiapi
 
 import (
 	"context"
-	"errors"
 	"strings"
 
-	pkgerrors "github.com/pkg/errors"
 	"github.com/sashabaranov/go-openai"
 
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
-	"github.com/symflower/eval-dev-quality/model/llm"
 	"github.com/symflower/eval-dev-quality/provider"
-	openaiapi "github.com/symflower/eval-dev-quality/provider/openai-api"
 )
 
-// Provider holds an "openrouter.ai" provider using its public REST API.
+// Provider holds a generic "OpenAI API" provider.
 type Provider struct {
 	baseURL string
 	token   string
+	id      string
+	models  []model.Model
 }
 
-func init() {
-	provider.Register(NewProvider())
-}
-
-// NewProvider returns an "openrouter.ai" provider.
-func NewProvider() (provider provider.Provider) {
+// NewProvider returns a generic "OpenAI API" provider.
+func NewProvider(id string, baseURL string) (provider *Provider) {
 	return &Provider{
-		baseURL: "https://openrouter.ai/api/v1",
+		baseURL: baseURL,
+		id:      id,
 	}
 }
 
@@ -37,32 +32,22 @@ var _ provider.Provider = (*Provider)(nil)
 // Available checks if the provider is ready to be used.
 // This might include checking for an installation or making sure an API access token is valid.
 func (p *Provider) Available(logger *log.Logger) (err error) {
-	if p.token == "" {
-		return pkgerrors.WithStack(errors.New("missing access token"))
-	}
-
-	return nil
+	return nil // We cannot know if a custom provider requires an API.
 }
 
 // ID returns the unique ID of this provider.
 func (p *Provider) ID() (id string) {
-	return "openrouter"
+	return p.id
 }
 
 // Models returns which models are available to be queried via this provider.
 func (p *Provider) Models() (models []model.Model, err error) {
-	client := p.client()
-	ms, err := client.ListModels(context.Background())
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
+	return p.models, nil
+}
 
-	models = make([]model.Model, len(ms.Models))
-	for i, model := range ms.Models {
-		models[i] = llm.NewModel(p, p.ID()+provider.ProviderModelSeparator+model.ID)
-	}
-
-	return models, nil
+// AddModel manually adds a model to the provider.
+func (p *Provider) AddModel(m model.Model) {
+	p.models = append(p.models, m)
 }
 
 var _ provider.InjectToken = (*Provider)(nil)
@@ -79,7 +64,7 @@ func (p *Provider) Query(ctx context.Context, modelIdentifier string, promptText
 	client := p.client()
 	modelIdentifier = strings.TrimPrefix(modelIdentifier, p.ID()+provider.ProviderModelSeparator)
 
-	return openaiapi.QueryOpenAIAPIModel(ctx, client, modelIdentifier, promptText)
+	return QueryOpenAIAPIModel(ctx, client, modelIdentifier, promptText)
 }
 
 // client returns a new client with the current configuration.

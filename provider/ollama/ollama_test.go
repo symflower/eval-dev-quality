@@ -9,6 +9,7 @@ import (
 	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/log"
+	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 	"github.com/symflower/eval-dev-quality/tools"
 )
 
@@ -143,11 +144,11 @@ func TestProviderModels(t *testing.T) {
 		Name: "Local Model",
 
 		LocalModels: []string{
-			"qwen:0.5b",
+			providertesting.OllamaTestModel,
 		},
 
 		ExpectedModels: []string{
-			"ollama/qwen:0.5b",
+			"ollama/" + providertesting.OllamaTestModel,
 		},
 	})
 }
