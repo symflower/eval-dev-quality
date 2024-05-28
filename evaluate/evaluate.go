@@ -1,12 +1,12 @@
 package evaluate
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	evallanguage "github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
 )
@@ -37,6 +37,8 @@ type Context struct {
 	Runs uint
 	// RunsSequential indicates that interleaved runs are disabled and runs are performed sequentially.
 	RunsSequential bool
+	// NoDisqualification indicates that models are not to be disqualified if they fail to solve basic language tasks.
+	NoDisqualification bool
 }
 
 // runsAtLanguageLevel returns how many runs to perform on language level.
@@ -189,8 +191,8 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 				for _, model := range ctx.Models {
 					modelID := model.ID()
 
-					if !modelSucceededBasicChecksOfLanguage[model][language] {
-						log.Printf("Excluding model %q for language %q cause it did not succeed basic checks", model.ID(), language.ID())
+					if !ctx.NoDisqualification && !modelSucceededBasicChecksOfLanguage[model][language] {
+						ctx.Log.Printf("Excluding model %q for language %q cause it did not succeed basic checks", model.ID(), language.ID())
 
 						continue
 					}
