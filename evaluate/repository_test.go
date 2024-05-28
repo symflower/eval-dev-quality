@@ -1,6 +1,7 @@
 package evaluate
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"sort"
@@ -17,6 +18,7 @@ import (
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/symflower"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 func TestRepository(t *testing.T) {
@@ -109,6 +111,7 @@ func TestTemporaryRepository(t *testing.T) {
 
 		ExpectedTempPathRegex string
 		ExpectedErr           error
+		ValidateAfter         func(t *testing.T, logger *log.Logger, repositoryPath string)
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -117,12 +120,22 @@ func TestTemporaryRepository(t *testing.T) {
 				t.Skipf("Regex tests with paths are not supported on this OS")
 			}
 
-			_, logger := log.Buffer()
+			logBuffer, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Logf("Log Output:\n%s", logBuffer.String())
+				}
+			}()
+
 			actualTemporaryRepositoryPath, cleanup, actualErr := TemporaryRepository(logger, filepath.Join(tc.TestDataPath, tc.RepositoryPath))
 			defer cleanup()
 
 			assert.Regexp(t, filepath.Join(os.TempDir(), tc.ExpectedTempPathRegex), actualTemporaryRepositoryPath, actualTemporaryRepositoryPath)
 			assert.Equal(t, tc.ExpectedErr, actualErr)
+
+			if tc.ValidateAfter != nil {
+				tc.ValidateAfter(t, logger, actualTemporaryRepositoryPath)
+			}
 		})
 	}
 
@@ -134,6 +147,18 @@ func TestTemporaryRepository(t *testing.T) {
 
 		ExpectedTempPathRegex: `eval-dev-quality\d+\/plain`,
 		ExpectedErr:           nil,
+		ValidateAfter: func(t *testing.T, logger *log.Logger, repositoryPath string) {
+			output, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+				Command: []string{
+					"git",
+					"log",
+				},
+
+				Directory: repositoryPath,
+			})
+			require.NoError(t, err)
+			assert.Contains(t, output, "Author: dummy-name-temporary-repository")
+		},
 	})
 }
 
