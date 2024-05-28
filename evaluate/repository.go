@@ -9,6 +9,7 @@ import (
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
+	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
@@ -86,6 +87,26 @@ func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryReposito
 		return "", cleanup, pkgerrors.WithStack(err)
 	}
 
+	// Add a default git configuration.
+	if err := os.MkdirAll(filepath.Join(temporaryRepositoryPath, ".git"), 0700); err != nil {
+		return "", cleanup, pkgerrors.WithStack(err)
+	}
+	if err := os.WriteFile(filepath.Join(temporaryRepositoryPath, ".git", "config"), bytesutil.TrimIndentations([]byte(`
+		[user]
+			name = dummy-name-temporary-repository
+			email = dummy.mail@temporary.repository
+			username = dummy_username_temporary_repository
+		[init]
+			defaultBranch = main
+	`)), 0600); err != nil {
+		return "", cleanup, pkgerrors.WithStack(err)
+	}
+	// Overwrite the global and system configs to point to the default one.
+	environment := map[string]string{
+		"GIT_CONFIG_GLOBAL": filepath.Join(temporaryRepositoryPath, ".git", "config"),
+		"GIT_CONFIG_SYSTEM": filepath.Join(temporaryRepositoryPath, ".git", "config"),
+	}
+
 	// Add git repository and commit changes.
 	out, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
@@ -94,6 +115,7 @@ func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryReposito
 		},
 
 		Directory: temporaryRepositoryPath,
+		Env:       environment,
 	})
 	if err != nil {
 		return "", cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to initialize git repository", out)))
@@ -107,6 +129,7 @@ func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryReposito
 		},
 
 		Directory: temporaryRepositoryPath,
+		Env:       environment,
 	})
 	if err != nil {
 		return "", cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to add files", out)))
@@ -121,6 +144,7 @@ func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryReposito
 		},
 
 		Directory: temporaryRepositoryPath,
+		Env:       environment,
 	})
 	if err != nil {
 		return "", cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to commit", out)))
@@ -139,6 +163,10 @@ func ResetTemporaryRepository(logger *log.Logger, path string) (err error) {
 		},
 
 		Directory: path,
+		Env: map[string]string{ // Overwrite the global and system configs to point to the default one.
+			"GIT_CONFIG_GLOBAL": filepath.Join(path, ".git", "config"),
+			"GIT_CONFIG_SYSTEM": filepath.Join(path, ".git", "config"),
+		},
 	})
 	if err != nil {
 		return pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to clean git repository", out)))

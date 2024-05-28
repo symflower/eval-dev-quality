@@ -76,7 +76,7 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 			repositoryPath := filepath.Join(language.ID(), RepositoryPlainName)
 			temporaryRepositoryPath, cleanup, err := TemporaryRepository(ctx.Log, filepath.Join(ctx.TestdataPath, repositoryPath))
 			if err != nil {
-				ctx.Log.Panicf("ERROR: unable to create temporary repository path: %s", err)
+				ctx.Log.Panicf("ERROR: unable to create temporary repository path: %+v", err)
 			}
 
 			defer cleanup()
