@@ -12,6 +12,7 @@ import (
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
+	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/log"
 )
 
@@ -76,9 +77,169 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		FilePath:       "plain.go",
 
 		ExpectedAssessment: metrics.Assessments{
-			metrics.AssessmentKeyResponseNoExcess: 1,
-			metrics.AssessmentKeyResponseWithCode: 1,
+			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
+			metrics.AssessmentKeyResponseCharacterCount:             254,
+			metrics.AssessmentKeyResponseNoExcess:                   1,
+			metrics.AssessmentKeyResponseWithCode:                   1,
 		},
 		ExpectedCoverage: 100,
+	})
+	validate(t, &testCase{
+		Name: "Java",
+
+		Language: &java.Language{},
+
+		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
+		FilePath:       filepath.Join("src", "main", "java", "com", "eval", "Plain.java"),
+
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 139,
+			metrics.AssessmentKeyResponseCharacterCount:             139,
+			metrics.AssessmentKeyResponseNoExcess:                   1,
+			metrics.AssessmentKeyResponseWithCode:                   1,
+		},
+		ExpectedCoverage: 100,
+	})
+}
+
+func TestExtractGeneratedFilePaths(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Output string
+
+		ExpectedFilePaths []string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualSlice := extractGeneratedFilePaths(tc.Output)
+
+			assert.Equal(t, tc.ExpectedFilePaths, actualSlice)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Simple",
+
+		Output: `src/main/java/com/eval/Plain.java: generated unit test file src/test/java/com/eval/PlainSymflowerTest.java`,
+
+		ExpectedFilePaths: []string{
+			`src/test/java/com/eval/PlainSymflowerTest.java`,
+		},
+	})
+	validate(t, &testCase{
+		Name: "Full output",
+
+		Output: `2024/04/25 20:13:49 Evaluating model "symflower/symbolic-execution" using language "java" and repository "java/plain"
+2024/04/25 20:13:49 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1527239031/plain src/main/java/com/eval/Plain.java
+Analyzing workspace /tmp/eval-dev-quality1527239031/plain/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/Plain.java: found 1 symbols
+src/main/java/com/eval/Plain.java: com.eval.Plain.plain: computing test cases
+src/main/java/com/eval/Plain.java: com.eval.Plain.plain: computed 1 unit tests
+src/main/java/com/eval/Plain.java: com.eval.Plain.plain: found 0 problems
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/Plain.java: generated unit test file src/test/java/com/eval/PlainSymflowerTest.java
+src/test/java/com/eval/Foo.java: generated unit test file src/test/java/com/eval/Foo.java
+src/test/java/com/eval/Bar.java: generated unit test file src/test/java/com/eval/Bar.java
+src/test/java/com/eval/FooBar.java: generated unit test file src/test/java/com/eval/FooBar.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 1 test
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for youhelp![0m
+2024/04/25 20:13:52 $ symflower test --language java --workspace /tmp/eval-dev-quality1527239031/plain
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for youhelp![0m
+2024/04/25 20:13:58 Evaluated model "symflower/symbolic-execution" using language "java" and repository "java/plain": encountered 0 problems: []`,
+
+		ExpectedFilePaths: []string{
+			"src/test/java/com/eval/PlainSymflowerTest.java",
+			"src/test/java/com/eval/Foo.java",
+			"src/test/java/com/eval/Bar.java",
+			"src/test/java/com/eval/FooBar.java",
+		},
+	})
+}
+
+func TestCountCharactersOfGeneratedFiles(t *testing.T) {
+	if osutil.IsWindows() {
+		t.Skip("Files created on Windows have different line endings")
+	}
+
+	type testCase struct {
+		Name string
+
+		RepositoryPath string
+		FilePaths      []string
+
+		ExpectedCount uint64
+		ErrorValidate func(err error)
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			temporaryPath := t.TempDir()
+			repositoryPath := filepath.Join(temporaryPath, filepath.Base(tc.RepositoryPath))
+			require.NoError(t, osutil.CopyTree(tc.RepositoryPath, repositoryPath))
+
+			actualCount, actualErr := countCharactersOfGeneratedFiles(tc.RepositoryPath, tc.FilePaths)
+			if tc.ErrorValidate != nil {
+				tc.ErrorValidate(actualErr)
+			} else if actualErr != nil {
+				t.Fatal(actualErr)
+			}
+
+			assert.Equal(t, tc.ExpectedCount, actualCount)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "File does not exist",
+
+		RepositoryPath: filepath.Join("..", "..", "testdata"),
+		FilePaths: []string{
+			filepath.Join("file", "does", "not", "exist"),
+		},
+
+		ExpectedCount: 0,
+		ErrorValidate: func(err error) {
+			assert.ErrorContains(t, err, "no such file or directory")
+		},
+	})
+	validate(t, &testCase{
+		Name: "Go",
+
+		RepositoryPath: filepath.Join("..", "..", "testdata"),
+		FilePaths: []string{
+			filepath.Join("golang", "plain", "plain.go"),
+		},
+
+		ExpectedCount: 102,
+	})
+	validate(t, &testCase{
+		Name: "Java",
+
+		RepositoryPath: filepath.Join("..", "..", "testdata"),
+		FilePaths: []string{
+			filepath.Join("java", "plain", "src", "main", "java", "com", "eval", "Plain.java"),
+		},
+
+		ExpectedCount: 67,
+	})
+	validate(t, &testCase{
+		Name: "Go and Java",
+
+		RepositoryPath: filepath.Join("..", "..", "testdata"),
+		FilePaths: []string{
+			filepath.Join("golang", "plain", "plain.go"),
+			filepath.Join("java", "plain", "src", "main", "java", "com", "eval", "Plain.java"),
+		},
+
+		ExpectedCount: 169,
 	})
 }

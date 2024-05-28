@@ -17,5 +17,10 @@ func AssertAssessmentsEqual(t *testing.T, expected metrics.Assessments, actual m
 	expected[metrics.AssessmentKeyProcessingTime] = 0
 	actual[metrics.AssessmentKeyProcessingTime] = 0
 
+	expected[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = 0
+	actual[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = 0
+	expected[metrics.AssessmentKeyResponseCharacterCount] = 0
+	actual[metrics.AssessmentKeyResponseCharacterCount] = 0
+
 	assert.Truef(t, expected.Equal(actual), "expected:%s\nactual:%s", expected, actual)
 }

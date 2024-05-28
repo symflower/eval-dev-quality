@@ -137,22 +137,24 @@ func TestAssessmentString(t *testing.T) {
 
 		Assessment: NewAssessments(),
 
-		ExpectedString: "score=0, coverage-statement=0, files-executed=0, processing-time=0, response-no-error=0, response-no-excess=0, response-with-code=0",
+		ExpectedString: "score=0, coverage-statement=0, files-executed=0, generate-tests-for-file-character-count=0, processing-time=0, response-character-count=0, response-no-error=0, response-no-excess=0, response-with-code=0",
 	})
 
 	validate(t, &testCase{
 		Name: "Non-empty Metrics",
 
 		Assessment: Assessments{
-			AssessmentKeyCoverageStatement: 1,
-			AssessmentKeyFilesExecuted:     2,
-			AssessmentKeyResponseNoError:   3,
-			AssessmentKeyResponseNoExcess:  4,
-			AssessmentKeyResponseWithCode:  5,
-			AssessmentKeyProcessingTime:    200,
+			AssessmentKeyGenerateTestsForFileCharacterCount: 50,
+			AssessmentKeyResponseCharacterCount:             100,
+			AssessmentKeyCoverageStatement:                  1,
+			AssessmentKeyFilesExecuted:                      2,
+			AssessmentKeyResponseNoError:                    3,
+			AssessmentKeyResponseNoExcess:                   4,
+			AssessmentKeyResponseWithCode:                   5,
+			AssessmentKeyProcessingTime:                     200,
 		},
 
-		ExpectedString: "score=15, coverage-statement=1, files-executed=2, processing-time=200, response-no-error=3, response-no-excess=4, response-with-code=5",
+		ExpectedString: "score=15, coverage-statement=1, files-executed=2, generate-tests-for-file-character-count=50, processing-time=200, response-character-count=100, response-no-error=3, response-no-excess=4, response-with-code=5",
 	})
 }
 
