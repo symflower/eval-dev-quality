@@ -1,6 +1,14 @@
 package modeltesting
 
-import "testing"
+import (
+	"os"
+	"path/filepath"
+	"testing"
+
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+)
 
 // NewMockModelNamed returns a new named mocked model.
 func NewMockModelNamed(t *testing.T, id string) *MockModel {
@@ -8,4 +16,16 @@ func NewMockModelNamed(t *testing.T, id string) *MockModel {
 	m.On("ID").Return(id).Maybe()
 
 	return m
+}
+
+// RegisterGenerateSuccess registers a mock call for successful generation.
+func (m *MockModel) RegisterGenerateSuccess(t *testing.T, filePath string, fileContent string, assessment metrics.Assessments) *mock.Call {
+	return m.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(assessment, nil).Run(func(args mock.Arguments) {
+		require.NoError(t, os.WriteFile(filepath.Join(args.String(2), filePath), []byte(fileContent), 0600))
+	})
+}
+
+// RegisterGenerateError registers a mock call that errors on generation.
+func (m *MockModel) RegisterGenerateError(err error) *mock.Call {
+	return m.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, err)
 }

@@ -318,19 +318,16 @@ func TestEvaluate(t *testing.T) {
 		d = bytes.ReplaceAll(d, []byte("plain"), []byte("next"))
 		require.NoError(t, os.WriteFile(repositoryNextConfigPath, d, 0))
 
-		generateTestsForFilePlainSuccess := func(args mock.Arguments) {
-			require.NoError(t, os.WriteFile(filepath.Join(args.String(2), "plain_test.go"), []byte("package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}"), 0600))
-		}
 		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
 			metrics.AssessmentKeyProcessingTime: 1,
 		}
 		generateTestsForFilePlainError := errors.New("generateTestsForFile error")
 
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(generateTestsForFilePlainSuccessMetrics, nil).Run(generateTestsForFilePlainSuccess).Once()
+			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", generateTestsForFilePlainSuccessMetrics).Once()
 		}
 		generateError := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, generateTestsForFilePlainError).Once()
+			mockedModel.RegisterGenerateError(generateTestsForFilePlainError).Once()
 		}
 
 		{
@@ -514,14 +511,11 @@ func TestEvaluate(t *testing.T) {
 		}
 	})
 	t.Run("Runs", func(t *testing.T) {
-		generateTestsForFilePlainSuccess := func(args mock.Arguments) {
-			require.NoError(t, os.WriteFile(filepath.Join(args.String(2), "plain_test.go"), []byte("package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}"), 0600))
-		}
 		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
 			metrics.AssessmentKeyProcessingTime: 1,
 		}
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(generateTestsForFilePlainSuccessMetrics, nil).Run(generateTestsForFilePlainSuccess)
+			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", generateTestsForFilePlainSuccessMetrics)
 		}
 		{
 			languageGolang := &golang.Language{}
@@ -628,14 +622,11 @@ func TestEvaluate(t *testing.T) {
 	})
 
 	t.Run("Preloading", func(t *testing.T) {
-		generateTestsForFilePlainSuccess := func(args mock.Arguments) {
-			require.NoError(t, os.WriteFile(filepath.Join(args.String(2), "plain_test.go"), []byte("package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}"), 0600))
-		}
 		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
 			metrics.AssessmentKeyProcessingTime: 1,
 		}
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(generateTestsForFilePlainSuccessMetrics, nil).Run(generateTestsForFilePlainSuccess)
+			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", generateTestsForFilePlainSuccessMetrics)
 		}
 
 		{
