@@ -49,7 +49,7 @@ func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command
 	c.WaitDelay = 3 * time.Second // Some binaries do not like to be killed, e.g. "ollama", so we kill them after some time automatically.
 
 	if err := c.Run(); err != nil {
-		return writer.String(), pkgerrors.WithStack(err)
+		return writer.String(), pkgerrors.WithStack(pkgerrors.WithMessage(err, writer.String()))
 	}
 
 	return writer.String(), nil

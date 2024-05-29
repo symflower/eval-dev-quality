@@ -18,6 +18,7 @@ import (
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/symflower"
+	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
@@ -32,7 +33,7 @@ func TestRepository(t *testing.T) {
 
 		ExpectedRepositoryAssessment metrics.Assessments
 		ExpectedResultFiles          map[string]func(t *testing.T, filePath string, data string)
-		ExpectedProblems             []error
+		ExpectedProblemContains      []string
 		ExpectedError                error
 	}
 
@@ -48,7 +49,16 @@ func TestRepository(t *testing.T) {
 			actualRepositoryAssessment, actualProblems, actualErr := Repository(logger, temporaryPath, tc.Model, tc.Language, temporaryRepositoryPath, tc.RepositoryPath)
 
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
-			assert.Equal(t, tc.ExpectedProblems, actualProblems)
+			if assert.Equal(t, len(tc.ExpectedProblemContains), len(actualProblems), "problems count") {
+				for i, expectedProblem := range tc.ExpectedProblemContains {
+					actualProblem := actualProblems[i]
+					assert.Containsf(t, actualProblem.Error(), expectedProblem, "Problem %d", i)
+				}
+			} else {
+				for i, problem := range actualProblems {
+					t.Logf("Actual problem %d:\n%+v", i, problem)
+				}
+			}
 			assert.Equal(t, tc.ExpectedError, actualErr)
 
 			actualResultFiles, err := osutil.FilesRecursive(temporaryPath)
@@ -99,6 +109,45 @@ func TestRepository(t *testing.T) {
 				assert.Contains(t, data, "Evaluated model \"symflower/symbolic-execution\"")
 			},
 		},
+	})
+	t.Run("Clear repository on each task file", func(t *testing.T) {
+		temporaryDirectoryPath := t.TempDir()
+
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
+		require.NoError(t, os.MkdirAll(repositoryPath, 0700))
+		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "go.mod"), []byte("module plain\n\ngo 1.21.5"), 0600))
+		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "taskA.go"), []byte("package plain\n\nfunc TaskA(){}"), 0600))
+		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "taskB.go"), []byte("package plain\n\nfunc TaskB(){}"), 0600))
+
+		modelMock := modeltesting.NewMockModelNamed(t, "mocked-model")
+
+		// Generate invalid code for the first task.
+		modelMock.RegisterGenerateSuccess(t, "taskA_test.go", "does not compile", metricstesting.AssessmentsWithProcessingTime).Once()
+		// Generate valid code for the second task.
+		modelMock.RegisterGenerateSuccess(t, "taskB_test.go", "package plain\n\nimport \"testing\"\n\nfunc TestTaskB(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Once()
+
+		validate(t, &testCase{
+			Name: "Plain",
+
+			Model:          modelMock,
+			Language:       &golang.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("golang", "plain"),
+
+			ExpectedRepositoryAssessment: metrics.Assessments{
+				metrics.AssessmentKeyFilesExecuted:   1,
+				metrics.AssessmentKeyResponseNoError: 2,
+			},
+			ExpectedProblemContains: []string{
+				"expected 'package', found does",
+			},
+			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+				filepath.Join("mocked-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Contains(t, data, "Evaluating model \"mocked-model\"")
+					assert.Contains(t, data, "PASS: TestTaskB")
+				},
+			},
+		})
 	})
 }
 
