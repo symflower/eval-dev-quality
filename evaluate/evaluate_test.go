@@ -15,6 +15,7 @@ import (
 	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
@@ -318,13 +319,10 @@ func TestEvaluate(t *testing.T) {
 		d = bytes.ReplaceAll(d, []byte("plain"), []byte("next"))
 		require.NoError(t, os.WriteFile(repositoryNextConfigPath, d, 0))
 
-		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
-			metrics.AssessmentKeyProcessingTime: 1,
-		}
 		generateTestsForFilePlainError := errors.New("generateTestsForFile error")
 
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", generateTestsForFilePlainSuccessMetrics).Once()
+			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Once()
 		}
 		generateError := func(mockedModel *modeltesting.MockModel) {
 			mockedModel.RegisterGenerateError(generateTestsForFilePlainError).Once()
@@ -511,11 +509,8 @@ func TestEvaluate(t *testing.T) {
 		}
 	})
 	t.Run("Runs", func(t *testing.T) {
-		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
-			metrics.AssessmentKeyProcessingTime: 1,
-		}
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", generateTestsForFilePlainSuccessMetrics)
+			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime)
 		}
 		{
 			languageGolang := &golang.Language{}
@@ -622,11 +617,8 @@ func TestEvaluate(t *testing.T) {
 	})
 
 	t.Run("Preloading", func(t *testing.T) {
-		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
-			metrics.AssessmentKeyProcessingTime: 1,
-		}
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", generateTestsForFilePlainSuccessMetrics)
+			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime)
 		}
 
 		{
