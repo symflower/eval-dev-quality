@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
+	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
@@ -32,6 +33,26 @@ var (
 	// ErrEmptyResponseFromModel indicates the model returned an empty response.
 	ErrEmptyResponseFromModel = errors.New("empty response from model")
 )
+
+// file represents a file with path and content.
+type file struct {
+	Path    string
+	Content string
+}
+
+// testFiles holds common test files.
+var testFiles = map[string]file{
+	"plain": file{
+		Path: "plain_test.go",
+		Content: bytesutil.StringTrimIndentations(`
+			package plain
+
+			import "testing"
+
+			func TestFunction(t *testing.T){}
+		`),
+	},
+}
 
 func TestEvaluate(t *testing.T) {
 	type testCase struct {
@@ -322,7 +343,7 @@ func TestEvaluate(t *testing.T) {
 		generateTestsForFilePlainError := errors.New("generateTestsForFile error")
 
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Once()
+			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime).Once()
 		}
 		generateError := func(mockedModel *modeltesting.MockModel) {
 			mockedModel.RegisterGenerateError(generateTestsForFilePlainError).Once()
@@ -510,7 +531,7 @@ func TestEvaluate(t *testing.T) {
 	})
 	t.Run("Runs", func(t *testing.T) {
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime)
+			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
 		{
 			languageGolang := &golang.Language{}
@@ -618,7 +639,7 @@ func TestEvaluate(t *testing.T) {
 
 	t.Run("Preloading", func(t *testing.T) {
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, "plain_test.go", "package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime)
+			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
 
 		{
