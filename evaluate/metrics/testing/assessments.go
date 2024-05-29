@@ -24,3 +24,8 @@ func AssertAssessmentsEqual(t *testing.T, expected metrics.Assessments, actual m
 
 	assert.Truef(t, expected.Equal(actual), "expected:%s\nactual:%s", expected, actual)
 }
+
+// AssessmentsWithProcessingTime is an empty assessment collection with positive processing time.
+var AssessmentsWithProcessingTime = metrics.Assessments{
+	metrics.AssessmentKeyProcessingTime: 1,
+}

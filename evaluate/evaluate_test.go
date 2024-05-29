@@ -13,8 +13,10 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
+	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
@@ -31,6 +33,26 @@ var (
 	// ErrEmptyResponseFromModel indicates the model returned an empty response.
 	ErrEmptyResponseFromModel = errors.New("empty response from model")
 )
+
+// file represents a file with path and content.
+type file struct {
+	Path    string
+	Content string
+}
+
+// testFiles holds common test files.
+var testFiles = map[string]file{
+	"plain": file{
+		Path: "plain_test.go",
+		Content: bytesutil.StringTrimIndentations(`
+			package plain
+
+			import "testing"
+
+			func TestFunction(t *testing.T){}
+		`),
+	},
+}
 
 func TestEvaluate(t *testing.T) {
 	type testCase struct {
@@ -318,19 +340,13 @@ func TestEvaluate(t *testing.T) {
 		d = bytes.ReplaceAll(d, []byte("plain"), []byte("next"))
 		require.NoError(t, os.WriteFile(repositoryNextConfigPath, d, 0))
 
-		generateTestsForFilePlainSuccess := func(args mock.Arguments) {
-			require.NoError(t, os.WriteFile(filepath.Join(args.String(2), "plain_test.go"), []byte("package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}"), 0600))
-		}
-		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
-			metrics.AssessmentKeyProcessingTime: 1,
-		}
 		generateTestsForFilePlainError := errors.New("generateTestsForFile error")
 
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(generateTestsForFilePlainSuccessMetrics, nil).Run(generateTestsForFilePlainSuccess).Once()
+			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime).Once()
 		}
 		generateError := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, generateTestsForFilePlainError).Once()
+			mockedModel.RegisterGenerateError(generateTestsForFilePlainError).Once()
 		}
 
 		{
@@ -514,14 +530,8 @@ func TestEvaluate(t *testing.T) {
 		}
 	})
 	t.Run("Runs", func(t *testing.T) {
-		generateTestsForFilePlainSuccess := func(args mock.Arguments) {
-			require.NoError(t, os.WriteFile(filepath.Join(args.String(2), "plain_test.go"), []byte("package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}"), 0600))
-		}
-		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
-			metrics.AssessmentKeyProcessingTime: 1,
-		}
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(generateTestsForFilePlainSuccessMetrics, nil).Run(generateTestsForFilePlainSuccess)
+			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
 		{
 			languageGolang := &golang.Language{}
@@ -628,14 +638,8 @@ func TestEvaluate(t *testing.T) {
 	})
 
 	t.Run("Preloading", func(t *testing.T) {
-		generateTestsForFilePlainSuccess := func(args mock.Arguments) {
-			require.NoError(t, os.WriteFile(filepath.Join(args.String(2), "plain_test.go"), []byte("package plain\nimport \"testing\"\nfunc TestFunction(t *testing.T){}"), 0600))
-		}
-		generateTestsForFilePlainSuccessMetrics := metrics.Assessments{
-			metrics.AssessmentKeyProcessingTime: 1,
-		}
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(generateTestsForFilePlainSuccessMetrics, nil).Run(generateTestsForFilePlainSuccess)
+			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
 
 		{

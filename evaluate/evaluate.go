@@ -106,12 +106,12 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 
 					withLoadedModel(ctx.Log, model, ctx.ProviderForModel[model], func() {
 						for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
-							if err := ResetTemporaryRepository(ctx.Log, temporaryRepositoryPath); err != nil {
-								ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
-							}
-
 							if ctx.Runs > 1 && ctx.RunsSequential {
 								ctx.Log.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+							}
+
+							if err := ResetTemporaryRepository(ctx.Log, temporaryRepositoryPath); err != nil {
+								ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 							}
 
 							assessment, ps, err := Repository(ctx.Log, ctx.ResultPath, model, language, temporaryRepositoryPath, repositoryPath)

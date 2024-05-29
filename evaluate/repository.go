@@ -38,6 +38,10 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 
 	repositoryAssessment = metrics.NewAssessments()
 	for _, filePath := range filePaths {
+		if err := ResetTemporaryRepository(logger, testDataPath); err != nil {
+			logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+		}
+
 		assessments, err := model.GenerateTestsForFile(log, language, testDataPath, filePath)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
