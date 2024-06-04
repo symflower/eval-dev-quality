@@ -52,6 +52,22 @@ var testFiles = map[string]file{
 			func TestFunction(t *testing.T){}
 		`),
 	},
+	"plain-with-assert": file{
+		Path: "plain_test.go",
+		Content: bytesutil.StringTrimIndentations(`
+			package plain
+
+			import (
+				"testing"
+
+				"github.com/stretchr/testify/assert"
+			)
+
+			func TestFunction(t *testing.T){
+				assert.True(t, true)
+			}
+		`),
+	},
 }
 
 func TestEvaluate(t *testing.T) {
@@ -785,4 +801,51 @@ func TestEvaluate(t *testing.T) {
 			})
 		}
 	})
+	{
+		// Setup provider and model mocking.
+		languageGolang := &golang.Language{}
+		mockedModelID := "testing-provider/testing-model"
+		mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+		repositoryPath := filepath.Join("golang", "plain")
+
+		validate(t, &testCase{
+			Name: "Download Go dependencies",
+
+			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+				mockedModel.RegisterGenerateSuccess(t, testFiles["plain-with-assert"].Path, testFiles["plain-with-assert"].Content, metricstesting.AssessmentsWithProcessingTime)
+			},
+
+			Context: &Context{
+				Languages: []language.Language{
+					languageGolang,
+				},
+
+				Models: []evalmodel.Model{
+					mockedModel,
+				},
+
+				RepositoryPaths: []string{
+					repositoryPath,
+				},
+
+				Runs: 1,
+			},
+
+			ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]metrics.Assessments{
+				mockedModel: map[language.Language]map[string]metrics.Assessments{
+					languageGolang: map[string]metrics.Assessments{
+						repositoryPath: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   1,
+							metrics.AssessmentKeyResponseNoError: 1,
+						},
+					},
+				},
+			},
+			ExpectedTotalScore: 1,
+			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+				filepath.Join(evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+			},
+		})
+	}
 }
