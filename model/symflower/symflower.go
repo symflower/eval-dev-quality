@@ -58,6 +58,21 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 		return nil, err
 	}
 
+	if language.ID() == "golang" {
+		_, err = util.CommandWithResult(context.Background(), logger, &util.Command{
+			Command: []string{
+				"go",
+				"mod",
+				"tidy",
+			},
+
+			Directory: repositoryPath,
+		})
+		if err != nil {
+			return nil, pkgerrors.WithStack(err)
+		}
+	}
+
 	return metrics.Assessments{ // Symflower always generates just source code when it does not fail, so no need to check the assessment properties.
 		metrics.AssessmentKeyProcessingTime:                     processingTime,
 		metrics.AssessmentKeyGenerateTestsForFileCharacterCount: characterCount,
