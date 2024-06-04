@@ -115,9 +115,9 @@ func TestLanguageTestFilePath(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Source file",
 
-		FilePath: "src/main/java/com/eval/Plain.java",
+		FilePath: filepath.Join("src", "main", "java", "com", "eval", "Plain.java"),
 
-		ExpectedTestFilePath: "src/test/java/com/eval/PlainTest.java",
+		ExpectedTestFilePath: filepath.Join("src", "test", "java", "com", "eval", "PlainTest.java"),
 	})
 }
 
