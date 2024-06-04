@@ -73,8 +73,8 @@ func (l *Language) ImportPath(projectRootPath string, filePath string) (importPa
 
 // TestFilePath returns the file path of a test file given the corresponding file path of the test's source file.
 func (l *Language) TestFilePath(projectRootPath string, filePath string) (testFilePath string) {
-	if l := strings.LastIndex(filePath, "src/main/java"); l != -1 {
-		t := "src/test/java"
+	if l := strings.LastIndex(filePath, filepath.Join("src", "main", "java")); l != -1 {
+		t := filepath.Join("src", "test", "java")
 		filePath = filePath[:l] + t + filePath[l+len(t):]
 	}
 
