@@ -62,6 +62,8 @@ type Evaluate struct {
 	Runs uint `long:"runs" description:"Number of runs to perform." default:"1"`
 	// RunsSequential indicates that interleaved runs are disabled and runs are performed sequentially.
 	RunsSequential bool `long:"runs-sequential" description:"By default, multiple runs are performed in an interleaved fashion to avoid caching of model responses. Changing this behavior to \"sequential\" queries the same model repeatedly instead."`
+	// NoDisqualification indicates that models are not to be disqualified if they fail to solve basic language tasks.
+	NoDisqualification bool `long:"no-disqualification" description:"By default, models that cannot solve basic language tasks are disqualified for more complex tasks. Overwriting this behavior runs all tasks regardless."`
 
 	// logger holds the logger of the command.
 	logger *log.Logger
@@ -292,8 +294,9 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		ResultPath:      command.ResultPath,
 		TestdataPath:    command.TestdataPath,
 
-		Runs:           command.Runs,
-		RunsSequential: command.RunsSequential,
+		Runs:               command.Runs,
+		RunsSequential:     command.RunsSequential,
+		NoDisqualification: command.NoDisqualification,
 	})
 
 	assessmentsPerModel := assessments.CollapseByModel()

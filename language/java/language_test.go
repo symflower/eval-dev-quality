@@ -130,7 +130,7 @@ func TestLanguageExecute(t *testing.T) {
 		RepositoryPath   string
 		RepositoryChange func(t *testing.T, repositoryPath string)
 
-		ExpectedCoverage  float64
+		ExpectedCoverage  uint64
 		ExpectedError     error
 		ExpectedErrorText string
 	}
@@ -198,7 +198,7 @@ func TestLanguageExecute(t *testing.T) {
 				`)), 0660))
 			},
 
-			ExpectedCoverage: 100,
+			ExpectedCoverage: 1,
 		})
 
 		validate(t, &testCase{

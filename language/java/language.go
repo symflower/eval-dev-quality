@@ -2,11 +2,9 @@ package java
 
 import (
 	"context"
-	"errors"
 	"os"
 	"path/filepath"
 	"regexp"
-	"strconv"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
@@ -91,28 +89,21 @@ func (l *Language) TestFramework() (testFramework string) {
 var languageJavaCoverageMatch = regexp.MustCompile(`Total coverage (.+?)%`)
 
 // Execute invokes the language specific testing on the given repository.
-func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage float64, err error) {
+func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage uint64, err error) {
+	coverageFilePath := filepath.Join(repositoryPath, "coverage.json")
 	commandOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "test",
 			"--language", "java",
 			"--workspace", repositoryPath,
+			"--coverage-file", coverageFilePath,
 		},
 
 		Directory: repositoryPath,
 	})
 	if err != nil {
-		return 0.0, pkgerrors.WithStack(err)
+		return 0, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
-	mc := languageJavaCoverageMatch.FindStringSubmatch(commandOutput)
-	if mc == nil {
-		return 0.0, pkgerrors.WithStack(pkgerrors.WithMessage(errors.New("could not find coverage report"), commandOutput))
-	}
-	coverage, err = strconv.ParseFloat(mc[1], 64)
-	if err != nil {
-		return 0.0, pkgerrors.WithStack(err)
-	}
-
-	return coverage, nil
+	return language.CoverageObjectCountOfFile(coverageFilePath)
 }

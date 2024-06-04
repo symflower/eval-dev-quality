@@ -137,7 +137,7 @@ func TestAssessmentString(t *testing.T) {
 
 		Assessment: NewAssessments(),
 
-		ExpectedString: "score=0, coverage-statement=0, files-executed=0, generate-tests-for-file-character-count=0, processing-time=0, response-character-count=0, response-no-error=0, response-no-excess=0, response-with-code=0",
+		ExpectedString: "score=0, coverage=0, files-executed=0, generate-tests-for-file-character-count=0, processing-time=0, response-character-count=0, response-no-error=0, response-no-excess=0, response-with-code=0",
 	})
 
 	validate(t, &testCase{
@@ -146,7 +146,7 @@ func TestAssessmentString(t *testing.T) {
 		Assessment: Assessments{
 			AssessmentKeyGenerateTestsForFileCharacterCount: 50,
 			AssessmentKeyResponseCharacterCount:             100,
-			AssessmentKeyCoverageStatement:                  1,
+			AssessmentKeyCoverage:                           1,
 			AssessmentKeyFilesExecuted:                      2,
 			AssessmentKeyResponseNoError:                    3,
 			AssessmentKeyResponseNoExcess:                   4,
@@ -154,7 +154,7 @@ func TestAssessmentString(t *testing.T) {
 			AssessmentKeyProcessingTime:                     200,
 		},
 
-		ExpectedString: "score=15, coverage-statement=1, files-executed=2, generate-tests-for-file-character-count=50, processing-time=200, response-character-count=100, response-no-error=3, response-no-excess=4, response-with-code=5",
+		ExpectedString: "score=15, coverage=1, files-executed=2, generate-tests-for-file-character-count=50, processing-time=200, response-character-count=100, response-no-error=3, response-no-excess=4, response-with-code=5",
 	})
 }
 
@@ -264,9 +264,9 @@ func TestAssessmentsScore(t *testing.T) {
 		Name: "Values Assessment",
 
 		Assessments: Assessments{
-			AssessmentKeyFilesExecuted:     5,
-			AssessmentKeyCoverageStatement: 4,
-			AssessmentKeyProcessingTime:    200,
+			AssessmentKeyFilesExecuted:  5,
+			AssessmentKeyCoverage:       4,
+			AssessmentKeyProcessingTime: 200,
 		},
 
 		ExpectedScore: uint64(9),
