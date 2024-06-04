@@ -93,7 +93,7 @@ func (*Ollama) CheckVersion(logger *log.Logger, binaryPath string) (err error) {
 }
 
 // ollamaVersion holds the version of Ollama required for this revision of the evaluation.
-var ollamaVersion = "0.1.38"
+var ollamaVersion = "0.1.41"
 
 // RequiredVersion returns the required version of the tool.
 func (*Ollama) RequiredVersion() string {
