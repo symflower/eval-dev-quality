@@ -13,7 +13,7 @@ type MockLanguage struct {
 }
 
 // Execute provides a mock function with given fields: logger, repositoryPath
-func (_m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (uint64, error) {
+func (_m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (uint64, []error, error) {
 	ret := _m.Called(logger, repositoryPath)
 
 	if len(ret) == 0 {
@@ -21,8 +21,9 @@ func (_m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (uint
 	}
 
 	var r0 uint64
-	var r1 error
-	if rf, ok := ret.Get(0).(func(*log.Logger, string) (uint64, error)); ok {
+	var r1 []error
+	var r2 error
+	if rf, ok := ret.Get(0).(func(*log.Logger, string) (uint64, []error, error)); ok {
 		return rf(logger, repositoryPath)
 	}
 	if rf, ok := ret.Get(0).(func(*log.Logger, string) uint64); ok {
@@ -31,13 +32,21 @@ func (_m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (uint
 		r0 = ret.Get(0).(uint64)
 	}
 
-	if rf, ok := ret.Get(1).(func(*log.Logger, string) error); ok {
+	if rf, ok := ret.Get(1).(func(*log.Logger, string) []error); ok {
 		r1 = rf(logger, repositoryPath)
 	} else {
-		r1 = ret.Error(1)
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).([]error)
+		}
 	}
 
-	return r0, r1
+	if rf, ok := ret.Get(2).(func(*log.Logger, string) error); ok {
+		r2 = rf(logger, repositoryPath)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
 }
 
 // Files provides a mock function with given fields: logger, repositoryPath

@@ -62,8 +62,9 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			}
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 
-			actualCoverage, err := tc.Language.Execute(logger, repositoryPath)
+			actualCoverage, actualProblems, err := tc.Language.Execute(logger, repositoryPath)
 			require.NoError(t, err)
+			require.Empty(t, actualProblems)
 			assert.Equal(t, tc.ExpectedCoverage, actualCoverage)
 		})
 	}
