@@ -89,7 +89,7 @@ func (l *Language) TestFramework() (testFramework string) {
 var languageJavaCoverageMatch = regexp.MustCompile(`Total coverage (.+?)%`)
 
 // Execute invokes the language specific testing on the given repository.
-func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage uint64, err error) {
+func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage uint64, problems []error, err error) {
 	coverageFilePath := filepath.Join(repositoryPath, "coverage.json")
 	commandOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
@@ -102,8 +102,13 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		Directory: repositoryPath,
 	})
 	if err != nil {
-		return 0, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+		return 0, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
-	return language.CoverageObjectCountOfFile(coverageFilePath)
+	coverage, err = language.CoverageObjectCountOfFile(coverageFilePath)
+	if err != nil {
+		return 0, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+	}
+
+	return coverage, nil, nil
 }

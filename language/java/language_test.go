@@ -130,9 +130,10 @@ func TestLanguageExecute(t *testing.T) {
 		RepositoryPath   string
 		RepositoryChange func(t *testing.T, repositoryPath string)
 
-		ExpectedCoverage  uint64
-		ExpectedError     error
-		ExpectedErrorText string
+		ExpectedCoverage     uint64
+		ExpectedProblemTexts []string
+		ExpectedError        error
+		ExpectedErrorText    string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -155,7 +156,12 @@ func TestLanguageExecute(t *testing.T) {
 			if tc.Language == nil {
 				tc.Language = &Language{}
 			}
-			actualCoverage, actualError := tc.Language.Execute(logger, repositoryPath)
+			actualCoverage, actualProblems, actualError := tc.Language.Execute(logger, repositoryPath)
+
+			require.Equal(t, len(tc.ExpectedProblemTexts), len(actualProblems), "the number of expected problems need to match the number of actual problems")
+			for i, expectedProblemText := range tc.ExpectedProblemTexts {
+				assert.ErrorContains(t, actualProblems[i], expectedProblemText)
+			}
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, actualError, tc.ExpectedError)
@@ -173,7 +179,8 @@ func TestLanguageExecute(t *testing.T) {
 
 		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
 
-		ExpectedCoverage: 0, // TODO Let the test case identify and error that there are no test files (needs to be implemented in `symflower test`). https://github.com/symflower/eval-dev-quality/issues/35
+		ExpectedCoverage:  0,
+		ExpectedErrorText: "exit status 1",
 	})
 
 	t.Run("With test file", func(t *testing.T) {
@@ -199,6 +206,31 @@ func TestLanguageExecute(t *testing.T) {
 			},
 
 			ExpectedCoverage: 1,
+		})
+
+		validate(t, &testCase{
+			Name: "Failing tests",
+
+			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "light"),
+			RepositoryChange: func(t *testing.T, repositoryPath string) {
+				javaTestFilePath := filepath.Join(repositoryPath, "src/test/java/com/eval/SimpleIfElseSymflowerTest.java")
+				require.NoError(t, os.MkdirAll(filepath.Dir(javaTestFilePath), 0755))
+				require.NoError(t, os.WriteFile(javaTestFilePath, []byte(bytesutil.StringTrimIndentations(`
+					package com.eval;
+
+					import org.junit.jupiter.api.*;
+
+					public class SimpleIfElseSymflowerTest {
+						@Test
+						public void simpleIfElse() {
+							int actual = SimpleIfElse.simpleIfElse(1); // Get some coverage...
+							Assertions.assertEquals(true, false); // ... and then fail.
+						}
+					}
+				`)), 0660))
+			},
+
+			ExpectedCoverage: 3,
 		})
 
 		validate(t, &testCase{

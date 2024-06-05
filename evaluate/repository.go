@@ -54,7 +54,8 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 		repositoryAssessment.Add(assessments)
 		repositoryAssessment.Award(metrics.AssessmentKeyResponseNoError)
 
-		coverage, err := language.Execute(log, testDataPath)
+		coverage, ps, err := language.Execute(log, testDataPath)
+		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
 

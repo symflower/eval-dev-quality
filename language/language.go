@@ -23,7 +23,7 @@ type Language interface {
 	TestFramework() (testFramework string)
 
 	// Execute invokes the language specific testing on the given repository.
-	Execute(logger *log.Logger, repositoryPath string) (coverage uint64, err error)
+	Execute(logger *log.Logger, repositoryPath string) (coverage uint64, problems []error, err error)
 }
 
 // Languages holds a register of all languages.

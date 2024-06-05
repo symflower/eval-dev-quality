@@ -64,9 +64,10 @@ func TestLanguageExecute(t *testing.T) {
 		RepositoryPath   string
 		RepositoryChange func(t *testing.T, repositoryPath string)
 
-		ExpectedCoverage  uint64
-		ExpectedError     error
-		ExpectedErrorText string
+		ExpectedCoverage     uint64
+		ExpectedProblemTexts []string
+		ExpectedError        error
+		ExpectedErrorText    string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -89,7 +90,12 @@ func TestLanguageExecute(t *testing.T) {
 			if tc.Language == nil {
 				tc.Language = &Language{}
 			}
-			actualCoverage, actualError := tc.Language.Execute(logger, repositoryPath)
+			actualCoverage, actualProblems, actualError := tc.Language.Execute(logger, repositoryPath)
+
+			require.Equal(t, len(tc.ExpectedProblemTexts), len(actualProblems), "the number of expected problems need to match the number of actual problems")
+			for i, expectedProblemText := range tc.ExpectedProblemTexts {
+				assert.ErrorContains(t, actualProblems[i], expectedProblemText)
+			}
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, actualError, tc.ExpectedError)
@@ -107,7 +113,8 @@ func TestLanguageExecute(t *testing.T) {
 
 		RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "plain"),
 
-		ExpectedCoverage: 0,
+		ExpectedCoverage:  0,
+		ExpectedErrorText: "exit status 1",
 	})
 
 	t.Run("With test file", func(t *testing.T) {
@@ -130,6 +137,31 @@ func TestLanguageExecute(t *testing.T) {
 			},
 
 			ExpectedCoverage: 1,
+		})
+
+		validate(t, &testCase{
+			Name: "Failing tests",
+
+			RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "light"),
+			RepositoryChange: func(t *testing.T, repositoryPath string) {
+				require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "simpleIfElse_test.go"), []byte(bytesutil.StringTrimIndentations(`
+					package light
+
+					import (
+						"testing"
+					)
+
+					func TestSimpleIfElse(t *testing.T) {
+						simpleIfElse(1) // Get some coverage...
+						t.Fail() // ...and then fail.
+					}
+				`)), 0660))
+			},
+
+			ExpectedCoverage: 1,
+			ExpectedProblemTexts: []string{
+				"exit status 1", // Test execution fails.
+			},
 		})
 
 		validate(t, &testCase{

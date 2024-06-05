@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
@@ -74,14 +75,10 @@ func (l *Language) TestFramework() (testFramework string) {
 	return ""
 }
 
-var languageGoNoTestsMatch = regexp.MustCompile(`(?m)^DONE (\d+) tests.*in (.+?)$`)
-var languageGoCoverageMatch = regexp.MustCompile(`(?m)^coverage: (\d+\.?\d+)% of statements`)
-var languageGoNoCoverageMatch = regexp.MustCompile(`(?m)^coverage: \[no statements\]$`)
+var languageGoTestsErrorMatch = regexp.MustCompile(`DONE (\d+) tests, (\d+) failure`)
 
 // Execute invokes the language specific testing on the given repository.
-func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage uint64, err error) {
-	coverageFilePath := filepath.Join(repositoryPath, "coverage.json")
-
+func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage uint64, problems []error, err error) {
 	commandOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
 			"go",
@@ -92,9 +89,10 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		Directory: repositoryPath,
 	})
 	if err != nil {
-		return 0, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+		return 0, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
+	coverageFilePath := filepath.Join(repositoryPath, "coverage.json")
 	commandOutput, err = util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "test",
@@ -106,8 +104,23 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		Directory: repositoryPath,
 	})
 	if err != nil {
-		return 0, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+		testSummary := languageGoTestsErrorMatch.FindStringSubmatch(commandOutput)
+		if len(testSummary) > 0 {
+			if failureCount, e := strconv.Atoi(testSummary[2]); e != nil {
+				return 0, problems, pkgerrors.WithStack(e)
+			} else if failureCount > 0 {
+				// If there are test failures, then this is just a soft error since we still are able to receive coverage data.
+				problems = append(problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+			}
+		} else {
+			return 0, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+		}
 	}
 
-	return language.CoverageObjectCountOfFile(coverageFilePath)
+	coverage, err = language.CoverageObjectCountOfFile(coverageFilePath)
+	if err != nil {
+		return 0, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+	}
+
+	return coverage, problems, nil
 }
