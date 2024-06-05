@@ -124,3 +124,8 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 
 	return coverage, problems, nil
 }
+
+// Mistakes builds a Go repository and returns the list of mistakes found.
+func (l *Language) Mistakes(logger *log.Logger, repositoryPath string) (mistakes []string, err error) {
+	return nil, nil
+}

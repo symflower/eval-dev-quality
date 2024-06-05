@@ -115,6 +115,36 @@ func (_m *MockLanguage) ImportPath(projectRootPath string, filePath string) stri
 	return r0
 }
 
+// Mistakes provides a mock function with given fields: logger, repositoryPath
+func (_m *MockLanguage) Mistakes(logger *log.Logger, repositoryPath string) ([]string, error) {
+	ret := _m.Called(logger, repositoryPath)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Mistakes")
+	}
+
+	var r0 []string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*log.Logger, string) ([]string, error)); ok {
+		return rf(logger, repositoryPath)
+	}
+	if rf, ok := ret.Get(0).(func(*log.Logger, string) []string); ok {
+		r0 = rf(logger, repositoryPath)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]string)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(*log.Logger, string) error); ok {
+		r1 = rf(logger, repositoryPath)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Name provides a mock function with given fields:
 func (_m *MockLanguage) Name() string {
 	ret := _m.Called()

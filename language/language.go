@@ -24,6 +24,8 @@ type Language interface {
 
 	// Execute invokes the language specific testing on the given repository.
 	Execute(logger *log.Logger, repositoryPath string) (coverage uint64, problems []error, err error)
+	// Mistakes builds a repository and returns the list of mistakes found.
+	Mistakes(logger *log.Logger, repositoryPath string) (mistakes []string, err error)
 }
 
 // Languages holds a register of all languages.

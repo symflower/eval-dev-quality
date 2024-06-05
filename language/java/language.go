@@ -5,10 +5,12 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
+	"golang.org/x/exp/maps"
 
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
@@ -111,4 +113,45 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 	}
 
 	return coverage, nil, nil
+}
+
+// Mistakes builds a Java repository and returns the list of mistakes found.
+func (l *Language) Mistakes(logger *log.Logger, repositoryPath string) (mistakes []string, err error) {
+	output, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{
+			"mvn",
+			"compile",
+		},
+
+		Directory: repositoryPath,
+	})
+	if err != nil {
+		if output != "" {
+			return extractMistakes(output), nil
+		}
+
+		return nil, pkgerrors.Wrap(err, "no output to extract errors from")
+	}
+
+	return nil, nil
+}
+
+// mistakesRe defines the structure of a Java compiler error.
+var mistakesRe = regexp.MustCompile(`(?m)\[ERROR\] (.*\.java:\[\d+,\d+\].*)$`)
+
+func extractMistakes(rawMistakes string) (mistakes []string) {
+	uniqueMistake := map[string]bool{}
+
+	results := mistakesRe.FindAllStringSubmatch(rawMistakes, -1)
+	for _, result := range results {
+		r := strings.ReplaceAll(result[1], "\r", "")
+		if _, ok := uniqueMistake[r]; !ok {
+			uniqueMistake[r] = true
+		}
+	}
+
+	mistakes = maps.Keys(uniqueMistake)
+	sort.Strings(mistakes)
+
+	return mistakes
 }
