@@ -15,6 +15,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
+	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
@@ -42,7 +43,15 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 			logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 		}
 
-		assessments, err := model.GenerateTestsForFile(log, language, testDataPath, filePath)
+		ctx := task.Context{
+			Language: language,
+
+			RepositoryPath: testDataPath,
+			FilePath:       filePath,
+
+			Logger: log,
+		}
+		assessments, err := model.RunTask(ctx, task.IdentifierWriteTests)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
 

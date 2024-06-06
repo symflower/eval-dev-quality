@@ -27,6 +27,7 @@ import (
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	"github.com/symflower/eval-dev-quality/provider"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
+	"github.com/symflower/eval-dev-quality/task"
 )
 
 var (
@@ -169,7 +170,7 @@ func TestEvaluate(t *testing.T) {
 
 			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 				// Set up mocks, when test is running.
-				mockedModel.On("GenerateTestsForFile", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil, ErrEmptyResponseFromModel)
+				mockedModel.On("RunTask", mock.Anything, task.IdentifierWriteTests).Return(nil, ErrEmptyResponseFromModel)
 			},
 
 			Context: &Context{
@@ -387,7 +388,7 @@ func TestEvaluate(t *testing.T) {
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					mockedModel.AssertNumberOfCalls(t, "GenerateTestsForFile", 4)
+					mockedModel.AssertNumberOfCalls(t, "RunTask", 4)
 				},
 
 				Context: &Context{
@@ -452,7 +453,7 @@ func TestEvaluate(t *testing.T) {
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					mockedModel.AssertNumberOfCalls(t, "GenerateTestsForFile", 4)
+					mockedModel.AssertNumberOfCalls(t, "RunTask", 4)
 				},
 
 				Context: &Context{
@@ -513,7 +514,7 @@ func TestEvaluate(t *testing.T) {
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					mockedModel.AssertNumberOfCalls(t, "GenerateTestsForFile", 2)
+					mockedModel.AssertNumberOfCalls(t, "RunTask", 2)
 				},
 
 				Context: &Context{

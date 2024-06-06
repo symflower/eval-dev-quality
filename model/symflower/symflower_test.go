@@ -14,6 +14,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 )
@@ -57,7 +58,15 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			if tc.Model == nil {
 				tc.Model = &Model{}
 			}
-			actualAssessment, actualError := tc.Model.GenerateTestsForFile(logger, tc.Language, repositoryPath, tc.FilePath)
+			ctx := task.Context{
+				Language: tc.Language,
+
+				RepositoryPath: repositoryPath,
+				FilePath:       tc.FilePath,
+
+				Logger: logger,
+			}
+			actualAssessment, actualError := tc.Model.generateTestsForFile(ctx)
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, tc.ExpectedError, actualError)
