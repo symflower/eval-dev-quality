@@ -2,6 +2,7 @@ package task
 
 import (
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/symflower/eval-dev-quality/language"
@@ -15,13 +16,22 @@ var (
 // Identifier holds the identifier of a task.
 type Identifier string
 
-// AllIdentifiers holds all available task identifiers.
-var AllIdentifiers []Identifier
+var (
+	// AllIdentifiers holds all available task identifiers.
+	AllIdentifiers []Identifier
+	// LookupIdentifier holds a map of all available task identifiers.
+	LookupIdentifier = map[Identifier]bool{}
+)
 
 // registerIdentifier registers the given identifier and makes it available.
 func registerIdentifier(name string) (identifier Identifier) {
 	identifier = Identifier(name)
 	AllIdentifiers = append(AllIdentifiers, identifier)
+
+	if _, ok := LookupIdentifier[identifier]; ok {
+		panic(fmt.Sprintf("task identifier already registered: %s", identifier))
+	}
+	LookupIdentifier[identifier] = true
 
 	return identifier
 }

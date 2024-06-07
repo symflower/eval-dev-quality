@@ -2,16 +2,15 @@ package report
 
 import (
 	"cmp"
-	"os"
 	"slices"
 	"sort"
-	"strings"
 
 	"golang.org/x/exp/maps"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/model"
+	"github.com/symflower/eval-dev-quality/task"
 )
 
 // AssessmentPerLanguagePerModel holds a collection of assessments per language and model.
@@ -44,36 +43,45 @@ func (a AssessmentPerModel) WalkByScore(function func(model model.Model, assessm
 	return nil
 }
 
-// AssessmentPerModelPerLanguagePerRepository holds a collection of assessments per model per language and per repository.
-type AssessmentPerModelPerLanguagePerRepository map[model.Model]map[language.Language]map[string]metrics.Assessments
+// AssessmentPerModelPerLanguagePerRepositoryPerTask holds a collection of assessments per model per language and per repository.
+type AssessmentPerModelPerLanguagePerRepositoryPerTask map[model.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments
 
-// NewAssessmentPerModelPerLanguagePerRepository returns a new AssessmentPerModelPerLanguagePerRepository initialized with an empty assessment for each combination.
-func NewAssessmentPerModelPerLanguagePerRepository(models []model.Model, languages []language.Language, repositories []string) (assessments AssessmentPerModelPerLanguagePerRepository) {
-	a := AssessmentPerModelPerLanguagePerRepository{}
-	for _, m := range models {
-		if _, ok := a[m]; !ok {
-			a[m] = map[language.Language]map[string]metrics.Assessments{}
-		}
-		for _, l := range languages {
-			if _, ok := a[m][l]; !ok {
-				a[m][l] = map[string]metrics.Assessments{}
-			}
-			for _, r := range repositories {
-				// Ensure the repository path matches the language.
-				if !strings.HasPrefix(r, l.ID()+string(os.PathSeparator)) {
-					continue
-				}
+// NewAssessmentPerModelPerLanguagePerRepositoryPerTask returns a new AssessmentPerModelPerLanguagePerRepository initialized with an empty assessment for each combination.
+func NewAssessmentPerModelPerLanguagePerRepositoryPerTask() (assessments AssessmentPerModelPerLanguagePerRepositoryPerTask) {
+	return AssessmentPerModelPerLanguagePerRepositoryPerTask{}
+}
 
-				a[m][l][r] = metrics.NewAssessments()
-			}
-		}
+// Add adds a new assessment.
+func (a AssessmentPerModelPerLanguagePerRepositoryPerTask) Add(model model.Model, l language.Language, repositoryPath string, taskIdentifier task.Identifier, assessment metrics.Assessments) {
+	perLanguageLookup, ok := a[model]
+	if !ok {
+		perLanguageLookup = map[language.Language]map[string]map[task.Identifier]metrics.Assessments{}
+		a[model] = perLanguageLookup
 	}
 
-	return a
+	perRepositoryLookup, ok := perLanguageLookup[l]
+	if !ok {
+		perRepositoryLookup = map[string]map[task.Identifier]metrics.Assessments{}
+		perLanguageLookup[l] = perRepositoryLookup
+	}
+
+	perTaskLookup, ok := a[model][l][repositoryPath]
+	if !ok {
+		perTaskLookup = map[task.Identifier]metrics.Assessments{}
+		a[model][l][repositoryPath] = perTaskLookup
+	}
+
+	assessments, ok := perTaskLookup[taskIdentifier]
+	if !ok {
+		assessments = metrics.NewAssessments()
+		a[model][l][repositoryPath][taskIdentifier] = assessments
+	}
+
+	assessments.Add(assessment)
 }
 
 // Walk walks over all entries.
-func (a AssessmentPerModelPerLanguagePerRepository) Walk(function func(m model.Model, l language.Language, r string, a metrics.Assessments) error) (err error) {
+func (a AssessmentPerModelPerLanguagePerRepositoryPerTask) Walk(function func(m model.Model, l language.Language, r string, t task.Identifier, a metrics.Assessments) error) (err error) {
 	models := maps.Keys(a)
 	slices.SortStableFunc(models, func(a, b model.Model) int {
 		return cmp.Compare(a.ID(), b.ID())
@@ -87,8 +95,11 @@ func (a AssessmentPerModelPerLanguagePerRepository) Walk(function func(m model.M
 			repositories := maps.Keys(a[m][l])
 			sort.Strings(repositories)
 			for _, r := range repositories {
-				if err := function(m, l, r, a[m][l][r]); err != nil {
-					return err
+				taskIdentifiers := maps.Keys(a[m][l][r])
+				for _, t := range taskIdentifiers {
+					if err := function(m, l, r, t, a[m][l][r][t]); err != nil {
+						return err
+					}
 				}
 			}
 		}
@@ -98,12 +109,12 @@ func (a AssessmentPerModelPerLanguagePerRepository) Walk(function func(m model.M
 }
 
 // CollapseByModel returns all assessments aggregated per model ID.
-func (a AssessmentPerModelPerLanguagePerRepository) CollapseByModel() AssessmentPerModel {
+func (a AssessmentPerModelPerLanguagePerRepositoryPerTask) CollapseByModel() AssessmentPerModel {
 	perModel := make(AssessmentPerModel, len(a))
 	for _, m := range maps.Keys(a) {
 		perModel[m] = metrics.NewAssessments()
 	}
-	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) (err error) {
+	_ = a.Walk(func(m model.Model, l language.Language, r string, t task.Identifier, a metrics.Assessments) (err error) {
 		perModel[m].Add(a)
 
 		return nil
@@ -113,9 +124,9 @@ func (a AssessmentPerModelPerLanguagePerRepository) CollapseByModel() Assessment
 }
 
 // CollapseByLanguage returns all assessments aggregated per language and model.
-func (a AssessmentPerModelPerLanguagePerRepository) CollapseByLanguage() AssessmentPerLanguagePerModel {
+func (a AssessmentPerModelPerLanguagePerRepositoryPerTask) CollapseByLanguage() AssessmentPerLanguagePerModel {
 	assessments := AssessmentPerLanguagePerModel{}
-	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) (err error) {
+	_ = a.Walk(func(m model.Model, l language.Language, r string, t task.Identifier, a metrics.Assessments) (err error) {
 		if _, ok := assessments[l]; !ok {
 			assessments[l] = map[model.Model]metrics.Assessments{}
 		}

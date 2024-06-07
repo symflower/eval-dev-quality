@@ -19,6 +19,7 @@ import (
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/log"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
+	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 )
@@ -259,7 +260,7 @@ func TestEvaluateExecute(t *testing.T) {
 				"README.md": func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+				filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 			},
 		})
 		validate(t, &testCase{
@@ -363,8 +364,8 @@ func TestEvaluateExecute(t *testing.T) {
 				"README.md": func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
-				filepath.Join("symflower_symbolic-execution", "java", "java", "plain.log"):     nil,
+				filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+				filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"):     nil,
 			},
 		})
 	})
@@ -449,7 +450,7 @@ func TestEvaluateExecute(t *testing.T) {
 					"README.md": func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
-					filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+					filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 				},
 			})
 			validate(t, &testCase{
@@ -517,7 +518,7 @@ func TestEvaluateExecute(t *testing.T) {
 					"README.md": func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
-					filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+					filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 				},
 			})
 		})
@@ -583,7 +584,7 @@ func TestEvaluateExecute(t *testing.T) {
 						"golang-summed.csv": nil,
 						"models-summed.csv": nil,
 						"README.md":         nil,
-						"ollama_" + providertesting.OllamaTestModel + "/golang/golang/plain.log": nil,
+						string(task.IdentifierWriteTests) + "/ollama_" + providertesting.OllamaTestModel + "/golang/golang/plain.log": nil,
 					},
 				})
 			}
@@ -631,7 +632,7 @@ func TestEvaluateExecute(t *testing.T) {
 						"golang-summed.csv": nil,
 						"models-summed.csv": nil,
 						"README.md":         nil,
-						"custom-ollama_" + providertesting.OllamaTestModel + "/golang/golang/plain.log": nil,
+						string(task.IdentifierWriteTests) + "/custom-ollama_" + providertesting.OllamaTestModel + "/golang/golang/plain.log": nil,
 					},
 				})
 			}
@@ -689,7 +690,7 @@ func TestEvaluateExecute(t *testing.T) {
 				"golang-summed.csv": nil,
 				"models-summed.csv": nil,
 				"README.md":         nil,
-				filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 3, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
 			},
@@ -726,7 +727,7 @@ func TestEvaluateExecute(t *testing.T) {
 			"golang-summed.csv": nil,
 			"models-summed.csv": nil,
 			"README.md":         nil,
-			filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+			filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 		},
 	})
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/model"
+	"github.com/symflower/eval-dev-quality/task"
 )
 
 // CSVFormatter defines a formatter for CSV data.
@@ -44,17 +45,17 @@ func GenerateCSV(formatter CSVFormatter) (csvData string, err error) {
 }
 
 // Header returns the header description as a CSV row.
-func (a AssessmentPerModelPerLanguagePerRepository) Header() (header []string) {
+func (a AssessmentPerModelPerLanguagePerRepositoryPerTask) Header() (header []string) {
 	return append([]string{"model", "language", "repository", "score"}, metrics.AllAssessmentKeysStrings...)
 }
 
 // Rows returns all data as CSV rows.
-func (a AssessmentPerModelPerLanguagePerRepository) Rows() (rows [][]string) {
-	_ = a.Walk(func(m model.Model, l language.Language, r string, a metrics.Assessments) (err error) {
+func (a AssessmentPerModelPerLanguagePerRepositoryPerTask) Rows() (rows [][]string) {
+	_ = a.Walk(func(m model.Model, l language.Language, r string, t task.Identifier, a metrics.Assessments) (err error) {
 		metrics := a.StringCSV()
 		score := a.Score()
 
-		row := append([]string{m.ID(), l.ID(), r, strconv.FormatUint(uint64(score), 10)}, metrics...)
+		row := append([]string{m.ID(), l.ID(), r, string(t), strconv.FormatUint(uint64(score), 10)}, metrics...)
 		rows = append(rows, row)
 
 		return nil

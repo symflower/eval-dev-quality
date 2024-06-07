@@ -2,6 +2,7 @@ package evaluate
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -19,25 +20,72 @@ import (
 	"github.com/symflower/eval-dev-quality/util"
 )
 
+// repositoryConfiguration holds the configuration of a repository.
+type repositoryConfiguration struct {
+	Tasks []task.Identifier
+}
+
+// validate validates the configuration.
+func (rc *repositoryConfiguration) validate() (err error) {
+	if len(rc.Tasks) == 0 {
+		return pkgerrors.Errorf("empty list of tasks in configuration")
+	}
+
+	for _, taskIdentifier := range rc.Tasks {
+		if !task.LookupIdentifier[taskIdentifier] {
+			return pkgerrors.Errorf("task identifier %q unknown", taskIdentifier)
+		}
+	}
+
+	return nil
+}
+
+// defaultConfiguration holds the default configuration object if there exists no configuration file.
+var defaultConfiguration = repositoryConfiguration{
+	Tasks: task.AllIdentifiers,
+}
+
 // Repository holds data about a repository.
 type Repository struct {
+	repositoryConfiguration
+
 	// Name holds the name of the repository.
 	Name string
 	// DataPath holds the absolute path to the repository.
 	DataPath string
 }
 
+// loadConfiguration loads the configuration from the dedicated configuration file.
+func (r *Repository) loadConfiguration() (err error) {
+	configurationFilePath := filepath.Join(r.DataPath, "repository.json")
+
+	data, err := os.ReadFile(configurationFilePath)
+	if errors.Is(err, os.ErrNotExist) {
+		r.repositoryConfiguration = defaultConfiguration
+
+		return nil
+	} else if err != nil {
+		return pkgerrors.Wrap(err, configurationFilePath)
+	}
+
+	if err := json.Unmarshal(data, &r.repositoryConfiguration); err != nil {
+		return pkgerrors.Wrap(err, configurationFilePath)
+	}
+
+	return r.repositoryConfiguration.validate()
+}
+
 // Evaluate evaluates a repository with the given model and language.
-func (r *Repository) Evaluate(logger *log.Logger, resultPath string, model evalmodel.Model, language language.Language) (repositoryAssessment metrics.Assessments, problems []error, err error) {
-	log, logClose, err := log.WithFile(logger, filepath.Join(resultPath, evalmodel.CleanModelNameForFileSystem(model.ID()), language.ID(), r.Name+".log"))
+func (r *Repository) Evaluate(logger *log.Logger, resultPath string, model evalmodel.Model, language language.Language, taskIdentifier task.Identifier) (repositoryAssessment metrics.Assessments, problems []error, err error) {
+	log, logClose, err := log.WithFile(logger, filepath.Join(resultPath, string(taskIdentifier), evalmodel.CleanModelNameForFileSystem(model.ID()), language.ID(), r.Name+".log"))
 	if err != nil {
 		return nil, nil, err
 	}
 	defer logClose()
 
-	log.Printf("Evaluating model %q using language %q and repository %q", model.ID(), language.ID(), r.Name)
+	log.Printf("Evaluating model %q on task %q using language %q and repository %q", model.ID(), taskIdentifier, language.ID(), r.Name)
 	defer func() {
-		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems: %+v", model.ID(), language.ID(), r.Name, len(problems), problems)
+		log.Printf("Evaluated model %q on task %q using language %q and repository %q: encountered %d problems: %+v", model.ID(), taskIdentifier, language.ID(), r.Name, len(problems), problems)
 	}()
 
 	filePaths, err := language.Files(log, r.DataPath)
@@ -59,7 +107,7 @@ func (r *Repository) Evaluate(logger *log.Logger, resultPath string, model evalm
 
 			Logger: log,
 		}
-		assessments, err := model.RunTask(ctx, task.IdentifierWriteTests)
+		assessments, err := model.RunTask(ctx, taskIdentifier)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
 
@@ -195,8 +243,13 @@ func TemporaryRepository(logger *log.Logger, testDataPath string, repositoryPath
 		return nil, cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to commit", out)))
 	}
 
-	return &Repository{
+	repository = &Repository{
 		Name:     repositoryPathRelative,
 		DataPath: temporaryRepositoryPath,
-	}, cleanup, nil
+	}
+	if err := repository.loadConfiguration(); err != nil {
+		return nil, cleanup, err
+	}
+
+	return repository, cleanup, nil
 }

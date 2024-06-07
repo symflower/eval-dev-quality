@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
+	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
@@ -19,6 +20,7 @@ import (
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/symflower"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
+	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 	"github.com/symflower/eval-dev-quality/util"
@@ -50,7 +52,7 @@ func TestRepository(t *testing.T) {
 			assert.NoError(t, err)
 			defer cleanup()
 
-			actualRepositoryAssessment, actualProblems, actualErr := temporaryRepository.Evaluate(logger, temporaryPath, tc.Model, tc.Language)
+			actualRepositoryAssessment, actualProblems, actualErr := temporaryRepository.Evaluate(logger, temporaryPath, tc.Model, tc.Language, task.IdentifierWriteTests)
 
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 			if assert.Equal(t, len(tc.ExpectedProblemContains), len(actualProblems), "problems count") {
@@ -106,7 +108,7 @@ func TestRepository(t *testing.T) {
 			metrics.AssessmentKeyResponseWithCode:                   1,
 		},
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			filepath.Join("symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+			filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 				assert.Contains(t, data, "Evaluating model \"symflower/symbolic-execution\"")
 				assert.Contains(t, data, "Generated 1 test")
 				assert.Contains(t, data, "PASS: TestSymflowerPlain")
@@ -146,7 +148,7 @@ func TestRepository(t *testing.T) {
 				"expected 'package', found does",
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				filepath.Join("mocked-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join(string(task.IdentifierWriteTests), "mocked-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 					assert.Contains(t, data, "Evaluating model \"mocked-model\"")
 					assert.Contains(t, data, "PASS: TestTaskB")
 				},
@@ -255,6 +257,97 @@ func TestResetTemporaryRepository(t *testing.T) {
 		},
 		ValidateAfter: func(t *testing.T, path string) {
 			assert.Error(t, osutil.FileExists(filepath.Join(path, "foo")))
+		},
+	})
+}
+
+func TestRepositoryLoadConfiguration(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		TestDataPath   string
+		RepositoryPath string
+
+		ExpectedErrorText string
+		MutationBefore    func(t *testing.T, path string)
+		ValidateAfter     func(t *testing.T, repository *Repository)
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			temporaryPath := t.TempDir()
+			temporaryRepositoryPath := filepath.Join(temporaryPath, tc.RepositoryPath)
+			require.NoError(t, osutil.CopyTree(filepath.Join(tc.TestDataPath, tc.RepositoryPath), temporaryRepositoryPath))
+
+			if tc.MutationBefore != nil {
+				tc.MutationBefore(t, temporaryRepositoryPath)
+			}
+
+			_, logger := log.Buffer()
+			actualRepository, cleanup, actualErr := TemporaryRepository(logger, temporaryPath, tc.RepositoryPath)
+			defer cleanup()
+			if tc.ExpectedErrorText != "" {
+				assert.ErrorContains(t, actualErr, tc.ExpectedErrorText)
+			} else {
+				assert.NoError(t, actualErr)
+			}
+
+			if tc.ValidateAfter != nil {
+				tc.ValidateAfter(t, actualRepository)
+			}
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "No configuration file",
+
+		TestDataPath:   filepath.Join("..", "testdata"),
+		RepositoryPath: filepath.Join("golang", "plain"),
+
+		ValidateAfter: func(t *testing.T, repository *Repository) {
+			assert.Equal(t, task.AllIdentifiers, repository.Tasks)
+		},
+	})
+	validate(t, &testCase{
+		Name: "Specify known task",
+
+		TestDataPath:   filepath.Join("..", "testdata"),
+		RepositoryPath: filepath.Join("golang", "plain"),
+
+		MutationBefore: func(t *testing.T, repositoryPath string) {
+			configuration := bytesutil.StringTrimIndentations(`
+				{
+					"tasks": [
+						"write-tests"
+					]
+				}
+			`)
+			assert.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "repository.json"), []byte(configuration), 0600))
+		},
+		ValidateAfter: func(t *testing.T, repository *Repository) {
+			expectedTaskIdentifiers := []task.Identifier{
+				task.IdentifierWriteTests,
+			}
+			assert.Equal(t, expectedTaskIdentifiers, repository.Tasks)
+		},
+	})
+	validate(t, &testCase{
+		Name: "Specify unknown task",
+
+		TestDataPath:   filepath.Join("..", "testdata"),
+		RepositoryPath: filepath.Join("golang", "plain"),
+
+		ExpectedErrorText: "task identifier \"unknown-task\" unknown",
+		MutationBefore: func(t *testing.T, repositoryPath string) {
+			configuration := bytesutil.StringTrimIndentations(`
+				{
+					"tasks": [
+						"write-tests",
+						"unknown-task"
+					]
+				}
+			`)
+			assert.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "repository.json"), []byte(configuration), 0600))
 		},
 	})
 }

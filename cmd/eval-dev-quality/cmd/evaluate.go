@@ -329,7 +329,7 @@ func (command *Evaluate) Execute(args []string) (err error) {
 }
 
 // WriteCSVs writes the various CSV reports to disk.
-func writeCSVs(resultPath string, assessments report.AssessmentPerModelPerLanguagePerRepository) (err error) {
+func writeCSVs(resultPath string, assessments report.AssessmentPerModelPerLanguagePerRepositoryPerTask) (err error) {
 	// Write the "evaluation.csv" containing all data.
 	csv, err := report.GenerateCSV(assessments)
 	if err != nil {
