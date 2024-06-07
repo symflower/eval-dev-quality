@@ -19,34 +19,42 @@ import (
 	"github.com/symflower/eval-dev-quality/util"
 )
 
-// Repository evaluate a repository with the given model and language.
-func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, language language.Language, testDataPath string, repositoryName string) (repositoryAssessment metrics.Assessments, problems []error, err error) {
-	log, logClose, err := log.WithFile(logger, filepath.Join(resultPath, evalmodel.CleanModelNameForFileSystem(model.ID()), language.ID(), repositoryName+".log"))
+// Repository holds data about a repository.
+type Repository struct {
+	// Name holds the name of the repository.
+	Name string
+	// DataPath holds the absolute path to the repository.
+	DataPath string
+}
+
+// Evaluate evaluates a repository with the given model and language.
+func (r *Repository) Evaluate(logger *log.Logger, resultPath string, model evalmodel.Model, language language.Language) (repositoryAssessment metrics.Assessments, problems []error, err error) {
+	log, logClose, err := log.WithFile(logger, filepath.Join(resultPath, evalmodel.CleanModelNameForFileSystem(model.ID()), language.ID(), r.Name+".log"))
 	if err != nil {
 		return nil, nil, err
 	}
 	defer logClose()
 
-	log.Printf("Evaluating model %q using language %q and repository %q", model.ID(), language.ID(), repositoryName)
+	log.Printf("Evaluating model %q using language %q and repository %q", model.ID(), language.ID(), r.Name)
 	defer func() {
-		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems: %+v", model.ID(), language.ID(), repositoryName, len(problems), problems)
+		log.Printf("Evaluated model %q using language %q and repository %q: encountered %d problems: %+v", model.ID(), language.ID(), r.Name, len(problems), problems)
 	}()
 
-	filePaths, err := language.Files(log, testDataPath)
+	filePaths, err := language.Files(log, r.DataPath)
 	if err != nil {
 		return nil, problems, pkgerrors.WithStack(err)
 	}
 
 	repositoryAssessment = metrics.NewAssessments()
 	for _, filePath := range filePaths {
-		if err := ResetTemporaryRepository(logger, testDataPath); err != nil {
+		if err := r.Reset(logger); err != nil {
 			logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 		}
 
 		ctx := task.Context{
 			Language: language,
 
-			RepositoryPath: testDataPath,
+			RepositoryPath: r.DataPath,
 			FilePath:       filePath,
 
 			Logger: log,
@@ -58,12 +66,12 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 			continue
 		}
 		if assessments[metrics.AssessmentKeyProcessingTime] == 0 {
-			return nil, nil, pkgerrors.Errorf("no model response time measurement present for %q at repository %q", model.ID(), repositoryName)
+			return nil, nil, pkgerrors.Errorf("no model response time measurement present for %q at repository %q", model.ID(), r.Name)
 		}
 		repositoryAssessment.Add(assessments)
 		repositoryAssessment.Award(metrics.AssessmentKeyResponseNoError)
 
-		coverage, ps, err := language.Execute(log, testDataPath)
+		coverage, ps, err := language.Execute(log, r.DataPath)
 		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
@@ -78,11 +86,35 @@ func Repository(logger *log.Logger, resultPath string, model evalmodel.Model, la
 	return repositoryAssessment, problems, nil
 }
 
+// Reset resets a repository back to its "initial" commit.
+func (r *Repository) Reset(logger *log.Logger) (err error) {
+	out, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{
+			"git",
+			"clean",
+			"-df",
+		},
+
+		Directory: r.DataPath,
+		Env: map[string]string{ // Overwrite the global and system configs to point to the default one.
+			"GIT_CONFIG_GLOBAL": filepath.Join(r.DataPath, ".git", "config"),
+			"GIT_CONFIG_SYSTEM": filepath.Join(r.DataPath, ".git", "config"),
+		},
+	})
+	if err != nil {
+		return pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to clean git repository", out)))
+	}
+
+	return nil
+}
+
 // TemporaryRepository creates a temporary repository and initializes a git repo in it.
-func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryRepositoryPath string, cleanup func(), err error) {
+func TemporaryRepository(logger *log.Logger, testDataPath string, repositoryPathRelative string) (repository *Repository, cleanup func(), err error) {
+	repositoryPathAbsolute := filepath.Join(testDataPath, repositoryPathRelative)
+
 	temporaryPath, err := os.MkdirTemp("", "eval-dev-quality")
 	if err != nil {
-		return "", cleanup, pkgerrors.WithStack(err)
+		return nil, cleanup, pkgerrors.WithStack(err)
 	}
 
 	cleanup = func() {
@@ -95,14 +127,14 @@ func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryReposito
 		}
 	}
 
-	temporaryRepositoryPath = filepath.Join(temporaryPath, filepath.Base(dataPath))
-	if err := osutil.CopyTree(dataPath, temporaryRepositoryPath); err != nil {
-		return "", cleanup, pkgerrors.WithStack(err)
+	temporaryRepositoryPath := filepath.Join(temporaryPath, filepath.Base(repositoryPathAbsolute))
+	if err := osutil.CopyTree(repositoryPathAbsolute, temporaryRepositoryPath); err != nil {
+		return nil, cleanup, pkgerrors.WithStack(err)
 	}
 
 	// Add a default git configuration.
 	if err := os.MkdirAll(filepath.Join(temporaryRepositoryPath, ".git"), 0700); err != nil {
-		return "", cleanup, pkgerrors.WithStack(err)
+		return nil, cleanup, pkgerrors.WithStack(err)
 	}
 	if err := os.WriteFile(filepath.Join(temporaryRepositoryPath, ".git", "config"), bytesutil.TrimIndentations([]byte(`
 		[user]
@@ -112,7 +144,7 @@ func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryReposito
 		[init]
 			defaultBranch = main
 	`)), 0600); err != nil {
-		return "", cleanup, pkgerrors.WithStack(err)
+		return nil, cleanup, pkgerrors.WithStack(err)
 	}
 	// Overwrite the global and system configs to point to the default one.
 	environment := map[string]string{
@@ -131,7 +163,7 @@ func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryReposito
 		Env:       environment,
 	})
 	if err != nil {
-		return "", cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to initialize git repository", out)))
+		return nil, cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to initialize git repository", out)))
 	}
 
 	out, err = util.CommandWithResult(context.Background(), logger, &util.Command{
@@ -145,7 +177,7 @@ func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryReposito
 		Env:       environment,
 	})
 	if err != nil {
-		return "", cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to add files", out)))
+		return nil, cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to add files", out)))
 	}
 
 	out, err = util.CommandWithResult(context.Background(), logger, &util.Command{
@@ -160,30 +192,11 @@ func TemporaryRepository(logger *log.Logger, dataPath string) (temporaryReposito
 		Env:       environment,
 	})
 	if err != nil {
-		return "", cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to commit", out)))
+		return nil, cleanup, pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to commit", out)))
 	}
 
-	return temporaryRepositoryPath, cleanup, nil
-}
-
-// ResetTemporaryRepository resets a temporary repository back to its "initial" commit.
-func ResetTemporaryRepository(logger *log.Logger, path string) (err error) {
-	out, err := util.CommandWithResult(context.Background(), logger, &util.Command{
-		Command: []string{
-			"git",
-			"clean",
-			"-df",
-		},
-
-		Directory: path,
-		Env: map[string]string{ // Overwrite the global and system configs to point to the default one.
-			"GIT_CONFIG_GLOBAL": filepath.Join(path, ".git", "config"),
-			"GIT_CONFIG_SYSTEM": filepath.Join(path, ".git", "config"),
-		},
-	})
-	if err != nil {
-		return pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to clean git repository", out)))
-	}
-
-	return nil
+	return &Repository{
+		Name:     repositoryPathRelative,
+		DataPath: temporaryRepositoryPath,
+	}, cleanup, nil
 }

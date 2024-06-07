@@ -46,11 +46,11 @@ func TestRepository(t *testing.T) {
 			temporaryPath := t.TempDir()
 
 			_, logger := log.Buffer()
-			temporaryRepositoryPath, cleanup, err := TemporaryRepository(logger, filepath.Join(tc.TestDataPath, tc.RepositoryPath))
+			temporaryRepository, cleanup, err := TemporaryRepository(logger, tc.TestDataPath, tc.RepositoryPath)
 			assert.NoError(t, err)
 			defer cleanup()
 
-			actualRepositoryAssessment, actualProblems, actualErr := Repository(logger, temporaryPath, tc.Model, tc.Language, temporaryRepositoryPath, tc.RepositoryPath)
+			actualRepositoryAssessment, actualProblems, actualErr := temporaryRepository.Evaluate(logger, temporaryPath, tc.Model, tc.Language)
 
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 			if assert.Equal(t, len(tc.ExpectedProblemContains), len(actualProblems), "problems count") {
@@ -180,14 +180,14 @@ func TestTemporaryRepository(t *testing.T) {
 				}
 			}()
 
-			actualTemporaryRepositoryPath, cleanup, actualErr := TemporaryRepository(logger, filepath.Join(tc.TestDataPath, tc.RepositoryPath))
+			actualTemporaryRepository, cleanup, actualErr := TemporaryRepository(logger, tc.TestDataPath, tc.RepositoryPath)
 			defer cleanup()
 
-			assert.Regexp(t, filepath.Join(os.TempDir(), tc.ExpectedTempPathRegex), actualTemporaryRepositoryPath, actualTemporaryRepositoryPath)
+			assert.Regexp(t, filepath.Join(os.TempDir(), tc.ExpectedTempPathRegex), actualTemporaryRepository, actualTemporaryRepository)
 			assert.Equal(t, tc.ExpectedErr, actualErr)
 
 			if tc.ValidateAfter != nil {
-				tc.ValidateAfter(t, logger, actualTemporaryRepositoryPath)
+				tc.ValidateAfter(t, logger, actualTemporaryRepository.DataPath)
 			}
 		})
 	}
@@ -230,16 +230,16 @@ func TestResetTemporaryRepository(t *testing.T) {
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
 			_, logger := log.Buffer()
-			temporaryRepositoryPath, cleanup, err := TemporaryRepository(logger, filepath.Join(tc.TestDataPath, tc.RepositoryPath))
+			temporaryRepository, cleanup, err := TemporaryRepository(logger, tc.TestDataPath, tc.RepositoryPath)
 			assert.NoError(t, err)
 			defer cleanup()
 
-			tc.MutationBefore(t, temporaryRepositoryPath)
+			tc.MutationBefore(t, temporaryRepository.DataPath)
 
-			actualErr := ResetTemporaryRepository(logger, temporaryRepositoryPath)
+			actualErr := temporaryRepository.Reset(logger)
 			assert.Equal(t, tc.ExpectedErr, actualErr)
 
-			tc.ValidateAfter(t, temporaryRepositoryPath)
+			tc.ValidateAfter(t, temporaryRepository.DataPath)
 		})
 	}
 
