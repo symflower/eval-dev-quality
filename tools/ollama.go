@@ -215,7 +215,8 @@ func OllamaCheck(url string) (err error) {
 			return nil
 		},
 		retry.Attempts(3),
-		retry.Delay(time.Second),
+		retry.Delay(5*time.Second),
+		retry.LastErrorOnly(true),
 	); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, "could not detect running Ollama service"))
 	}

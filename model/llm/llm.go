@@ -121,7 +121,7 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 			return nil
 		},
 		retry.Attempts(m.queryAttempts),
-		retry.Delay(2*time.Second),
+		retry.Delay(5*time.Second),
 		retry.LastErrorOnly(true),
 		retry.OnRetry(func(n uint, err error) {
 			logger.Printf("Attempt %d/%d: %s", n+1, m.queryAttempts, err)
