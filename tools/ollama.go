@@ -196,23 +196,27 @@ func ollamaProcessStateRemove(url string) {
 
 // OllamaCheck checks that an Ollama service is running at the given URL.
 func OllamaCheck(url string) (err error) {
-	if err := retry.Do(func() error {
-		response, err := http.Get(url)
-		if err != nil {
-			return pkgerrors.WithStack(err)
-		} else if response.StatusCode != http.StatusOK {
-			return pkgerrors.WithStack(fmt.Errorf("unexpected status code %d", response.StatusCode))
-		}
+	if err := retry.Do(
+		func() error {
+			response, err := http.Get(url)
+			if err != nil {
+				return pkgerrors.WithStack(err)
+			} else if response.StatusCode != http.StatusOK {
+				return pkgerrors.WithStack(fmt.Errorf("unexpected status code %d", response.StatusCode))
+			}
 
-		body, err := io.ReadAll(response.Body)
-		if err != nil {
-			return pkgerrors.WithStack(err)
-		} else if string(body) != "Ollama is running" {
-			return pkgerrors.WithMessage(pkgerrors.WithStack(errors.New("service is not running")), string(body))
-		}
+			body, err := io.ReadAll(response.Body)
+			if err != nil {
+				return pkgerrors.WithStack(err)
+			} else if string(body) != "Ollama is running" {
+				return pkgerrors.WithMessage(pkgerrors.WithStack(errors.New("service is not running")), string(body))
+			}
 
-		return nil
-	}, retry.Delay(time.Second), retry.Attempts(3)); err != nil {
+			return nil
+		},
+		retry.Attempts(3),
+		retry.Delay(time.Second),
+	); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, "could not detect running Ollama service"))
 	}
 

@@ -126,9 +126,6 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 		retry.OnRetry(func(n uint, err error) {
 			logger.Printf("Attempt %d/%d: %s", n+1, m.queryAttempts, err)
 		}),
-		retry.RetryIf(func(err error) bool {
-			return true
-		}),
 	); err != nil {
 		return nil, err
 	}
