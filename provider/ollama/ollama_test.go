@@ -11,12 +11,14 @@ import (
 	"github.com/symflower/eval-dev-quality/log"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 	"github.com/symflower/eval-dev-quality/tools"
+	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 )
 
 func TestProviderStart(t *testing.T) {
 	if !osutil.IsLinux() {
 		t.Skipf("Installation of Ollama is not supported on this OS")
 	}
+	toolstesting.RequiresTool(t, tools.NewOllama())
 
 	type testCase struct {
 		Name string
@@ -96,6 +98,7 @@ func TestProviderModels(t *testing.T) {
 	if !osutil.IsLinux() {
 		t.Skipf("Installation of Ollama is not supported on this OS")
 	}
+	toolstesting.RequiresTool(t, tools.NewOllama())
 
 	type testCase struct {
 		Name string

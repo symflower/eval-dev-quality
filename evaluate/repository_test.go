@@ -19,10 +19,14 @@ import (
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/symflower"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
+	"github.com/symflower/eval-dev-quality/tools"
+	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
 func TestRepository(t *testing.T) {
+	toolstesting.RequiresTool(t, tools.NewSymflower())
+
 	type testCase struct {
 		Name string
 
