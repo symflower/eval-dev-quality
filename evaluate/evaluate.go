@@ -63,12 +63,12 @@ func (ctx *Context) runsAtModelLevel() uint {
 const RepositoryPlainName = "plain"
 
 // Evaluate runs an evaluation on the given context and returns its results.
-func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePerRepositoryPerTask, totalScore uint64) {
+func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uint64) {
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	modelSucceededBasicChecksOfLanguage := map[evalmodel.Model]map[evallanguage.Language]bool{}
 	ctx.Log.Printf("Checking that models and languages can be used for evaluation")
 	// Ensure we report metrics for every model even if they are excluded.
-	assessments = report.NewAssessmentPerModelPerLanguagePerRepositoryPerTask()
+	assessments = report.NewAssessmentStore()
 	problemsPerModel := map[string][]error{}
 
 	{

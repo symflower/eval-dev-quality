@@ -7,6 +7,7 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	"github.com/symflower/eval-dev-quality/task"
@@ -16,14 +17,16 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 	type testCase struct {
 		Name string
 
-		Assessments AssessmentPerModelPerLanguagePerRepositoryPerTask
+		Assessments metricstesting.AssessmentTuples
 
 		ExpectedString string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualString, err := GenerateCSV(tc.Assessments)
+			assessmentStore := assessmentTuplesToStore(tc.Assessments)
+
+			actualString, err := GenerateCSV(assessmentStore)
 			assert.NoError(t, err)
 
 			assert.Equal(t, bytesutil.StringTrimIndentations(tc.ExpectedString), actualString)
@@ -33,13 +36,13 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 	validate(t, &testCase{
 		Name: "Single Empty Model",
 
-		Assessments: AssessmentPerModelPerLanguagePerRepositoryPerTask{
-			modeltesting.NewMockModelNamed(t, "some-model"): {
-				languagetesting.NewMockLanguageNamed(t, "some-language"): {
-					"some-repository": {
-						task.IdentifierWriteTests: metrics.NewAssessments(),
-					},
-				},
+		Assessments: metricstesting.AssessmentTuples{
+			&metricstesting.AssessmentTuple{
+				Model:          modeltesting.NewMockModelNamed(t, "some-model"),
+				Language:       languagetesting.NewMockLanguageNamed(t, "some-language"),
+				RepositoryPath: "some-repository",
+				Task:           task.IdentifierWriteTests,
+				Assessment:     metrics.NewAssessments(),
 			},
 		},
 
@@ -51,37 +54,37 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 	validate(t, &testCase{
 		Name: "Multiple Models",
 
-		Assessments: AssessmentPerModelPerLanguagePerRepositoryPerTask{
-			modeltesting.NewMockModelNamed(t, "some-model-a"): {
-				languagetesting.NewMockLanguageNamed(t, "some-language"): {
-					"some-repository": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 50,
-							metrics.AssessmentKeyResponseCharacterCount:             100,
-							metrics.AssessmentKeyCoverage:                           1,
-							metrics.AssessmentKeyFilesExecuted:                      2,
-							metrics.AssessmentKeyResponseNoError:                    3,
-							metrics.AssessmentKeyResponseNoExcess:                   4,
-							metrics.AssessmentKeyResponseWithCode:                   5,
-							metrics.AssessmentKeyProcessingTime:                     200,
-						},
-					},
+		Assessments: metricstesting.AssessmentTuples{
+			&metricstesting.AssessmentTuple{
+				Model:          modeltesting.NewMockModelNamed(t, "some-model-a"),
+				Language:       languagetesting.NewMockLanguageNamed(t, "some-language"),
+				RepositoryPath: "some-repository",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 50,
+					metrics.AssessmentKeyResponseCharacterCount:             100,
+					metrics.AssessmentKeyCoverage:                           1,
+					metrics.AssessmentKeyFilesExecuted:                      2,
+					metrics.AssessmentKeyResponseNoError:                    3,
+					metrics.AssessmentKeyResponseNoExcess:                   4,
+					metrics.AssessmentKeyResponseWithCode:                   5,
+					metrics.AssessmentKeyProcessingTime:                     200,
 				},
 			},
-			modeltesting.NewMockModelNamed(t, "some-model-b"): {
-				languagetesting.NewMockLanguageNamed(t, "some-language"): {
-					"some-repository": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 100,
-							metrics.AssessmentKeyResponseCharacterCount:             200,
-							metrics.AssessmentKeyCoverage:                           1,
-							metrics.AssessmentKeyFilesExecuted:                      2,
-							metrics.AssessmentKeyResponseNoError:                    3,
-							metrics.AssessmentKeyResponseNoExcess:                   4,
-							metrics.AssessmentKeyResponseWithCode:                   5,
-							metrics.AssessmentKeyProcessingTime:                     300,
-						},
-					},
+			&metricstesting.AssessmentTuple{
+				Model:          modeltesting.NewMockModelNamed(t, "some-model-b"),
+				Language:       languagetesting.NewMockLanguageNamed(t, "some-language"),
+				RepositoryPath: "some-repository",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 100,
+					metrics.AssessmentKeyResponseCharacterCount:             200,
+					metrics.AssessmentKeyCoverage:                           1,
+					metrics.AssessmentKeyFilesExecuted:                      2,
+					metrics.AssessmentKeyResponseNoError:                    3,
+					metrics.AssessmentKeyResponseNoExcess:                   4,
+					metrics.AssessmentKeyResponseWithCode:                   5,
+					metrics.AssessmentKeyProcessingTime:                     300,
 				},
 			},
 		},

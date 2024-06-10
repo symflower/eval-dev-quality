@@ -18,7 +18,6 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
-	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
@@ -81,7 +80,7 @@ func TestEvaluate(t *testing.T) {
 
 		Context *Context
 
-		ExpectedAssessments    report.AssessmentPerModelPerLanguagePerRepositoryPerTask
+		ExpectedAssessments    metricstesting.AssessmentTuples
 		ExpectedTotalScore     uint64
 		ExpectedOutputValidate func(t *testing.T, output string, resultPath string)
 		ExpectedResultFiles    map[string]func(t *testing.T, filePath string, data string)
@@ -117,22 +116,27 @@ func TestEvaluate(t *testing.T) {
 				defer tc.After(t, logger, temporaryPath)
 			}
 
-			actualAssessments, actualTotalScore := Evaluate(tc.Context)
+			assessmentStore, actualTotalScore := Evaluate(tc.Context)
 
-			// Normalize assessments.
-			for _, ls := range actualAssessments {
-				for _, rs := range ls {
-					for _, ts := range rs {
-						for _, a := range ts {
-							if v, ok := a[metrics.AssessmentKeyProcessingTime]; ok {
-								if assert.Greater(t, v, uint64(0)) {
-									delete(a, metrics.AssessmentKeyProcessingTime)
-								}
-							}
-						}
+			var actualAssessments metricstesting.AssessmentTuples
+			require.NoError(t, assessmentStore.Walk(func(m evalmodel.Model, l language.Language, r string, ti task.Identifier, a metrics.Assessments) error {
+				// Normalize assessments.
+				if v, ok := a[metrics.AssessmentKeyProcessingTime]; ok {
+					if assert.Greater(t, v, uint64(0)) {
+						delete(a, metrics.AssessmentKeyProcessingTime)
 					}
 				}
-			}
+
+				actualAssessments = append(actualAssessments, &metricstesting.AssessmentTuple{
+					Model:          m,
+					Language:       l,
+					RepositoryPath: r,
+					Task:           ti,
+					Assessment:     a,
+				})
+
+				return nil
+			}))
 
 			assert.Equal(t, tc.ExpectedAssessments, actualAssessments)
 			assert.Equal(t, tc.ExpectedTotalScore, actualTotalScore)
@@ -187,13 +191,13 @@ func TestEvaluate(t *testing.T) {
 				},
 			},
 
-			ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-				mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-						repositoryPath: map[task.Identifier]metrics.Assessments{
-							task.IdentifierWriteTests: metrics.Assessments{},
-						},
-					},
+			ExpectedAssessments: []*metricstesting.AssessmentTuple{
+				&metricstesting.AssessmentTuple{
+					Model:          mockedModel,
+					Language:       languageGolang,
+					RepositoryPath: repositoryPath,
+					Task:           task.IdentifierWriteTests,
+					Assessment:     metrics.Assessments{},
 				},
 			},
 			ExpectedTotalScore: 1,
@@ -233,13 +237,13 @@ func TestEvaluate(t *testing.T) {
 					QueryAttempts: 1,
 				},
 
-				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-						languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-							repositoryPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: metrics.Assessments{},
-							},
-						},
+				ExpectedAssessments: []*metricstesting.AssessmentTuple{
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment:     metrics.Assessments{},
 					},
 				},
 				ExpectedTotalScore: 1,
@@ -284,16 +288,16 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 
-				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-						languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-							repositoryPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-									metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
-									metrics.AssessmentKeyResponseCharacterCount:             14,
-									metrics.AssessmentKeyResponseNoError:                    1,
-								},
-							},
+				ExpectedAssessments: []*metricstesting.AssessmentTuple{
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
+							metrics.AssessmentKeyResponseCharacterCount:             14,
+							metrics.AssessmentKeyResponseNoError:                    1,
 						},
 					},
 				},
@@ -338,16 +342,16 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 
-				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-						languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-							repositoryPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-									metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
-									metrics.AssessmentKeyResponseCharacterCount:             14,
-									metrics.AssessmentKeyResponseNoError:                    1,
-								},
-							},
+				ExpectedAssessments: []*metricstesting.AssessmentTuple{
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
+							metrics.AssessmentKeyResponseCharacterCount:             14,
+							metrics.AssessmentKeyResponseNoError:                    1,
 						},
 					},
 				},
@@ -426,23 +430,27 @@ func TestEvaluate(t *testing.T) {
 					Runs: 2,
 				},
 
-				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-						languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-							repositoryPlainPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-									metrics.AssessmentKeyCoverage:        0,
-									metrics.AssessmentKeyFilesExecuted:   2,
-									metrics.AssessmentKeyResponseNoError: 2,
-								},
-							},
-							repositoryNextPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-									metrics.AssessmentKeyCoverage:        0,
-									metrics.AssessmentKeyFilesExecuted:   1,
-									metrics.AssessmentKeyResponseNoError: 1,
-								},
-							},
+				ExpectedAssessments: []*metricstesting.AssessmentTuple{
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryNextPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   1,
+							metrics.AssessmentKeyResponseNoError: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPlainPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   2,
+							metrics.AssessmentKeyResponseNoError: 2,
 						},
 					},
 				},
@@ -495,23 +503,27 @@ func TestEvaluate(t *testing.T) {
 					Runs: 2,
 				},
 
-				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-						languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-							repositoryPlainPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-									metrics.AssessmentKeyCoverage:        0,
-									metrics.AssessmentKeyFilesExecuted:   1,
-									metrics.AssessmentKeyResponseNoError: 1,
-								},
-							},
-							repositoryNextPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-									metrics.AssessmentKeyCoverage:        0,
-									metrics.AssessmentKeyFilesExecuted:   2,
-									metrics.AssessmentKeyResponseNoError: 2,
-								},
-							},
+				ExpectedAssessments: []*metricstesting.AssessmentTuple{
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryNextPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   2,
+							metrics.AssessmentKeyResponseNoError: 2,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPlainPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   1,
+							metrics.AssessmentKeyResponseNoError: 1,
 						},
 					},
 				},
@@ -560,13 +572,13 @@ func TestEvaluate(t *testing.T) {
 					Runs: 2,
 				},
 
-				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-						languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-							repositoryPlainPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{},
-							},
-						},
+				ExpectedAssessments: []*metricstesting.AssessmentTuple{
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPlainPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment:     map[metrics.AssessmentKey]uint64{},
 					},
 				},
 				ExpectedTotalScore: 0,
@@ -609,16 +621,16 @@ func TestEvaluate(t *testing.T) {
 					RunsSequential: false,
 				},
 
-				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-						languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-							repositoryPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-									metrics.AssessmentKeyCoverage:        0,
-									metrics.AssessmentKeyFilesExecuted:   3,
-									metrics.AssessmentKeyResponseNoError: 3,
-								},
-							},
+				ExpectedAssessments: []*metricstesting.AssessmentTuple{
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   3,
+							metrics.AssessmentKeyResponseNoError: 3,
 						},
 					},
 				},
@@ -665,16 +677,16 @@ func TestEvaluate(t *testing.T) {
 					RunsSequential: true,
 				},
 
-				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-						languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-							repositoryPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-									metrics.AssessmentKeyCoverage:        0,
-									metrics.AssessmentKeyFilesExecuted:   3,
-									metrics.AssessmentKeyResponseNoError: 3,
-								},
-							},
+				ExpectedAssessments: []*metricstesting.AssessmentTuple{
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   3,
+							metrics.AssessmentKeyResponseNoError: 3,
 						},
 					},
 				},
@@ -751,16 +763,16 @@ func TestEvaluate(t *testing.T) {
 					RunsSequential: true,
 				},
 
-				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-						languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-							repositoryPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-									metrics.AssessmentKeyCoverage:        0,
-									metrics.AssessmentKeyFilesExecuted:   3,
-									metrics.AssessmentKeyResponseNoError: 3,
-								},
-							},
+				ExpectedAssessments: []*metricstesting.AssessmentTuple{
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   3,
+							metrics.AssessmentKeyResponseNoError: 3,
 						},
 					},
 				},
@@ -820,16 +832,16 @@ func TestEvaluate(t *testing.T) {
 					Runs: 3,
 				},
 
-				ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-						languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-							repositoryPath: map[task.Identifier]metrics.Assessments{
-								task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-									metrics.AssessmentKeyCoverage:        0,
-									metrics.AssessmentKeyFilesExecuted:   3,
-									metrics.AssessmentKeyResponseNoError: 3,
-								},
-							},
+				ExpectedAssessments: []*metricstesting.AssessmentTuple{
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           task.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   3,
+							metrics.AssessmentKeyResponseNoError: 3,
 						},
 					},
 				},
@@ -870,16 +882,16 @@ func TestEvaluate(t *testing.T) {
 				Runs: 1,
 			},
 
-			ExpectedAssessments: map[evalmodel.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-				mockedModel: map[language.Language]map[string]map[task.Identifier]metrics.Assessments{
-					languageGolang: map[string]map[task.Identifier]metrics.Assessments{
-						repositoryPath: map[task.Identifier]metrics.Assessments{
-							task.IdentifierWriteTests: map[metrics.AssessmentKey]uint64{
-								metrics.AssessmentKeyCoverage:        0,
-								metrics.AssessmentKeyFilesExecuted:   1,
-								metrics.AssessmentKeyResponseNoError: 1,
-							},
-						},
+			ExpectedAssessments: []*metricstesting.AssessmentTuple{
+				&metricstesting.AssessmentTuple{
+					Model:          mockedModel,
+					Language:       languageGolang,
+					RepositoryPath: repositoryPath,
+					Task:           task.IdentifierWriteTests,
+					Assessment: map[metrics.AssessmentKey]uint64{
+						metrics.AssessmentKeyCoverage:        0,
+						metrics.AssessmentKeyFilesExecuted:   1,
+						metrics.AssessmentKeyResponseNoError: 1,
 					},
 				},
 			},
