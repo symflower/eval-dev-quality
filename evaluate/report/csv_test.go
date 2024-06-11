@@ -9,13 +9,14 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
+	"github.com/symflower/eval-dev-quality/task"
 )
 
 func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		Assessments AssessmentPerModelPerLanguagePerRepository
+		Assessments AssessmentPerModelPerLanguagePerRepositoryPerTask
 
 		ExpectedString string
 	}
@@ -32,48 +33,54 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 	validate(t, &testCase{
 		Name: "Single Empty Model",
 
-		Assessments: AssessmentPerModelPerLanguagePerRepository{
+		Assessments: AssessmentPerModelPerLanguagePerRepositoryPerTask{
 			modeltesting.NewMockModelNamed(t, "some-model"): {
 				languagetesting.NewMockLanguageNamed(t, "some-language"): {
-					"some-repository": metrics.NewAssessments(),
+					"some-repository": {
+						task.IdentifierWriteTests: metrics.NewAssessments(),
+					},
 				},
 			},
 		},
 
 		ExpectedString: `
 			model,language,repository,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
-			some-model,some-language,some-repository,0,0,0,0,0,0,0,0,0
+			some-model,some-language,some-repository,write-tests,0,0,0,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
 		Name: "Multiple Models",
 
-		Assessments: AssessmentPerModelPerLanguagePerRepository{
+		Assessments: AssessmentPerModelPerLanguagePerRepositoryPerTask{
 			modeltesting.NewMockModelNamed(t, "some-model-a"): {
 				languagetesting.NewMockLanguageNamed(t, "some-language"): {
-					"some-repository": metrics.Assessments{
-						metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 50,
-						metrics.AssessmentKeyResponseCharacterCount:             100,
-						metrics.AssessmentKeyCoverage:                           1,
-						metrics.AssessmentKeyFilesExecuted:                      2,
-						metrics.AssessmentKeyResponseNoError:                    3,
-						metrics.AssessmentKeyResponseNoExcess:                   4,
-						metrics.AssessmentKeyResponseWithCode:                   5,
-						metrics.AssessmentKeyProcessingTime:                     200,
+					"some-repository": {
+						task.IdentifierWriteTests: metrics.Assessments{
+							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 50,
+							metrics.AssessmentKeyResponseCharacterCount:             100,
+							metrics.AssessmentKeyCoverage:                           1,
+							metrics.AssessmentKeyFilesExecuted:                      2,
+							metrics.AssessmentKeyResponseNoError:                    3,
+							metrics.AssessmentKeyResponseNoExcess:                   4,
+							metrics.AssessmentKeyResponseWithCode:                   5,
+							metrics.AssessmentKeyProcessingTime:                     200,
+						},
 					},
 				},
 			},
 			modeltesting.NewMockModelNamed(t, "some-model-b"): {
 				languagetesting.NewMockLanguageNamed(t, "some-language"): {
-					"some-repository": metrics.Assessments{
-						metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 100,
-						metrics.AssessmentKeyResponseCharacterCount:             200,
-						metrics.AssessmentKeyCoverage:                           1,
-						metrics.AssessmentKeyFilesExecuted:                      2,
-						metrics.AssessmentKeyResponseNoError:                    3,
-						metrics.AssessmentKeyResponseNoExcess:                   4,
-						metrics.AssessmentKeyResponseWithCode:                   5,
-						metrics.AssessmentKeyProcessingTime:                     300,
+					"some-repository": {
+						task.IdentifierWriteTests: metrics.Assessments{
+							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 100,
+							metrics.AssessmentKeyResponseCharacterCount:             200,
+							metrics.AssessmentKeyCoverage:                           1,
+							metrics.AssessmentKeyFilesExecuted:                      2,
+							metrics.AssessmentKeyResponseNoError:                    3,
+							metrics.AssessmentKeyResponseNoExcess:                   4,
+							metrics.AssessmentKeyResponseWithCode:                   5,
+							metrics.AssessmentKeyProcessingTime:                     300,
+						},
 					},
 				},
 			},
@@ -81,8 +88,8 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 
 		ExpectedString: `
 			model,language,repository,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
-			some-model-a,some-language,some-repository,15,1,2,50,200,100,3,4,5
-			some-model-b,some-language,some-repository,15,1,2,100,300,200,3,4,5
+			some-model-a,some-language,some-repository,write-tests,15,1,2,50,200,100,3,4,5
+			some-model-b,some-language,some-repository,write-tests,15,1,2,100,300,200,3,4,5
 		`,
 	})
 }

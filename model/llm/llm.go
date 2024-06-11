@@ -14,10 +14,10 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
-	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm/prompt"
 	"github.com/symflower/eval-dev-quality/provider"
+	"github.com/symflower/eval-dev-quality/task"
 )
 
 // Model represents a LLM model accessed via a provider.
@@ -32,7 +32,7 @@ type Model struct {
 }
 
 // NewModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
-func NewModel(provider provider.Query, modelIdentifier string) model.Model {
+func NewModel(provider provider.Query, modelIdentifier string) *Model {
 	return &Model{
 		provider: provider,
 		model:    modelIdentifier,
@@ -84,21 +84,41 @@ func (m *Model) ID() (id string) {
 	return m.model
 }
 
-// GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
-	data, err := os.ReadFile(filepath.Join(repositoryPath, filePath))
+// IsTaskSupported returns whether the model supports the given task or not.
+func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported bool) {
+	switch taskIdentifier {
+	case task.IdentifierWriteTests:
+		return true
+	default:
+		return false
+	}
+}
+
+// RunTask runs the given task.
+func (m *Model) RunTask(ctx task.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error) {
+	switch taskIdentifier {
+	case task.IdentifierWriteTests:
+		return m.generateTestsForFile(ctx)
+	default:
+		return nil, pkgerrors.Wrap(task.ErrTaskUnsupported, string(taskIdentifier))
+	}
+}
+
+// generateTestsForFile generates test files for the given implementation file in a repository.
+func (m *Model) generateTestsForFile(ctx task.Context) (assessment metrics.Assessments, err error) {
+	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 	fileContent := strings.TrimSpace(string(data))
 
-	importPath := language.ImportPath(repositoryPath, filePath)
+	importPath := ctx.Language.ImportPath(ctx.RepositoryPath, ctx.FilePath)
 
 	request, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
-		Language: language,
+		Language: ctx.Language,
 
 		Code:       fileContent,
-		FilePath:   filePath,
+		FilePath:   ctx.FilePath,
 		ImportPath: importPath,
 	})
 	if err != nil {
@@ -109,14 +129,14 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	var duration time.Duration
 	if err := retry.Do(
 		func() error {
-			logger.Printf("Querying model %q with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
+			ctx.Logger.Printf("Querying model %q with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
 			start := time.Now()
 			response, err = m.provider.Query(context.Background(), m.model, request)
 			if err != nil {
 				return err
 			}
 			duration = time.Since(start)
-			logger.Printf("Model %q responded (%d ms) with:\n%s", m.ID(), duration.Milliseconds(), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
+			ctx.Logger.Printf("Model %q responded (%d ms) with:\n%s", m.ID(), duration.Milliseconds(), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
 
 			return nil
 		},
@@ -125,7 +145,7 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 		retry.DelayType(retry.BackOffDelay),
 		retry.LastErrorOnly(true),
 		retry.OnRetry(func(n uint, err error) {
-			logger.Printf("Attempt %d/%d: %s", n+1, m.queryAttempts, err)
+			ctx.Logger.Printf("Attempt %d/%d: %s", n+1, m.queryAttempts, err)
 		}),
 	); err != nil {
 		return nil, err
@@ -139,11 +159,11 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(response))
 	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(testContent))
 
-	testFilePath := language.TestFilePath(repositoryPath, filePath)
-	if err := os.MkdirAll(filepath.Join(repositoryPath, filepath.Dir(testFilePath)), 0755); err != nil {
+	testFilePath := ctx.Language.TestFilePath(ctx.RepositoryPath, ctx.FilePath)
+	if err := os.MkdirAll(filepath.Join(ctx.RepositoryPath, filepath.Dir(testFilePath)), 0755); err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
-	if err := os.WriteFile(filepath.Join(repositoryPath, testFilePath), []byte(testContent), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(ctx.RepositoryPath, testFilePath), []byte(testContent), 0644); err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 

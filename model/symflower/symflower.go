@@ -10,10 +10,9 @@ import (
 	pkgerrors "github.com/pkg/errors"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	"github.com/symflower/eval-dev-quality/language"
-	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
+	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	"github.com/symflower/eval-dev-quality/util"
 )
@@ -33,19 +32,39 @@ func (m *Model) ID() (id string) {
 	return "symflower" + provider.ProviderModelSeparator + "symbolic-execution"
 }
 
-// GenerateTestsForFile generates test files for the given implementation file in a repository.
-func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Language, repositoryPath string, filePath string) (assessment metrics.Assessments, err error) {
+// IsTaskSupported returns whether the model supports the given task or not.
+func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported bool) {
+	switch taskIdentifier {
+	case task.IdentifierWriteTests:
+		return true
+	default:
+		return false
+	}
+}
+
+// RunTask runs the given task.
+func (m *Model) RunTask(ctx task.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error) {
+	switch taskIdentifier {
+	case task.IdentifierWriteTests:
+		return m.generateTestsForFile(ctx)
+	default:
+		return nil, pkgerrors.Wrap(task.ErrTaskUnsupported, string(taskIdentifier))
+	}
+}
+
+// generateTestsForFile generates test files for the given implementation file in a repository.
+func (m *Model) generateTestsForFile(ctx task.Context) (assessment metrics.Assessments, err error) {
 	start := time.Now()
 
-	output, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+	output, err := util.CommandWithResult(context.Background(), ctx.Logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "unit-tests",
 			"--code-disable-fetch-dependencies",
-			"--workspace", repositoryPath,
-			filePath,
+			"--workspace", ctx.RepositoryPath,
+			ctx.FilePath,
 		},
 
-		Directory: repositoryPath,
+		Directory: ctx.RepositoryPath,
 	})
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
@@ -53,7 +72,7 @@ func (m *Model) GenerateTestsForFile(logger *log.Logger, language language.Langu
 
 	processingTime := uint64(time.Since(start).Milliseconds())
 
-	characterCount, err := countCharactersOfGeneratedFiles(repositoryPath, extractGeneratedFilePaths(output))
+	characterCount, err := countCharactersOfGeneratedFiles(ctx.RepositoryPath, extractGeneratedFilePaths(output))
 	if err != nil {
 		return nil, err
 	}

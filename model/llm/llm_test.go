@@ -17,6 +17,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
+	"github.com/symflower/eval-dev-quality/task"
 )
 
 func TestModelGenerateTestsForFile(t *testing.T) {
@@ -54,7 +55,15 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			tc.SetupMock(mock)
 			llm := NewModel(mock, tc.ModelID)
 
-			actualAssessment, actualError := llm.GenerateTestsForFile(logger, tc.Language, temporaryPath, tc.SourceFilePath)
+			ctx := task.Context{
+				Language: tc.Language,
+
+				RepositoryPath: temporaryPath,
+				FilePath:       tc.SourceFilePath,
+
+				Logger: logger,
+			}
+			actualAssessment, actualError := llm.generateTestsForFile(ctx)
 			assert.NoError(t, actualError)
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 
