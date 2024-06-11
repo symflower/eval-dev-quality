@@ -14,9 +14,13 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/tools"
+	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 )
 
 func TestModelGenerateTestsForFile(t *testing.T) {
+	toolstesting.RequiresTool(t, tools.NewSymflower())
+
 	type testCase struct {
 		Name string
 

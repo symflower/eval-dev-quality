@@ -20,6 +20,7 @@ import (
 	"github.com/symflower/eval-dev-quality/log"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 	"github.com/symflower/eval-dev-quality/tools"
+	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 )
 
 // validateReportLinks checks if the Markdown report data contains all the links to other relevant report files.
@@ -91,6 +92,11 @@ func validateMetrics(t *testing.T, regex *regexp.Regexp, data string, expectedAs
 }
 
 func TestEvaluateExecute(t *testing.T) {
+	if osutil.IsLinux() {
+		toolstesting.RequiresTool(t, tools.NewOllama())
+	}
+	toolstesting.RequiresTool(t, tools.NewSymflower())
+
 	type testCase struct {
 		Name string
 
