@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	codeTagMatch           = regexp.MustCompile("(^|\n)\\s*```\\w*\\s*($|\n)")
+	codeTagMatch           = regexp.MustCompile("(^|\n)\\s*```.*($|\n)")
 	codeTagDuplicatedMatch = regexp.MustCompile("```(\\s|\n)*```")
 )
 
