@@ -131,7 +131,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 			arguments := append([]string{
 				"evaluate",
-				"--result-path", temporaryPath,
+				"--result-path", filepath.Join(temporaryPath, "result-directory"),
 				"--testdata", filepath.Join("..", "..", "..", "testdata"),
 			}, tc.Arguments...)
 
@@ -208,10 +208,10 @@ func TestEvaluateExecute(t *testing.T) {
 				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				"categories.svg": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
 					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 				},
-				"evaluation.csv": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
 							metrics.AssessmentKeyCoverage:         10,
@@ -226,8 +226,8 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 				},
-				"evaluation.log": nil,
-				"golang-summed.csv": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "evaluation.log"): nil,
+				filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
 							metrics.AssessmentKeyCoverage:         10,
@@ -242,7 +242,7 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 				},
-				"models-summed.csv": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
 							metrics.AssessmentKeyCoverage:         10,
@@ -257,10 +257,10 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 				},
-				"README.md": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+				filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 			},
 		})
 		validate(t, &testCase{
@@ -287,10 +287,10 @@ func TestEvaluateExecute(t *testing.T) {
 				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				"categories.svg": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
 					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 				},
-				"evaluation.csv": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
 							metrics.AssessmentKeyCoverage:         10,
@@ -315,7 +315,7 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, actualAssessments[1][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(139))
 					assert.Equal(t, actualAssessments[1][metrics.AssessmentKeyResponseCharacterCount], uint64(139))
 				},
-				"golang-summed.csv": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
 							metrics.AssessmentKeyCoverage:         10,
@@ -330,7 +330,7 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 				},
-				"java-summed.csv": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "java-summed.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
 							metrics.AssessmentKeyCoverage:         10,
@@ -345,7 +345,7 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(139))
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(139))
 				},
-				"models-summed.csv": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
 							metrics.AssessmentKeyCoverage:         20,
@@ -360,12 +360,12 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(393))
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(393))
 				},
-				"evaluation.log": nil,
-				"README.md": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "evaluation.log"): nil,
+				filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
-				filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"):     nil,
+				filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+				filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"):     nil,
 			},
 		})
 	})
@@ -398,10 +398,10 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					"categories.svg": func(t *testing.T, filePath, data string) {
+					filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
 						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 					},
-					"evaluation.csv": func(t *testing.T, filePath, data string) {
+					filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
 								metrics.AssessmentKeyCoverage:         10,
@@ -416,8 +416,8 @@ func TestEvaluateExecute(t *testing.T) {
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 					},
-					"evaluation.log": nil,
-					"golang-summed.csv": func(t *testing.T, filePath, data string) {
+					filepath.Join("result-directory", "evaluation.log"): nil,
+					filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
 								metrics.AssessmentKeyCoverage:         10,
@@ -432,7 +432,7 @@ func TestEvaluateExecute(t *testing.T) {
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 					},
-					"models-summed.csv": func(t *testing.T, filePath, data string) {
+					filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
 								metrics.AssessmentKeyCoverage:         10,
@@ -447,10 +447,10 @@ func TestEvaluateExecute(t *testing.T) {
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 					},
-					"README.md": func(t *testing.T, filePath, data string) {
+					filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
-					filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+					filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 				},
 			})
 			validate(t, &testCase{
@@ -466,10 +466,10 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					"categories.svg": func(t *testing.T, filePath, data string) {
+					filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
 						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 					},
-					"evaluation.csv": func(t *testing.T, filePath, data string) {
+					filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
 								metrics.AssessmentKeyCoverage:         10,
@@ -484,8 +484,8 @@ func TestEvaluateExecute(t *testing.T) {
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 					},
-					"evaluation.log": nil,
-					"golang-summed.csv": func(t *testing.T, filePath, data string) {
+					filepath.Join("result-directory", "evaluation.log"): nil,
+					filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
 								metrics.AssessmentKeyCoverage:         10,
@@ -500,7 +500,7 @@ func TestEvaluateExecute(t *testing.T) {
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 					},
-					"models-summed.csv": func(t *testing.T, filePath, data string) {
+					filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
 								metrics.AssessmentKeyCoverage:         10,
@@ -515,10 +515,10 @@ func TestEvaluateExecute(t *testing.T) {
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
 						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 					},
-					"README.md": func(t *testing.T, filePath, data string) {
+					filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
-					filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+					filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 				},
 			})
 		})
@@ -537,7 +537,7 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Contains(t, output, "Skipping unavailable provider \"openrouter\"")
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					"evaluation.log": nil,
+					filepath.Join("result-directory", "evaluation.log"): nil,
 				},
 				ExpectedPanicContains: "ERROR: model openrouter/auto does not exist",
 			})
@@ -572,19 +572,19 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 
 					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-						"categories.svg": nil,
-						"evaluation.csv": nil,
-						"evaluation.log": func(t *testing.T, filePath, data string) {
+						filepath.Join("result-directory", "categories.svg"): nil,
+						filepath.Join("result-directory", "evaluation.csv"): nil,
+						filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath, data string) {
 							// Since the model is non-deterministic, we can only assert that the model did at least not error.
 							assert.Contains(t, data, fmt.Sprintf(`Evaluation score for "ollama/%s"`, providertesting.OllamaTestModel))
 							assert.Contains(t, data, "response-no-error=1")
 							assert.Contains(t, data, "preloading model")
 							assert.Contains(t, data, "unloading model")
 						},
-						"golang-summed.csv": nil,
-						"models-summed.csv": nil,
-						"README.md":         nil,
-						string(task.IdentifierWriteTests) + "/ollama_" + providertesting.OllamaTestModel + "/golang/golang/plain.log": nil,
+						filepath.Join("result-directory", "golang-summed.csv"): nil,
+						filepath.Join("result-directory", "models-summed.csv"): nil,
+						filepath.Join("result-directory", "README.md"):         nil,
+						filepath.Join("result-directory", string(task.IdentifierWriteTests), "ollama_"+providertesting.OllamaTestModel, "golang", "golang", "plain.log"): nil,
 					},
 				})
 			}
@@ -622,17 +622,17 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 
 					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-						"categories.svg": nil,
-						"evaluation.csv": nil,
-						"evaluation.log": func(t *testing.T, filePath, data string) {
+						filepath.Join("result-directory", "categories.svg"): nil,
+						filepath.Join("result-directory", "evaluation.csv"): nil,
+						filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath, data string) {
 							// Since the model is non-deterministic, we can only assert that the model did at least not error.
 							assert.Contains(t, data, fmt.Sprintf(`Evaluation score for "custom-ollama/%s"`, providertesting.OllamaTestModel))
 							assert.Contains(t, data, "response-no-error=1")
 						},
-						"golang-summed.csv": nil,
-						"models-summed.csv": nil,
-						"README.md":         nil,
-						string(task.IdentifierWriteTests) + "/custom-ollama_" + providertesting.OllamaTestModel + "/golang/golang/plain.log": nil,
+						filepath.Join("result-directory", "golang-summed.csv"): nil,
+						filepath.Join("result-directory", "models-summed.csv"): nil,
+						filepath.Join("result-directory", "README.md"):         nil,
+						filepath.Join("result-directory", string(task.IdentifierWriteTests), "custom-ollama_"+providertesting.OllamaTestModel, "golang", "golang", "plain.log"): nil,
 					},
 				})
 			}
@@ -666,8 +666,8 @@ func TestEvaluateExecute(t *testing.T) {
 				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				"categories.svg": nil,
-				"evaluation.csv": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "categories.svg"): nil,
+				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
 							metrics.AssessmentKeyCoverage:         30,
@@ -682,15 +682,15 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(762))
 					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(762))
 				},
-				"evaluation.log": func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath, data string) {
 					assert.Contains(t, data, "Run 1/3")
 					assert.Contains(t, data, "Run 2/3")
 					assert.Contains(t, data, "Run 3/3")
 				},
-				"golang-summed.csv": nil,
-				"models-summed.csv": nil,
-				"README.md":         nil,
-				filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "golang-summed.csv"): nil,
+				filepath.Join("result-directory", "models-summed.csv"): nil,
+				filepath.Join("result-directory", "README.md"):         nil,
+				filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 3, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
 			},
@@ -721,13 +721,35 @@ func TestEvaluateExecute(t *testing.T) {
 		},
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			"categories.svg":    nil,
-			"evaluation.csv":    nil,
-			"evaluation.log":    nil,
-			"golang-summed.csv": nil,
-			"models-summed.csv": nil,
-			"README.md":         nil,
-			filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+			filepath.Join("result-directory", "categories.svg"):    nil,
+			filepath.Join("result-directory", "evaluation.csv"):    nil,
+			filepath.Join("result-directory", "evaluation.log"):    nil,
+			filepath.Join("result-directory", "golang-summed.csv"): nil,
+			filepath.Join("result-directory", "models-summed.csv"): nil,
+			filepath.Join("result-directory", "README.md"):         nil,
+			filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+		},
+	})
+	validate(t, &testCase{
+		Name: "Don't overwrite results path if it already exists",
+
+		Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+			require.NoError(t, os.Mkdir(filepath.Join(resultPath, "result-directory"), 0600))
+		},
+
+		Arguments: []string{
+			"--language", "golang",
+			"--model", "symflower/symbolic-execution",
+		},
+
+		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+			filepath.Join("result-directory-0", "categories.svg"):    nil,
+			filepath.Join("result-directory-0", "evaluation.csv"):    nil,
+			filepath.Join("result-directory-0", "evaluation.log"):    nil,
+			filepath.Join("result-directory-0", "golang-summed.csv"): nil,
+			filepath.Join("result-directory-0", "models-summed.csv"): nil,
+			filepath.Join("result-directory-0", "README.md"):         nil,
+			filepath.Join("result-directory-0", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 		},
 	})
 }

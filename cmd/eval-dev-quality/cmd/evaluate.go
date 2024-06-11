@@ -27,6 +27,7 @@ import (
 	_ "github.com/symflower/eval-dev-quality/provider/openrouter" // Register provider.
 	_ "github.com/symflower/eval-dev-quality/provider/symflower"  // Register provider.
 	"github.com/symflower/eval-dev-quality/tools"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // Evaluate holds the "evaluation" command.
@@ -80,6 +81,10 @@ func (command *Evaluate) SetLogger(logger *log.Logger) {
 func (command *Evaluate) Execute(args []string) (err error) {
 	evaluationTimestamp := time.Now()
 	command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", evaluationTimestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
+	command.ResultPath, err = util.UniqueDirectory(command.ResultPath)
+	if err != nil {
+		return err
+	}
 	command.logger.Printf("Writing results to %s", command.ResultPath)
 
 	log, logClose, err := log.WithFile(command.logger, filepath.Join(command.ResultPath, "evaluation.log"))
