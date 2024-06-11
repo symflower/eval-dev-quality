@@ -107,16 +107,29 @@ func TestParseResponse(t *testing.T) {
 			ExpectedCode: code,
 		})
 
-		validate(t, &testCase{
-			Name: "With Prose",
+		t.Run("Prose", func(t *testing.T) {
+			validate(t, &testCase{
+				Name: "After Newline",
 
-			Response: "Some text...\n\n```\n" + code + "\n```\n\nSome more text...",
+				Response: "Some text...\n\n```\n" + code + "\n```\n\nSome more text...",
 
-			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 0,
-				metrics.AssessmentKeyResponseWithCode: 1,
-			},
-			ExpectedCode: code,
+				ExpectedAssessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 0,
+					metrics.AssessmentKeyResponseWithCode: 1,
+				},
+				ExpectedCode: code,
+			})
+			validate(t, &testCase{
+				Name: "No Newline",
+
+				Response: "Some text...\n\n```\n" + code + "\n```Some more text...",
+
+				ExpectedAssessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 0,
+					metrics.AssessmentKeyResponseWithCode: 1,
+				},
+				ExpectedCode: code,
+			})
 		})
 
 		validate(t, &testCase{
