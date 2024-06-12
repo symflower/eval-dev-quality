@@ -178,3 +178,93 @@ func TestLanguageExecute(t *testing.T) {
 		})
 	})
 }
+
+func TestMistakes(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		RepositoryPath string
+
+		ExpectedMistakes []string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			temporaryPath := t.TempDir()
+			repositoryPath := filepath.Join(temporaryPath, filepath.Base(tc.RepositoryPath))
+			require.NoError(t, osutil.CopyTree(tc.RepositoryPath, repositoryPath))
+
+			buffer, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Log(buffer.String())
+				}
+			}()
+
+			golang := &Language{}
+			actualMistakes, actualErr := golang.Mistakes(logger, repositoryPath)
+			require.NoError(t, actualErr)
+
+			assert.Equal(t, tc.ExpectedMistakes, actualMistakes)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Function without opening bracket",
+
+		RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "mistakes"),
+
+		ExpectedMistakes: []string{
+			"." + string(os.PathSeparator) + "functionWithoutOpeningBracket.go" + ":4:6: syntax error: non-declaration statement outside function body",
+		},
+	})
+}
+
+func TestExtractMistakes(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		RawMistakes string
+
+		ExpectedMistakes []string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualMistakes := extractMistakes(tc.RawMistakes)
+
+			assert.Equal(t, tc.ExpectedMistakes, actualMistakes)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Single mistake",
+
+		RawMistakes: bytesutil.StringTrimIndentations(`
+			foobar
+			# foobar
+			./foobar.go:4:2: syntax error: non-declaration statement outside function body
+		`),
+
+		ExpectedMistakes: []string{
+			"./foobar.go:4:2: syntax error: non-declaration statement outside function body",
+		},
+	})
+	validate(t, &testCase{
+		Name: "Multiple mistakes",
+
+		RawMistakes: bytesutil.StringTrimIndentations(`
+			foobar
+			# foobar
+			./foobar.go:3:1: expected 'IDENT', found 'func'
+			./foobar.go:4:2: syntax error: non-declaration statement outside function body
+			./foobar.go:5:1: missing return
+		`),
+
+		ExpectedMistakes: []string{
+			"./foobar.go:3:1: expected 'IDENT', found 'func'",
+			"./foobar.go:4:2: syntax error: non-declaration statement outside function body",
+			"./foobar.go:5:1: missing return",
+		},
+	})
+}

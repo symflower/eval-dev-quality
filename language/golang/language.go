@@ -124,3 +124,31 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 
 	return coverage, problems, nil
 }
+
+// Mistakes builds a Go repository and returns the list of mistakes found.
+func (l *Language) Mistakes(logger *log.Logger, repositoryPath string) (mistakes []string, err error) {
+	output, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{
+			"go",
+			"build",
+		},
+
+		Directory: repositoryPath,
+	})
+	if err != nil {
+		if output != "" {
+			return extractMistakes(output), nil
+		}
+
+		return nil, pkgerrors.Wrap(err, "no output to extract errors from")
+	}
+
+	return nil, nil
+}
+
+// mistakesRe defines the structure of a Go compiler error.
+var mistakesRe = regexp.MustCompile(`(?m)^.*\.go:\d+:\d+:.*$`)
+
+func extractMistakes(rawMistakes string) (mistakes []string) {
+	return mistakesRe.FindAllString(rawMistakes, -1)
+}
