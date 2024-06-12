@@ -2,6 +2,7 @@ package llm
 
 import (
 	"context"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -125,39 +126,22 @@ func (m *Model) generateTestsForFile(ctx task.Context) (assessment metrics.Asses
 		return nil, err
 	}
 
-	var response string
-	var duration time.Duration
-	if err := retry.Do(
-		func() error {
-			ctx.Logger.Printf("Querying model %q with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
-			start := time.Now()
-			response, err = m.provider.Query(context.Background(), m.model, request)
-			if err != nil {
-				return err
-			}
-			duration = time.Since(start)
-			ctx.Logger.Printf("Model %q responded (%d ms) with:\n%s", m.ID(), duration.Milliseconds(), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
-
-			return nil
-		},
-		retry.Attempts(m.queryAttempts),
-		retry.Delay(5*time.Second),
-		retry.DelayType(retry.BackOffDelay),
-		retry.LastErrorOnly(true),
-		retry.OnRetry(func(n uint, err error) {
-			ctx.Logger.Printf("Attempt %d/%d: %s", n+1, m.queryAttempts, err)
-		}),
-	); err != nil {
-		return nil, err
+	response, duration, err := m.query(ctx.Logger, request)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
 	}
 
 	assessment, testContent, err := prompt.ParseResponse(response)
 	if err != nil {
-		return nil, err
+		return nil, pkgerrors.WithStack(err)
 	}
 	assessment[metrics.AssessmentKeyProcessingTime] = uint64(duration.Milliseconds())
 	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(response))
 	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(testContent))
+
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
 
 	testFilePath := ctx.Language.TestFilePath(ctx.RepositoryPath, ctx.FilePath)
 	if err := os.MkdirAll(filepath.Join(ctx.RepositoryPath, filepath.Dir(testFilePath)), 0755); err != nil {
@@ -168,6 +152,34 @@ func (m *Model) generateTestsForFile(ctx task.Context) (assessment metrics.Asses
 	}
 
 	return assessment, nil
+}
+
+func (m *Model) query(log *log.Logger, request string) (response string, duration time.Duration, err error) {
+	if err := retry.Do(
+		func() error {
+			log.Printf("Querying model %q with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
+			start := time.Now()
+			response, err = m.provider.Query(context.Background(), m.model, request)
+			if err != nil {
+				return err
+			}
+			duration = time.Since(start)
+			log.Printf("Model %q responded (%d ms) with:\n%s", m.ID(), duration.Milliseconds(), string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
+
+			return nil
+		},
+		retry.Attempts(m.queryAttempts),
+		retry.Delay(5*time.Second),
+		retry.DelayType(retry.BackOffDelay),
+		retry.LastErrorOnly(true),
+		retry.OnRetry(func(n uint, err error) {
+			log.Printf("Attempt %d/%d: %s", n+1, m.queryAttempts, err)
+		}),
+	); err != nil {
+		return "", 0, err
+	}
+
+	return response, duration, nil
 }
 
 var _ model.SetQueryAttempts = (*Model)(nil)
