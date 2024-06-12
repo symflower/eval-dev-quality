@@ -153,6 +153,12 @@ func Evaluate(ctx *Context) (assessments report.AssessmentPerModelPerLanguagePer
 		}
 		for _, repository := range repositories {
 			repositoryPath := filepath.Join(language.ID(), repository.Name())
+
+			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
+			if !repositoriesLookup[repositoryPath] || repository.Name() == RepositoryPlainName {
+				continue
+			}
+
 			temporaryRepository, cleanup, err := TemporaryRepository(ctx.Log, ctx.TestdataPath, repositoryPath)
 			if err != nil {
 				ctx.Log.Panicf("ERROR: unable to create temporary repository path: %s", err)

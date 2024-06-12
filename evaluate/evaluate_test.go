@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"testing"
 	"time"
 
@@ -630,6 +631,8 @@ func TestEvaluate(t *testing.T) {
 					assert.Contains(t, output, "Run 2/3")
 					assert.Contains(t, output, "Run 3/3")
 					assert.NotRegexp(t, `Run \d+/\d+ for model`, output)
+
+					assert.Equal(t, 1, strings.Count(output, "Creating temporary repository"), "create only one temporary repository")
 				},
 			})
 		}
@@ -684,6 +687,8 @@ func TestEvaluate(t *testing.T) {
 					assert.Contains(t, output, "Run 2/3 for model")
 					assert.Contains(t, output, "Run 3/3 for model")
 					assert.NotRegexp(t, `Run \d+/\d+$`, output)
+
+					assert.Equal(t, 1, strings.Count(output, "Creating temporary repository"), "create only one temporary repository")
 				},
 			})
 		}
