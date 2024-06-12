@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"testing"
 
@@ -171,10 +172,6 @@ func TestTemporaryRepository(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			if osutil.IsWindows() {
-				t.Skipf("Regex tests with paths are not supported on this OS")
-			}
-
 			logBuffer, logger := log.Buffer()
 			defer func() {
 				if t.Failed() {
@@ -185,7 +182,7 @@ func TestTemporaryRepository(t *testing.T) {
 			actualTemporaryRepository, cleanup, actualErr := TemporaryRepository(logger, tc.TestDataPath, tc.RepositoryPath)
 			defer cleanup()
 
-			assert.Regexp(t, filepath.Join(os.TempDir(), tc.ExpectedTempPathRegex), actualTemporaryRepository, actualTemporaryRepository)
+			assert.Regexp(t, regexp.QuoteMeta(filepath.Clean(os.TempDir())+string(os.PathSeparator))+tc.ExpectedTempPathRegex, actualTemporaryRepository, actualTemporaryRepository)
 			assert.Equal(t, tc.ExpectedErr, actualErr)
 
 			if tc.ValidateAfter != nil {
@@ -200,7 +197,7 @@ func TestTemporaryRepository(t *testing.T) {
 		TestDataPath:   filepath.Join("..", "testdata"),
 		RepositoryPath: filepath.Join("golang", "plain"),
 
-		ExpectedTempPathRegex: `eval-dev-quality\d+\/plain`,
+		ExpectedTempPathRegex: `eval-dev-quality\d+[\/\\]plain`,
 		ExpectedErr:           nil,
 		ValidateAfter: func(t *testing.T, logger *log.Logger, repositoryPath string) {
 			output, err := util.CommandWithResult(context.Background(), logger, &util.Command{
