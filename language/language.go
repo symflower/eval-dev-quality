@@ -1,6 +1,9 @@
 package language
 
 import (
+	"os"
+	"path/filepath"
+	"sort"
 	"time"
 
 	pkgerrors "github.com/pkg/errors"
@@ -45,4 +48,24 @@ func Register(language Language) {
 	}
 
 	Languages[id] = language
+}
+
+// RepositoriesForLanguage returns the relative repository paths for a language.
+func RepositoriesForLanguage(language Language, testdataPath string) (relativeRepositoryPaths []string, err error) {
+	languagePath := filepath.Join(testdataPath, language.ID())
+	languageRepositories, err := os.ReadDir(languagePath)
+	if err != nil {
+		pkgerrors.WithMessagef(err, "language path %q cannot be accessed", languagePath)
+	}
+
+	for _, repository := range languageRepositories {
+		if !repository.IsDir() {
+			continue
+		}
+		relativeRepositoryPaths = append(relativeRepositoryPaths, filepath.Join(language.ID(), repository.Name()))
+	}
+
+	sort.Strings(relativeRepositoryPaths)
+
+	return relativeRepositoryPaths, nil
 }

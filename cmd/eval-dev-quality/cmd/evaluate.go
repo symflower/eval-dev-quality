@@ -230,31 +230,42 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 	// Gather repositories and update language selection accordingly.
 	{
-		commandRepositories := map[string]bool{}
-		commandRepositoriesLanguages := map[string]bool{}
-		for _, r := range command.Repositories {
-			languageIDOfRepository := strings.SplitN(r, string(os.PathSeparator), 2)[0]
-			if _, ok := languagesSelected[languageIDOfRepository]; ok {
-				commandRepositories[r] = true
-				commandRepositoriesLanguages[languageIDOfRepository] = true
-			} else {
-				command.logger.Printf("Excluded repository %s because its language %q is not enabled for this evaluation", r, languageIDOfRepository)
+		if len(command.Repositories) == 0 {
+			for _, l := range command.Languages {
+				repositories, err := language.RepositoriesForLanguage(language.Languages[l], command.TestdataPath)
+				if err != nil {
+					command.logger.Panicf("ERROR: %s", err)
+				}
+				command.Repositories = append(command.Repositories, repositories...)
 			}
-		}
-		for languageID := range languagesSelected {
-			if len(command.Repositories) == 0 || commandRepositoriesLanguages[languageID] {
-				commandRepositories[filepath.Join(languageID, evaluate.RepositoryPlainName)] = true
-			} else {
-				command.Languages = slices.DeleteFunc(command.Languages, func(l string) bool {
-					return l == languageID
-				})
-				delete(languagesSelected, languageID)
-				command.logger.Printf("Excluded language %q because it is not part of the selected repositories", languageID)
+			sort.Strings(command.Repositories)
+		} else {
+			commandRepositories := map[string]bool{}
+			commandRepositoriesLanguages := map[string]bool{}
+			for _, r := range command.Repositories {
+				languageIDOfRepository := strings.SplitN(r, string(os.PathSeparator), 2)[0]
+				if _, ok := languagesSelected[languageIDOfRepository]; ok {
+					commandRepositories[r] = true
+					commandRepositoriesLanguages[languageIDOfRepository] = true
+				} else {
+					command.logger.Printf("Excluded repository %s because its language %q is not enabled for this evaluation", r, languageIDOfRepository)
+				}
+			}
+			for languageID := range languagesSelected {
+				if commandRepositoriesLanguages[languageID] { // Also add the plain repository in case we already have repositories for this language.
+					commandRepositories[filepath.Join(languageID, evaluate.RepositoryPlainName)] = true
+				} else {
+					command.Languages = slices.DeleteFunc(command.Languages, func(l string) bool {
+						return l == languageID
+					})
+					delete(languagesSelected, languageID)
+					command.logger.Printf("Excluded language %q because it is not part of the selected repositories", languageID)
+				}
 			}
 
+			command.Repositories = maps.Keys(commandRepositories)
+			sort.Strings(command.Repositories)
 		}
-		command.Repositories = maps.Keys(commandRepositories)
-		sort.Strings(command.Repositories)
 		evaluationContext.RepositoryPaths = command.Repositories
 	}
 

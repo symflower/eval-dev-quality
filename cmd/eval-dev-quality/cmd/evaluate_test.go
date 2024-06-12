@@ -191,6 +191,7 @@ func TestEvaluateExecute(t *testing.T) {
 			Arguments: []string{
 				"--language", "golang",
 				"--model", "symflower/symbolic-execution",
+				"--repository", filepath.Join("golang", "plain"),
 			},
 
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
@@ -270,6 +271,8 @@ func TestEvaluateExecute(t *testing.T) {
 
 			Arguments: []string{
 				"--model", "symflower/symbolic-execution",
+				"--repository", filepath.Join("golang", "plain"),
+				"--repository", filepath.Join("java", "plain"),
 			},
 
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
@@ -720,6 +723,7 @@ func TestEvaluateExecute(t *testing.T) {
 		Arguments: []string{
 			"--language", "golang",
 			"--model", "symflower/symbolic-execution",
+			"--repository", filepath.Join("golang", "plain"),
 		},
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -742,6 +746,7 @@ func TestEvaluateExecute(t *testing.T) {
 		Arguments: []string{
 			"--language", "golang",
 			"--model", "symflower/symbolic-execution",
+			"--repository", filepath.Join("golang", "plain"),
 		},
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -805,10 +810,11 @@ func TestEvaluateInitialize(t *testing.T) {
 	// makeValidCommand is a helper to abstract all the default values that have to be set to make a command valid.
 	makeValidCommand := func(modify func(command *Evaluate)) *Evaluate {
 		c := &Evaluate{
-			QueryAttempts: 1,
-			Runs:          1,
-			TestdataPath:  filepath.Join("..", "..", "..", "testdata"),
-			ResultPath:    filepath.Join("$TEMP_PATH", "result-directory"),
+			QueryAttempts:    1,
+			Runs:             1,
+			ExecutionTimeout: 1,
+			TestdataPath:     filepath.Join("..", "..", "..", "testdata"),
+			ResultPath:       filepath.Join("$TEMP_PATH", "result-directory"),
 		}
 
 		if modify != nil {
@@ -916,6 +922,27 @@ func TestEvaluateInitialize(t *testing.T) {
 			assert.Equal(t, []language.Language{
 				language.Languages["golang"],
 			}, context.Languages)
+		},
+	})
+	validate(t, &testCase{
+		Name: "Selecting no repository defaults to all",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.Repositories = []string{}
+		}),
+
+		ValidateCommand: func(t *testing.T, command *Evaluate) {
+			var repositoryPathsRelative []string
+			for _, language := range language.Languages {
+				directories, err := os.ReadDir(filepath.Join("..", "..", "..", "testdata", language.ID()))
+				require.NoError(t, err)
+				for _, directory := range directories {
+					repositoryPathsRelative = append(repositoryPathsRelative, filepath.Join(language.ID(), directory.Name()))
+				}
+			}
+			for _, repositoryPathRelative := range repositoryPathsRelative {
+				assert.Contains(t, command.Repositories, repositoryPathRelative)
+			}
 		},
 	})
 }

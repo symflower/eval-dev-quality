@@ -3,9 +3,11 @@ package evaluate
 import (
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
+	"github.com/symflower/eval-dev-quality/language"
 	evallanguage "github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
@@ -151,17 +153,15 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 	ctx.Log.Printf("Evaluating models and languages")
 	// Create temporary repositories for each language so the repository is copied only once per language.
 	temporaryRepositories := map[string]*evaluatetask.Repository{}
-	for _, language := range ctx.Languages {
-		languagePath := filepath.Join(ctx.TestdataPath, language.ID())
-		repositories, err := os.ReadDir(languagePath)
+	for _, l := range ctx.Languages {
+		relativeRepositoryPaths, err := language.RepositoriesForLanguage(l, ctx.TestdataPath)
 		if err != nil {
-			ctx.Log.Panicf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
+			ctx.Log.Panicf("ERROR: %s", err)
 		}
-		for _, repository := range repositories {
-			repositoryPath := filepath.Join(language.ID(), repository.Name())
+		for _, repositoryPath := range relativeRepositoryPaths {
 
 			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
-			if !repositoriesLookup[repositoryPath] || repository.Name() == RepositoryPlainName {
+			if !repositoriesLookup[repositoryPath] || strings.HasSuffix(repositoryPath, RepositoryPlainName) {
 				continue
 			}
 
