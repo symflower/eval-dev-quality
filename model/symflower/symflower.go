@@ -37,6 +37,8 @@ func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported boo
 	switch taskIdentifier {
 	case task.IdentifierWriteTests:
 		return true
+	case task.IdentifierCodeRepair:
+		return false
 	default:
 		return false
 	}

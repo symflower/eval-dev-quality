@@ -39,6 +39,8 @@ func registerIdentifier(name string) (identifier Identifier) {
 var (
 	// IdentifierWriteTests holds the identifier for the "write test" task.
 	IdentifierWriteTests = registerIdentifier("write-tests")
+	// IdentifierCodeRepair holds the identifier for the "code repair" task.
+	IdentifierCodeRepair = registerIdentifier("code-repair")
 )
 
 // Context holds the data needed for running a task.
