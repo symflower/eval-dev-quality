@@ -92,8 +92,10 @@ var languageJavaCoverageMatch = regexp.MustCompile(`Total coverage (.+?)%`)
 
 // Execute invokes the language specific testing on the given repository.
 func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage uint64, problems []error, err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), language.DefaultExecutionTimeout)
+	defer cancel()
 	coverageFilePath := filepath.Join(repositoryPath, "coverage.json")
-	commandOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+	commandOutput, err := util.CommandWithResult(ctx, logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "test",
 			"--language", "java",
