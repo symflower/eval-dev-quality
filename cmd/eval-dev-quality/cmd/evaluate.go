@@ -59,6 +59,8 @@ type Evaluate struct {
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
 
+	// ExecutionTimeout holds the timeout for an execution.
+	ExecutionTimeout uint `long:"execution-timeout" description:"Execution timeout for compilation and tests in minutes." default:"5"`
 	// Runs holds the number of runs to perform.
 	Runs uint `long:"runs" description:"Number of runs to perform." default:"1"`
 	// RunsSequential indicates that interleaved runs are disabled and runs are performed sequentially.
@@ -115,6 +117,12 @@ func (command *Evaluate) Execute(args []string) (err error) {
 
 		if command.QueryAttempts == 0 {
 			log.Panicf("number of configured query attempts must be greater than zero")
+		}
+
+		if command.ExecutionTimeout == 0 {
+			log.Panicf("execution timeout for compilation and tests must be greater than zero")
+		} else {
+			language.DefaultExecutionTimeout = time.Duration(command.ExecutionTimeout) * time.Minute
 		}
 
 		if command.Runs == 0 {

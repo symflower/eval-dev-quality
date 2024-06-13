@@ -92,8 +92,10 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		return 0, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), language.DefaultExecutionTimeout)
+	defer cancel()
 	coverageFilePath := filepath.Join(repositoryPath, "coverage.json")
-	commandOutput, err = util.CommandWithResult(context.Background(), logger, &util.Command{
+	commandOutput, err = util.CommandWithResult(ctx, logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "test",
 			"--language", "golang",

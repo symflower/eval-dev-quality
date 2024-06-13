@@ -1,10 +1,16 @@
 package language
 
 import (
+	"time"
+
 	pkgerrors "github.com/pkg/errors"
 
 	"github.com/symflower/eval-dev-quality/log"
 )
+
+// DefaultExecutionTimeout defines the timeout for an execution.
+// WORKAROUND For now we define the timeout as a global variable but it should eventually be moved to the "symflower test" command.
+var DefaultExecutionTimeout = 5 * time.Minute
 
 // Language defines a language to evaluate a repository.
 type Language interface {
