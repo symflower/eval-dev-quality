@@ -42,8 +42,8 @@ func NewModel(provider provider.Query, modelIdentifier string) *Model {
 	}
 }
 
-// llmGenerateTestForFilePromptContext is the context for template for generating an LLM test generation prompt.
-type llmGenerateTestForFilePromptContext struct {
+// llmSourceFilePromptContext is the context for template for generating an LLM test generation prompt.
+type llmSourceFilePromptContext struct {
 	// Language holds the programming language name.
 	Language language.Language
 
@@ -67,7 +67,7 @@ var llmGenerateTestForFilePromptTemplate = template.Must(template.New("model-llm
 `)))
 
 // llmGenerateTestForFilePrompt returns the prompt for generating an LLM test generation.
-func llmGenerateTestForFilePrompt(data *llmGenerateTestForFilePromptContext) (message string, err error) {
+func llmGenerateTestForFilePrompt(data *llmSourceFilePromptContext) (message string, err error) {
 	data.Code = strings.TrimSpace(data.Code)
 
 	var b strings.Builder
@@ -115,7 +115,7 @@ func (m *Model) generateTestsForFile(ctx task.Context) (assessment metrics.Asses
 
 	importPath := ctx.Language.ImportPath(ctx.RepositoryPath, ctx.FilePath)
 
-	request, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
+	request, err := llmGenerateTestForFilePrompt(&llmSourceFilePromptContext{
 		Language: ctx.Language,
 
 		Code:       fileContent,

@@ -80,7 +80,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		func main() {}
 	`
 	sourceFilePath := "simple.go"
-	promptMessage, err := llmGenerateTestForFilePrompt(&llmGenerateTestForFilePromptContext{
+	promptMessage, err := llmGenerateTestForFilePrompt(&llmSourceFilePromptContext{
 		Language: &golang.Language{},
 
 		Code:       bytesutil.StringTrimIndentations(sourceFileContent),
