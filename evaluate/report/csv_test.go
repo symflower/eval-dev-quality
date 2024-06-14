@@ -47,7 +47,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 		},
 
 		ExpectedString: `
-			model,language,repository,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+			model,language,repository,task,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
 			some-model,some-language,some-repository,write-tests,0,0,0,0,0,0,0,0,0
 		`,
 	})
@@ -90,7 +90,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 		},
 
 		ExpectedString: `
-			model,language,repository,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+			model,language,repository,task,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
 			some-model-a,some-language,some-repository,write-tests,15,1,2,50,200,100,3,4,5
 			some-model-b,some-language,some-repository,write-tests,15,1,2,100,300,200,3,4,5
 		`,

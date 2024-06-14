@@ -46,7 +46,7 @@ func GenerateCSV(formatter CSVFormatter) (csvData string, err error) {
 
 // Header returns the header description as a CSV row.
 func (a *AssessmentStore) Header() (header []string) {
-	return append([]string{"model", "language", "repository", "score"}, metrics.AllAssessmentKeysStrings...)
+	return append([]string{"model", "language", "repository", "task", "score"}, metrics.AllAssessmentKeysStrings...)
 }
 
 // Rows returns all data as CSV rows.
