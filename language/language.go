@@ -28,6 +28,11 @@ type Language interface {
 	// TestFramework returns the human-readable name of the test framework that should be used.
 	TestFramework() (testFramework string)
 
+	// DefaultFileExtension returns the default file extension of the implemented language.
+	DefaultFileExtension() string
+	// DefaultTestFileSuffix returns the default test file suffix of the implemented language.
+	DefaultTestFileSuffix() string
+
 	// Execute invokes the language specific testing on the given repository.
 	Execute(logger *log.Logger, repositoryPath string) (coverage uint64, problems []error, err error)
 	// Mistakes builds a repository and returns the list of mistakes found.

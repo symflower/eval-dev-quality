@@ -12,6 +12,42 @@ type MockLanguage struct {
 	mock.Mock
 }
 
+// DefaultFileExtension provides a mock function with given fields:
+func (_m *MockLanguage) DefaultFileExtension() string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for DefaultFileExtension")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// DefaultTestFileSuffix provides a mock function with given fields:
+func (_m *MockLanguage) DefaultTestFileSuffix() string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for DefaultTestFileSuffix")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
 // Execute provides a mock function with given fields: logger, repositoryPath
 func (_m *MockLanguage) Execute(logger *log.Logger, repositoryPath string) (uint64, []error, error) {
 	ret := _m.Called(logger, repositoryPath)

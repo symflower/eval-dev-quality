@@ -88,6 +88,16 @@ func (l *Language) TestFramework() (testFramework string) {
 	return "JUnit 5"
 }
 
+// DefaultFileExtension returns the default file extension.
+func (l *Language) DefaultFileExtension() string {
+	return ".java"
+}
+
+// DefaultTestFileSuffix returns the default test file suffix.
+func (l *Language) DefaultTestFileSuffix() string {
+	return "Test.java"
+}
+
 var languageJavaCoverageMatch = regexp.MustCompile(`Total coverage (.+?)%`)
 
 // Execute invokes the language specific testing on the given repository.
