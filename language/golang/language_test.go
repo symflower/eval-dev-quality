@@ -212,10 +212,10 @@ func TestMistakes(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Function without opening bracket",
 
-		RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "mistakes"),
+		RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "mistakes", "openingBracketMissing"),
 
 		ExpectedMistakes: []string{
-			"." + string(os.PathSeparator) + "functionWithoutOpeningBracket.go" + ":4:6: syntax error: non-declaration statement outside function body",
+			"." + string(os.PathSeparator) + "openingBracketMissing.go" + ":4:2: syntax error: non-declaration statement outside function body",
 		},
 	})
 }
