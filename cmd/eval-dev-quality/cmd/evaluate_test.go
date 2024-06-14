@@ -15,9 +15,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
 
+	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
+	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 	"github.com/symflower/eval-dev-quality/tools"
@@ -750,6 +752,170 @@ func TestEvaluateExecute(t *testing.T) {
 			filepath.Join("result-directory-0", "models-summed.csv"): nil,
 			filepath.Join("result-directory-0", "README.md"):         nil,
 			filepath.Join("result-directory-0", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+		},
+	})
+}
+
+func TestEvaluateInitialize(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Command *Evaluate
+
+		ValidateCommand func(t *testing.T, command *Evaluate)
+		ValidateContext func(t *testing.T, context *evaluate.Context)
+		ValidateResults func(t *testing.T, resultsPath string)
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			require.NotNil(t, tc.Command, "command must be non-nil")
+
+			temporaryDirectory := t.TempDir()
+			buffer, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Logf("Logs:\n%s", buffer.String())
+				}
+			}()
+
+			tc.Command.logger = logger
+			tc.Command.ResultPath = strings.ReplaceAll(tc.Command.ResultPath, "$TEMP_PATH", temporaryDirectory)
+
+			var actualEvaluationContext *evaluate.Context
+			assert.NotPanics(t, func() {
+				c, cleanup := tc.Command.Initialize([]string{})
+				cleanup()
+				actualEvaluationContext = c
+			})
+
+			if tc.ValidateCommand != nil {
+				tc.ValidateCommand(t, tc.Command)
+			}
+			if tc.ValidateContext != nil {
+				require.NotNil(t, actualEvaluationContext)
+				tc.ValidateContext(t, actualEvaluationContext)
+			}
+			if tc.ValidateResults != nil {
+				tc.ValidateResults(t, temporaryDirectory)
+			}
+		})
+	}
+
+	// makeValidCommand is a helper to abstract all the default values that have to be set to make a command valid.
+	makeValidCommand := func(modify func(command *Evaluate)) *Evaluate {
+		c := &Evaluate{
+			QueryAttempts: 1,
+			Runs:          1,
+			TestdataPath:  filepath.Join("..", "..", "..", "testdata"),
+			ResultPath:    filepath.Join("$TEMP_PATH", "result-directory"),
+		}
+
+		if modify != nil {
+			modify(c)
+		}
+
+		return c
+	}
+
+	validate(t, &testCase{
+		Name: "Custom result directory is created",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.ResultPath = filepath.Join("$TEMP_PATH", "some-directory")
+		}),
+
+		ValidateResults: func(t *testing.T, resultsPath string) {
+			assert.DirExists(t, filepath.Join(resultsPath, "some-directory"))
+		},
+	})
+	validate(t, &testCase{
+		Name: "Selecting no language defaults to all",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.Languages = []string{}
+		}),
+
+		ValidateCommand: func(t *testing.T, command *Evaluate) {
+			assert.Equal(t, []string{
+				"golang",
+				"java",
+			}, command.Languages)
+		},
+		ValidateContext: func(t *testing.T, context *evaluate.Context) {
+			assert.Equal(t, []language.Language{
+				language.Languages["golang"],
+				language.Languages["java"],
+			}, context.Languages)
+		},
+	})
+	validate(t, &testCase{
+		Name: "Selecting no model defaults to all",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.Models = []string{}
+		}),
+
+		// Could also select arbitrary Ollama or new Openrouter models so sanity check that at least symflower is there.
+		ValidateCommand: func(t *testing.T, command *Evaluate) {
+			assert.Contains(t, command.Models, "symflower/symbolic-execution")
+		},
+		ValidateContext: func(t *testing.T, context *evaluate.Context) {
+			modelIDs := make([]string, len(context.Models))
+			for i, model := range context.Models {
+				modelIDs[i] = model.ID()
+			}
+			assert.Contains(t, modelIDs, "symflower/symbolic-execution")
+		},
+	})
+	validate(t, &testCase{
+		Name: "Remove repository if language is not selected",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.Repositories = []string{
+				filepath.Join("golang", "light"),
+				filepath.Join("java", "light"),
+			}
+			command.Languages = []string{
+				"golang",
+			}
+		}),
+
+		ValidateCommand: func(t *testing.T, command *Evaluate) {
+			assert.Equal(t, []string{
+				filepath.Join("golang", "light"),
+				filepath.Join("golang", "plain"),
+			}, command.Repositories)
+		},
+		ValidateContext: func(t *testing.T, context *evaluate.Context) {
+			assert.Equal(t, []string{
+				filepath.Join("golang", "light"),
+				filepath.Join("golang", "plain"),
+			}, context.RepositoryPaths)
+		},
+	})
+	validate(t, &testCase{
+		Name: "Remove language if no repository is selected",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.Repositories = []string{
+				filepath.Join("golang", "light"),
+			}
+			command.Languages = []string{
+				"golang",
+				"java",
+			}
+		}),
+
+		ValidateCommand: func(t *testing.T, command *Evaluate) {
+			assert.Equal(t, []string{
+				"golang",
+			}, command.Languages)
+		},
+		ValidateContext: func(t *testing.T, context *evaluate.Context) {
+			assert.Equal(t, []language.Language{
+				language.Languages["golang"],
+			}, context.Languages)
 		},
 	})
 }
