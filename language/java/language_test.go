@@ -291,11 +291,14 @@ func TestMistakes(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Method without opening brackets",
 
-		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "mistakes"),
+		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "mistakes", "openingBracketMissing"),
 
 		ExpectedMistakes: []string{
-			"/src/main/java/com/eval/MethodWithoutOpeningBracket.java:[4,61] ';' expected",
-			"/src/main/java/com/eval/MethodWithoutOpeningBracket.java:[7,1] class, interface, or enum expected",
+			"/src/main/java/com/eval/OpeningBracketMissing.java:[12,17] illegal start of type",
+			"/src/main/java/com/eval/OpeningBracketMissing.java:[14,1] class, interface, or enum expected",
+			"/src/main/java/com/eval/OpeningBracketMissing.java:[4,55] ';' expected",
+			"/src/main/java/com/eval/OpeningBracketMissing.java:[8,17] illegal start of type",
+			"/src/main/java/com/eval/OpeningBracketMissing.java:[8,25] illegal start of type",
 		},
 	})
 }

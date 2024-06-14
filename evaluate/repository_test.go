@@ -301,6 +301,10 @@ func TestRepositoryLoadConfiguration(t *testing.T) {
 		TestDataPath:   filepath.Join("..", "testdata"),
 		RepositoryPath: filepath.Join("golang", "plain"),
 
+		MutationBefore: func(t *testing.T, repositoryPath string) {
+			assert.NoError(t, os.Remove(filepath.Join(repositoryPath, "repository.json")))
+		},
+
 		ValidateAfter: func(t *testing.T, repository *Repository) {
 			assert.Equal(t, task.AllIdentifiers, repository.Tasks)
 		},
@@ -311,16 +315,6 @@ func TestRepositoryLoadConfiguration(t *testing.T) {
 		TestDataPath:   filepath.Join("..", "testdata"),
 		RepositoryPath: filepath.Join("golang", "plain"),
 
-		MutationBefore: func(t *testing.T, repositoryPath string) {
-			configuration := bytesutil.StringTrimIndentations(`
-				{
-					"tasks": [
-						"write-tests"
-					]
-				}
-			`)
-			assert.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "repository.json"), []byte(configuration), 0600))
-		},
 		ValidateAfter: func(t *testing.T, repository *Repository) {
 			expectedTaskIdentifiers := []task.Identifier{
 				task.IdentifierWriteTests,
