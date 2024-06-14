@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"time"
 
+	"github.com/avast/retry-go"
 	pkgerrors "github.com/pkg/errors"
 	"github.com/sashabaranov/go-openai"
 
@@ -52,13 +54,28 @@ func (p *Provider) ID() (id string) {
 // Models returns which models are available to be queried via this provider.
 func (p *Provider) Models() (models []model.Model, err error) {
 	client := p.client()
-	ms, err := client.ListModels(context.Background())
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
+
+	var responseModels openai.ModelsList
+	if err := retry.Do( // Query available models with a retry logic cause "openrouter.ai" has failed us in the past.
+		func() error {
+			ms, err := client.ListModels(context.Background())
+			if err != nil {
+				return pkgerrors.WithStack(err)
+			}
+			responseModels = ms
+
+			return nil
+		},
+		retry.Attempts(3),
+		retry.Delay(5*time.Second),
+		retry.DelayType(retry.BackOffDelay),
+		retry.LastErrorOnly(true),
+	); err != nil {
+		return nil, err
 	}
 
-	models = make([]model.Model, len(ms.Models))
-	for i, model := range ms.Models {
+	models = make([]model.Model, len(responseModels.Models))
+	for i, model := range responseModels.Models {
 		models[i] = llm.NewModel(p, p.ID()+provider.ProviderModelSeparator+model.ID)
 	}
 
