@@ -19,17 +19,21 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		Assessments AssessmentPerModelPerLanguagePerRepositoryPerTask
+		Assessments metricstesting.AssessmentTuples
 
 		ExpectedOrder []metrics.Assessments
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
+			assessmentStore := assessmentTuplesToStore(tc.Assessments)
+
+			assessmentLookup := tc.Assessments.ToMap()
 			actualOrder := []metrics.Assessments{}
-			assert.NoError(t, tc.Assessments.Walk(func(m model.Model, l language.Language, r string, ti task.Identifier, a metrics.Assessments) (err error) {
+
+			assert.NoError(t, assessmentStore.Walk(func(m model.Model, l language.Language, r string, ti task.Identifier, a metrics.Assessments) (err error) {
 				actualOrder = append(actualOrder, a)
-				metricstesting.AssertAssessmentsEqual(t, tc.Assessments[m][l][r][ti], a)
+				metricstesting.AssertAssessmentsEqual(t, assessmentLookup[m][l][r][ti], a)
 
 				return nil
 			}))
@@ -45,14 +49,14 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Single Group",
 
-		Assessments: AssessmentPerModelPerLanguagePerRepositoryPerTask{
-			modeltesting.NewMockModelNamed(t, "some-model"): {
-				languagetesting.NewMockLanguageNamed(t, "some-language"): {
-					"some-repository": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 1,
-						},
-					},
+		Assessments: metricstesting.AssessmentTuples{
+			&metricstesting.AssessmentTuple{
+				Model:          modeltesting.NewMockModelNamed(t, "some-model"),
+				Language:       languagetesting.NewMockLanguageNamed(t, "some-language"),
+				RepositoryPath: "some-repository",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 1,
 				},
 			},
 		},
@@ -64,91 +68,119 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 		},
 	})
 
-	validate(t, &testCase{
-		Name: "Multiple Groups",
+	{
 
-		Assessments: AssessmentPerModelPerLanguagePerRepositoryPerTask{
-			modeltesting.NewMockModelNamed(t, "some-model-a"): {
-				languagetesting.NewMockLanguageNamed(t, "some-language-a"): {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 1,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 2,
-						},
-					},
-				},
-				languagetesting.NewMockLanguageNamed(t, "some-language-b"): {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 3,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 4,
-						},
-					},
-				},
-			},
-			modeltesting.NewMockModelNamed(t, "some-model-b"): {
-				languagetesting.NewMockLanguageNamed(t, "some-language-a"): {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 5,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 6,
-						},
-					},
-				},
-				languagetesting.NewMockLanguageNamed(t, "some-language-b"): {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 7,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 8,
-						},
-					},
-				},
-			},
-		},
+		modelA := modeltesting.NewMockModelNamed(t, "some-model-a")
+		modelB := modeltesting.NewMockModelNamed(t, "some-model-b")
+		languageA := languagetesting.NewMockLanguageNamed(t, "some-language-a")
+		languageB := languagetesting.NewMockLanguageNamed(t, "some-language-b")
 
-		ExpectedOrder: []metrics.Assessments{
-			metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 1,
+		validate(t, &testCase{
+			Name: "Multiple Groups",
+
+			Assessments: metricstesting.AssessmentTuples{
+				&metricstesting.AssessmentTuple{
+					Model:          modelA,
+					Language:       languageA,
+					RepositoryPath: "some-repository-a",
+					Task:           task.IdentifierWriteTests,
+					Assessment: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 1,
+					},
+				},
+				&metricstesting.AssessmentTuple{
+					Model:          modelA,
+					Language:       languageA,
+					RepositoryPath: "some-repository-b",
+					Task:           task.IdentifierWriteTests,
+					Assessment: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 2,
+					},
+				},
+				&metricstesting.AssessmentTuple{
+					Model:          modelA,
+					Language:       languageB,
+					RepositoryPath: "some-repository-a",
+					Task:           task.IdentifierWriteTests,
+					Assessment: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 3,
+					},
+				},
+				&metricstesting.AssessmentTuple{
+					Model:          modelA,
+					Language:       languageB,
+					RepositoryPath: "some-repository-b",
+					Task:           task.IdentifierWriteTests,
+					Assessment: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 4,
+					},
+				},
+				&metricstesting.AssessmentTuple{
+					Model:          modelB,
+					Language:       languageA,
+					RepositoryPath: "some-repository-a",
+					Task:           task.IdentifierWriteTests,
+					Assessment: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 5,
+					},
+				},
+				&metricstesting.AssessmentTuple{
+					Model:          modelB,
+					Language:       languageA,
+					RepositoryPath: "some-repository-b",
+					Task:           task.IdentifierWriteTests,
+					Assessment: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 6,
+					},
+				},
+				&metricstesting.AssessmentTuple{
+					Model:          modelB,
+					Language:       languageB,
+					RepositoryPath: "some-repository-a",
+					Task:           task.IdentifierWriteTests,
+					Assessment: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 7,
+					},
+				},
+				&metricstesting.AssessmentTuple{
+					Model:          modelB,
+					Language:       languageB,
+					RepositoryPath: "some-repository-b",
+					Task:           task.IdentifierWriteTests,
+					Assessment: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoExcess: 8,
+					},
+				},
 			},
-			metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 2,
+
+			ExpectedOrder: []metrics.Assessments{
+				metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 1,
+				},
+				metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 2,
+				},
+				metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 3,
+				},
+				metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 4,
+				},
+				metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 5,
+				},
+				metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 6,
+				},
+				metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 7,
+				},
+				metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 8,
+				},
 			},
-			metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 3,
-			},
-			metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 4,
-			},
-			metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 5,
-			},
-			metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 6,
-			},
-			metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 7,
-			},
-			metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 8,
-			},
-		},
-	})
+		})
+	}
 }
 
 func TestWalkByScore(t *testing.T) {
@@ -246,14 +278,16 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		Assessments AssessmentPerModelPerLanguagePerRepositoryPerTask
+		Assessments metricstesting.AssessmentTuples
 
 		ExpectedAssessmentPerModel AssessmentPerModel
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualAssessmentPerModel := tc.Assessments.CollapseByModel()
+			assessmentStore := assessmentTuplesToStore(tc.Assessments)
+
+			actualAssessmentPerModel := assessmentStore.CollapseByModel()
 
 			assert.Equal(t, tc.ExpectedAssessmentPerModel, actualAssessmentPerModel)
 		})
@@ -261,61 +295,83 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 
 	modelA := modeltesting.NewMockModelNamed(t, "some-model-a")
 	modelB := modeltesting.NewMockModelNamed(t, "some-model-b")
+	languageA := languagetesting.NewMockLanguageNamed(t, "some-language-a")
+	languageB := languagetesting.NewMockLanguageNamed(t, "some-language-b")
 
 	validate(t, &testCase{
 		Name: "Collapse",
 
-		Assessments: AssessmentPerModelPerLanguagePerRepositoryPerTask{
-			modelA: {
-				languagetesting.NewMockLanguageNamed(t, "some-language-a"): {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 1,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 2,
-						},
-					},
-				},
-				languagetesting.NewMockLanguageNamed(t, "some-language-b"): {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 3,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 4,
-						},
-					},
+		Assessments: metricstesting.AssessmentTuples{
+			&metricstesting.AssessmentTuple{
+				Model:          modelA,
+				Language:       languageA,
+				RepositoryPath: "some-repository-a",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 1,
 				},
 			},
-			modelB: {
-				languagetesting.NewMockLanguageNamed(t, "some-language-a"): {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 5,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 6,
-						},
-					},
+			&metricstesting.AssessmentTuple{
+				Model:          modelA,
+				Language:       languageA,
+				RepositoryPath: "some-repository-b",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 2,
 				},
-				languagetesting.NewMockLanguageNamed(t, "some-language-b"): {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 7,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 8,
-						},
-					},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelA,
+				Language:       languageB,
+				RepositoryPath: "some-repository-a",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 3,
+				},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelA,
+				Language:       languageB,
+				RepositoryPath: "some-repository-b",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 4,
+				},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelB,
+				Language:       languageA,
+				RepositoryPath: "some-repository-a",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 5,
+				},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelB,
+				Language:       languageA,
+				RepositoryPath: "some-repository-b",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 6,
+				},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelB,
+				Language:       languageB,
+				RepositoryPath: "some-repository-a",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 7,
+				},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelB,
+				Language:       languageB,
+				RepositoryPath: "some-repository-b",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 8,
 				},
 			},
 		},
@@ -335,14 +391,16 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		Assessments AssessmentPerModelPerLanguagePerRepositoryPerTask
+		Assessments metricstesting.AssessmentTuples
 
 		ExpectedAssessmentPerLanguagePerModel AssessmentPerLanguagePerModel
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualAssessmentPerLanguagePerModel := tc.Assessments.CollapseByLanguage()
+			assessmentStore := assessmentTuplesToStore(tc.Assessments)
+
+			actualAssessmentPerLanguagePerModel := assessmentStore.CollapseByLanguage()
 
 			assert.Equal(t, tc.ExpectedAssessmentPerLanguagePerModel, actualAssessmentPerLanguagePerModel)
 		})
@@ -350,64 +408,83 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 
 	modelA := modeltesting.NewMockModelNamed(t, "some-model-a")
 	modelB := modeltesting.NewMockModelNamed(t, "some-model-b")
-
 	languageA := languagetesting.NewMockLanguageNamed(t, "some-language-a")
 	languageB := languagetesting.NewMockLanguageNamed(t, "some-language-b")
 
 	validate(t, &testCase{
 		Name: "Collapse",
 
-		Assessments: AssessmentPerModelPerLanguagePerRepositoryPerTask{
-			modelA: {
-				languageA: {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 1,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 2,
-						},
-					},
-				},
-				languageB: {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 3,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 4,
-						},
-					},
+		Assessments: metricstesting.AssessmentTuples{
+			&metricstesting.AssessmentTuple{
+				Model:          modelA,
+				Language:       languageA,
+				RepositoryPath: "some-repository-a",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 1,
 				},
 			},
-			modelB: {
-				languageA: {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 5,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 6,
-						},
-					},
+			&metricstesting.AssessmentTuple{
+				Model:          modelA,
+				Language:       languageA,
+				RepositoryPath: "some-repository-b",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 2,
 				},
-				languageB: {
-					"some-repository-a": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 7,
-						},
-					},
-					"some-repository-b": {
-						task.IdentifierWriteTests: metrics.Assessments{
-							metrics.AssessmentKeyResponseNoExcess: 8,
-						},
-					},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelA,
+				Language:       languageB,
+				RepositoryPath: "some-repository-a",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 3,
+				},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelA,
+				Language:       languageB,
+				RepositoryPath: "some-repository-b",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 4,
+				},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelB,
+				Language:       languageA,
+				RepositoryPath: "some-repository-a",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 5,
+				},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelB,
+				Language:       languageA,
+				RepositoryPath: "some-repository-b",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 6,
+				},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelB,
+				Language:       languageB,
+				RepositoryPath: "some-repository-a",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 7,
+				},
+			},
+			&metricstesting.AssessmentTuple{
+				Model:          modelB,
+				Language:       languageB,
+				RepositoryPath: "some-repository-b",
+				Task:           task.IdentifierWriteTests,
+				Assessment: metrics.Assessments{
+					metrics.AssessmentKeyResponseNoExcess: 8,
 				},
 			},
 		},
@@ -431,4 +508,13 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 			},
 		},
 	})
+}
+
+func assessmentTuplesToStore(at metricstesting.AssessmentTuples) (store *AssessmentStore) {
+	store = NewAssessmentStore()
+	for _, a := range at {
+		store.Add(a.Model, a.Language, a.RepositoryPath, a.Task, a.Assessment)
+	}
+
+	return store
 }

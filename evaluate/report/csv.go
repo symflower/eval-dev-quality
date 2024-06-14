@@ -45,12 +45,12 @@ func GenerateCSV(formatter CSVFormatter) (csvData string, err error) {
 }
 
 // Header returns the header description as a CSV row.
-func (a AssessmentPerModelPerLanguagePerRepositoryPerTask) Header() (header []string) {
+func (a *AssessmentStore) Header() (header []string) {
 	return append([]string{"model", "language", "repository", "score"}, metrics.AllAssessmentKeysStrings...)
 }
 
 // Rows returns all data as CSV rows.
-func (a AssessmentPerModelPerLanguagePerRepositoryPerTask) Rows() (rows [][]string) {
+func (a *AssessmentStore) Rows() (rows [][]string) {
 	_ = a.Walk(func(m model.Model, l language.Language, r string, t task.Identifier, a metrics.Assessments) (err error) {
 		metrics := a.StringCSV()
 		score := a.Score()
