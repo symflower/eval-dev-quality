@@ -5,10 +5,12 @@ import (
 	"path/filepath"
 
 	"github.com/symflower/eval-dev-quality/evaluate/report"
+	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	evallanguage "github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
+	"github.com/symflower/eval-dev-quality/task"
 )
 
 // Context holds an evaluation context.
@@ -73,10 +75,10 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 
 	{
 		// Create temporary repositories for each language so the repository is copied only once per language.
-		temporaryRepositories := map[string]*Repository{}
+		temporaryRepositories := map[string]task.Repository{}
 		for _, language := range ctx.Languages {
 			repositoryPath := filepath.Join(language.ID(), RepositoryPlainName)
-			temporaryRepository, cleanup, err := TemporaryRepository(ctx.Log, ctx.TestdataPath, repositoryPath)
+			temporaryRepository, cleanup, err := evaluatetask.TemporaryRepository(ctx.Log, ctx.TestdataPath, repositoryPath)
 			if err != nil {
 				ctx.Log.Panicf("ERROR: unable to create temporary repository path: %+v", err)
 			}
@@ -106,7 +108,11 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 						r.SetQueryAttempts(ctx.QueryAttempts)
 					}
 
-					for _, taskIdentifier := range temporaryRepository.Tasks {
+					for _, taskIdentifier := range temporaryRepository.SupportedTasks() {
+						task, err := evaluatetask.TaskForIdentifier(taskIdentifier, ctx.Log, ctx.ResultPath, model, language)
+						if err != nil {
+							ctx.Log.Fatal(err)
+						}
 						withLoadedModel(ctx.Log, model, ctx.ProviderForModel[model], func() {
 							for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
 								if ctx.Runs > 1 && ctx.RunsSequential {
@@ -117,7 +123,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 								}
 
-								assessment, ps, err := temporaryRepository.Evaluate(ctx.Log, ctx.ResultPath, model, language, taskIdentifier)
+								assessment, ps, err := task.Run(temporaryRepository)
 								assessments.Add(model, language, repositoryPath, taskIdentifier, assessment)
 								if err != nil {
 									ps = append(ps, err)
@@ -144,7 +150,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 	// Evaluating models and languages.
 	ctx.Log.Printf("Evaluating models and languages")
 	// Create temporary repositories for each language so the repository is copied only once per language.
-	temporaryRepositories := map[string]*Repository{}
+	temporaryRepositories := map[string]*evaluatetask.Repository{}
 	for _, language := range ctx.Languages {
 		languagePath := filepath.Join(ctx.TestdataPath, language.ID())
 		repositories, err := os.ReadDir(languagePath)
@@ -159,7 +165,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 				continue
 			}
 
-			temporaryRepository, cleanup, err := TemporaryRepository(ctx.Log, ctx.TestdataPath, repositoryPath)
+			temporaryRepository, cleanup, err := evaluatetask.TemporaryRepository(ctx.Log, ctx.TestdataPath, repositoryPath)
 			if err != nil {
 				ctx.Log.Panicf("ERROR: unable to create temporary repository path: %s", err)
 			}
@@ -205,6 +211,10 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 						continue
 					}
 					for _, taskIdentifier := range temporaryRepository.Tasks {
+						task, err := evaluatetask.TaskForIdentifier(taskIdentifier, ctx.Log, ctx.ResultPath, model, language)
+						if err != nil {
+							ctx.Log.Fatal(err)
+						}
 						withLoadedModel(ctx.Log, model, ctx.ProviderForModel[model], func() {
 							for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
 								if ctx.Runs > 1 && ctx.RunsSequential {
@@ -215,7 +225,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 								}
 
-								assessment, ps, err := temporaryRepository.Evaluate(ctx.Log, ctx.ResultPath, model, language, taskIdentifier)
+								assessment, ps, err := task.Run(temporaryRepository)
 								assessments.Add(model, language, repositoryPath, taskIdentifier, assessment)
 								problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 								if err != nil {

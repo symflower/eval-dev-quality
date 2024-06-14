@@ -1,4 +1,4 @@
-package evaluate
+package task
 
 import (
 	"context"
@@ -12,11 +12,7 @@ import (
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
-	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
-	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
-	evalmodel "github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/util"
 )
@@ -33,7 +29,7 @@ func (rc *repositoryConfiguration) validate() (err error) {
 	}
 
 	for _, taskIdentifier := range rc.Tasks {
-		if !evaluatetask.LookupIdentifier[taskIdentifier] {
+		if !LookupIdentifier[taskIdentifier] {
 			return pkgerrors.Errorf("task identifier %q unknown", taskIdentifier)
 		}
 	}
@@ -41,28 +37,28 @@ func (rc *repositoryConfiguration) validate() (err error) {
 	return nil
 }
 
-// defaultConfiguration holds the default configuration object if there exists no configuration file.
-var defaultConfiguration = repositoryConfiguration{
-	Tasks: evaluatetask.AllIdentifiers,
-}
-
 // Repository holds data about a repository.
 type Repository struct {
 	repositoryConfiguration
 
-	// Name holds the name of the repository.
-	Name string
-	// DataPath holds the absolute path to the repository.
-	DataPath string
+	// name holds the name of the repository.
+	name string
+	// dataPath holds the absolute path to the repository.
+	dataPath string
 }
+
+var _ task.Repository = (*Repository)(nil)
 
 // loadConfiguration loads the configuration from the dedicated configuration file.
 func (r *Repository) loadConfiguration() (err error) {
-	configurationFilePath := filepath.Join(r.DataPath, "repository.json")
+	configurationFilePath := filepath.Join(r.dataPath, "repository.json")
 
 	data, err := os.ReadFile(configurationFilePath)
 	if errors.Is(err, os.ErrNotExist) {
-		r.repositoryConfiguration = defaultConfiguration
+		// Set default configuration.
+		r.repositoryConfiguration = repositoryConfiguration{
+			Tasks: AllIdentifiers,
+		}
 
 		return nil
 	} else if err != nil {
@@ -76,63 +72,19 @@ func (r *Repository) loadConfiguration() (err error) {
 	return r.repositoryConfiguration.validate()
 }
 
-// Evaluate evaluates a repository with the given model and language.
-func (r *Repository) Evaluate(logger *log.Logger, resultPath string, model evalmodel.Model, language language.Language, taskIdentifier task.Identifier) (repositoryAssessment metrics.Assessments, problems []error, err error) {
-	log, logClose, err := log.WithFile(logger, filepath.Join(resultPath, string(taskIdentifier), evalmodel.CleanModelNameForFileSystem(model.ID()), language.ID(), r.Name+".log"))
-	if err != nil {
-		return nil, nil, err
-	}
-	defer logClose()
+// Name holds the name of the repository.
+func (r *Repository) Name() (name string) {
+	return r.name
+}
 
-	log.Printf("Evaluating model %q on task %q using language %q and repository %q", model.ID(), taskIdentifier, language.ID(), r.Name)
-	defer func() {
-		log.Printf("Evaluated model %q on task %q using language %q and repository %q: encountered %d problems: %+v", model.ID(), taskIdentifier, language.ID(), r.Name, len(problems), problems)
-	}()
+// DataPath holds the absolute path to the repository.
+func (r *Repository) DataPath() (dataPath string) {
+	return r.dataPath
+}
 
-	filePaths, err := language.Files(log, r.DataPath)
-	if err != nil {
-		return nil, problems, pkgerrors.WithStack(err)
-	}
-
-	repositoryAssessment = metrics.NewAssessments()
-	for _, filePath := range filePaths {
-		if err := r.Reset(logger); err != nil {
-			logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
-		}
-
-		ctx := task.Context{
-			Language: language,
-
-			RepositoryPath: r.DataPath,
-			FilePath:       filePath,
-
-			Logger: log,
-		}
-		assessments, err := model.RunTask(ctx, taskIdentifier)
-		if err != nil {
-			problems = append(problems, pkgerrors.WithMessage(err, filePath))
-
-			continue
-		}
-		if assessments[metrics.AssessmentKeyProcessingTime] == 0 {
-			return nil, nil, pkgerrors.Errorf("no model response time measurement present for %q at repository %q", model.ID(), r.Name)
-		}
-		repositoryAssessment.Add(assessments)
-		repositoryAssessment.Award(metrics.AssessmentKeyResponseNoError)
-
-		coverage, ps, err := language.Execute(log, r.DataPath)
-		problems = append(problems, ps...)
-		if err != nil {
-			problems = append(problems, pkgerrors.WithMessage(err, filePath))
-
-			continue
-		}
-		log.Printf("Executes tests with %d coverage objects", coverage)
-		repositoryAssessment.Award(metrics.AssessmentKeyFilesExecuted)
-		repositoryAssessment.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
-	}
-
-	return repositoryAssessment, problems, nil
+// SupportedTasks returns the list of task identifiers the repository supports.
+func (r *Repository) SupportedTasks() (tasks []task.Identifier) {
+	return r.Tasks
 }
 
 // Reset resets a repository back to its "initial" commit.
@@ -144,10 +96,10 @@ func (r *Repository) Reset(logger *log.Logger) (err error) {
 			"-df",
 		},
 
-		Directory: r.DataPath,
+		Directory: r.dataPath,
 		Env: map[string]string{ // Overwrite the global and system configs to point to the default one.
-			"GIT_CONFIG_GLOBAL": filepath.Join(r.DataPath, ".git", "config"),
-			"GIT_CONFIG_SYSTEM": filepath.Join(r.DataPath, ".git", "config"),
+			"GIT_CONFIG_GLOBAL": filepath.Join(r.dataPath, ".git", "config"),
+			"GIT_CONFIG_SYSTEM": filepath.Join(r.dataPath, ".git", "config"),
 		},
 	})
 	if err != nil {
@@ -246,8 +198,8 @@ func TemporaryRepository(logger *log.Logger, testDataPath string, repositoryPath
 	}
 
 	repository = &Repository{
-		Name:     repositoryPathRelative,
-		DataPath: temporaryRepositoryPath,
+		name:     repositoryPathRelative,
+		dataPath: temporaryRepositoryPath,
 	}
 	if err := repository.loadConfiguration(); err != nil {
 		return nil, cleanup, err

@@ -382,10 +382,10 @@ func TestEvaluate(t *testing.T) {
 		generateTestsForFilePlainError := errors.New("generateTestsForFile error")
 
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime).Once()
+			mockedModel.RegisterGenerateSuccess(t, evaluatetask.IdentifierWriteTests, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime).Once()
 		}
 		generateError := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateError(generateTestsForFilePlainError).Once()
+			mockedModel.RegisterGenerateError(evaluatetask.IdentifierWriteTests, generateTestsForFilePlainError).Once()
 		}
 
 		{
@@ -591,7 +591,7 @@ func TestEvaluate(t *testing.T) {
 	})
 	t.Run("Runs", func(t *testing.T) {
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
+			mockedModel.RegisterGenerateSuccess(t, evaluatetask.IdentifierWriteTests, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
 		{
 			languageGolang := &golang.Language{}
@@ -709,7 +709,7 @@ func TestEvaluate(t *testing.T) {
 
 	t.Run("Preloading", func(t *testing.T) {
 		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
+			mockedModel.RegisterGenerateSuccess(t, evaluatetask.IdentifierWriteTests, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
 
 		{
@@ -864,7 +864,7 @@ func TestEvaluate(t *testing.T) {
 			Name: "Download Go dependencies",
 
 			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
-				mockedModel.RegisterGenerateSuccess(t, testFiles["plain-with-assert"].Path, testFiles["plain-with-assert"].Content, metricstesting.AssessmentsWithProcessingTime)
+				mockedModel.RegisterGenerateSuccess(t, evaluatetask.IdentifierWriteTests, testFiles["plain-with-assert"].Path, testFiles["plain-with-assert"].Content, metricstesting.AssessmentsWithProcessingTime)
 			},
 
 			Context: &Context{
