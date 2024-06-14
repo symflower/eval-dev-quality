@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 )
 
@@ -27,4 +28,27 @@ type Context struct {
 
 	// Logger is used for logging during evaluation.
 	Logger *log.Logger
+}
+
+// Task defines an evaluation task.
+type Task interface {
+	// Identifier returns the task identifier.
+	Identifier() (identifier Identifier)
+
+	// Run runs a task in a given repository.
+	Run(repository Repository) (assessments metrics.Assessments, problems []error, err error)
+}
+
+// Repository defines a repository to be evaluated.
+type Repository interface {
+	// Name holds the name of the repository.
+	Name() (name string)
+	// DataPath holds the absolute path to the repository.
+	DataPath() (dataPath string)
+
+	// SupportedTasks returns the list of task identifiers the repository supports.
+	SupportedTasks() (tasks []Identifier)
+
+	// Reset resets the repository to its initial state.
+	Reset(logger *log.Logger) (err error)
 }
