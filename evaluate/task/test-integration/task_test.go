@@ -19,7 +19,7 @@ import (
 func TestTaskWriteTestsRun(t *testing.T) {
 	toolstesting.RequiresTool(t, tools.NewSymflower())
 
-	validate := func(t *testing.T, tc *tasktesting.TestCaseTaskWriteTests) {
+	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
 			resultPath := t.TempDir()
 
@@ -40,7 +40,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 		})
 	}
 
-	validate(t, &tasktesting.TestCaseTaskWriteTests{
+	validate(t, &tasktesting.TestCaseTask{
 		Name: "Plain",
 
 		Model:          symflower.NewModel(),

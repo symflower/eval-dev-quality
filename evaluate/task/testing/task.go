@@ -16,7 +16,7 @@ import (
 	"github.com/zimmski/osutil"
 )
 
-type TestCaseTaskWriteTests struct {
+type TestCaseTask struct {
 	Name string
 
 	Model          model.Model
@@ -30,7 +30,7 @@ type TestCaseTaskWriteTests struct {
 	ExpectedError                error
 }
 
-func (tc *TestCaseTaskWriteTests) Validate(t *testing.T, task evaltask.Task, repository evaltask.Repository, resultPath string) {
+func (tc *TestCaseTask) Validate(t *testing.T, task evaltask.Task, repository evaltask.Repository, resultPath string) {
 	actualRepositoryAssessment, actualProblems, actualErr := task.Run(repository)
 
 	metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
