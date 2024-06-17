@@ -135,6 +135,30 @@ Total coverage 100.000000%
 
 The execution by default also creates an report file `REPORT.md` that contains additional evaluation results and links to individual result files.
 
+# Docker
+
+## Setup
+
+Ensure that docker is installed on the system.
+
+### Build or pull the image
+```bash
+docker build . -t eval-dev-quality
+```
+```bash
+docker pull ghcr.io/symflower/eval-dev-quality:latest
+```
+
+### Run the evaluation either with the built or pulled image
+The following command will run the model `symflower/symbolic-execution` and stores the the results of the run inside the local directory `evaluation`.
+```bash
+docker run -v ./:/home/ubuntu/evaluation --user $(id -u):$(id -g) eval-dev-quality:latest eval-dev-quality evaluate --model symflower/symbolic-execution --result-path /home/ubuntu/evaluation/%datetime%
+```
+```bash
+docker run -v ./:/home/ubuntu/evaluation --user $(id -u):$(id -g) ghcr.io/symflower/eval-dev-quality:latest eval-dev-quality evaluate --model symflower/symbolic-execution --result-path /home/ubuntu/evaluation/%datetime%
+```
+
+
 # The Evaluation
 
 With `DevQualityEval` we answer answer the following questions:
