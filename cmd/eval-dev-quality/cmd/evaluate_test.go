@@ -17,9 +17,9 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
+	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/log"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
-	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 )
@@ -260,7 +260,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 			},
 		})
 		validate(t, &testCase{
@@ -364,8 +364,8 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
-				filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"):     nil,
+				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"):     nil,
 			},
 		})
 	})
@@ -450,7 +450,7 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
-					filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+					filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 				},
 			})
 			validate(t, &testCase{
@@ -518,7 +518,7 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
-					filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+					filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 				},
 			})
 		})
@@ -584,7 +584,7 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", "golang-summed.csv"): nil,
 						filepath.Join("result-directory", "models-summed.csv"): nil,
 						filepath.Join("result-directory", "README.md"):         nil,
-						filepath.Join("result-directory", string(task.IdentifierWriteTests), "ollama_"+providertesting.OllamaTestModel, "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+providertesting.OllamaTestModel, "golang", "golang", "plain.log"): nil,
 					},
 				})
 			}
@@ -632,7 +632,7 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", "golang-summed.csv"): nil,
 						filepath.Join("result-directory", "models-summed.csv"): nil,
 						filepath.Join("result-directory", "README.md"):         nil,
-						filepath.Join("result-directory", string(task.IdentifierWriteTests), "custom-ollama_"+providertesting.OllamaTestModel, "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+providertesting.OllamaTestModel, "golang", "golang", "plain.log"): nil,
 					},
 				})
 			}
@@ -690,7 +690,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "golang-summed.csv"): nil,
 				filepath.Join("result-directory", "models-summed.csv"): nil,
 				filepath.Join("result-directory", "README.md"):         nil,
-				filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 3, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
 			},
@@ -727,7 +727,7 @@ func TestEvaluateExecute(t *testing.T) {
 			filepath.Join("result-directory", "golang-summed.csv"): nil,
 			filepath.Join("result-directory", "models-summed.csv"): nil,
 			filepath.Join("result-directory", "README.md"):         nil,
-			filepath.Join("result-directory", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+			filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 		},
 	})
 	validate(t, &testCase{
@@ -749,7 +749,7 @@ func TestEvaluateExecute(t *testing.T) {
 			filepath.Join("result-directory-0", "golang-summed.csv"): nil,
 			filepath.Join("result-directory-0", "models-summed.csv"): nil,
 			filepath.Join("result-directory-0", "README.md"):         nil,
-			filepath.Join("result-directory-0", string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+			filepath.Join("result-directory-0", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 		},
 	})
 }

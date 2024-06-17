@@ -2,9 +2,9 @@ package task
 
 import (
 	"errors"
-	"fmt"
 	"log"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 )
 
@@ -15,33 +15,6 @@ var (
 
 // Identifier holds the identifier of a task.
 type Identifier string
-
-var (
-	// AllIdentifiers holds all available task identifiers.
-	AllIdentifiers []Identifier
-	// LookupIdentifier holds a map of all available task identifiers.
-	LookupIdentifier = map[Identifier]bool{}
-)
-
-// registerIdentifier registers the given identifier and makes it available.
-func registerIdentifier(name string) (identifier Identifier) {
-	identifier = Identifier(name)
-	AllIdentifiers = append(AllIdentifiers, identifier)
-
-	if _, ok := LookupIdentifier[identifier]; ok {
-		panic(fmt.Sprintf("task identifier already registered: %s", identifier))
-	}
-	LookupIdentifier[identifier] = true
-
-	return identifier
-}
-
-var (
-	// IdentifierWriteTests holds the identifier for the "write test" task.
-	IdentifierWriteTests = registerIdentifier("write-tests")
-	// IdentifierCodeRepair holds the identifier for the "code repair" task.
-	IdentifierCodeRepair = registerIdentifier("code-repair")
-)
 
 // Context holds the data needed for running a task.
 type Context struct {
@@ -55,4 +28,27 @@ type Context struct {
 
 	// Logger is used for logging during evaluation.
 	Logger *log.Logger
+}
+
+// Task defines an evaluation task.
+type Task interface {
+	// Identifier returns the task identifier.
+	Identifier() (identifier Identifier)
+
+	// Run runs a task in a given repository.
+	Run(repository Repository) (assessments metrics.Assessments, problems []error, err error)
+}
+
+// Repository defines a repository to be evaluated.
+type Repository interface {
+	// Name holds the name of the repository.
+	Name() (name string)
+	// DataPath holds the absolute path to the repository.
+	DataPath() (dataPath string)
+
+	// SupportedTasks returns the list of task identifiers the repository supports.
+	SupportedTasks() (tasks []Identifier)
+
+	// Reset resets the repository to its initial state.
+	Reset(logger *log.Logger) (err error)
 }
