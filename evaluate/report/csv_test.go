@@ -8,9 +8,9 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
+	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
-	"github.com/symflower/eval-dev-quality/task"
 )
 
 func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) {
@@ -41,7 +41,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 				Model:          modeltesting.NewMockModelNamed(t, "some-model"),
 				Language:       languagetesting.NewMockLanguageNamed(t, "some-language"),
 				RepositoryPath: "some-repository",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment:     metrics.NewAssessments(),
 			},
 		},
@@ -59,7 +59,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 				Model:          modeltesting.NewMockModelNamed(t, "some-model-a"),
 				Language:       languagetesting.NewMockLanguageNamed(t, "some-language"),
 				RepositoryPath: "some-repository",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 50,
 					metrics.AssessmentKeyResponseCharacterCount:             100,
@@ -75,7 +75,7 @@ func TestGenerateCSVForAssessmentPerModelPerLanguagePerRepository(t *testing.T) 
 				Model:          modeltesting.NewMockModelNamed(t, "some-model-b"),
 				Language:       languagetesting.NewMockLanguageNamed(t, "some-language"),
 				RepositoryPath: "some-repository",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 100,
 					metrics.AssessmentKeyResponseCharacterCount:             200,

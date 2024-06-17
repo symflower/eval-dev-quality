@@ -8,6 +8,7 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
+	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
 	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	"github.com/symflower/eval-dev-quality/model"
@@ -54,7 +55,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 				Model:          modeltesting.NewMockModelNamed(t, "some-model"),
 				Language:       languagetesting.NewMockLanguageNamed(t, "some-language"),
 				RepositoryPath: "some-repository",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 1,
 				},
@@ -83,7 +84,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 					Model:          modelA,
 					Language:       languageA,
 					RepositoryPath: "some-repository-a",
-					Task:           task.IdentifierWriteTests,
+					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 1,
 					},
@@ -92,7 +93,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 					Model:          modelA,
 					Language:       languageA,
 					RepositoryPath: "some-repository-b",
-					Task:           task.IdentifierWriteTests,
+					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 2,
 					},
@@ -101,7 +102,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 					Model:          modelA,
 					Language:       languageB,
 					RepositoryPath: "some-repository-a",
-					Task:           task.IdentifierWriteTests,
+					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 3,
 					},
@@ -110,7 +111,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 					Model:          modelA,
 					Language:       languageB,
 					RepositoryPath: "some-repository-b",
-					Task:           task.IdentifierWriteTests,
+					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 4,
 					},
@@ -119,7 +120,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 					Model:          modelB,
 					Language:       languageA,
 					RepositoryPath: "some-repository-a",
-					Task:           task.IdentifierWriteTests,
+					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 5,
 					},
@@ -128,7 +129,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 					Model:          modelB,
 					Language:       languageA,
 					RepositoryPath: "some-repository-b",
-					Task:           task.IdentifierWriteTests,
+					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 6,
 					},
@@ -137,7 +138,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 					Model:          modelB,
 					Language:       languageB,
 					RepositoryPath: "some-repository-a",
-					Task:           task.IdentifierWriteTests,
+					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 7,
 					},
@@ -146,7 +147,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 					Model:          modelB,
 					Language:       languageB,
 					RepositoryPath: "some-repository-b",
-					Task:           task.IdentifierWriteTests,
+					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyResponseNoExcess: 8,
 					},
@@ -306,7 +307,7 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 				Model:          modelA,
 				Language:       languageA,
 				RepositoryPath: "some-repository-a",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 1,
 				},
@@ -315,7 +316,7 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 				Model:          modelA,
 				Language:       languageA,
 				RepositoryPath: "some-repository-b",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 2,
 				},
@@ -324,7 +325,7 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 				Model:          modelA,
 				Language:       languageB,
 				RepositoryPath: "some-repository-a",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 3,
 				},
@@ -333,7 +334,7 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 				Model:          modelA,
 				Language:       languageB,
 				RepositoryPath: "some-repository-b",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 4,
 				},
@@ -342,7 +343,7 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 				Model:          modelB,
 				Language:       languageA,
 				RepositoryPath: "some-repository-a",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 5,
 				},
@@ -351,7 +352,7 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 				Model:          modelB,
 				Language:       languageA,
 				RepositoryPath: "some-repository-b",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 6,
 				},
@@ -360,7 +361,7 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 				Model:          modelB,
 				Language:       languageB,
 				RepositoryPath: "some-repository-a",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 7,
 				},
@@ -369,7 +370,7 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 				Model:          modelB,
 				Language:       languageB,
 				RepositoryPath: "some-repository-b",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 8,
 				},
@@ -419,7 +420,7 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 				Model:          modelA,
 				Language:       languageA,
 				RepositoryPath: "some-repository-a",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 1,
 				},
@@ -428,7 +429,7 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 				Model:          modelA,
 				Language:       languageA,
 				RepositoryPath: "some-repository-b",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 2,
 				},
@@ -437,7 +438,7 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 				Model:          modelA,
 				Language:       languageB,
 				RepositoryPath: "some-repository-a",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 3,
 				},
@@ -446,7 +447,7 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 				Model:          modelA,
 				Language:       languageB,
 				RepositoryPath: "some-repository-b",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 4,
 				},
@@ -455,7 +456,7 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 				Model:          modelB,
 				Language:       languageA,
 				RepositoryPath: "some-repository-a",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 5,
 				},
@@ -464,7 +465,7 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 				Model:          modelB,
 				Language:       languageA,
 				RepositoryPath: "some-repository-b",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 6,
 				},
@@ -473,7 +474,7 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 				Model:          modelB,
 				Language:       languageB,
 				RepositoryPath: "some-repository-a",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 7,
 				},
@@ -482,7 +483,7 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 				Model:          modelB,
 				Language:       languageB,
 				RepositoryPath: "some-repository-b",
-				Task:           task.IdentifierWriteTests,
+				Task:           evaluatetask.IdentifierWriteTests,
 				Assessment: metrics.Assessments{
 					metrics.AssessmentKeyResponseNoExcess: 8,
 				},

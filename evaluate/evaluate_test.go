@@ -18,6 +18,7 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
+	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
@@ -178,7 +179,7 @@ func TestEvaluate(t *testing.T) {
 
 			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 				// Set up mocks, when test is running.
-				mockedModel.On("RunTask", mock.Anything, task.IdentifierWriteTests).Return(nil, ErrEmptyResponseFromModel)
+				mockedModel.On("RunTask", mock.Anything, evaluatetask.IdentifierWriteTests).Return(nil, ErrEmptyResponseFromModel)
 			},
 
 			Context: &Context{
@@ -196,13 +197,13 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel,
 					Language:       languageGolang,
 					RepositoryPath: repositoryPath,
-					Task:           task.IdentifierWriteTests,
+					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment:     metrics.Assessments{},
 				},
 			},
 			ExpectedTotalScore: 1,
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				filepath.Join(string(task.IdentifierWriteTests), mockedModel.ID(), "golang", "golang", "plain.log"): nil,
+				filepath.Join(string(evaluatetask.IdentifierWriteTests), mockedModel.ID(), "golang", "golang", "plain.log"): nil,
 			},
 		})
 	}
@@ -242,13 +243,13 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment:     metrics.Assessments{},
 					},
 				},
 				ExpectedTotalScore: 1,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, ErrEmptyResponseFromModel.Error())
 					},
 				},
@@ -293,7 +294,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
@@ -303,7 +304,7 @@ func TestEvaluate(t *testing.T) {
 				},
 				ExpectedTotalScore: 1,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, "Attempt 1/3: "+ErrEmptyResponseFromModel.Error())
 					},
 				},
@@ -347,7 +348,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
@@ -357,7 +358,7 @@ func TestEvaluate(t *testing.T) {
 				},
 				ExpectedTotalScore: 1,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, "DONE 0 tests, 1 error")
 					},
 				},
@@ -435,7 +436,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryNextPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyCoverage:        0,
 							metrics.AssessmentKeyFilesExecuted:   1,
@@ -446,7 +447,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryPlainPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyCoverage:        0,
 							metrics.AssessmentKeyFilesExecuted:   2,
@@ -456,8 +457,8 @@ func TestEvaluate(t *testing.T) {
 				},
 				ExpectedTotalScore: 0,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "next.log"):  nil,
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "next.log"):  nil,
 				},
 			})
 		}
@@ -508,7 +509,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryNextPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyCoverage:        0,
 							metrics.AssessmentKeyFilesExecuted:   2,
@@ -519,7 +520,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryPlainPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyCoverage:        0,
 							metrics.AssessmentKeyFilesExecuted:   1,
@@ -529,8 +530,8 @@ func TestEvaluate(t *testing.T) {
 				},
 				ExpectedTotalScore: 0,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "next.log"):  nil,
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "next.log"):  nil,
 				},
 			})
 		}
@@ -577,13 +578,13 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryPlainPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment:     map[metrics.AssessmentKey]uint64{},
 					},
 				},
 				ExpectedTotalScore: 0,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
 			})
 		}
@@ -626,7 +627,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyCoverage:        0,
 							metrics.AssessmentKeyFilesExecuted:   3,
@@ -636,7 +637,7 @@ func TestEvaluate(t *testing.T) {
 				},
 				ExpectedTotalScore: 3,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 					assert.Contains(t, output, "Run 1/3")
@@ -682,7 +683,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyCoverage:        0,
 							metrics.AssessmentKeyFilesExecuted:   3,
@@ -692,7 +693,7 @@ func TestEvaluate(t *testing.T) {
 				},
 				ExpectedTotalScore: 3,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 					assert.Contains(t, output, "Run 1/3 for model")
@@ -768,7 +769,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyCoverage:        0,
 							metrics.AssessmentKeyFilesExecuted:   3,
@@ -778,7 +779,7 @@ func TestEvaluate(t *testing.T) {
 				},
 				ExpectedTotalScore: 3,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
 			})
 		}
@@ -837,7 +838,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel,
 						Language:       languageGolang,
 						RepositoryPath: repositoryPath,
-						Task:           task.IdentifierWriteTests,
+						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyCoverage:        0,
 							metrics.AssessmentKeyFilesExecuted:   3,
@@ -847,7 +848,7 @@ func TestEvaluate(t *testing.T) {
 				},
 				ExpectedTotalScore: 3,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
 			})
 		}
@@ -887,7 +888,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel,
 					Language:       languageGolang,
 					RepositoryPath: repositoryPath,
-					Task:           task.IdentifierWriteTests,
+					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyCoverage:        0,
 						metrics.AssessmentKeyFilesExecuted:   1,
@@ -897,7 +898,7 @@ func TestEvaluate(t *testing.T) {
 			},
 			ExpectedTotalScore: 1,
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				filepath.Join(string(task.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+				filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 			},
 		})
 	}

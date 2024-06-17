@@ -14,6 +14,7 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm/prompt"
@@ -88,9 +89,9 @@ func (m *Model) ID() (id string) {
 // IsTaskSupported returns whether the model supports the given task or not.
 func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported bool) {
 	switch taskIdentifier {
-	case task.IdentifierWriteTests:
+	case evaluatetask.IdentifierWriteTests:
 		return true
-	case task.IdentifierCodeRepair:
+	case evaluatetask.IdentifierCodeRepair:
 		return false
 	default:
 		return false
@@ -100,7 +101,7 @@ func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported boo
 // RunTask runs the given task.
 func (m *Model) RunTask(ctx task.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error) {
 	switch taskIdentifier {
-	case task.IdentifierWriteTests:
+	case evaluatetask.IdentifierWriteTests:
 		return m.generateTestsForFile(ctx)
 	default:
 		return nil, pkgerrors.Wrap(task.ErrTaskUnsupported, string(taskIdentifier))

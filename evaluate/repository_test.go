@@ -15,6 +15,7 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
+	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
@@ -53,7 +54,7 @@ func TestRepository(t *testing.T) {
 			assert.NoError(t, err)
 			defer cleanup()
 
-			actualRepositoryAssessment, actualProblems, actualErr := temporaryRepository.Evaluate(logger, temporaryPath, tc.Model, tc.Language, task.IdentifierWriteTests)
+			actualRepositoryAssessment, actualProblems, actualErr := temporaryRepository.Evaluate(logger, temporaryPath, tc.Model, tc.Language, evaluatetask.IdentifierWriteTests)
 
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 			if assert.Equal(t, len(tc.ExpectedProblemContains), len(actualProblems), "problems count") {
@@ -109,7 +110,7 @@ func TestRepository(t *testing.T) {
 			metrics.AssessmentKeyResponseWithCode:                   1,
 		},
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			filepath.Join(string(task.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+			filepath.Join(string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 				assert.Contains(t, data, "Evaluating model \"symflower/symbolic-execution\"")
 				assert.Contains(t, data, "Generated 1 test")
 				assert.Contains(t, data, "PASS: TestSymflowerPlain")
@@ -149,7 +150,7 @@ func TestRepository(t *testing.T) {
 				"expected 'package', found does",
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				filepath.Join(string(task.IdentifierWriteTests), "mocked-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join(string(evaluatetask.IdentifierWriteTests), "mocked-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 					assert.Contains(t, data, "Evaluating model \"mocked-model\"")
 					assert.Contains(t, data, "PASS: TestTaskB")
 				},
@@ -306,7 +307,7 @@ func TestRepositoryLoadConfiguration(t *testing.T) {
 		},
 
 		ValidateAfter: func(t *testing.T, repository *Repository) {
-			assert.Equal(t, task.AllIdentifiers, repository.Tasks)
+			assert.Equal(t, evaluatetask.AllIdentifiers, repository.Tasks)
 		},
 	})
 	validate(t, &testCase{
@@ -317,7 +318,7 @@ func TestRepositoryLoadConfiguration(t *testing.T) {
 
 		ValidateAfter: func(t *testing.T, repository *Repository) {
 			expectedTaskIdentifiers := []task.Identifier{
-				task.IdentifierWriteTests,
+				evaluatetask.IdentifierWriteTests,
 			}
 			assert.Equal(t, expectedTaskIdentifiers, repository.Tasks)
 		},

@@ -13,6 +13,7 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
@@ -32,7 +33,7 @@ func (rc *repositoryConfiguration) validate() (err error) {
 	}
 
 	for _, taskIdentifier := range rc.Tasks {
-		if !task.LookupIdentifier[taskIdentifier] {
+		if !evaluatetask.LookupIdentifier[taskIdentifier] {
 			return pkgerrors.Errorf("task identifier %q unknown", taskIdentifier)
 		}
 	}
@@ -42,7 +43,7 @@ func (rc *repositoryConfiguration) validate() (err error) {
 
 // defaultConfiguration holds the default configuration object if there exists no configuration file.
 var defaultConfiguration = repositoryConfiguration{
-	Tasks: task.AllIdentifiers,
+	Tasks: evaluatetask.AllIdentifiers,
 }
 
 // Repository holds data about a repository.
