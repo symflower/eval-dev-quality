@@ -79,6 +79,40 @@ func llmGenerateTestForFilePrompt(data *llmSourceFilePromptContext) (message str
 	return b.String(), nil
 }
 
+// llmCodeRepairSourceFilePromptContext is the template context for a code repair LLM prompt.
+type llmCodeRepairSourceFilePromptContext struct {
+	// llmSourceFilePromptContext holds the context for a source file prompt.
+	llmSourceFilePromptContext
+
+	// Mistakes holds the list of compilation errors of a package.
+	Mistakes []string
+}
+
+// llmCodeRepairSourceFilePromptTemplate is the template for generating an LLM code repair prompt.
+var llmCodeRepairSourceFilePromptTemplate = template.Must(template.New("model-llm-generate-test-for-file-prompt").Parse(bytesutil.StringTrimIndentations(`
+	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" with package "{{ .ImportPath }}" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code and nothing else.
+
+	` + "```" + `{{ .Language.ID }}
+	{{ .Code }}
+	` + "```" + `
+
+	The list of compilation errors is the following:{{ range .Mistakes }}
+	- {{.}}{{ end }}
+`)))
+
+// llmCodeRepairSourceFilePrompt returns the prompt to code repair a source file.
+func llmCodeRepairSourceFilePrompt(data *llmCodeRepairSourceFilePromptContext) (message string, err error) {
+	data.Code = strings.TrimSpace(data.Code)
+
+	var b strings.Builder
+	if err := llmCodeRepairSourceFilePromptTemplate.Execute(&b, data); err != nil {
+		return "", pkgerrors.WithStack(err)
+	}
+
+	return b.String(), nil
+}
+
 var _ model.Model = (*Model)(nil)
 
 // ID returns the unique ID of this model.
@@ -92,7 +126,7 @@ func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported boo
 	case evaluatetask.IdentifierWriteTests:
 		return true
 	case evaluatetask.IdentifierCodeRepair:
-		return false
+		return true
 	default:
 		return false
 	}
@@ -103,6 +137,13 @@ func (m *Model) RunTask(ctx task.Context, taskIdentifier task.Identifier) (asses
 	switch taskIdentifier {
 	case evaluatetask.IdentifierWriteTests:
 		return m.generateTestsForFile(ctx)
+	case evaluatetask.IdentifierCodeRepair:
+		codeRepairArguments, ok := ctx.Arguments.(*evaluatetask.TaskArgumentsCodeRepair)
+		if !ok {
+			return nil, pkgerrors.Errorf("unexpected type %#v", ctx.Arguments)
+		}
+
+		return m.repairSourceCodeFile(ctx, codeRepairArguments)
 	default:
 		return nil, pkgerrors.Wrap(task.ErrTaskUnsupported, string(taskIdentifier))
 	}
@@ -183,6 +224,54 @@ func (m *Model) query(log *log.Logger, request string) (response string, duratio
 	}
 
 	return response, duration, nil
+}
+
+// repairSourceCodeFile queries the model to repair a source code with compilation error.
+func (m *Model) repairSourceCodeFile(ctx task.Context, codeRepairArguments *evaluatetask.TaskArgumentsCodeRepair) (assessment metrics.Assessments, err error) {
+	assessment = map[metrics.AssessmentKey]uint64{}
+
+	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+	fileContent := strings.TrimSpace(string(data))
+
+	importPath := ctx.Language.ImportPath(ctx.RepositoryPath, ctx.FilePath)
+
+	request, err := llmCodeRepairSourceFilePrompt(&llmCodeRepairSourceFilePromptContext{
+		llmSourceFilePromptContext: llmSourceFilePromptContext{
+			Language: ctx.Language,
+
+			Code:       fileContent,
+			FilePath:   ctx.FilePath,
+			ImportPath: importPath,
+		},
+
+		Mistakes: codeRepairArguments.Mistakes,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	response, duration, err := m.query(ctx.Logger, request)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	assessment, sourceFileContent, err := prompt.ParseResponse(response)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+	assessment[metrics.AssessmentKeyProcessingTime] = uint64(duration.Milliseconds())
+	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(response))
+	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(sourceFileContent))
+
+	err = os.WriteFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath), []byte(sourceFileContent), 0644)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	return assessment, nil
 }
 
 var _ model.SetQueryAttempts = (*Model)(nil)

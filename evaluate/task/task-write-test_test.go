@@ -16,7 +16,7 @@ import (
 )
 
 func TestTaskWriteTestsRun(t *testing.T) {
-	validate := func(t *testing.T, tc *tasktesting.TestCaseTaskWriteTests) {
+	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
 			resultPath := t.TempDir()
 
@@ -51,7 +51,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 		// Generate valid code for the second taskcontext.
 		modelMock.RegisterGenerateSuccess(t, IdentifierWriteTests, "taskB_test.go", "package plain\n\nimport \"testing\"\n\nfunc TestTaskB(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Once()
 
-		validate(t, &tasktesting.TestCaseTaskWriteTests{
+		validate(t, &tasktesting.TestCaseTask{
 			Name: "Plain",
 
 			Model:          modelMock,

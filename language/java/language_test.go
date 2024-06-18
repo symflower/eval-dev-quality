@@ -3,7 +3,6 @@ package java
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -287,13 +286,6 @@ func TestMistakes(t *testing.T) {
 			actualMistakes, actualErr := java.Mistakes(logger, repositoryPath)
 			require.NoError(t, actualErr)
 
-			for i, mistake := range actualMistakes {
-				// Maven prints paths on Windows with forward slashes, so to split off the temporary path from each mistake, we need a different approach than just trimming the path.
-				index := strings.Index(mistake, "/src/main/java")
-				require.Greater(t, index, -1)
-				actualMistakes[i] = mistake[index:]
-			}
-
 			assert.Equal(t, tc.ExpectedMistakes, actualMistakes)
 		})
 	}
@@ -304,11 +296,11 @@ func TestMistakes(t *testing.T) {
 		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "mistakes", "openingBracketMissing"),
 
 		ExpectedMistakes: []string{
-			"/src/main/java/com/eval/OpeningBracketMissing.java:[12,17] illegal start of type",
-			"/src/main/java/com/eval/OpeningBracketMissing.java:[14,1] class, interface, or enum expected",
-			"/src/main/java/com/eval/OpeningBracketMissing.java:[4,55] ';' expected",
-			"/src/main/java/com/eval/OpeningBracketMissing.java:[8,17] illegal start of type",
-			"/src/main/java/com/eval/OpeningBracketMissing.java:[8,25] illegal start of type",
+			filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java") + ":[12,17] illegal start of type",
+			filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java") + ":[14,1] class, interface, or enum expected",
+			filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java") + ":[4,55] ';' expected",
+			filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java") + ":[8,17] illegal start of type",
+			filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java") + ":[8,25] illegal start of type",
 		},
 	})
 }

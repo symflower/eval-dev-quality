@@ -26,6 +26,9 @@ type Context struct {
 	// FilePath holds the path the file under test relative to the repository path.
 	FilePath string
 
+	// Arguments holds extra data that can be used in a query prompt.
+	Arguments any
+
 	// Logger is used for logging during evaluation.
 	Logger *log.Logger
 }

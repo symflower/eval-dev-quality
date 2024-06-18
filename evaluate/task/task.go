@@ -42,6 +42,8 @@ func TaskForIdentifier(taskIdentifier evaltask.Identifier, logger *log.Logger, r
 	switch taskIdentifier {
 	case IdentifierWriteTests:
 		return newTaskWriteTests(logger, resultPath, model, language), nil
+	case IdentifierCodeRepair:
+		return newCodeRepairTask(logger, resultPath, model, language), nil
 	default:
 		return nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupported, string(taskIdentifier))
 	}

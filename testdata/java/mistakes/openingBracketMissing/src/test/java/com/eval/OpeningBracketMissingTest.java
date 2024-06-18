@@ -8,7 +8,7 @@ public class OpeningBracketMissingTest {
 	public void openingBracketMissing1() {
 		int x = -1;
 		int expected = -1;
-		int actual = OpeningBracketIsMissing.openingBracketMissing(x);
+		int actual = OpeningBracketMissing.openingBracketMissing(x);
 
 		assertEquals(expected, actual);
 	}
@@ -17,7 +17,7 @@ public class OpeningBracketMissingTest {
 	public void openingBracketMissing2() {
 		int x = 0;
 		int expected = 0;
-		int actual = OpeningBracketIsMissing.openingBracketMissing(x);
+		int actual = OpeningBracketMissing.openingBracketMissing(x);
 
 		assertEquals(expected, actual);
 	}
@@ -26,7 +26,7 @@ public class OpeningBracketMissingTest {
 	public void openingBracketMissing3() {
 		int x = 1;
 		int expected = 1;
-		int actual = OpeningBracketIsMissing.openingBracketMissing(x);
+		int actual = OpeningBracketMissing.openingBracketMissing(x);
 
 		assertEquals(expected, actual);
 	}

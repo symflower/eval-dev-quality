@@ -75,6 +75,16 @@ func (l *Language) TestFramework() (testFramework string) {
 	return ""
 }
 
+// DefaultFileExtension returns the default file extension.
+func (l *Language) DefaultFileExtension() string {
+	return ".go"
+}
+
+// DefaultTestFileSuffix returns the default test file suffix.
+func (l *Language) DefaultTestFileSuffix() string {
+	return "_test.go"
+}
+
 var languageGoTestsErrorMatch = regexp.MustCompile(`DONE (\d+) tests, (\d+) failure`)
 
 // Execute invokes the language specific testing on the given repository.
