@@ -159,6 +159,10 @@ docker run -v ./:/home/ubuntu/evaluation --user $(id -u):$(id -g) ghcr.io/symflo
 ```
 
 
+# Kubernetes
+
+Please check the [Kubernetes](./docs/kubernetes/README.md) documentation.
+
 # The Evaluation
 
 With `DevQualityEval` we answer answer the following questions:
