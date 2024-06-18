@@ -19,8 +19,8 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
-	"github.com/symflower/eval-dev-quality/task"
 )
 
 func TestModelGenerateTestsForFile(t *testing.T) {
@@ -58,7 +58,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			tc.SetupMock(mock)
 			llm := NewModel(mock, tc.ModelID)
 
-			ctx := task.Context{
+			ctx := model.Context{
 				Language: tc.Language,
 
 				RepositoryPath: temporaryPath,
@@ -158,7 +158,7 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 			tc.SetupMock(t, mock)
 			llm := NewModel(mock, modelID)
 
-			ctx := task.Context{
+			ctx := model.Context{
 				Language: tc.Language,
 
 				RepositoryPath: repositoryPath,

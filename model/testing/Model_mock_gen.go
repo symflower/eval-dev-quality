@@ -6,6 +6,8 @@ import (
 	mock "github.com/stretchr/testify/mock"
 	metrics "github.com/symflower/eval-dev-quality/evaluate/metrics"
 
+	model "github.com/symflower/eval-dev-quality/model"
+
 	task "github.com/symflower/eval-dev-quality/task"
 )
 
@@ -87,7 +89,7 @@ func (_m *MockModel) Name() string {
 }
 
 // RunTask provides a mock function with given fields: ctx, taskIdentifier
-func (_m *MockModel) RunTask(ctx task.Context, taskIdentifier task.Identifier) (metrics.Assessments, error) {
+func (_m *MockModel) RunTask(ctx model.Context, taskIdentifier task.Identifier) (metrics.Assessments, error) {
 	ret := _m.Called(ctx, taskIdentifier)
 
 	if len(ret) == 0 {
@@ -96,10 +98,10 @@ func (_m *MockModel) RunTask(ctx task.Context, taskIdentifier task.Identifier) (
 
 	var r0 metrics.Assessments
 	var r1 error
-	if rf, ok := ret.Get(0).(func(task.Context, task.Identifier) (metrics.Assessments, error)); ok {
+	if rf, ok := ret.Get(0).(func(model.Context, task.Identifier) (metrics.Assessments, error)); ok {
 		return rf(ctx, taskIdentifier)
 	}
-	if rf, ok := ret.Get(0).(func(task.Context, task.Identifier) metrics.Assessments); ok {
+	if rf, ok := ret.Get(0).(func(model.Context, task.Identifier) metrics.Assessments); ok {
 		r0 = rf(ctx, taskIdentifier)
 	} else {
 		if ret.Get(0) != nil {
@@ -107,7 +109,7 @@ func (_m *MockModel) RunTask(ctx task.Context, taskIdentifier task.Identifier) (
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(task.Context, task.Identifier) error); ok {
+	if rf, ok := ret.Get(1).(func(model.Context, task.Identifier) error); ok {
 		r1 = rf(ctx, taskIdentifier)
 	} else {
 		r1 = ret.Error(1)

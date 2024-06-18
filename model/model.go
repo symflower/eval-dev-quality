@@ -4,6 +4,8 @@ import (
 	"strings"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/task"
 )
 
@@ -17,10 +19,27 @@ type Model interface {
 	// IsTaskSupported returns whether the model supports the given task or not.
 	IsTaskSupported(taskIdentifier task.Identifier) (isSupported bool)
 	// RunTask runs the given task.
-	RunTask(ctx task.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error)
+	RunTask(ctx Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error)
 
 	// Cost returns the cost of a model in US dollars.
 	Cost() (cost float64)
+}
+
+// Context holds the data needed by a model for running a task.
+type Context struct {
+	// Language holds the language for which the task should be evaluated.
+	Language language.Language
+
+	// RepositoryPath holds the absolute path to the repository.
+	RepositoryPath string
+	// FilePath holds the path to the file the model should act on.
+	FilePath string
+
+	// Arguments holds extra data that can be used in a query prompt.
+	Arguments any
+
+	// Logger is used for logging during evaluation.
+	Logger *log.Logger
 }
 
 // SetQueryAttempts defines a model that can set the number of query attempts when a model request errors in the process of solving a task.

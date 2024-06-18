@@ -51,7 +51,7 @@ func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported boo
 }
 
 // RunTask runs the given task.
-func (m *Model) RunTask(ctx task.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error) {
+func (m *Model) RunTask(ctx model.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error) {
 	switch taskIdentifier {
 	case evaluatetask.IdentifierWriteTests:
 		return m.generateTestsForFile(ctx)
@@ -61,7 +61,7 @@ func (m *Model) RunTask(ctx task.Context, taskIdentifier task.Identifier) (asses
 }
 
 // generateTestsForFile generates test files for the given implementation file in a repository.
-func (m *Model) generateTestsForFile(ctx task.Context) (assessment metrics.Assessments, err error) {
+func (m *Model) generateTestsForFile(ctx model.Context) (assessment metrics.Assessments, err error) {
 	start := time.Now()
 
 	output, err := util.CommandWithResult(context.Background(), ctx.Logger, &util.Command{

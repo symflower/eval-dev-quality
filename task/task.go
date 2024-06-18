@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	"github.com/symflower/eval-dev-quality/language"
 )
 
 var (
@@ -15,23 +14,6 @@ var (
 
 // Identifier holds the identifier of a task.
 type Identifier string
-
-// Context holds the data needed for running a task.
-type Context struct {
-	// Language holds the language for which the task should be evaluated.
-	Language language.Language
-
-	// RepositoryPath holds the absolute path to the repository.
-	RepositoryPath string
-	// FilePath holds the path the file under test relative to the repository path.
-	FilePath string
-
-	// Arguments holds extra data that can be used in a query prompt.
-	Arguments any
-
-	// Logger is used for logging during evaluation.
-	Logger *log.Logger
-}
 
 // Task defines an evaluation task.
 type Task interface {

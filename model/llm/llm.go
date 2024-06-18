@@ -156,7 +156,7 @@ func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported boo
 }
 
 // RunTask runs the given task.
-func (m *Model) RunTask(ctx task.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error) {
+func (m *Model) RunTask(ctx model.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error) {
 	switch taskIdentifier {
 	case evaluatetask.IdentifierWriteTests:
 		return m.generateTestsForFile(ctx)
@@ -173,7 +173,7 @@ func (m *Model) RunTask(ctx task.Context, taskIdentifier task.Identifier) (asses
 }
 
 // generateTestsForFile generates test files for the given implementation file in a repository.
-func (m *Model) generateTestsForFile(ctx task.Context) (assessment metrics.Assessments, err error) {
+func (m *Model) generateTestsForFile(ctx model.Context) (assessment metrics.Assessments, err error) {
 	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
@@ -250,7 +250,7 @@ func (m *Model) query(log *log.Logger, request string) (response string, duratio
 }
 
 // repairSourceCodeFile queries the model to repair a source code with compilation error.
-func (m *Model) repairSourceCodeFile(ctx task.Context, codeRepairArguments *evaluatetask.TaskArgumentsCodeRepair) (assessment metrics.Assessments, err error) {
+func (m *Model) repairSourceCodeFile(ctx model.Context, codeRepairArguments *evaluatetask.TaskArgumentsCodeRepair) (assessment metrics.Assessments, err error) {
 	assessment = map[metrics.AssessmentKey]uint64{}
 
 	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))

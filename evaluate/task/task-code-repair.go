@@ -86,7 +86,7 @@ func (t *TaskCodeRepair) Run(repository evaltask.Repository) (repositoryAssessme
 			return nil, nil, err
 		}
 
-		ctx := evaltask.Context{
+		modelContext := model.Context{
 			Language: t.Language,
 
 			RepositoryPath: packagePath,
@@ -98,7 +98,7 @@ func (t *TaskCodeRepair) Run(repository evaltask.Repository) (repositoryAssessme
 
 			Logger: log,
 		}
-		assessments, err := t.Model.RunTask(ctx, t.Identifier())
+		assessments, err := t.Model.RunTask(modelContext, t.Identifier())
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, sourceFile))
 

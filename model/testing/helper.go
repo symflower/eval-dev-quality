@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	"github.com/symflower/eval-dev-quality/model"
 	task "github.com/symflower/eval-dev-quality/task"
 )
 
@@ -32,7 +33,7 @@ func NewMockModelNamedWithCosts(t *testing.T, id string, name string, cost float
 // RegisterGenerateSuccess registers a mock call for successful generation.
 func (m *MockModel) RegisterGenerateSuccess(t *testing.T, taskIdentifier task.Identifier, filePath string, fileContent string, assessment metrics.Assessments) *mock.Call {
 	return m.On("RunTask", mock.Anything, taskIdentifier).Return(assessment, nil).Run(func(args mock.Arguments) {
-		ctx := args.Get(0).(task.Context)
+		ctx := args.Get(0).(model.Context)
 		require.NoError(t, os.WriteFile(filepath.Join(ctx.RepositoryPath, filePath), []byte(fileContent), 0600))
 	})
 }
