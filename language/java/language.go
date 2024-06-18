@@ -129,7 +129,17 @@ func (l *Language) Mistakes(logger *log.Logger, repositoryPath string) (mistakes
 	})
 	if err != nil {
 		if output != "" {
-			return extractMistakes(output), nil
+			mistakes := extractMistakes(output)
+
+			// Remove the repository path to make the reported file paths relative.
+			for i, mistake := range mistakes {
+				mistakes[i], err = convertMavenPathToRelativePath(mistake, repositoryPath)
+				if err != nil {
+					return nil, pkgerrors.Wrapf(err, "could not convert Maven path in %q to a relative path", mistake)
+				}
+			}
+
+			return mistakes, nil
 		}
 
 		return nil, pkgerrors.Wrap(err, "no output to extract errors from")
@@ -138,17 +148,47 @@ func (l *Language) Mistakes(logger *log.Logger, repositoryPath string) (mistakes
 	return nil, nil
 }
 
+// javaFilePathRe defines the structure of a Java file path.
+var javaFilePathRe = regexp.MustCompile(`.*\.java`)
+
+// convertMavenPathToPath converts a Maven file path to a relative operating-system specific file path.
+// Maven file paths always use forward slashes independent of the operating system path separator.
+func convertMavenPathToRelativePath(mistake string, base string) (relativePath string, err error) {
+	filePath := javaFilePathRe.FindString(mistake)
+	if filePath == "" {
+		return "", pkgerrors.Errorf("cannot extract file path from %q", mistake)
+	}
+
+	filePath = strings.ReplaceAll(mistake, "/", string(os.PathSeparator))
+	switch {
+	case osutil.IsDarwin():
+		// MacOS symlinks temporary directories to "/private" which Maven then reports as actual root file system.
+		filePath = strings.TrimPrefix(filePath, "/private")
+	case osutil.IsWindows():
+		// Maven reports file paths with leading slash for Windows.
+		filePath = strings.TrimPrefix(filePath, string(os.PathSeparator))
+	}
+
+	filePath, err = filepath.Rel(base, filePath)
+	if err != nil {
+		return "", pkgerrors.WithStack(err)
+	}
+
+	return filePath, nil
+}
+
 // mistakesRe defines the structure of a Java compiler error.
 var mistakesRe = regexp.MustCompile(`(?m)\[ERROR\] (.*\.java:\[\d+,\d+\].*)$`)
 
 func extractMistakes(rawMistakes string) (mistakes []string) {
 	uniqueMistake := map[string]bool{}
 
+	rawMistakes = strings.ReplaceAll(rawMistakes, "\r", "") // Remove Windows new-line returns.
 	results := mistakesRe.FindAllStringSubmatch(rawMistakes, -1)
 	for _, result := range results {
-		r := strings.ReplaceAll(result[1], "\r", "")
-		if _, ok := uniqueMistake[r]; !ok {
-			uniqueMistake[r] = true
+		compileError := result[1]
+		if _, ok := uniqueMistake[compileError]; !ok {
+			uniqueMistake[compileError] = true
 		}
 	}
 
