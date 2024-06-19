@@ -1,6 +1,7 @@
 package testing
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -11,14 +12,15 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
 )
 
-type TestCaseTask[ModelCapability any] struct {
+type TestCaseTask struct {
 	Name string
 
-	Model          ModelCapability
+	Model          model.Model
 	Language       language.Language
 	TestDataPath   string
 	RepositoryPath string
@@ -29,8 +31,17 @@ type TestCaseTask[ModelCapability any] struct {
 	ExpectedError                error
 }
 
-func (tc *TestCaseTask[ModelCapability]) Validate(t *testing.T, task evaltask.Task, repository evaltask.Repository, resultPath string) {
-	actualRepositoryAssessment, actualProblems, actualErr := task.Run(repository)
+func (tc *TestCaseTask) Validate(t *testing.T, task evaltask.Task, repository evaltask.Repository, resultPath string, logger *log.Logger) {
+	taskContext := evaltask.Context{
+		Language:   tc.Language,
+		Repository: repository,
+		Model:      tc.Model,
+
+		ResultPath: resultPath,
+
+		Logger: logger,
+	}
+	actualRepositoryAssessment, actualProblems, actualErr := task.Run(taskContext)
 
 	metricstesting.AssertTaskAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 	if assert.Equal(t, len(tc.ExpectedProblemContains), len(actualProblems), "problems count") {

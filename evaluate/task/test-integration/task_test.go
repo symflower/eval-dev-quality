@@ -11,7 +11,6 @@ import (
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/symflower"
 	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
@@ -21,7 +20,7 @@ import (
 func TestTaskWriteTestsRun(t *testing.T) {
 	toolstesting.RequiresTool(t, tools.NewSymflower())
 
-	validate := func(t *testing.T, tc *tasktesting.TestCaseTask[model.CapabilityWriteTests]) {
+	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
 			resultPath := t.TempDir()
 
@@ -35,14 +34,14 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			assert.NoError(t, err)
 			defer cleanup()
 
-			taskWriteTests, err := evaluatetask.TaskForIdentifier(evaluatetask.IdentifierWriteTests, logger, resultPath, tc.Model, tc.Language)
+			taskWriteTests, err := evaluatetask.TaskForIdentifier(evaluatetask.IdentifierWriteTests)
 			require.NoError(t, err)
 
-			tc.Validate(t, taskWriteTests, repository, resultPath)
+			tc.Validate(t, taskWriteTests, repository, resultPath, logger)
 		})
 	}
 
-	validate(t, &tasktesting.TestCaseTask[model.CapabilityWriteTests]{
+	validate(t, &tasktesting.TestCaseTask{
 		Name: "Plain",
 
 		Model:          symflower.NewModel(),

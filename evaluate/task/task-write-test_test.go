@@ -12,7 +12,6 @@ import (
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/model"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	"github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
@@ -20,7 +19,7 @@ import (
 )
 
 func TestTaskWriteTestsRun(t *testing.T) {
-	validate := func(t *testing.T, tc *tasktesting.TestCaseTask[model.CapabilityWriteTests]) {
+	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
 			resultPath := t.TempDir()
 
@@ -34,8 +33,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			assert.NoError(t, err)
 			defer cleanup()
 
-			taskWriteTests := newTaskWriteTests(logger, resultPath, tc.Model, tc.Language)
-			tc.Validate(t, taskWriteTests, repository, resultPath)
+			tc.Validate(t, &TaskWriteTests{}, repository, resultPath, logger)
 		})
 	}
 
@@ -55,7 +53,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 		// Generate valid code for the second taskcontext.
 		modelMock.RegisterGenerateSuccess(t, "taskB_test.go", "package plain\n\nimport \"testing\"\n\nfunc TestTaskB(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Once()
 
-		validate(t, &tasktesting.TestCaseTask[model.CapabilityWriteTests]{
+		validate(t, &tasktesting.TestCaseTask{
 			Name: "Plain",
 
 			Model:          modelMock,
@@ -93,8 +91,8 @@ func TestTaskWriteTestsRun(t *testing.T) {
 				repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
 				require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
 
-				modelMock := modeltesting.NewMockModelNamed(t, "mocked-model")
-				modelMock.RegisterGenerateSuccess(t, IdentifierWriteTests, "plain_test.go", testFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+				modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+				modelMock.RegisterGenerateSuccess(t, "plain_test.go", testFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
 
 				validate(t, &tasktesting.TestCaseTask{
 					Name: testName,

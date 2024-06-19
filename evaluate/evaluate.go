@@ -12,7 +12,7 @@ import (
 	"github.com/symflower/eval-dev-quality/log"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
-	"github.com/symflower/eval-dev-quality/task"
+	evaltask "github.com/symflower/eval-dev-quality/task"
 )
 
 // Context holds an evaluation context.
@@ -77,7 +77,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 
 	{
 		// Create temporary repositories for each language so the repository is copied only once per language.
-		temporaryRepositories := map[string]task.Repository{}
+		temporaryRepositories := map[string]evaltask.Repository{}
 		for _, language := range ctx.Languages {
 			repositoryPath := filepath.Join(language.ID(), RepositoryPlainName)
 			temporaryRepository, cleanup, err := evaluatetask.TemporaryRepository(ctx.Log, ctx.TestdataPath, repositoryPath)
@@ -111,7 +111,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 					}
 
 					for _, taskIdentifier := range temporaryRepository.SupportedTasks() {
-						task, err := evaluatetask.TaskForIdentifier(taskIdentifier, ctx.Log, ctx.ResultPath, model, language)
+						task, err := evaluatetask.TaskForIdentifier(taskIdentifier)
 						if err != nil {
 							ctx.Log.Fatal(err)
 						}
@@ -125,7 +125,16 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 								}
 
-								assessment, ps, err := task.Run(temporaryRepository)
+								taskContext := evaltask.Context{
+									Language:   language,
+									Repository: temporaryRepository,
+									Model:      model,
+
+									ResultPath: ctx.ResultPath,
+
+									Logger: ctx.Log,
+								}
+								assessment, ps, err := task.Run(taskContext)
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								if err != nil {
 									ps = append(ps, err)
@@ -211,7 +220,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 						continue
 					}
 					for _, taskIdentifier := range temporaryRepository.Tasks {
-						task, err := evaluatetask.TaskForIdentifier(taskIdentifier, ctx.Log, ctx.ResultPath, model, language)
+						task, err := evaluatetask.TaskForIdentifier(taskIdentifier)
 						if err != nil {
 							ctx.Log.Fatal(err)
 						}
@@ -225,7 +234,16 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 								}
 
-								assessment, ps, err := task.Run(temporaryRepository)
+								taskContext := evaltask.Context{
+									Language:   language,
+									Repository: temporaryRepository,
+									Model:      model,
+
+									ResultPath: ctx.ResultPath,
+
+									Logger: ctx.Log,
+								}
+								assessment, ps, err := task.Run(taskContext)
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 								if err != nil {
