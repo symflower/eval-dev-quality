@@ -1,0 +1,510 @@
+2024/06/24 11:35:11 Evaluating model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/24 11:35:11 Querying model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/24 11:35:18 Model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" responded (7392 ms) with:
+	 ```go
+	package plain_test
+
+	import (
+		"testing"
+
+		"plain"
+	)
+
+	func TestPlain(t *testing.T) {
+		plain.Plain()
+	}
+	```
+2024/06/24 11:35:18 $ go mod tidy
+2024/06/24 11:35:18 $ symflower test --language golang --workspace /tmp/eval-dev-quality2388635160/plain --coverage-file /tmp/eval-dev-quality2388635160/plain/coverage.json
+Checking for updates
+Latest version already installed
+# plain_test [plain.test]
+./plain_test.go:10:8: undefined: plain.Plain
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:10:8: undefined: plain.Plain
+
+DONE 0 tests, 1 error in 0.944s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/06/24 11:35:19 Evaluated model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" on task "write-tests" using language "golang" and repository "golang/plain": encountered 1 problems: [exit status 1
+Checking for updates
+Latest version already installed
+# plain_test [plain.test]
+./plain_test.go:10:8: undefined: plain.Plain
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:10:8: undefined: plain.Plain
+
+DONE 0 tests, 1 error in 0.944s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+Checking for updates
+Latest version already installed
+# plain_test [plain.test]
+./plain_test.go:10:8: undefined: plain.Plain
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:10:8: undefined: plain.Plain
+
+DONE 0 tests, 1 error in 0.944s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+plain.go]
+2024/06/24 11:35:39 Evaluating model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/24 11:35:39 Querying model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/24 11:35:47 Model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" responded (7438 ms) with:
+	 ```go
+	package plain_test
+
+	import (
+		"testing"
+		"./plain"
+	)
+
+	func TestPlain(t *testing.T) {
+		plain.Plain()
+	}
+	```
+2024/06/24 11:35:47 $ go mod tidy
+go: plain tested by
+	plain.test imports
+	./plain: "./plain" is relative, but relative import paths are not supported in module mode
+2024/06/24 11:35:47 Evaluated model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" on task "write-tests" using language "golang" and repository "golang/plain": encountered 1 problems: [exit status 1
+go: plain tested by
+	plain.test imports
+	./plain: "./plain" is relative, but relative import paths are not supported in module mode
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:92
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:102
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+go: plain tested by
+	plain.test imports
+	./plain: "./plain" is relative, but relative import paths are not supported in module mode
+
+plain.go]
+2024/06/24 11:36:07 Evaluating model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/24 11:36:07 Querying model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/24 11:36:28 Model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" responded (21558 ms) with:
+	 ```go
+	// +build integration
+
+	package main_test
+
+	import (
+		"testing"
+
+		. "github.com/onsi/ginkgo"
+		. "github.com/onsi/gomega"
+	)
+
+	func TestPlain(t *testing.T) {
+		RegisterFailHandler(Fail)
+		RunSpecs(t, "Plain Suite")
+	}
+
+	var _ = Describe("Plain", func() {
+		It("should have 100% coverage", func() {
+			// Since the original function does not do anything, we can just call it to ensure it gets executed.
+			plain.plain()
+		})
+	})
+	```
+2024/06/24 11:36:28 $ go mod tidy
+go: finding module for package github.com/onsi/gomega
+go: finding module for package github.com/onsi/ginkgo
+go: downloading github.com/onsi/ginkgo v1.16.5
+go: downloading github.com/onsi/gomega v1.33.1
+go: found github.com/onsi/ginkgo in github.com/onsi/ginkgo v1.16.5
+go: found github.com/onsi/gomega in github.com/onsi/gomega v1.33.1
+go: downloading github.com/google/go-cmp v0.6.0
+go: downloading github.com/onsi/ginkgo/v2 v2.17.2
+go: downloading golang.org/x/sys v0.19.0
+go: downloading github.com/nxadm/tail v1.4.8
+go: downloading golang.org/x/net v0.24.0
+go: downloading google.golang.org/protobuf v1.33.0
+go: downloading gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405
+go: downloading gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
+go: downloading github.com/fsnotify/fsnotify v1.4.9
+go: downloading github.com/go-logr/logr v1.4.1
+go: downloading github.com/go-task/slim-sprig/v3 v3.0.0
+go: downloading golang.org/x/tools v0.20.0
+go: downloading github.com/google/pprof v0.0.0-20240424215950-a892ee059fd6
+go: downloading github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0
+go: downloading golang.org/x/text v0.14.0
+2024/06/24 11:36:30 $ symflower test --language golang --workspace /tmp/eval-dev-quality2388635160/plain --coverage-file /tmp/eval-dev-quality2388635160/plain/coverage.json
+?   	plain	[no test files]
+
+DONE 0 tests in 0.022s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/24 11:36:30 Executes tests with 0 coverage objects
+2024/06/24 11:36:30 Evaluated model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []
+2024/06/24 11:36:51 Evaluating model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/24 11:36:51 Querying model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/24 11:37:00 Model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" responded (8782 ms) with:
+	 ```go
+	package plain_test
+
+	import (
+		"testing"
+
+		"plain"
+	)
+
+	func TestPlain(t *testing.T) {
+		plain.Plain() // Call the function to ensure coverage
+	}
+	```
+2024/06/24 11:37:00 $ go mod tidy
+2024/06/24 11:37:00 $ symflower test --language golang --workspace /tmp/eval-dev-quality2388635160/plain --coverage-file /tmp/eval-dev-quality2388635160/plain/coverage.json
+# plain_test [plain.test]
+./plain_test.go:10:8: undefined: plain.Plain
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:10:8: undefined: plain.Plain
+
+DONE 0 tests, 1 error in 0.106s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/06/24 11:37:00 Evaluated model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" on task "write-tests" using language "golang" and repository "golang/plain": encountered 1 problems: [exit status 1
+# plain_test [plain.test]
+./plain_test.go:10:8: undefined: plain.Plain
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:10:8: undefined: plain.Plain
+
+DONE 0 tests, 1 error in 0.106s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+# plain_test [plain.test]
+./plain_test.go:10:8: undefined: plain.Plain
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:10:8: undefined: plain.Plain
+
+DONE 0 tests, 1 error in 0.106s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+plain.go]
+2024/06/24 11:37:22 Evaluating model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/24 11:37:22 Querying model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/24 11:37:29 Model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" responded (7356 ms) with:
+	 ```golang
+	package plain_test
+
+	import (
+		"plain"
+		"testing"
+	)
+
+	func TestPlain(t *testing.T) {
+		plain.Plain()
+	}
+	```
+2024/06/24 11:37:29 $ go mod tidy
+2024/06/24 11:37:29 $ symflower test --language golang --workspace /tmp/eval-dev-quality2388635160/plain --coverage-file /tmp/eval-dev-quality2388635160/plain/coverage.json
+# plain_test [plain.test]
+./plain_test.go:9:8: undefined: plain.Plain
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:9:8: undefined: plain.Plain
+
+DONE 0 tests, 1 error in 0.129s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/06/24 11:37:29 Evaluated model "ollama/deepseek-coder-v2:16b-lite-instruct-fp16" on task "write-tests" using language "golang" and repository "golang/plain": encountered 1 problems: [exit status 1
+# plain_test [plain.test]
+./plain_test.go:9:8: undefined: plain.Plain
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:9:8: undefined: plain.Plain
+
+DONE 0 tests, 1 error in 0.129s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+# plain_test [plain.test]
+./plain_test.go:9:8: undefined: plain.Plain
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:9:8: undefined: plain.Plain
+
+DONE 0 tests, 1 error in 0.129s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+plain.go]

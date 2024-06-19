@@ -1,0 +1,177 @@
+2024/06/19 10:00:53 Evaluating model "openrouter/deepseek/deepseek-coder" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 10:00:53 Querying model "openrouter/deepseek/deepseek-coder" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:00:58 Model "openrouter/deepseek/deepseek-coder" responded (4185 ms) with:
+	 ```golang
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+2024/06/19 10:00:59 $ go mod tidy
+2024/06/19 10:01:02 $ symflower test --language golang --workspace /tmp/eval-dev-quality3796906905/plain --coverage-file /tmp/eval-dev-quality3796906905/plain/coverage.json
+Checking for updates
+Latest version already installed
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.003s	coverage: 100.0% of statements
+
+DONE 1 tests in 6.244s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 10:01:08 Executes tests with 1 coverage objects
+2024/06/19 10:01:08 Evaluated model "openrouter/deepseek/deepseek-coder" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []
+2024/06/19 10:01:23 Evaluating model "openrouter/deepseek/deepseek-coder" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 10:01:23 Querying model "openrouter/deepseek/deepseek-coder" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:01:26 Model "openrouter/deepseek/deepseek-coder" responded (3066 ms) with:
+	 ```golang
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+2024/06/19 10:01:26 $ go mod tidy
+2024/06/19 10:01:26 $ symflower test --language golang --workspace /tmp/eval-dev-quality3796906905/plain --coverage-file /tmp/eval-dev-quality3796906905/plain/coverage.json
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.002s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.262s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 10:01:27 Executes tests with 1 coverage objects
+2024/06/19 10:01:27 Evaluated model "openrouter/deepseek/deepseek-coder" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []
+2024/06/19 10:01:59 Evaluating model "openrouter/deepseek/deepseek-coder" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 10:01:59 Querying model "openrouter/deepseek/deepseek-coder" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:02:03 Model "openrouter/deepseek/deepseek-coder" responded (4160 ms) with:
+	 ```golang
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+2024/06/19 10:02:03 $ go mod tidy
+2024/06/19 10:02:03 $ symflower test --language golang --workspace /tmp/eval-dev-quality3796906905/plain --coverage-file /tmp/eval-dev-quality3796906905/plain/coverage.json
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.003s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.320s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 10:02:04 Executes tests with 1 coverage objects
+2024/06/19 10:02:04 Evaluated model "openrouter/deepseek/deepseek-coder" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []
+2024/06/19 10:02:15 Evaluating model "openrouter/deepseek/deepseek-coder" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 10:02:15 Querying model "openrouter/deepseek/deepseek-coder" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:02:19 Model "openrouter/deepseek/deepseek-coder" responded (3371 ms) with:
+	 ```golang
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+2024/06/19 10:02:19 $ go mod tidy
+2024/06/19 10:02:19 $ symflower test --language golang --workspace /tmp/eval-dev-quality3796906905/plain --coverage-file /tmp/eval-dev-quality3796906905/plain/coverage.json
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.002s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.267s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 10:02:19 Executes tests with 1 coverage objects
+2024/06/19 10:02:19 Evaluated model "openrouter/deepseek/deepseek-coder" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []
+2024/06/19 10:02:30 Evaluating model "openrouter/deepseek/deepseek-coder" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 10:02:30 Querying model "openrouter/deepseek/deepseek-coder" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:02:34 Model "openrouter/deepseek/deepseek-coder" responded (3971 ms) with:
+	 ```golang
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+2024/06/19 10:02:34 $ go mod tidy
+2024/06/19 10:02:34 $ symflower test --language golang --workspace /tmp/eval-dev-quality3796906905/plain --coverage-file /tmp/eval-dev-quality3796906905/plain/coverage.json
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.002s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.268s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 10:02:34 Executes tests with 1 coverage objects
+2024/06/19 10:02:34 Evaluated model "openrouter/deepseek/deepseek-coder" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []

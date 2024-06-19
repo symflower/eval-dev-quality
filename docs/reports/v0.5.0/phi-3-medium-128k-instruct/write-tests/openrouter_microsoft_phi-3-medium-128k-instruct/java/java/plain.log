@@ -1,0 +1,535 @@
+2024/06/19 10:12:05 Evaluating model "openrouter/microsoft/phi-3-medium-128k-instruct" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/19 10:12:05 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:05 Attempt 1/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bd1b9cbc9170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:12:05 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::8vr7j-1718791925070-fa8809d745a0]]}
+2024/06/19 10:12:10 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:11 Attempt 2/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bd3edf6a9170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:12:10 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::4npsk-1718791930708-3f2a2c2cd746]]}
+2024/06/19 10:12:21 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:21 Attempt 3/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bd81abc09170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:12:21 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::fbxd2-1718791941405-fb4d6b7399d1]]}
+2024/06/19 10:12:21 Evaluated model "openrouter/microsoft/phi-3-medium-128k-instruct" on task "write-tests" using language "java" and repository "java/plain": encountered 1 problems: [empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bd81abc09170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:12:21 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::fbxd2-1718791941405-fb4d6b7399d1]]}
+github.com/symflower/eval-dev-quality/provider/openai-api.QueryOpenAIAPIModel
+	/home/ubuntu/eval-dev-quality/provider/openai-api/query.go:28
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/ubuntu/eval-dev-quality/provider/openrouter/openrouter.go:99
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query.func1
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:206
+github.com/avast/retry-go.Do
+	/home/ubuntu/go/pkg/mod/github.com/avast/retry-go@v3.0.0+incompatible/retry.go:127
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:202
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:173
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:175
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+src/main/java/com/eval/Plain.java]
+2024/06/19 10:12:38 Evaluating model "openrouter/microsoft/phi-3-medium-128k-instruct" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/19 10:12:38 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:39 Attempt 1/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bdea4f109170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:12:38 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::gj89b-1718791958138-684b36ced6bc]]}
+2024/06/19 10:12:44 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:44 Attempt 2/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962be0feac69170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:12:44 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::kqh2h-1718791964160-f9b8328758a4]]}
+2024/06/19 10:12:54 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:55 Attempt 3/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962be5239769170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:12:54 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::tt2nf-1718791974764-66219eaf7e3d]]}
+2024/06/19 10:12:55 Evaluated model "openrouter/microsoft/phi-3-medium-128k-instruct" on task "write-tests" using language "java" and repository "java/plain": encountered 1 problems: [empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962be5239769170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:12:54 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::tt2nf-1718791974764-66219eaf7e3d]]}
+github.com/symflower/eval-dev-quality/provider/openai-api.QueryOpenAIAPIModel
+	/home/ubuntu/eval-dev-quality/provider/openai-api/query.go:28
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/ubuntu/eval-dev-quality/provider/openrouter/openrouter.go:99
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query.func1
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:206
+github.com/avast/retry-go.Do
+	/home/ubuntu/go/pkg/mod/github.com/avast/retry-go@v3.0.0+incompatible/retry.go:127
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:202
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:173
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:175
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+src/main/java/com/eval/Plain.java]
+2024/06/19 10:13:11 Evaluating model "openrouter/microsoft/phi-3-medium-128k-instruct" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/19 10:13:11 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:13:11 Attempt 1/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bebacab29170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:13:11 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::c7h24-1718791991500-10bd7f900ad2]]}
+2024/06/19 10:13:16 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:13:17 Attempt 2/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bedbdc479170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:13:16 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::bhtbv-1718791996796-5eb14e425578]]}
+2024/06/19 10:13:27 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:13:27 Attempt 3/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bf1cafb49170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:13:27 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::k766z-1718792007161-326038f56ee6]]}
+2024/06/19 10:13:27 Evaluated model "openrouter/microsoft/phi-3-medium-128k-instruct" on task "write-tests" using language "java" and repository "java/plain": encountered 1 problems: [empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bf1cafb49170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:13:27 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::k766z-1718792007161-326038f56ee6]]}
+github.com/symflower/eval-dev-quality/provider/openai-api.QueryOpenAIAPIModel
+	/home/ubuntu/eval-dev-quality/provider/openai-api/query.go:28
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/ubuntu/eval-dev-quality/provider/openrouter/openrouter.go:99
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query.func1
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:206
+github.com/avast/retry-go.Do
+	/home/ubuntu/go/pkg/mod/github.com/avast/retry-go@v3.0.0+incompatible/retry.go:127
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:202
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:173
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:175
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+src/main/java/com/eval/Plain.java]
+2024/06/19 10:13:45 Evaluating model "openrouter/microsoft/phi-3-medium-128k-instruct" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/19 10:13:45 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:13:45 Attempt 1/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bf8dbf199170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:13:45 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::9jj5l-1718792025253-498837ddbde3]]}
+2024/06/19 10:13:50 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:13:51 Attempt 2/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bfaebf6c9170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:13:50 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::mh2ps-1718792030537-c8d5a7f292f6]]}
+2024/06/19 10:14:01 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:14:01 Attempt 3/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bff0e8899170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:14:01 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::lwftp-1718792041137-460884940f3b]]}
+2024/06/19 10:14:01 Evaluated model "openrouter/microsoft/phi-3-medium-128k-instruct" on task "write-tests" using language "java" and repository "java/plain": encountered 1 problems: [empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962bff0e8899170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:14:01 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::lwftp-1718792041137-460884940f3b]]}
+github.com/symflower/eval-dev-quality/provider/openai-api.QueryOpenAIAPIModel
+	/home/ubuntu/eval-dev-quality/provider/openai-api/query.go:28
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/ubuntu/eval-dev-quality/provider/openrouter/openrouter.go:99
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query.func1
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:206
+github.com/avast/retry-go.Do
+	/home/ubuntu/go/pkg/mod/github.com/avast/retry-go@v3.0.0+incompatible/retry.go:127
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:202
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:173
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:175
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+src/main/java/com/eval/Plain.java]
+2024/06/19 10:14:17 Evaluating model "openrouter/microsoft/phi-3-medium-128k-instruct" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/19 10:14:17 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:14:18 Attempt 1/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962c05a7eec9170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:14:18 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::d5jlh-1718792058013-1eb41a1cbfed]]}
+2024/06/19 10:14:23 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:14:23 Attempt 2/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962c07b3e7b9170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:14:23 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::nrm45-1718792063244-a893ecdb52b9]]}
+2024/06/19 10:14:33 Querying model "openrouter/microsoft/phi-3-medium-128k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:14:34 Attempt 3/3: empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962c0bb2a309170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:14:33 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::vw5rx-1718792073482-6337ab1748e9]]}
+2024/06/19 10:14:34 Evaluated model "openrouter/microsoft/phi-3-medium-128k-instruct" on task "write-tests" using language "java" and repository "java/plain": encountered 1 problems: [empty LLM "microsoft/phi-3-medium-128k-instruct" response: {ID: Object: Created:0 Model: Choices:[] Usage:{PromptTokens:0 CompletionTokens:0 TotalTokens:0} SystemFingerprint: httpHeader:map[Access-Control-Allow-Credentials:[true] Access-Control-Allow-Headers:[Authorization, User-Agent, X-Api-Key, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, HTTP-Referer, X-Windowai-Title, X-Openrouter-Title, X-Title, X-Stainless-Lang, X-Stainless-Package-Version, X-Stainless-OS, X-Stainless-Arch, X-Stainless-Runtime, X-Stainless-Runtime-Version] Access-Control-Allow-Methods:[GET,OPTIONS,PATCH,DELETE,POST,PUT] Access-Control-Allow-Origin:[*] Cache-Control:[public, max-age=0, must-revalidate] Cf-Cache-Status:[DYNAMIC] Cf-Ray:[8962c0bb2a309170-FRA] Content-Security-Policy:[default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://maps.googleapis.com https://www.googletagmanager.com https://*.ingest.sentry.io; connect-src 'self' https://clerk.openrouter.ai https://cunning-heron-18.clerk.accounts.dev https://checkout.stripe.com https://api.stripe.com https://maps.googleapis.com https://www.google-analytics.com https://www.googletagmanager.com https://raw.githubusercontent.com https://*.ingest.sentry.io; frame-src 'self' https://challenges.cloudflare.com https://checkout.stripe.com https://connect-js.stripe.com https://js.stripe.com https://hooks.stripe.com https://us5.datadoghq.com https://*.ingest.sentry.io; img-src 'self' data: blob: https://img.clerk.com https://*.stripe.com https://www.googletagmanager.com https://t0.gstatic.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' sha256-0hAheEzaMe6uXIKV4EehS9pu1am1lj/KnnzrOYqckXk=; upgrade-insecure-requests] Content-Type:[application/json] Date:[Wed, 19 Jun 2024 10:14:33 GMT] Server:[cloudflare] Strict-Transport-Security:[max-age=63072000] X-Matched-Path:[/api/v1/chat/completions] X-Vercel-Id:[fra1::vw5rx-1718792073482-6337ab1748e9]]}
+github.com/symflower/eval-dev-quality/provider/openai-api.QueryOpenAIAPIModel
+	/home/ubuntu/eval-dev-quality/provider/openai-api/query.go:28
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/ubuntu/eval-dev-quality/provider/openrouter/openrouter.go:99
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query.func1
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:206
+github.com/avast/retry-go.Do
+	/home/ubuntu/go/pkg/mod/github.com/avast/retry-go@v3.0.0+incompatible/retry.go:127
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:202
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:173
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:175
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+src/main/java/com/eval/Plain.java]

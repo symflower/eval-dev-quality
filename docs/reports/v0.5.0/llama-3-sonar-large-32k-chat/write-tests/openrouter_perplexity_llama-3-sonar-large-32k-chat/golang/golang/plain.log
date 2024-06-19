@@ -1,0 +1,177 @@
+2024/06/19 11:15:11 Evaluating model "openrouter/perplexity/llama-3-sonar-large-32k-chat" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 11:15:11 Querying model "openrouter/perplexity/llama-3-sonar-large-32k-chat" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 11:15:12 Model "openrouter/perplexity/llama-3-sonar-large-32k-chat" responded (1299 ms) with:
+	```golang
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+2024/06/19 11:15:12 $ go mod tidy
+2024/06/19 11:15:13 $ symflower test --language golang --workspace /tmp/eval-dev-quality1424881793/plain --coverage-file /tmp/eval-dev-quality1424881793/plain/coverage.json
+Checking for updates
+Latest version already installed
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.005s	coverage: 100.0% of statements
+
+DONE 1 tests in 1.302s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 11:15:14 Executes tests with 1 coverage objects
+2024/06/19 11:15:14 Evaluated model "openrouter/perplexity/llama-3-sonar-large-32k-chat" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []
+2024/06/19 11:15:30 Evaluating model "openrouter/perplexity/llama-3-sonar-large-32k-chat" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 11:15:30 Querying model "openrouter/perplexity/llama-3-sonar-large-32k-chat" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 11:15:31 Model "openrouter/perplexity/llama-3-sonar-large-32k-chat" responded (744 ms) with:
+	```go
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+2024/06/19 11:15:31 $ go mod tidy
+2024/06/19 11:15:31 $ symflower test --language golang --workspace /tmp/eval-dev-quality1424881793/plain --coverage-file /tmp/eval-dev-quality1424881793/plain/coverage.json
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.003s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.296s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 11:15:31 Executes tests with 1 coverage objects
+2024/06/19 11:15:31 Evaluated model "openrouter/perplexity/llama-3-sonar-large-32k-chat" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []
+2024/06/19 11:15:40 Evaluating model "openrouter/perplexity/llama-3-sonar-large-32k-chat" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 11:15:40 Querying model "openrouter/perplexity/llama-3-sonar-large-32k-chat" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 11:15:41 Model "openrouter/perplexity/llama-3-sonar-large-32k-chat" responded (1110 ms) with:
+	```go
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+2024/06/19 11:15:41 $ go mod tidy
+2024/06/19 11:15:41 $ symflower test --language golang --workspace /tmp/eval-dev-quality1424881793/plain --coverage-file /tmp/eval-dev-quality1424881793/plain/coverage.json
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.004s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.314s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 11:15:41 Executes tests with 1 coverage objects
+2024/06/19 11:15:41 Evaluated model "openrouter/perplexity/llama-3-sonar-large-32k-chat" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []
+2024/06/19 11:15:52 Evaluating model "openrouter/perplexity/llama-3-sonar-large-32k-chat" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 11:15:52 Querying model "openrouter/perplexity/llama-3-sonar-large-32k-chat" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 11:15:54 Model "openrouter/perplexity/llama-3-sonar-large-32k-chat" responded (1328 ms) with:
+	```go
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+2024/06/19 11:15:54 $ go mod tidy
+2024/06/19 11:15:54 $ symflower test --language golang --workspace /tmp/eval-dev-quality1424881793/plain --coverage-file /tmp/eval-dev-quality1424881793/plain/coverage.json
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.003s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.302s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 11:15:54 Executes tests with 1 coverage objects
+2024/06/19 11:15:54 Evaluated model "openrouter/perplexity/llama-3-sonar-large-32k-chat" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []
+2024/06/19 11:16:07 Evaluating model "openrouter/perplexity/llama-3-sonar-large-32k-chat" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 11:16:07 Querying model "openrouter/perplexity/llama-3-sonar-large-32k-chat" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 11:16:08 Model "openrouter/perplexity/llama-3-sonar-large-32k-chat" responded (1043 ms) with:
+	```go
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+2024/06/19 11:16:08 $ go mod tidy
+2024/06/19 11:16:08 $ symflower test --language golang --workspace /tmp/eval-dev-quality1424881793/plain --coverage-file /tmp/eval-dev-quality1424881793/plain/coverage.json
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.003s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.489s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 11:16:09 Executes tests with 1 coverage objects
+2024/06/19 11:16:09 Evaluated model "openrouter/perplexity/llama-3-sonar-large-32k-chat" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []

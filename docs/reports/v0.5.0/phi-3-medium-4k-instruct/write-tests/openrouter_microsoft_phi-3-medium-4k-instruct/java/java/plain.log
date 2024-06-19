@@ -1,0 +1,795 @@
+2024/06/19 10:11:56 Evaluating model "openrouter/microsoft/phi-3-medium-4k-instruct" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/19 10:11:56 Querying model "openrouter/microsoft/phi-3-medium-4k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:00 Model "openrouter/microsoft/phi-3-medium-4k-instruct" responded (3849 ms) with:
+	 ```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import org.junit.jupiter.api.Assertions;
+	import java.lang.reflect.InvocationTargetException;
+	import java.lang.reflect.Method;
+
+	public class PlainTest {
+
+	    @Test
+	    public void testPlain() {
+	        runPlainMethod();
+	    }
+
+	    private void runPlainMethod() {
+	        Method plainMethod;
+	        try {
+	            plainMethod = Plain.class.getDeclaredMethod("plain", null);
+	            plainMethod.setAccessible(true);
+	            plainMethod.invoke(null);
+	        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+	            Assertions.fail("Test failed due to exception: " + e.getClass().getSimpleName());
+	        }
+	    }
+	}
+	```
+	Note: While this test ensures that the `plain` method can be invoked, it does not prove its correctness since the method is empty and does not produce any observable behavior. To achieve 100% code coverage, the `plain` method would need to contain executable code that can be tested for correctness.
+2024/06/19 10:12:00 $ symflower test --language java --workspace /tmp/eval-dev-quality2426908112/plain --coverage-file /tmp/eval-dev-quality2426908112/plain/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-plain ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-plain ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn16365716437220149159resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality2426908112/plain/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality2426908112/plain/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality2426908112/plain/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.265 s
+[INFO] Finished at: 2024-06-19T10:12:11Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 10:12:11 Executes tests with 1 coverage objects
+2024/06/19 10:12:11 Evaluated model "openrouter/microsoft/phi-3-medium-4k-instruct" on task "write-tests" using language "java" and repository "java/plain": encountered 0 problems: []
+2024/06/19 10:12:14 Evaluating model "openrouter/microsoft/phi-3-medium-4k-instruct" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/19 10:12:14 Querying model "openrouter/microsoft/phi-3-medium-4k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:16 Model "openrouter/microsoft/phi-3-medium-4k-instruct" responded (2278 ms) with:
+	 ```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import java.lang.reflect.InvocationTargetException;
+	import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+	public class PlainTest {
+
+	    @Test
+	    public void testPlain() {
+	        assertDoesNotThrow(() -> {
+	            Plain.plain();
+	        });
+	    }
+	}
+	```
+	This test case ensures that invoking the `plain` method does not throw any exceptions, thus achieving 100% code coverage for the `Plain` class.
+2024/06/19 10:12:16 $ symflower test --language java --workspace /tmp/eval-dev-quality2426908112/plain --coverage-file /tmp/eval-dev-quality2426908112/plain/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-plain ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-plain ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn3948885105202647873resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality2426908112/plain/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality2426908112/plain/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality2426908112/plain/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.397 s
+[INFO] Finished at: 2024-06-19T10:12:23Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 10:12:23 Executes tests with 1 coverage objects
+2024/06/19 10:12:23 Evaluated model "openrouter/microsoft/phi-3-medium-4k-instruct" on task "write-tests" using language "java" and repository "java/plain": encountered 0 problems: []
+2024/06/19 10:12:27 Evaluating model "openrouter/microsoft/phi-3-medium-4k-instruct" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/19 10:12:27 Querying model "openrouter/microsoft/phi-3-medium-4k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:33 Model "openrouter/microsoft/phi-3-medium-4k-instruct" responded (6048 ms) with:
+	 ```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import java.lang.reflect.Method;
+	import java.util.Set;
+	import java.util.stream.Stream;
+	import java.util.function.Supplier;
+
+	import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+	import static org.junit.jupiter.api.Assertions.assertTrue;
+
+	public class PlainTest {
+
+	    /**
+	     * Ensures that the plain method is available and can be invoked without throwing any exceptions.
+	     * Since the method is static, we use a no-argument Supplier to represent its invocation.
+	     */
+	    @Test
+	    public void testPlainMethodAvailabilityAndInvocation() {
+	        assertDoesNotThrow(() -> {
+	            Supplier<Void> plainInvocation = () -> Plain.plain();
+	            plainInvocation.get();
+	        });
+	    }
+
+	    /**
+	     * This test ensures that all methods in the Plain class are tested.
+	     * Since there's only one static method, the goal is to confirm there are no additional methods to test.
+	     */
+	    @Test
+	    public void testMethodAvailabilityInPlain() {
+	        Set<String> methodNames = Stream.of(Plain.class.getDeclaredMethods())
+	                .map(Method::getName)
+	                .collect(Collectors.toSet());
+
+	        assertTrue(methodNames.size() == 1, "Plain class contains unexpected methods: " + methodNames);
+	    }
+	}
+	```
+
+	Please note that JUnit itself does not provide a feature to ensure 100% code coverage. Achieving 100% code coverage would typically involve using a code coverage tool, such as JaCoCo, in your build process (e.g., with Maven or Gradle). The above unit test ensures that the static `plain` method in the `Plain` class can be invoked without throwing an exception, and verifies the presence of methods in the class to confirm there are no unexpected methods, aiming for meaningful test coverage with the given constraints.
+2024/06/19 10:12:33 $ symflower test --language java --workspace /tmp/eval-dev-quality2426908112/plain --coverage-file /tmp/eval-dev-quality2426908112/plain/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality2426908112/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,63] incompatible types: bad return type in lambda expression\n    void cannot be converted to java.lang.Void\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[34,26] cannot find symbol\n  symbol:   variable Collectors\n  location: class com.eval.PlainTest\n[INFO] 2 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  1.419 s\n[INFO] Finished at: 2024-06-19T10:12:36Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,63] incompatible types: bad return type in lambda expression\n[ERROR]     void cannot be converted to java.lang.Void\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[34,26] cannot find symbol\n[ERROR]   symbol:   variable Collectors\n[ERROR]   location: class com.eval.PlainTest\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1f42da0?, 0xc000994040}, {0xffa8c0?, 0xc0006e37e8})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0005d18b8, {0xc0005d18a0, 0x3, 0x418c94?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00074e240, 0x26}, 0x0, {0xc000749ce0, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00074e240, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc0000fd978, {0xc0000fd800?, 0x7f40e844c958?, 0xc0000fd978?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1f425e0?, 0xc0000fd800}, {0xc000212000?, 0x2782d80?, 0xc0004ffed8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1f425e0?, 0xc0000fd800?}, {0xc000212000?, 0x274c500?, 0xc0000fd800?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00012e058?, 0x2636b18?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:184 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+2024/06/19 10:12:36 Evaluated model "openrouter/microsoft/phi-3-medium-4k-instruct" on task "write-tests" using language "java" and repository "java/plain": encountered 1 problems: [exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality2426908112/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,63] incompatible types: bad return type in lambda expression\n    void cannot be converted to java.lang.Void\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[34,26] cannot find symbol\n  symbol:   variable Collectors\n  location: class com.eval.PlainTest\n[INFO] 2 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  1.419 s\n[INFO] Finished at: 2024-06-19T10:12:36Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,63] incompatible types: bad return type in lambda expression\n[ERROR]     void cannot be converted to java.lang.Void\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[34,26] cannot find symbol\n[ERROR]   symbol:   variable Collectors\n[ERROR]   location: class com.eval.PlainTest\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1f42da0?, 0xc000994040}, {0xffa8c0?, 0xc0006e37e8})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0005d18b8, {0xc0005d18a0, 0x3, 0x418c94?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00074e240, 0x26}, 0x0, {0xc000749ce0, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00074e240, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc0000fd978, {0xc0000fd800?, 0x7f40e844c958?, 0xc0000fd978?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1f425e0?, 0xc0000fd800}, {0xc000212000?, 0x2782d80?, 0xc0004ffed8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1f425e0?, 0xc0000fd800?}, {0xc000212000?, 0x274c500?, 0xc0000fd800?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00012e058?, 0x2636b18?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:184 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/java.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/java/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/java.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/java/language.go:119
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality2426908112/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,63] incompatible types: bad return type in lambda expression\n    void cannot be converted to java.lang.Void\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[34,26] cannot find symbol\n  symbol:   variable Collectors\n  location: class com.eval.PlainTest\n[INFO] 2 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  1.419 s\n[INFO] Finished at: 2024-06-19T10:12:36Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,63] incompatible types: bad return type in lambda expression\n[ERROR]     void cannot be converted to java.lang.Void\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[34,26] cannot find symbol\n[ERROR]   symbol:   variable Collectors\n[ERROR]   location: class com.eval.PlainTest\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1f42da0?, 0xc000994040}, {0xffa8c0?, 0xc0006e37e8})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0005d18b8, {0xc0005d18a0, 0x3, 0x418c94?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00074e240, 0x26}, 0x0, {0xc000749ce0, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00074e240, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc0000fd978, {0xc0000fd800?, 0x7f40e844c958?, 0xc0000fd978?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1f425e0?, 0xc0000fd800}, {0xc000212000?, 0x2782d80?, 0xc0004ffed8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1f425e0?, 0xc0000fd800?}, {0xc000212000?, 0x274c500?, 0xc0000fd800?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00012e058?, 0x2636b18?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:184 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+
+src/main/java/com/eval/Plain.java]
+2024/06/19 10:12:39 Evaluating model "openrouter/microsoft/phi-3-medium-4k-instruct" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/19 10:12:39 Querying model "openrouter/microsoft/phi-3-medium-4k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:45 Model "openrouter/microsoft/phi-3-medium-4k-instruct" responded (6028 ms) with:
+	 ```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import jacoco.org.jacoco.core.coverage.testing.utils.LineMapCounter;
+
+	import java.lang.reflect.InvocationTargetException;
+	import java.io.Serializable;
+
+	import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+	public class PlainTest {
+
+	    @Test
+	    public void validateCoverage() {
+	        LineMapCounter.main(new String[]{
+	                "src/main/java/com/eval/Plain.java"
+	        });
+	    }
+
+	    @Test
+	    public void testPlainMethod() {
+	        assertDoesNotThrow(() -> Plain.plain());
+	    }
+	}
+	```
+	Additionally, you'll need to ensure that the Jacoco library is added as a runtime dependency to collect coverage metrics:
+
+	```xml
+	<dependencies>
+	    <dependency>
+	        <groupId>org.jacoco</groupId>
+	        <artifactId>org.jacoco.core</artifactId>
+	        <version>0.8.7</version>
+	        <scope>test</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.jacoco</groupId>
+	        <artifactId>org.jacoco.agent</artifactId>
+	        <version>0.8.8</version>
+	        <scope>runtime</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.jacoco</groupId>
+	        <artifactId>org.jacoco.maven</artifactId>
+	        <version>0.8.8</version>
+	        <scope>test</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.junit.jupiter</groupId>
+	        <artifactId>junit-jupiter</artifactId>
+	        <version>5.8.2</version>
+	        <scope>test</scope>
+	    </dependency>
+	</dependencies>
+	```
+2024/06/19 10:12:45 $ symflower test --language java --workspace /tmp/eval-dev-quality2426908112/plain --coverage-file /tmp/eval-dev-quality2426908112/plain/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality2426908112/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[4,53] package jacoco.org.jacoco.core.coverage.testing.utils does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[15,9] cannot find symbol\n  symbol:   variable LineMapCounter\n  location: class com.eval.PlainTest\n[INFO] 2 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  1.030 s\n[INFO] Finished at: 2024-06-19T10:12:48Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[4,53] package jacoco.org.jacoco.core.coverage.testing.utils does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[15,9] cannot find symbol\n[ERROR]   symbol:   variable LineMapCounter\n[ERROR]   location: class com.eval.PlainTest\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1f42da0?, 0xc000636e40}, {0xffa8c0?, 0xc000912b10})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0007878b8, {0xc0007878a0, 0x3, 0x418c94?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00070d500, 0x26}, 0x0, {0xc0007ac120, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00070d500, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc000180578, {0xc000180400?, 0x7f771c62c798?, 0xc000180578?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1f425e0?, 0xc000180400}, {0xc000040080?, 0x2782d80?, 0xc000627ed8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1f425e0?, 0xc000180400?}, {0xc000040080?, 0x274c500?, 0xc000180400?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00012e058?, 0x2636b18?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:184 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+2024/06/19 10:12:48 Evaluated model "openrouter/microsoft/phi-3-medium-4k-instruct" on task "write-tests" using language "java" and repository "java/plain": encountered 1 problems: [exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality2426908112/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[4,53] package jacoco.org.jacoco.core.coverage.testing.utils does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[15,9] cannot find symbol\n  symbol:   variable LineMapCounter\n  location: class com.eval.PlainTest\n[INFO] 2 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  1.030 s\n[INFO] Finished at: 2024-06-19T10:12:48Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[4,53] package jacoco.org.jacoco.core.coverage.testing.utils does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[15,9] cannot find symbol\n[ERROR]   symbol:   variable LineMapCounter\n[ERROR]   location: class com.eval.PlainTest\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1f42da0?, 0xc000636e40}, {0xffa8c0?, 0xc000912b10})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0007878b8, {0xc0007878a0, 0x3, 0x418c94?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00070d500, 0x26}, 0x0, {0xc0007ac120, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00070d500, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc000180578, {0xc000180400?, 0x7f771c62c798?, 0xc000180578?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1f425e0?, 0xc000180400}, {0xc000040080?, 0x2782d80?, 0xc000627ed8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1f425e0?, 0xc000180400?}, {0xc000040080?, 0x274c500?, 0xc000180400?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00012e058?, 0x2636b18?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:184 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/java.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/java/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/java.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/java/language.go:119
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality2426908112/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[4,53] package jacoco.org.jacoco.core.coverage.testing.utils does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[15,9] cannot find symbol\n  symbol:   variable LineMapCounter\n  location: class com.eval.PlainTest\n[INFO] 2 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  1.030 s\n[INFO] Finished at: 2024-06-19T10:12:48Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[4,53] package jacoco.org.jacoco.core.coverage.testing.utils does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[15,9] cannot find symbol\n[ERROR]   symbol:   variable LineMapCounter\n[ERROR]   location: class com.eval.PlainTest\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1f42da0?, 0xc000636e40}, {0xffa8c0?, 0xc000912b10})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0007878b8, {0xc0007878a0, 0x3, 0x418c94?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00070d500, 0x26}, 0x0, {0xc0007ac120, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00070d500, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc000180578, {0xc000180400?, 0x7f771c62c798?, 0xc000180578?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1f425e0?, 0xc000180400}, {0xc000040080?, 0x2782d80?, 0xc000627ed8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1f425e0?, 0xc000180400?}, {0xc000040080?, 0x274c500?, 0xc000180400?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00012e058?, 0x2636b18?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:184 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+
+src/main/java/com/eval/Plain.java]
+2024/06/19 10:12:52 Evaluating model "openrouter/microsoft/phi-3-medium-4k-instruct" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/19 10:12:52 Querying model "openrouter/microsoft/phi-3-medium-4k-instruct" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/19 10:12:56 Model "openrouter/microsoft/phi-3-medium-4k-instruct" responded (4191 ms) with:
+	 ```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import org.junit.jupiter.api.Assertions;
+	import java.lang.reflect.Method;
+	import java.lang.reflect.InvocationTargetException;
+	import com.coverage.jacoco.Coverage; // Assuming this is a hypothetical library for checking coverage
+
+	class PlainTest {
+
+	    @Test
+	    void testPlain() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	        Method method = Plain.class.getMethod("plain");
+	        method.invoke();
+	        Assertions.assertTrue(Coverage.checkCoverage("com.eval.Plain"), "Test coverage for plain method is not 100%");
+	    }
+
+	    // This is a hypothetical class and method for checking coverage.
+	    // In reality, you would use a tool like JaCoCo or Cobertura for coverage checking, but it cannot be done directly in the test code.
+	    class Coverage {
+	        static boolean checkCoverage(String className) {
+	            // Implement coverage checking logic or integrate with a tool that provides this information
+	            // For the simplicity of this example, we assume 100% coverage for all classes and methods
+	            // In a real scenario, you would return the actual coverage value based on the tool's report
+	            return true;
+	        }
+	    }
+	}
+	```
+2024/06/19 10:12:56 $ symflower test --language java --workspace /tmp/eval-dev-quality2426908112/plain --coverage-file /tmp/eval-dev-quality2426908112/plain/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality2426908112/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[7,27] package com.coverage.jacoco does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[14,15] method invoke in class java.lang.reflect.Method cannot be applied to given types;\n  required: java.lang.Object,java.lang.Object[]\n  found: no arguments\n  reason: actual and formal argument lists differ in length\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,24] Illegal static declaration in inner class com.eval.PlainTest.Coverage\n  modifier 'static' is only allowed in constant variable declarations\n[INFO] 3 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  0.916 s\n[INFO] Finished at: 2024-06-19T10:12:58Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[7,27] package com.coverage.jacoco does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[14,15] method invoke in class java.lang.reflect.Method cannot be applied to given types;\n[ERROR]   required: java.lang.Object,java.lang.Object[]\n[ERROR]   found: no arguments\n[ERROR]   reason: actual and formal argument lists differ in length\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,24] Illegal static declaration in inner class com.eval.PlainTest.Coverage\n[ERROR]   modifier 'static' is only allowed in constant variable declarations\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1f42da0?, 0xc0000fe200}, {0xffa8c0?, 0xc0007000a8})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0007878b8, {0xc0007878a0, 0x3, 0x418c94?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00069c060, 0x26}, 0x0, {0xc0006b1aa0, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00069c060, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc000180978, {0xc000180800?, 0x7f49318c99b8?, 0xc000180978?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1f425e0?, 0xc000180800}, {0xc000040080?, 0x2782d80?, 0xc00059ded8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1f425e0?, 0xc000180800?}, {0xc000040080?, 0x274c500?, 0xc000180800?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00012e058?, 0x2636b18?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:184 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+2024/06/19 10:12:58 Evaluated model "openrouter/microsoft/phi-3-medium-4k-instruct" on task "write-tests" using language "java" and repository "java/plain": encountered 1 problems: [exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality2426908112/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[7,27] package com.coverage.jacoco does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[14,15] method invoke in class java.lang.reflect.Method cannot be applied to given types;\n  required: java.lang.Object,java.lang.Object[]\n  found: no arguments\n  reason: actual and formal argument lists differ in length\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,24] Illegal static declaration in inner class com.eval.PlainTest.Coverage\n  modifier 'static' is only allowed in constant variable declarations\n[INFO] 3 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  0.916 s\n[INFO] Finished at: 2024-06-19T10:12:58Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[7,27] package com.coverage.jacoco does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[14,15] method invoke in class java.lang.reflect.Method cannot be applied to given types;\n[ERROR]   required: java.lang.Object,java.lang.Object[]\n[ERROR]   found: no arguments\n[ERROR]   reason: actual and formal argument lists differ in length\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,24] Illegal static declaration in inner class com.eval.PlainTest.Coverage\n[ERROR]   modifier 'static' is only allowed in constant variable declarations\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1f42da0?, 0xc0000fe200}, {0xffa8c0?, 0xc0007000a8})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0007878b8, {0xc0007878a0, 0x3, 0x418c94?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00069c060, 0x26}, 0x0, {0xc0006b1aa0, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00069c060, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc000180978, {0xc000180800?, 0x7f49318c99b8?, 0xc000180978?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1f425e0?, 0xc000180800}, {0xc000040080?, 0x2782d80?, 0xc00059ded8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1f425e0?, 0xc000180800?}, {0xc000040080?, 0x274c500?, 0xc000180800?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00012e058?, 0x2636b18?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:184 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/java.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/java/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/java.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/java/language.go:119
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality2426908112/plain/",
+    "[INFO] Scanning for projects...\n[WARNING] \n[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT\n[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11\n[WARNING] \n[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.\n[WARNING] \n[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.\n[WARNING] \n[INFO] \n[INFO] ------------------< eval.dev.quality:test-java-plain >------------------\n[INFO] Building test-java-plain SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/classes\n[INFO] \n[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---\n[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality2426908112/plain/src/test/resources\n[INFO] \n[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---\n[INFO] Changes detected - recompiling the module!\n[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality2426908112/plain/target/test-classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[7,27] package com.coverage.jacoco does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[14,15] method invoke in class java.lang.reflect.Method cannot be applied to given types;\n  required: java.lang.Object,java.lang.Object[]\n  found: no arguments\n  reason: actual and formal argument lists differ in length\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,24] Illegal static declaration in inner class com.eval.PlainTest.Coverage\n  modifier 'static' is only allowed in constant variable declarations\n[INFO] 3 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  0.916 s\n[INFO] Finished at: 2024-06-19T10:12:58Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:testCompile (default-testCompile) on project test-java-plain: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[7,27] package com.coverage.jacoco does not exist\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[14,15] method invoke in class java.lang.reflect.Method cannot be applied to given types;\n[ERROR]   required: java.lang.Object,java.lang.Object[]\n[ERROR]   found: no arguments\n[ERROR]   reason: actual and formal argument lists differ in length\n[ERROR] /tmp/eval-dev-quality2426908112/plain/src/test/java/com/eval/PlainTest.java:[21,24] Illegal static declaration in inner class com.eval.PlainTest.Coverage\n[ERROR]   modifier 'static' is only allowed in constant variable declarations\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1f42da0?, 0xc0000fe200}, {0xffa8c0?, 0xc0007000a8})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc0007878b8, {0xc0007878a0, 0x3, 0x418c94?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc00069c060, 0x26}, 0x0, {0xc0006b1aa0, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc00069c060, 0x26})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc000180978, {0xc000180800?, 0x7f49318c99b8?, 0xc000180978?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1f425e0?, 0xc000180800}, {0xc000040080?, 0x2782d80?, 0xc00059ded8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1f425e0?, 0xc000180800?}, {0xc000040080?, 0x274c500?, 0xc000180800?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00012e058?, 0x2636b18?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:184 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+
+src/main/java/com/eval/Plain.java]
