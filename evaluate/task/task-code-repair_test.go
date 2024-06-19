@@ -13,7 +13,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
-	"github.com/symflower/eval-dev-quality/task"
+	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 )
@@ -21,19 +21,15 @@ import (
 func TestTaskCodeRepairRun(t *testing.T) {
 	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
-			resultPath := t.TempDir()
+			task, err := TaskForIdentifier(IdentifierCodeRepair)
+			require.NoError(t, err)
+			tc.Task = task
 
-			logOutput, logger := log.Buffer()
-			defer func() {
-				if t.Failed() {
-					t.Logf("Logging output: %s", logOutput.String())
-				}
-			}()
-			repository, cleanup, err := TemporaryRepository(logger, tc.TestDataPath, tc.RepositoryPath)
-			assert.NoError(t, err)
-			defer cleanup()
-
-			tc.Validate(t, &TaskCodeRepair{}, repository, resultPath, logger)
+			tc.Validate(t,
+				func(logger *log.Logger, testDataPath string, repositoryPathRelative string) (repository evaltask.Repository, cleanup func(), err error) {
+					return TemporaryRepository(logger, testDataPath, repositoryPathRelative)
+				},
+			)
 		})
 	}
 
@@ -71,7 +67,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
 						metrics.AssessmentKeyCoverage:        30,
 						metrics.AssessmentKeyFilesExecuted:   1,
@@ -136,7 +132,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
 						metrics.AssessmentKeyCoverage:        60,
 						metrics.AssessmentKeyFilesExecuted:   2,
@@ -192,7 +188,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
 						metrics.AssessmentKeyCoverage:        80,
 						metrics.AssessmentKeyFilesExecuted:   1,
@@ -259,7 +255,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
 						metrics.AssessmentKeyCoverage:        160,
 						metrics.AssessmentKeyFilesExecuted:   2,
