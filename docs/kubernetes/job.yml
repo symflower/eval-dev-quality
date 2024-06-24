@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: eval-dev-quality
+  namespace: eval-dev-quality
+spec:
+  template:
+    spec:
+      containers:
+      - name: eval-dev-quality
+        image: ghcr.io/symflower/eval-dev-quality:docker-image
+        command: ["eval-dev-quality", "evaluate", "--model", "symflower/symbolic-execution", "--result-path","/var/evaluations/%datetime%"]
+        volumeMounts:
+        - mountPath: "/var/evaluations"
+          name: evaluations
+      securityContext:
+        fsGroup: 1000
+      restartPolicy: Never
+      volumes:
+      - name: evaluations
+        persistentVolumeClaim:
+          claimName: eval-dev-quality
+  backoffLimit: 1
