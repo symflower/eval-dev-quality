@@ -68,6 +68,9 @@ type Evaluate struct {
 	// NoDisqualification indicates that models are not to be disqualified if they fail to solve basic language tasks.
 	NoDisqualification bool `long:"no-disqualification" description:"By default, models that cannot solve basic language tasks are disqualified for more complex tasks. Overwriting this behavior runs all tasks regardless."`
 
+	// Runtime indicates if the evaluation is run locally or inside a container.
+	Runtime string `long:"runtime" description:"The runtime which will be used for the evaluation." default:"local" choice:"local"`
+
 	// logger holds the logger of the command.
 	logger *log.Logger
 	// timestamp holds the timestamp of the command execution.
@@ -356,37 +359,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		command.logger.Panic("ERROR: empty evaluation context")
 	}
 
-	// Install required tools for the basic evaluation.
-	if err := tools.InstallEvaluation(command.logger, command.InstallToolsPath); err != nil {
-		command.logger.Panicf("ERROR: %s", err)
-	}
-
-	assessments, totalScore := evaluate.Evaluate(evaluationContext)
-
-	assessmentsPerModel := assessments.CollapseByModel()
-	if err := (report.Markdown{
-		DateTime: command.timestamp,
-		Version:  evaluate.Version,
-
-		CSVPath:       "./evaluation.csv",
-		LogPath:       "./evaluation.log",
-		ModelLogsPath: ".",
-		SVGPath:       "./categories.svg",
-
-		AssessmentPerModel: assessmentsPerModel,
-		TotalScore:         totalScore,
-	}).WriteToFile(filepath.Join(command.ResultPath, "README.md")); err != nil {
-		command.logger.Panicf("ERROR: %s", err)
-	}
-
-	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint64) (err error) {
-		command.logger.Printf("Evaluation score for %q (%q): cost=%.2f, %s", model.ID(), assessment.Category(totalScore).ID, model.Cost(), assessment)
-
-		return nil
-	})
-
-	if err := writeCSVs(command.ResultPath, assessments); err != nil {
-		command.logger.Panicf("ERROR: %s", err)
+	switch command.Runtime {
+	case "local":
+		return command.evaluateLocal(evaluationContext)
+	default:
+		command.logger.Panicf("ERROR: unknown runtime")
 	}
 
 	return nil
@@ -423,6 +400,44 @@ func writeCSVs(resultPath string, assessments *report.AssessmentStore) (err erro
 		if err := os.WriteFile(filepath.Join(resultPath, language.ID()+"-summed.csv"), []byte(csvByLanguage), 0644); err != nil {
 			return pkgerrors.Wrap(err, "could not write "+language.ID()+"-summed.csv summary")
 		}
+	}
+
+	return nil
+}
+
+// evaluateLocal executes the evaluation on the current system.
+func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err error) {
+	// Install required tools for the basic evaluation.
+	if err := tools.InstallEvaluation(command.logger, command.InstallToolsPath); err != nil {
+		command.logger.Panicf("ERROR: %s", err)
+	}
+
+	assessments, totalScore := evaluate.Evaluate(evaluationContext)
+
+	assessmentsPerModel := assessments.CollapseByModel()
+	if err := (report.Markdown{
+		DateTime: command.timestamp,
+		Version:  evaluate.Version,
+
+		CSVPath:       "./evaluation.csv",
+		LogPath:       "./evaluation.log",
+		ModelLogsPath: ".",
+		SVGPath:       "./categories.svg",
+
+		AssessmentPerModel: assessmentsPerModel,
+		TotalScore:         totalScore,
+	}).WriteToFile(filepath.Join(command.ResultPath, "README.md")); err != nil {
+		command.logger.Panicf("ERROR: %s", err)
+	}
+
+	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint64) (err error) {
+		command.logger.Printf("Evaluation score for %q (%q): cost=%.2f, %s", model.ID(), assessment.Category(totalScore).ID, model.Cost(), assessment)
+
+		return nil
+	})
+
+	if err := writeCSVs(command.ResultPath, assessments); err != nil {
+		command.logger.Panicf("ERROR: %s", err)
 	}
 
 	return nil
