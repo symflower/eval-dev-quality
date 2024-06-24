@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"context"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"slices"
 	"sort"
@@ -69,7 +71,7 @@ type Evaluate struct {
 	NoDisqualification bool `long:"no-disqualification" description:"By default, models that cannot solve basic language tasks are disqualified for more complex tasks. Overwriting this behavior runs all tasks regardless."`
 
 	// Runtime indicates if the evaluation is run locally or inside a container.
-	Runtime string `long:"runtime" description:"The runtime which will be used for the evaluation." default:"local" choice:"local"`
+	Runtime string `long:"runtime" description:"The runtime which will be used for the evaluation." default:"local" choice:"local" choice:"docker"`
 
 	// logger holds the logger of the command.
 	logger *log.Logger
@@ -96,29 +98,6 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 	}()
 	evaluationContext = &evaluate.Context{}
-
-	// Setup evaluation result directory.
-	{
-		command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", command.timestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
-		uniqueResultPath, err := util.UniqueDirectory(command.ResultPath)
-		if err != nil {
-			command.logger.Panicf("ERROR: %s", err)
-		}
-		command.ResultPath = uniqueResultPath
-		evaluationContext.ResultPath = uniqueResultPath
-		command.logger.Printf("Writing results to %s", command.ResultPath)
-	}
-
-	// Initialize logging within result directory.
-	{
-		log, logClose, err := log.WithFile(command.logger, filepath.Join(command.ResultPath, "evaluation.log"))
-		if err != nil {
-			command.logger.Panicf("ERROR: %s", err)
-		}
-		cleanup = logClose
-		command.logger = log
-		evaluationContext.Log = log
-	}
 
 	// Check and validate common options.
 	{
@@ -157,6 +136,12 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 		evaluationContext.Runs = command.Runs
 
+		if command.Runtime == "docker" {
+			if _, err := exec.LookPath("docker"); err != nil {
+				command.logger.Panic("docker runtime could not be found")
+			}
+		}
+
 		evaluationContext.NoDisqualification = command.NoDisqualification
 	}
 
@@ -171,6 +156,29 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 		command.TestdataPath = testdataPath
 		evaluationContext.TestdataPath = testdataPath
+	}
+
+	// Setup evaluation result directory.
+	{
+		command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", command.timestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
+		uniqueResultPath, err := util.UniqueDirectory(command.ResultPath)
+		if err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
+		command.ResultPath = uniqueResultPath
+		evaluationContext.ResultPath = uniqueResultPath
+		command.logger.Printf("Writing results to %s", command.ResultPath)
+	}
+
+	// Initialize logging within result directory.
+	{
+		log, logClose, err := log.WithFile(command.logger, filepath.Join(command.ResultPath, "evaluation.log"))
+		if err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
+		cleanup = logClose
+		command.logger = log
+		evaluationContext.Log = log
 	}
 
 	// Register custom OpenAI API providers and models.
@@ -362,6 +370,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	switch command.Runtime {
 	case "local":
 		return command.evaluateLocal(evaluationContext)
+	case "docker":
+		return command.evaluateDocker(evaluationContext)
 	default:
 		command.logger.Panicf("ERROR: unknown runtime")
 	}
@@ -438,6 +448,69 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 
 	if err := writeCSVs(command.ResultPath, assessments); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
+	}
+
+	return nil
+}
+
+// evaluateDocker executes the evaluation for each model inside a docker container.
+func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
+	// Filter all the args to pass them onto the container.
+	args := util.FilterArgs(os.Args[2:], []string{
+		"--runtime",
+		"--model",
+		"--result-path",
+	})
+
+	// Iterate over each model and start the container.
+	for _, model := range ctx.Models {
+		// We are skipping ollama models until we fully support pulling. https://github.com/symflower/eval-dev-quality/issues/100.
+		if ctx.ProviderForModel[model].ID() == "ollama" {
+			command.logger.Print("Skipping unsupported ollama model with docker runtime")
+
+			continue
+		}
+
+		// Create for each model a dedicated subfolder inside the results path.
+		resultPath, err := filepath.Abs(command.ResultPath)
+		if err != nil {
+			return err
+		}
+		// Set permission 777 so the non-root docker image is able to store its results inside the result path.
+		if err := os.Chmod(resultPath, 0777); err != nil {
+			return err
+		}
+
+		// Commands regarding the docker runtime.
+		dockerCommand := []string{
+			"docker",
+			"run",
+			"-v", // bind volume
+			resultPath + ":/home/ubuntu/evaluation",
+			"--rm", // automatically remove container after it finished
+			"ghcr.io/symflower/eval-dev-quality:v0.5.0",
+		}
+
+		// Commands for the evaluation to run inside the container.
+		evaluationCommand := []string{
+			"eval-dev-quality",
+			"evaluate",
+			"--model",
+			model.ID(),
+			"--result-path",
+			"/home/ubuntu/evaluation/" + model.ID(),
+		}
+
+		cmd := append(dockerCommand, evaluationCommand...)
+		cmd = append(cmd, args...)
+
+		commandOutput, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
+			Command: cmd,
+		})
+		if err != nil {
+			return pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+		}
+
 	}
 
 	return nil

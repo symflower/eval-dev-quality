@@ -54,3 +54,39 @@ func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command
 
 	return writer.String(), nil
 }
+
+// FilterArgs parses args and removes the ignored ones.
+func FilterArgs(args []string, ignored []string) (filtered []string) {
+	filterMap := map[string]bool{}
+	for _, v := range ignored {
+		filterMap[v] = true
+	}
+
+	// Resolve args with equals sign.
+	var resolvedArgs []string
+	for _, v := range args {
+		if strings.HasPrefix(v, "--") && strings.Contains(v, "=") {
+			resolvedArgs = append(resolvedArgs, strings.SplitN(v, "=", 2)...)
+		} else {
+			resolvedArgs = append(resolvedArgs, v)
+		}
+	}
+
+	skip := false
+	for _, v := range resolvedArgs {
+		if skip && strings.HasPrefix(v, "--") {
+			skip = false
+		}
+		if filterMap[v] {
+			skip = true
+		}
+
+		if skip {
+			continue
+		}
+
+		filtered = append(filtered, v)
+	}
+
+	return filtered
+}

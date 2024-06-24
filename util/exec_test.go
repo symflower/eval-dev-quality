@@ -32,3 +32,62 @@ func TestCommandWithResultTimeout(t *testing.T) {
 	assert.Error(t, err)
 	assert.Less(t, duration.Seconds(), 5.0)
 }
+
+func TestFilterArgs(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Args    []string
+		Ignored []string
+
+		ExpectedFiltered []string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualFiltered := FilterArgs(tc.Args, tc.Ignored)
+
+			assert.Equal(t, tc.ExpectedFiltered, actualFiltered)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Filter arguments",
+
+		Args: []string{
+			"--runtime",
+			"abc",
+			"--runs",
+			"5",
+		},
+		Ignored: []string{
+			"--runtime",
+		},
+
+		ExpectedFiltered: []string{
+			"--runs",
+			"5",
+		},
+	})
+
+	validate(t, &testCase{
+		Name: "Filter arguments with equals sign",
+
+		Args: []string{
+			"--runtime=abc",
+			"--runs=5",
+			"--foo",
+			"bar",
+		},
+		Ignored: []string{
+			"--runtime",
+		},
+
+		ExpectedFiltered: []string{
+			"--runs",
+			"5",
+			"--foo",
+			"bar",
+		},
+	})
+}
