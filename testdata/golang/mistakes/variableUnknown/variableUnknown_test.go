@@ -26,7 +26,7 @@ func TestSymflowerVariableUnknown(t *testing.T) {
 	validate(t, &testCase{
 		X: -1,
 
-		ExpectedInt: -1,
+		ExpectedInt: 1,
 	})
 	validate(t, &testCase{
 		X: 0,
