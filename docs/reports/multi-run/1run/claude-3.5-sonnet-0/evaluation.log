@@ -1,0 +1,124 @@
+2024/06/25 18:47:10 Checking provider "openrouter" for models
+2024/06/25 18:47:11 Checking provider "ollama" for models
+2024/06/25 18:47:11 $ ollama --version
+Warning: could not connect to a running Ollama instance
+Warning: client version is 0.1.41
+2024/06/25 18:47:11 Starting services for provider "ollama"
+2024/06/25 18:47:26 Starting new Ollama service on "http://127.0.0.1:11434" using ollama
+2024/06/25 18:47:26 $ ollama serve
+Couldn't find '/home/ubuntu/.ollama/id_ed25519'. Generating new private key.
+Your new public key is: 
+
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO8+Zan0Ke8+ye3Y5iRHNzC/56cgeMTGUwaEwlj6QhS5
+
+2024/06/25 18:47:26 routes.go:1007: INFO server config env="map[OLLAMA_DEBUG:false OLLAMA_FLASH_ATTENTION:false OLLAMA_HOST: OLLAMA_KEEP_ALIVE: OLLAMA_LLM_LIBRARY: OLLAMA_MAX_LOADED_MODELS:1 OLLAMA_MAX_QUEUE:512 OLLAMA_MAX_VRAM:0 OLLAMA_MODELS: OLLAMA_NOHISTORY:false OLLAMA_NOPRUNE:false OLLAMA_NUM_PARALLEL:1 OLLAMA_ORIGINS:[http://localhost https://localhost http://localhost:* https://localhost:* http://127.0.0.1 https://127.0.0.1 http://127.0.0.1:* https://127.0.0.1:* http://0.0.0.0 https://0.0.0.0 http://0.0.0.0:* https://0.0.0.0:*] OLLAMA_RUNNERS_DIR: OLLAMA_TMPDIR:]"
+time=2024-06-25T18:47:26.211Z level=INFO source=images.go:729 msg="total blobs: 0"
+time=2024-06-25T18:47:26.211Z level=INFO source=images.go:736 msg="total unused blobs removed: 0"
+time=2024-06-25T18:47:26.212Z level=INFO source=routes.go:1053 msg="Listening on 127.0.0.1:11434 (version 0.1.41)"
+time=2024-06-25T18:47:26.212Z level=INFO source=payload.go:30 msg="extracting embedded files" dir=/tmp/ollama2409905302/runners
+time=2024-06-25T18:47:29.168Z level=INFO source=payload.go:44 msg="Dynamic LLM libraries [rocm_v60002 cpu cpu_avx cpu_avx2 cuda_v11]"
+time=2024-06-25T18:47:29.170Z level=INFO source=types.go:71 msg="inference compute" id=0 library=cpu compute="" driver=0.0 name="" total="314.5 GiB" available="76.7 GiB"
+[GIN] 2024/06/25 - 18:47:31 | 200 |      80.736µs |       127.0.0.1 | GET      "/"
+[GIN] 2024/06/25 - 18:47:31 | 200 |     410.315µs |       127.0.0.1 | GET      "/api/tags"
+2024/06/25 18:47:31 Checking provider "symflower" for models
+2024/06/25 18:47:31 $ symflower version
+symflower v37153 on linux/amd64
+
+Machine ID: f3c6950074c4d29eeb759e36d663b397f50bd01d9b1a5107a10db3c59fe83fc4
+Containerized: false
+KernelVersion: 5.14.21-150400.24.46-default
+PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/ubuntu/.eval-dev-quality/apache-maven-3.9.1/bin:/home/ubuntu/.eval-dev-quality/gradle-8.0.2/bin:/home/ubuntu/.eval-dev-quality/amazon-corretto-11.0.23.9.1-linux-x64/bin:/home/ubuntu/.eval-dev-quality/go/bin:/home/ubuntu/go/bin:/home/ubuntu/.eval-dev-quality/bin
+ProductName: Ubuntu
+ProductVersion: 24.04
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/25 18:47:31 Checking "symflower" binary "/home/ubuntu/.eval-dev-quality/bin/symflower" version
+2024/06/25 18:47:31 $ /home/ubuntu/.eval-dev-quality/bin/symflower version
+symflower v37153 on linux/amd64
+
+Machine ID: f3c6950074c4d29eeb759e36d663b397f50bd01d9b1a5107a10db3c59fe83fc4
+Containerized: false
+KernelVersion: 5.14.21-150400.24.46-default
+PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/ubuntu/.eval-dev-quality/apache-maven-3.9.1/bin:/home/ubuntu/.eval-dev-quality/gradle-8.0.2/bin:/home/ubuntu/.eval-dev-quality/amazon-corretto-11.0.23.9.1-linux-x64/bin:/home/ubuntu/.eval-dev-quality/go/bin:/home/ubuntu/go/bin:/home/ubuntu/.eval-dev-quality/bin
+ProductName: Ubuntu
+ProductVersion: 24.04
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/25 18:47:31 Checking that models and languages can be used for evaluation
+2024/06/25 18:47:31 Creating temporary repository for "golang/plain" within "/tmp/eval-dev-quality534634734/plain"
+2024/06/25 18:47:31 $ git init
+Initialized empty Git repository in /tmp/eval-dev-quality534634734/plain/.git/
+2024/06/25 18:47:31 $ git add .
+2024/06/25 18:47:31 $ git commit -m initial
+[main (root-commit) 79ddabf] initial
+ 3 files changed, 13 insertions(+)
+ create mode 100644 go.mod
+ create mode 100644 plain.go
+ create mode 100644 repository.json
+2024/06/25 18:47:48 ERROR: unable to create temporary repository path: exec: WaitDelay expired before I/O complete
+[main (root-commit) 79ddabf] initial
+ 3 files changed, 13 insertions(+)
+ create mode 100644 go.mod
+ create mode 100644 plain.go
+ create mode 100644 repository.json
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/evaluate/task.TemporaryRepository
+	/home/ubuntu/eval-dev-quality/evaluate/task/repository.go:185
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:83
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+unable to commit - [main (root-commit) 79ddabf] initial
+ 3 files changed, 13 insertions(+)
+ create mode 100644 go.mod
+ create mode 100644 plain.go
+ create mode 100644 repository.json
+
+github.com/symflower/eval-dev-quality/evaluate/task.TemporaryRepository
+	/home/ubuntu/eval-dev-quality/evaluate/task/repository.go:197
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:83
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/evaluate/task.TemporaryRepository
+	/home/ubuntu/eval-dev-quality/evaluate/task/repository.go:197
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:83
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650

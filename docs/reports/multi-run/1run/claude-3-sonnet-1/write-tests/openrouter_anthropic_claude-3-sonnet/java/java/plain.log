@@ -1,0 +1,85 @@
+2024/06/25 18:48:33 Evaluating model "openrouter/anthropic/claude-3-sonnet" on task "write-tests" using language "java" and repository "java/plain"
+2024/06/25 18:48:33 Querying model "openrouter/anthropic/claude-3-sonnet" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/06/25 18:48:39 Model "openrouter/anthropic/claude-3-sonnet" responded (5818 ms) with:
+	```java
+	package com.eval;
+
+	import static org.junit.jupiter.api.Assertions.assertThrows;
+	import org.junit.jupiter.api.Test;
+
+	class PlainTest {
+
+	    @Test
+	    void testPlainMethod() {
+	        Plain.plain(); // Testing that the plain() method can be invoked without throwing any exceptions
+	    }
+
+	    @Test
+	    void testPlainObjectCreation() {
+	        assertThrows(IllegalStateException.class, () -> {
+	            new Plain(); // Ensure that an exception is thrown when attempting to create an instance of the Plain class
+	        });
+	    }
+	}
+	```
+
+	This test class covers the following scenarios:
+
+	1. `testPlainMethod()` tests that the `plain()` method can be invoked without throwing any exceptions.
+	2. `testPlainObjectCreation()` verifies that attempting to create an instance of the `Plain` class (which is implicitly defined as a non-instantiable class since it has no constructors) throws an `IllegalStateException`.
+
+	With these two test cases, we achieve 100% code coverage for the `Plain` class. The tests should compile and pass without any issues.
+2024/06/25 18:48:39 $ symflower test --language java --workspace /tmp/eval-dev-quality2948732566/plain --coverage-file /tmp/eval-dev-quality2948732566/plain/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-plain ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-plain ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn7911711263634669846resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality2948732566/plain/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality2948732566/plain/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality2948732566/plain/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.094 s
+[INFO] Finished at: 2024-06-25T18:48:50Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/25 18:48:50 Executes tests with 1 coverage objects
+2024/06/25 18:48:50 Evaluated model "openrouter/anthropic/claude-3-sonnet" on task "write-tests" using language "java" and repository "java/plain": encountered 0 problems: []

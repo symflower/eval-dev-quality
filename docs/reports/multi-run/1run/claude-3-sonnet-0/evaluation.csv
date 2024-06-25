@@ -1,0 +1,5 @@
+model,language,repository,task,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+openrouter/anthropic/claude-3-sonnet,golang,golang/light,write-tests,635,570,18,25381,217239,37321,23,1,23
+openrouter/anthropic/claude-3-sonnet,golang,golang/plain,write-tests,14,10,1,74,2310,84,1,1,1
+openrouter/anthropic/claude-3-sonnet,java,java/light,write-tests,2582,2510,19,29023,200161,37876,23,7,23
+openrouter/anthropic/claude-3-sonnet,java,java/plain,write-tests,13,10,1,224,3339,475,1,0,1
