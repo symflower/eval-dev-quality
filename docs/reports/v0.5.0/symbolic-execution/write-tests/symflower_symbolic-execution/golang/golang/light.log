@@ -1,0 +1,1957 @@
+2024/06/19 13:26:41 Evaluating model "symflower/symbolic-execution" on task "write-tests" using language "golang" and repository "golang/light"
+2024/06/19 13:26:41 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light balancedBrackets.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+balancedBrackets.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:41 $ go mod tidy
+2024/06/19 13:26:41 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:42 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light binarySearch.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+binarySearch.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:42 $ go mod tidy
+2024/06/19 13:26:42 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:42 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light callLoopConditionsOftenEnough.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+callLoopConditionsOftenEnough.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:43 $ go mod tidy
+2024/06/19 13:26:43 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:43 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light cascadingIfElse.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+cascadingIfElse.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:44 $ go mod tidy
+2024/06/19 13:26:44 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:44 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light collatzCalculator.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+collatzCalculator.go: found 0 symbols
+Analyzed 1 out of 4 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:45 $ go mod tidy
+2024/06/19 13:26:45 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:45 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light conditionsAnd.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+conditionsAnd.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:46 $ go mod tidy
+2024/06/19 13:26:46 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:46 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light equilibriumIndices.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+equilibriumIndices.go: found 0 symbols
+Analyzed 1 out of 4 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:47 $ go mod tidy
+2024/06/19 13:26:47 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:47 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light forLoop.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+forLoop.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:48 $ go mod tidy
+2024/06/19 13:26:48 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:48 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light jacobiSymbol.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+jacobiSymbol.go: found 0 symbols
+Analyzed 1 out of 4 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:49 $ go mod tidy
+2024/06/19 13:26:49 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:49 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light klarnerRadoSequence.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+klarnerRadoSequence.go: found 0 symbols
+Analyzed 1 out of 4 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:50 $ go mod tidy
+2024/06/19 13:26:50 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:50 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light knapsack.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+knapsack.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:51 $ go mod tidy
+2024/06/19 13:26:51 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:51 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light largestProperDivisor.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+largestProperDivisor.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:52 $ go mod tidy
+2024/06/19 13:26:52 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:52 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light magicSquareOdd.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+magicSquareOdd.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:53 $ go mod tidy
+2024/06/19 13:26:53 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:53 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light matchBytes.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+matchBytes.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:54 $ go mod tidy
+2024/06/19 13:26:54 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:54 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light pascalsTriangle.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+pascalsTriangle.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:54 $ go mod tidy
+2024/06/19 13:26:54 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:55 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light phoneNumber.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+phoneNumber.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:55 $ go mod tidy
+2024/06/19 13:26:55 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:56 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light simpleIfElse.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+simpleIfElse.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:56 $ go mod tidy
+2024/06/19 13:26:56 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:57 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light simpleSwitchWithReturn.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+simpleSwitchWithReturn.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:57 $ go mod tidy
+2024/06/19 13:26:57 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:58 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light sort.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+sort.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:58 $ go mod tidy
+2024/06/19 13:26:58 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:26:59 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light typeArrayAccess.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+typeArrayAccess.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:26:59 $ go mod tidy
+2024/06/19 13:26:59 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:27:00 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light typeArrayConsecutiveAccess.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+typeArrayConsecutiveAccess.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:27:00 $ go mod tidy
+2024/06/19 13:27:00 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:27:01 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light typeArrayMultidimensionalArrayLength.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+typeArrayMultidimensionalArrayLength.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:27:01 $ go mod tidy
+2024/06/19 13:27:01 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:27:02 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1150084585/light validateDate.go
+Analyzing workspace /tmp/eval-dev-quality1150084585/light/
+Search for Go files
+Load dependency stdlib:@dev
+collatzCalculator.go:3:8: error: could not import errors (cannot find package "errors" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/errors (from $GOPATH))
+equilibriumIndices.go:3:8: error: could not import strconv (cannot find package "strconv" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/strconv (from $GOPATH))
+jacobiSymbol.go:4:2: error: could not import fmt (cannot find package "fmt" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/fmt (from $GOPATH))
+klarnerRadoSequence.go:3:8: error: could not import math (cannot find package "math" in any of:
+		($GOROOT not set)
+		/tmp/eval-dev-quality1150084585/light/src/math (from $GOPATH))
+Found 1 Go files
+Found 4 problems in Go files
+validateDate.go: found 0 symbols
+Analyzed 1 out of 5 source files
+Had 4 errors that block a full analysis
+Generated 0 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:27:02 $ go mod tidy
+2024/06/19 13:27:02 $ symflower test --language golang --workspace /tmp/eval-dev-quality1150084585/light --coverage-file /tmp/eval-dev-quality1150084585/light/coverage.json
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+2024/06/19 13:27:03 Evaluated model "symflower/symbolic-execution" on task "write-tests" using language "golang" and repository "golang/light": encountered 23 problems: [exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+balancedBrackets.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+binarySearch.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+callLoopConditionsOftenEnough.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+cascadingIfElse.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+collatzCalculator.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+conditionsAnd.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+equilibriumIndices.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+forLoop.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+jacobiSymbol.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+klarnerRadoSequence.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+knapsack.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+largestProperDivisor.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+magicSquareOdd.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+matchBytes.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+pascalsTriangle.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+phoneNumber.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+simpleIfElse.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+simpleSwitchWithReturn.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+sort.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+typeArrayAccess.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+typeArrayConsecutiveAccess.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+typeArrayMultidimensionalArrayLength.go exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/home/ubuntu/eval-dev-quality/util/exec.go:52
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:108
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/language/golang.(*Language).Execute
+	/home/ubuntu/eval-dev-quality/language/golang/language.go:128
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:91
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:228
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:218
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: no test files found in /tmp/eval-dev-quality1150084585/light/
+
+validateDate.go]

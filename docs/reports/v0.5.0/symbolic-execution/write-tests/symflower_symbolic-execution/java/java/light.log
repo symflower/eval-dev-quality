@@ -1,0 +1,1395 @@
+2024/06/19 13:27:03 Evaluating model "symflower/symbolic-execution" on task "write-tests" using language "java" and repository "java/light"
+2024/06/19 13:27:03 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/BalancedBrackets.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/BalancedBrackets.java: found 1 symbols
+src/main/java/com/eval/BalancedBrackets.java: com.eval.BalancedBrackets.hasBalancedBrackets: computing test cases
+src/main/java/com/eval/BalancedBrackets.java: com.eval.BalancedBrackets.hasBalancedBrackets: computed 5 unit tests
+src/main/java/com/eval/BalancedBrackets.java: com.eval.BalancedBrackets.hasBalancedBrackets: found 1 problems
+src/main/java/com/eval/BalancedBrackets.java:7:20: critical: com.eval.BalancedBrackets.hasBalancedBrackets: uncaught java.lang.NullPointerException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/BalancedBrackets.java: generated unit test file src/test/java/com/eval/BalancedBracketsSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 5 tests
+Found 1 potential problem
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:27:09 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn18398371813082149947resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.792 s
+[INFO] Finished at: 2024-06-19T13:27:19Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 4.700855%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:27:19 Executes tests with 14 coverage objects
+2024/06/19 13:27:19 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/BinarySearch.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/BinarySearch.java: found 1 symbols
+src/main/java/com/eval/BinarySearch.java: com.eval.BinarySearch.binarySearch: computing test cases
+src/main/java/com/eval/BinarySearch.java: com.eval.BinarySearch.binarySearch: computed 5 unit tests
+src/main/java/com/eval/BinarySearch.java: com.eval.BinarySearch.binarySearch: found 1 problems
+src/main/java/com/eval/BinarySearch.java:8:13: critical: com.eval.BinarySearch.binarySearch: uncaught java.lang.NullPointerException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/BinarySearch.java: generated unit test file src/test/java/com/eval/BinarySearchSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 5 tests
+Found 1 potential problem
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:27:21 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn4837902099055889144resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.652 s
+[INFO] Finished at: 2024-06-19T13:27:31Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 5.128205%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:27:31 Executes tests with 15 coverage objects
+2024/06/19 13:27:31 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/CallLoopConditionsOftenEnough.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/CallLoopConditionsOftenEnough.java: found 1 symbols
+src/main/java/com/eval/CallLoopConditionsOftenEnough.java: com.eval.CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough: computing test cases
+src/main/java/com/eval/CallLoopConditionsOftenEnough.java: com.eval.CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough: computed 6 unit tests
+src/main/java/com/eval/CallLoopConditionsOftenEnough.java: com.eval.CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough: found 0 problems
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/CallLoopConditionsOftenEnough.java: generated unit test file src/test/java/com/eval/CallLoopConditionsOftenEnoughSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 6 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:27:39 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn14537295793374646415resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.568 s
+[INFO] Finished at: 2024-06-19T13:27:49Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 3.846154%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:27:49 Executes tests with 13 coverage objects
+2024/06/19 13:27:49 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/CascadingIfElse.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/CascadingIfElse.java: found 1 symbols
+src/main/java/com/eval/CascadingIfElse.java: com.eval.CascadingIfElse.cascadingIfElse: computing test cases
+src/main/java/com/eval/CascadingIfElse.java: com.eval.CascadingIfElse.cascadingIfElse: computed 3 unit tests
+src/main/java/com/eval/CascadingIfElse.java: com.eval.CascadingIfElse.cascadingIfElse: found 0 problems
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/CascadingIfElse.java: generated unit test file src/test/java/com/eval/CascadingIfElseSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 3 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:27:50 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn18118708645693018952resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.731 s
+[INFO] Finished at: 2024-06-19T13:28:00Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 2.564103%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:28:00 Executes tests with 8 coverage objects
+2024/06/19 13:28:00 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/CollatzCalculator.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/CollatzCalculator.java: found 1 symbols
+src/main/java/com/eval/CollatzCalculator.java: com.eval.CollatzCalculator.computeStepCount: computing test cases
+src/main/java/com/eval/CollatzCalculator.java: com.eval.CollatzCalculator.computeStepCount: computed 5 unit tests
+src/main/java/com/eval/CollatzCalculator.java: com.eval.CollatzCalculator.computeStepCount: found 4 problems
+src/main/java/com/eval/CollatzCalculator.java:6:7: critical: com.eval.CollatzCalculator.computeStepCount: uncaught java.lang.IllegalArgumentException
+src/main/java/com/eval/CollatzCalculator.java:16:14: critical: com.eval.CollatzCalculator.computeStepCount: uncaught ArithmeticException: integer overflow
+		at java.lang.Math.multiplyExact
+src/main/java/com/eval/CollatzCalculator.java:6:7: critical: com.eval.CollatzCalculator.computeStepCount: uncaught java.lang.IllegalArgumentException
+src/main/java/com/eval/CollatzCalculator.java:6:7: critical: com.eval.CollatzCalculator.computeStepCount: uncaught java.lang.IllegalArgumentException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/CollatzCalculator.java: generated unit test file src/test/java/com/eval/CollatzCalculatorSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 5 tests
+Found 4 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:28:07 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn5256290397263909660resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.657 s
+[INFO] Finished at: 2024-06-19T13:28:17Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 4.273504%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:28:17 Executes tests with 13 coverage objects
+2024/06/19 13:28:17 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/ConditionsAnd.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/ConditionsAnd.java: found 1 symbols
+src/main/java/com/eval/ConditionsAnd.java: com.eval.ConditionsAnd.conditionsAnd: computing test cases
+src/main/java/com/eval/ConditionsAnd.java: com.eval.ConditionsAnd.conditionsAnd: computed 3 unit tests
+src/main/java/com/eval/ConditionsAnd.java: com.eval.ConditionsAnd.conditionsAnd: found 0 problems
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/ConditionsAnd.java: generated unit test file src/test/java/com/eval/ConditionsAndSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 3 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:28:18 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn17633735305858437208resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.566 s
+[INFO] Finished at: 2024-06-19T13:28:28Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 1.709402%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:28:28 Executes tests with 5 coverage objects
+2024/06/19 13:28:28 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/EqulibriumIndices.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/EqulibriumIndices.java: found 1 symbols
+src/main/java/com/eval/EqulibriumIndices.java: com.eval.EqulibriumIndices.equlibriumIndices: computing test cases
+src/main/java/com/eval/EqulibriumIndices.java: com.eval.EqulibriumIndices.equlibriumIndices: computed 4 unit tests
+src/main/java/com/eval/EqulibriumIndices.java: com.eval.EqulibriumIndices.equlibriumIndices: found 1 problems
+src/main/java/com/eval/EqulibriumIndices.java:9:18: critical: com.eval.EqulibriumIndices.equlibriumIndices: uncaught java.lang.NullPointerException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/EqulibriumIndices.java: generated unit test file src/test/java/com/eval/EqulibriumIndicesSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 4 tests
+Found 1 potential problem
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:28:32 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn12358078029553761947resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.577 s
+[INFO] Finished at: 2024-06-19T13:28:42Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 5.128205%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:28:42 Executes tests with 14 coverage objects
+2024/06/19 13:28:42 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/ForLoop.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/ForLoop.java: found 1 symbols
+src/main/java/com/eval/ForLoop.java: com.eval.ForLoop.forLoop: computing test cases
+src/main/java/com/eval/ForLoop.java: com.eval.ForLoop.forLoop: computed 2 unit tests
+src/main/java/com/eval/ForLoop.java: com.eval.ForLoop.forLoop: found 0 problems
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/ForLoop.java: generated unit test file src/test/java/com/eval/ForLoopSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 2 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:28:43 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn8360099752210089960resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.678 s
+[INFO] Finished at: 2024-06-19T13:28:53Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 2.991453%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:28:53 Executes tests with 9 coverage objects
+2024/06/19 13:28:53 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/JacobiSymbol.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/JacobiSymbol.java: found 1 symbols
+src/main/java/com/eval/JacobiSymbol.java: com.eval.JacobiSymbol.jacobiSymbol: computing test cases
+src/main/java/com/eval/JacobiSymbol.java: com.eval.JacobiSymbol.jacobiSymbol: computed 10 unit tests
+src/main/java/com/eval/JacobiSymbol.java: com.eval.JacobiSymbol.jacobiSymbol: found 2 problems
+src/main/java/com/eval/JacobiSymbol.java:7:7: critical: com.eval.JacobiSymbol.jacobiSymbol: uncaught java.lang.IllegalArgumentException
+src/main/java/com/eval/JacobiSymbol.java:7:7: critical: com.eval.JacobiSymbol.jacobiSymbol: uncaught java.lang.IllegalArgumentException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/JacobiSymbol.java: generated unit test file src/test/java/com/eval/JacobiSymbolSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 10 tests
+Found 2 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:29:19 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn1787361599115973539resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.550 s
+[INFO] Finished at: 2024-06-19T13:29:29Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 8.547009%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:29:29 Executes tests with 26 coverage objects
+2024/06/19 13:29:29 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/KlarnerRadoSequence.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/KlarnerRadoSequence.java: found 1 symbols
+src/main/java/com/eval/KlarnerRadoSequence.java: com.eval.KlarnerRadoSequence.initialiseKlarnerRadoSequence: computing test cases
+src/main/java/com/eval/KlarnerRadoSequence.java: com.eval.KlarnerRadoSequence.initialiseKlarnerRadoSequence: computed 6 unit tests
+src/main/java/com/eval/KlarnerRadoSequence.java: com.eval.KlarnerRadoSequence.initialiseKlarnerRadoSequence: found 3 problems
+src/main/java/com/eval/KlarnerRadoSequence.java:6:20: critical: com.eval.KlarnerRadoSequence.initialiseKlarnerRadoSequence: uncaught NegativeArraySizeException
+src/main/java/com/eval/KlarnerRadoSequence.java:6:28: critical: com.eval.KlarnerRadoSequence.initialiseKlarnerRadoSequence: uncaught ArithmeticException: integer overflow
+		at java.lang.Math.addExact
+src/main/java/com/eval/KlarnerRadoSequence.java:6:20: critical: com.eval.KlarnerRadoSequence.initialiseKlarnerRadoSequence: uncaught NegativeArraySizeException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/KlarnerRadoSequence.java: generated unit test file src/test/java/com/eval/KlarnerRadoSequenceSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 6 tests
+Found 3 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:29:32 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn14337718403322700172resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.805 s
+[INFO] Finished at: 2024-06-19T13:29:42Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 6.410256%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:29:42 Executes tests with 18 coverage objects
+2024/06/19 13:29:42 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/Knapsack.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/Knapsack.java: found 1 symbols
+src/main/java/com/eval/Knapsack.java: com.eval.Knapsack.maximumValue: computing test cases
+src/main/java/com/eval/Knapsack.java: com.eval.Knapsack.maximumValue: computed 6 unit tests
+src/main/java/com/eval/Knapsack.java: com.eval.Knapsack.maximumValue: found 6 problems
+src/main/java/com/eval/Knapsack.java: info: com.eval.Knapsack.maximumValue: test generation timed out
+src/main/java/com/eval/Knapsack.java: critical: com.eval.Knapsack.maximumValue: uncaught NegativeArraySizeException
+src/main/java/com/eval/Knapsack.java:5:50: critical: com.eval.Knapsack.maximumValue: uncaught ArithmeticException: integer overflow
+		at java.lang.Math.addExact
+src/main/java/com/eval/Knapsack.java: critical: com.eval.Knapsack.maximumValue: uncaught NegativeArraySizeException
+src/main/java/com/eval/Knapsack.java:5:32: critical: com.eval.Knapsack.maximumValue: uncaught java.lang.NullPointerException
+src/main/java/com/eval/Knapsack.java:26:12: critical: com.eval.Knapsack.maximumValue: uncaught ArrayIndexOutOfBoundsException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/Knapsack.java: generated unit test file src/test/java/com/eval/KnapsackSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 6 tests
+Found 5 potential problems
+The following issues prevent a full analysis:
+
+* 1 case of "other issues"
+	Description: Uncategorized problems.
+
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:30:42 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn5131646152858136346resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.668 s
+[INFO] Finished at: 2024-06-19T13:30:52Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 4.273504%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:30:52 Executes tests with 14 coverage objects
+2024/06/19 13:30:52 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/LargestProperDivisor.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/LargestProperDivisor.java: found 1 symbols
+src/main/java/com/eval/LargestProperDivisor.java: com.eval.LargestProperDivisor.largestProperDivisor: computing test cases
+src/main/java/com/eval/LargestProperDivisor.java: com.eval.LargestProperDivisor.largestProperDivisor: computed 5 unit tests
+src/main/java/com/eval/LargestProperDivisor.java: com.eval.LargestProperDivisor.largestProperDivisor: found 1 problems
+src/main/java/com/eval/LargestProperDivisor.java:7:7: critical: com.eval.LargestProperDivisor.largestProperDivisor: uncaught java.lang.IllegalArgumentException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/LargestProperDivisor.java: generated unit test file src/test/java/com/eval/LargestProperDivisorSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 5 tests
+Found 1 potential problem
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:30:54 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn13204046637126841853resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.569 s
+[INFO] Finished at: 2024-06-19T13:31:04Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 3.846154%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:31:04 Executes tests with 13 coverage objects
+2024/06/19 13:31:04 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/MagicSquareOdd.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/MagicSquareOdd.java: found 1 symbols
+src/main/java/com/eval/MagicSquareOdd.java: com.eval.MagicSquareOdd.magicSquareOdd: computing test cases
+src/main/java/com/eval/MagicSquareOdd.java: com.eval.MagicSquareOdd.magicSquareOdd: computed 2 unit tests
+src/main/java/com/eval/MagicSquareOdd.java: com.eval.MagicSquareOdd.magicSquareOdd: found 3 problems
+src/main/java/com/eval/MagicSquareOdd.java: info: com.eval.MagicSquareOdd.magicSquareOdd: test generation timed out
+src/main/java/com/eval/MagicSquareOdd.java:7:4: critical: com.eval.MagicSquareOdd.magicSquareOdd: uncaught java.lang.IllegalArgumentException
+src/main/java/com/eval/MagicSquareOdd.java:7:4: critical: com.eval.MagicSquareOdd.magicSquareOdd: uncaught java.lang.IllegalArgumentException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/MagicSquareOdd.java: generated unit test file src/test/java/com/eval/MagicSquareOddSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 2 tests
+Found 2 potential problems
+The following issues prevent a full analysis:
+
+* 1 case of "other issues"
+	Description: Uncategorized problems.
+
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:32:05 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn534587099671980748resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.515 s
+[INFO] Finished at: 2024-06-19T13:32:15Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 1.282051%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:32:15 Executes tests with 3 coverage objects
+2024/06/19 13:32:15 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/MatchBytes.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/MatchBytes.java: found 1 symbols
+src/main/java/com/eval/MatchBytes.java: com.eval.MatchBytes.matchBytes: computing test cases
+src/main/java/com/eval/MatchBytes.java: com.eval.MatchBytes.matchBytes: computed 9 unit tests
+src/main/java/com/eval/MatchBytes.java: com.eval.MatchBytes.matchBytes: found 3 problems
+src/main/java/com/eval/MatchBytes.java:7:14: critical: com.eval.MatchBytes.matchBytes: uncaught ArrayIndexOutOfBoundsException
+src/main/java/com/eval/MatchBytes.java:5:23: critical: com.eval.MatchBytes.matchBytes: uncaught java.lang.NullPointerException
+src/main/java/com/eval/MatchBytes.java:7:14: critical: com.eval.MatchBytes.matchBytes: uncaught java.lang.NullPointerException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/MatchBytes.java: generated unit test file src/test/java/com/eval/MatchBytesSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 9 tests
+Found 3 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:32:17 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn17553794082527015032resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.757 s
+[INFO] Finished at: 2024-06-19T13:32:28Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 4.273504%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:32:28 Executes tests with 13 coverage objects
+2024/06/19 13:32:28 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/PascalsTriangle.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/PascalsTriangle.java: found 1 symbols
+src/main/java/com/eval/PascalsTriangle.java: com.eval.PascalsTriangle.generateTriangle: computing test cases
+src/main/java/com/eval/PascalsTriangle.java: com.eval.PascalsTriangle.generateTriangle: computed 4 unit tests
+src/main/java/com/eval/PascalsTriangle.java: com.eval.PascalsTriangle.generateTriangle: found 1 problems
+src/main/java/com/eval/PascalsTriangle.java:6:7: critical: com.eval.PascalsTriangle.generateTriangle: uncaught java.lang.IllegalArgumentException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/PascalsTriangle.java: generated unit test file src/test/java/com/eval/PascalsTriangleSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 4 tests
+Found 1 potential problem
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:32:38 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn9280732660032671703resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.861 s
+[INFO] Finished at: 2024-06-19T13:32:49Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 4.700855%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:32:49 Executes tests with 14 coverage objects
+2024/06/19 13:32:49 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/PhoneNumber.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/PhoneNumber.java: found 1 symbols
+src/main/java/com/eval/PhoneNumber.java: com.eval.PhoneNumber.extractDigits: computing test cases
+src/main/java/com/eval/PhoneNumber.java: com.eval.PhoneNumber.extractDigits: computed 14 unit tests
+src/main/java/com/eval/PhoneNumber.java: com.eval.PhoneNumber.extractDigits: found 7 problems
+src/main/java/com/eval/PhoneNumber.java: info: com.eval.PhoneNumber.extractDigits: test generation timed out
+src/main/java/com/eval/PhoneNumber.java:6:25: critical: com.eval.PhoneNumber.extractDigits: uncaught java.lang.NullPointerException
+src/main/java/com/eval/PhoneNumber.java:14:9: critical: com.eval.PhoneNumber.extractDigits: uncaught java.lang.IllegalArgumentException
+src/main/java/com/eval/PhoneNumber.java:14:9: critical: com.eval.PhoneNumber.extractDigits: uncaught java.lang.IllegalArgumentException
+src/main/java/com/eval/PhoneNumber.java:14:9: critical: com.eval.PhoneNumber.extractDigits: uncaught java.lang.IllegalArgumentException
+src/main/java/com/eval/PhoneNumber.java:17:9: critical: com.eval.PhoneNumber.extractDigits: uncaught java.lang.IllegalArgumentException
+src/main/java/com/eval/PhoneNumber.java:17:9: critical: com.eval.PhoneNumber.extractDigits: uncaught java.lang.IllegalArgumentException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/PhoneNumber.java: generated unit test file src/test/java/com/eval/PhoneNumberSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 14 tests
+Found 6 potential problems
+The following issues prevent a full analysis:
+
+* 1 case of "other issues"
+	Description: Uncategorized problems.
+
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:33:50 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn14250776348311349301resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.042 s
+[INFO] Finished at: 2024-06-19T13:34:02Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 5.128205%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:34:02 Executes tests with 16 coverage objects
+2024/06/19 13:34:02 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/SimpleIfElse.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/SimpleIfElse.java: found 1 symbols
+src/main/java/com/eval/SimpleIfElse.java: com.eval.SimpleIfElse.simpleIfElse: computing test cases
+src/main/java/com/eval/SimpleIfElse.java: com.eval.SimpleIfElse.simpleIfElse: computed 2 unit tests
+src/main/java/com/eval/SimpleIfElse.java: com.eval.SimpleIfElse.simpleIfElse: found 0 problems
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/SimpleIfElse.java: generated unit test file src/test/java/com/eval/SimpleIfElseSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 2 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:34:03 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn9933996946013146400resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.906 s
+[INFO] Finished at: 2024-06-19T13:34:14Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 1.709402%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:34:14 Executes tests with 5 coverage objects
+2024/06/19 13:34:14 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/SimpleSwitchWithReturn.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/SimpleSwitchWithReturn.java: found 1 symbols
+src/main/java/com/eval/SimpleSwitchWithReturn.java: com.eval.SimpleSwitchWithReturn.simpleSwitchWithReturn: computing test cases
+src/main/java/com/eval/SimpleSwitchWithReturn.java: com.eval.SimpleSwitchWithReturn.simpleSwitchWithReturn: computed 2 unit tests
+src/main/java/com/eval/SimpleSwitchWithReturn.java: com.eval.SimpleSwitchWithReturn.simpleSwitchWithReturn: found 0 problems
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/SimpleSwitchWithReturn.java: generated unit test file src/test/java/com/eval/SimpleSwitchWithReturnSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 2 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:34:15 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn10467951100859187319resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.744 s
+[INFO] Finished at: 2024-06-19T13:34:26Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 2.564103%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:34:26 Executes tests with 6 coverage objects
+2024/06/19 13:34:26 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/Sort.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/Sort.java: found 1 symbols
+src/main/java/com/eval/Sort.java: com.eval.Sort.isSorted: computing test cases
+src/main/java/com/eval/Sort.java: com.eval.Sort.isSorted: computed 5 unit tests
+src/main/java/com/eval/Sort.java: com.eval.Sort.isSorted: found 1 problems
+src/main/java/com/eval/Sort.java:6:20: critical: com.eval.Sort.isSorted: uncaught java.lang.NullPointerException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/Sort.java: generated unit test file src/test/java/com/eval/SortSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 5 tests
+Found 1 potential problem
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:34:28 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn14181115747959544807resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.646 s
+[INFO] Finished at: 2024-06-19T13:34:39Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 2.136752%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:34:39 Executes tests with 6 coverage objects
+2024/06/19 13:34:39 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/TypeArrayAccess.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/TypeArrayAccess.java: found 1 symbols
+src/main/java/com/eval/TypeArrayAccess.java: com.eval.TypeArrayAccess.typeArrayAccess: computing test cases
+src/main/java/com/eval/TypeArrayAccess.java: com.eval.TypeArrayAccess.typeArrayAccess: computed 4 unit tests
+src/main/java/com/eval/TypeArrayAccess.java: com.eval.TypeArrayAccess.typeArrayAccess: found 2 problems
+src/main/java/com/eval/TypeArrayAccess.java:5:13: critical: com.eval.TypeArrayAccess.typeArrayAccess: uncaught ArrayIndexOutOfBoundsException
+src/main/java/com/eval/TypeArrayAccess.java:5:13: critical: com.eval.TypeArrayAccess.typeArrayAccess: uncaught java.lang.NullPointerException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/TypeArrayAccess.java: generated unit test file src/test/java/com/eval/TypeArrayAccessSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 4 tests
+Found 2 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:34:40 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn13472667550831728774resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.652 s
+[INFO] Finished at: 2024-06-19T13:34:51Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 1.709402%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:34:51 Executes tests with 5 coverage objects
+2024/06/19 13:34:51 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/TypeArrayConsecutiveAccess.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/TypeArrayConsecutiveAccess.java: found 1 symbols
+src/main/java/com/eval/TypeArrayConsecutiveAccess.java: com.eval.TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess: computing test cases
+src/main/java/com/eval/TypeArrayConsecutiveAccess.java: com.eval.TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess: computed 6 unit tests
+src/main/java/com/eval/TypeArrayConsecutiveAccess.java: com.eval.TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess: found 3 problems
+src/main/java/com/eval/TypeArrayConsecutiveAccess.java:6:13: critical: com.eval.TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess: uncaught ArrayIndexOutOfBoundsException
+src/main/java/com/eval/TypeArrayConsecutiveAccess.java:8:13: critical: com.eval.TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess: uncaught ArrayIndexOutOfBoundsException
+src/main/java/com/eval/TypeArrayConsecutiveAccess.java:6:13: critical: com.eval.TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess: uncaught java.lang.NullPointerException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/TypeArrayConsecutiveAccess.java: generated unit test file src/test/java/com/eval/TypeArrayConsecutiveAccessSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 6 tests
+Found 3 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:34:53 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn14150398266572851346resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.679 s
+[INFO] Finished at: 2024-06-19T13:35:03Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 2.991453%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:35:03 Executes tests with 9 coverage objects
+2024/06/19 13:35:03 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/TypeArrayMultidimensionalArrayLength.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/TypeArrayMultidimensionalArrayLength.java: found 1 symbols
+src/main/java/com/eval/TypeArrayMultidimensionalArrayLength.java: com.eval.TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength: computing test cases
+src/main/java/com/eval/TypeArrayMultidimensionalArrayLength.java: com.eval.TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength: computed 5 unit tests
+src/main/java/com/eval/TypeArrayMultidimensionalArrayLength.java: com.eval.TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength: found 2 problems
+src/main/java/com/eval/TypeArrayMultidimensionalArrayLength.java:5:13: critical: com.eval.TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength: uncaught java.lang.NullPointerException
+src/main/java/com/eval/TypeArrayMultidimensionalArrayLength.java:6:17: critical: com.eval.TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength: uncaught java.lang.NullPointerException
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/TypeArrayMultidimensionalArrayLength.java: generated unit test file src/test/java/com/eval/TypeArrayMultidimensionalArrayLengthSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 5 tests
+Found 2 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:35:04 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn3211460431591642759resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.588 s
+[INFO] Finished at: 2024-06-19T13:35:14Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 2.564103%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:35:15 Executes tests with 8 coverage objects
+2024/06/19 13:35:15 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality3685933099/light src/main/java/com/eval/ValidDate.java
+Analyzing workspace /tmp/eval-dev-quality3685933099/light/
+Search for Java files
+Load dependency stdlib:@dev
+Found 1 Java files
+Found 0 problems in Java files
+src/main/java/com/eval/ValidDate.java: found 1 symbols
+src/main/java/com/eval/ValidDate.java: com.eval.ValidDate.validDate: computing test cases
+src/main/java/com/eval/ValidDate.java: com.eval.ValidDate.validDate: computed 11 unit tests
+src/main/java/com/eval/ValidDate.java: com.eval.ValidDate.validDate: found 0 problems
+Symflower's table driven test style is not supported, switching to basic style
+src/main/java/com/eval/ValidDate.java: generated unit test file src/test/java/com/eval/ValidDateSymflowerTest.java
+Analyzed 1 out of 1 source files
+Had 0 errors that block a full analysis
+Generated 11 tests
+Found 0 potential problems
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:35:17 $ symflower test --language java --workspace /tmp/eval-dev-quality3685933099/light --coverage-file /tmp/eval-dev-quality3685933099/light/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-light:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 8, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-light ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-light >------------------
+[INFO] Building test-java-light SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-light ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn4980531030130709619resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3685933099/light/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3685933099/light/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.676 s
+[INFO] Finished at: 2024-06-19T13:35:27Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 7.264957%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/06/19 13:35:27 Executes tests with 25 coverage objects
+2024/06/19 13:35:27 Evaluated model "symflower/symbolic-execution" on task "write-tests" using language "java" and repository "java/light": encountered 0 problems: []

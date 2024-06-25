@@ -1,0 +1,520 @@
+2024/06/19 10:01:31 Evaluating model "openrouter/huggingfaceh4/zephyr-7b-beta" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 10:01:31 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:01:31 Attempt 1/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:01:36 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:01:36 Attempt 2/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:01:46 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:01:46 Attempt 3/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:01:46 Evaluated model "openrouter/huggingfaceh4/zephyr-7b-beta" on task "write-tests" using language "golang" and repository "golang/plain": encountered 1 problems: [error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+github.com/symflower/eval-dev-quality/provider/openai-api.QueryOpenAIAPIModel
+	/home/ubuntu/eval-dev-quality/provider/openai-api/query.go:26
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/ubuntu/eval-dev-quality/provider/openrouter/openrouter.go:99
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query.func1
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:206
+github.com/avast/retry-go.Do
+	/home/ubuntu/go/pkg/mod/github.com/avast/retry-go@v3.0.0+incompatible/retry.go:127
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:202
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:173
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:175
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+plain.go]
+2024/06/19 10:02:02 Evaluating model "openrouter/huggingfaceh4/zephyr-7b-beta" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 10:02:02 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:02:02 Attempt 1/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:02:07 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:02:07 Attempt 2/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:02:17 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:02:17 Attempt 3/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:02:17 Evaluated model "openrouter/huggingfaceh4/zephyr-7b-beta" on task "write-tests" using language "golang" and repository "golang/plain": encountered 1 problems: [error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+github.com/symflower/eval-dev-quality/provider/openai-api.QueryOpenAIAPIModel
+	/home/ubuntu/eval-dev-quality/provider/openai-api/query.go:26
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/ubuntu/eval-dev-quality/provider/openrouter/openrouter.go:99
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query.func1
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:206
+github.com/avast/retry-go.Do
+	/home/ubuntu/go/pkg/mod/github.com/avast/retry-go@v3.0.0+incompatible/retry.go:127
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:202
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:173
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:175
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+plain.go]
+2024/06/19 10:02:32 Evaluating model "openrouter/huggingfaceh4/zephyr-7b-beta" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 10:02:32 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:02:33 Attempt 1/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:02:38 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:02:38 Attempt 2/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:02:48 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:02:48 Attempt 3/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:02:48 Evaluated model "openrouter/huggingfaceh4/zephyr-7b-beta" on task "write-tests" using language "golang" and repository "golang/plain": encountered 1 problems: [error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+github.com/symflower/eval-dev-quality/provider/openai-api.QueryOpenAIAPIModel
+	/home/ubuntu/eval-dev-quality/provider/openai-api/query.go:26
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/ubuntu/eval-dev-quality/provider/openrouter/openrouter.go:99
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query.func1
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:206
+github.com/avast/retry-go.Do
+	/home/ubuntu/go/pkg/mod/github.com/avast/retry-go@v3.0.0+incompatible/retry.go:127
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:202
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:173
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:175
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+plain.go]
+2024/06/19 10:03:03 Evaluating model "openrouter/huggingfaceh4/zephyr-7b-beta" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 10:03:03 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:03:03 Attempt 1/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:03:08 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:03:08 Attempt 2/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:03:18 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:03:19 Attempt 3/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:03:19 Evaluated model "openrouter/huggingfaceh4/zephyr-7b-beta" on task "write-tests" using language "golang" and repository "golang/plain": encountered 1 problems: [error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+github.com/symflower/eval-dev-quality/provider/openai-api.QueryOpenAIAPIModel
+	/home/ubuntu/eval-dev-quality/provider/openai-api/query.go:26
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/ubuntu/eval-dev-quality/provider/openrouter/openrouter.go:99
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query.func1
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:206
+github.com/avast/retry-go.Do
+	/home/ubuntu/go/pkg/mod/github.com/avast/retry-go@v3.0.0+incompatible/retry.go:127
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:202
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:173
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:175
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+plain.go]
+2024/06/19 10:03:34 Evaluating model "openrouter/huggingfaceh4/zephyr-7b-beta" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/06/19 10:03:34 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:03:34 Attempt 1/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:03:39 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:03:39 Attempt 2/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:03:49 Querying model "openrouter/huggingfaceh4/zephyr-7b-beta" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/06/19 10:03:49 Attempt 3/3: error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+2024/06/19 10:03:49 Evaluated model "openrouter/huggingfaceh4/zephyr-7b-beta" on task "write-tests" using language "golang" and repository "golang/plain": encountered 1 problems: [error, status code: 404, message: No endpoints found for the request. Check your provider filtering parameters and logging settings: https://openrouter.ai/settings#analytics
+github.com/symflower/eval-dev-quality/provider/openai-api.QueryOpenAIAPIModel
+	/home/ubuntu/eval-dev-quality/provider/openai-api/query.go:26
+github.com/symflower/eval-dev-quality/provider/openrouter.(*Provider).Query
+	/home/ubuntu/eval-dev-quality/provider/openrouter/openrouter.go:99
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query.func1
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:206
+github.com/avast/retry-go.Do
+	/home/ubuntu/go/pkg/mod/github.com/avast/retry-go@v3.0.0+incompatible/retry.go:127
+github.com/symflower/eval-dev-quality/model/llm.(*Model).query
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:202
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:173
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+github.com/symflower/eval-dev-quality/model/llm.(*Model).generateTestsForFile
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:175
+github.com/symflower/eval-dev-quality/model/llm.(*Model).RunTask
+	/home/ubuntu/eval-dev-quality/model/llm/llm.go:139
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/home/ubuntu/eval-dev-quality/evaluate/task/task-write-test.go:79
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:128
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:273
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/home/ubuntu/eval-dev-quality/evaluate/evaluate.go:118
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/evaluate.go:363
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:34
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/home/ubuntu/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/cmd/command.go:37
+main.main
+	/home/ubuntu/eval-dev-quality/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/proc.go:267
+runtime.goexit
+	/home/ubuntu/.eval-dev-quality/go/src/runtime/asm_amd64.s:1650
+plain.go]
