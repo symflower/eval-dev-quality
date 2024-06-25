@@ -33,6 +33,11 @@ func (m *Model) ID() (id string) {
 	return "symflower" + provider.ProviderModelSeparator + "symbolic-execution"
 }
 
+// Name returns the name of this model.
+func (m *Model) Name() (name string) {
+	return "Symbolic Execution"
+}
+
 // IsTaskSupported returns whether the model supports the given task or not.
 func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported bool) {
 	switch taskIdentifier {

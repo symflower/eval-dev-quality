@@ -196,7 +196,8 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				command.logger.Panicf("ERROR: unknown custom provider %q for model %q", providerID, model)
 			}
 
-			modelProvider.AddModel(llm.NewModel(modelProvider, model))
+			modelName := strings.Split(model, provider.ProviderModelSeparator)
+			modelProvider.AddModel(llm.NewNamedModelWithCost(modelProvider, model, modelName[len(modelName)-1], 0))
 		}
 	}
 

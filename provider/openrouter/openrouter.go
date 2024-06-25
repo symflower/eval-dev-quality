@@ -64,6 +64,9 @@ type ModelsList struct {
 type Model struct {
 	// ID holds the model id.
 	ID string `json:"id"`
+	// Name holds the model name.
+	Name string `json:"name"`
+
 	// Pricing holds the pricing information of a model.
 	Pricing Pricing `json:"pricing"`
 }
@@ -93,7 +96,7 @@ func (p *Provider) Models() (models []model.Model, err error) {
 		if err != nil {
 			return nil, err
 		}
-		models[i] = llm.NewModelWithCost(p, p.ID()+provider.ProviderModelSeparator+model.ID, cost)
+		models[i] = llm.NewNamedModelWithCost(p, p.ID()+provider.ProviderModelSeparator+model.ID, model.Name, cost)
 	}
 
 	return models, nil

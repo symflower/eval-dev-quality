@@ -46,7 +46,7 @@ func GenerateCSV(formatter CSVFormatter) (csvData string, err error) {
 
 // Header returns the header description as a CSV row.
 func (a *AssessmentStore) Header() (header []string) {
-	return append([]string{"model", "cost", "language", "repository", "task", "score"}, metrics.AllAssessmentKeysStrings...)
+	return append([]string{"model-id", "model-name", "cost", "language", "repository", "task", "score"}, metrics.AllAssessmentKeysStrings...)
 }
 
 // Rows returns all data as CSV rows.
@@ -56,7 +56,7 @@ func (a *AssessmentStore) Rows() (rows [][]string) {
 		score := a.Score()
 		cost := m.Cost()
 
-		row := append([]string{m.ID(), strconv.FormatFloat(cost, 'f', -1, 64), l.ID(), r, string(t), strconv.FormatUint(uint64(score), 10)}, metrics...)
+		row := append([]string{m.ID(), m.Name(), strconv.FormatFloat(cost, 'f', -1, 64), l.ID(), r, string(t), strconv.FormatUint(uint64(score), 10)}, metrics...)
 		rows = append(rows, row)
 
 		return nil
@@ -67,7 +67,7 @@ func (a *AssessmentStore) Rows() (rows [][]string) {
 
 // Header returns the header description as a CSV row.
 func (a AssessmentPerModel) Header() (header []string) {
-	return append([]string{"model", "cost", "score"}, metrics.AllAssessmentKeysStrings...)
+	return append([]string{"model-id", "model-name", "cost", "score"}, metrics.AllAssessmentKeysStrings...)
 }
 
 // Rows returns all data as CSV rows.
@@ -82,7 +82,7 @@ func (a AssessmentPerModel) Rows() (rows [][]string) {
 		score := a[model].Score()
 		cost := model.Cost()
 
-		row := append([]string{model.ID(), strconv.FormatFloat(cost, 'f', -1, 64), strconv.FormatUint(uint64(score), 10)}, metrics...)
+		row := append([]string{model.ID(), model.Name(), strconv.FormatFloat(cost, 'f', -1, 64), strconv.FormatUint(uint64(score), 10)}, metrics...)
 		rows = append(rows, row)
 	}
 
