@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -88,7 +89,11 @@ func (p *Provider) Models() (models []model.Model, err error) {
 
 	models = make([]model.Model, len(responseModels.Models))
 	for i, model := range responseModels.Models {
-		models[i] = llm.NewModel(p, p.ID()+provider.ProviderModelSeparator+model.ID)
+		cost, err := sumModelCosts(model)
+		if err != nil {
+			return nil, err
+		}
+		models[i] = llm.NewModelWithCost(p, p.ID()+provider.ProviderModelSeparator+model.ID, cost)
 	}
 
 	return models, nil
@@ -136,6 +141,28 @@ func providerModels(url string) (models ModelsList, err error) {
 	}
 
 	return models, nil
+}
+
+// sumModelCosts sums the different costs of a model.
+func sumModelCosts(model Model) (cost float64, err error) {
+	prompt, err := strconv.ParseFloat(strings.TrimSpace(model.Pricing.Prompt), 64)
+	if err != nil {
+		return 0, pkgerrors.WithStack(err)
+	}
+	completion, err := strconv.ParseFloat(strings.TrimSpace(model.Pricing.Completion), 64)
+	if err != nil {
+		return 0, pkgerrors.WithStack(err)
+	}
+	request, err := strconv.ParseFloat(strings.TrimSpace(model.Pricing.Request), 64)
+	if err != nil {
+		return 0, pkgerrors.WithStack(err)
+	}
+	image, err := strconv.ParseFloat(strings.TrimSpace(model.Pricing.Image), 64)
+	if err != nil {
+		return 0, pkgerrors.WithStack(err)
+	}
+
+	return prompt + completion + request + image, nil
 }
 
 var _ provider.InjectToken = (*Provider)(nil)
