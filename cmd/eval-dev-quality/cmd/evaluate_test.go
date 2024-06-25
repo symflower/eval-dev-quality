@@ -21,6 +21,7 @@ import (
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 	"github.com/symflower/eval-dev-quality/tools"
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
@@ -589,7 +590,7 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", "golang-summed.csv"): nil,
 						filepath.Join("result-directory", "models-summed.csv"): nil,
 						filepath.Join("result-directory", "README.md"):         nil,
-						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+providertesting.OllamaTestModel, "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+model.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
 					},
 				})
 			}
@@ -637,7 +638,7 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", "golang-summed.csv"): nil,
 						filepath.Join("result-directory", "models-summed.csv"): nil,
 						filepath.Join("result-directory", "README.md"):         nil,
-						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+providertesting.OllamaTestModel, "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+model.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
 					},
 				})
 			}
