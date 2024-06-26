@@ -7,7 +7,7 @@ public class VariableUnknownTest {
 	@Test
 	public void variableUnknown1() {
 		int x = -1;
-		int expected = -1;
+		int expected = 1;
 		int actual = VariableUnknown.variableUnknown(x);
 
 		assertEquals(expected, actual);
