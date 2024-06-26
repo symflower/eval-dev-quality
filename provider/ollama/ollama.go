@@ -72,7 +72,7 @@ func (p *Provider) Models() (models []model.Model, err error) {
 
 	models = make([]model.Model, len(ms))
 	for i, modelName := range ms {
-		models[i] = llm.NewModel(p, p.ID()+provider.ProviderModelSeparator+modelName)
+		models[i] = llm.NewNamedModelWithCost(p, p.ID()+provider.ProviderModelSeparator+modelName, modelName, 0)
 	}
 
 	return models, nil

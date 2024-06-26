@@ -11,6 +11,8 @@ import (
 type Model interface {
 	// ID returns the unique ID of this model.
 	ID() (id string)
+	// Name returns the human-readable name of this model.
+	Name() (name string)
 
 	// IsTaskSupported returns whether the model supports the given task or not.
 	IsTaskSupported(taskIdentifier task.Identifier) (isSupported bool)

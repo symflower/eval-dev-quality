@@ -28,6 +28,8 @@ type Model struct {
 	provider provider.Query
 	// model holds the identifier for the LLM model.
 	model string
+	// name holds the name for the LLM model.
+	name string
 
 	// queryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	queryAttempts uint
@@ -46,11 +48,12 @@ func NewModel(provider provider.Query, modelIdentifier string) *Model {
 	}
 }
 
-// NewModelWithCost returns an LLM model corresponding to the given identifier which is queried via the given provider, and with pricing information.
-func NewModelWithCost(provider provider.Query, modelIdentifier string, cost float64) *Model {
+// NewNamedModelWithCost returns an LLM model corresponding to the given identifier which is queried via the given provider, and with name and pricing information.
+func NewNamedModelWithCost(provider provider.Query, modelIdentifier string, name string, cost float64) *Model {
 	return &Model{
 		provider: provider,
 		model:    modelIdentifier,
+		name:     name,
 
 		queryAttempts: 1,
 
@@ -133,6 +136,11 @@ var _ model.Model = (*Model)(nil)
 // ID returns the unique ID of this model.
 func (m *Model) ID() (id string) {
 	return m.model
+}
+
+// Name returns the name of this model.
+func (m *Model) Name() (name string) {
+	return m.name
 }
 
 // IsTaskSupported returns whether the model supports the given task or not.

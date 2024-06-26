@@ -20,9 +20,10 @@ func NewMockModelNamed(t *testing.T, id string) *MockModel {
 }
 
 // NewMockModelNamed returns a new named mocked model with cost information.
-func NewMockModelNamedWithCosts(t *testing.T, id string, cost float64) *MockModel {
+func NewMockModelNamedWithCosts(t *testing.T, id string, name string, cost float64) *MockModel {
 	m := NewMockModel(t)
 	m.On("ID").Return(id).Maybe()
+	m.On("Name").Return(name).Maybe()
 	m.On("Cost").Return(cost).Maybe()
 
 	return m
