@@ -3,6 +3,7 @@ package task
 import (
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
@@ -22,6 +23,9 @@ type TaskCodeRepair struct {
 	Language language.Language
 	// Model holds the model which the task should be evaluated.
 	Model model.Model
+
+	// CurrentRun holds the current run being performed.
+	CurrentRun uint
 
 	// Logger holds the logger for this tasks.
 	Logger *log.Logger
@@ -53,7 +57,8 @@ func (t *TaskCodeRepair) Identifier() evaltask.Identifier {
 // Run performs source code repairing in a repository with compilation errors.
 // This task requires the repository to consist of multiple packages, with each containing one faulty implementation file and a corresponding test file.
 func (t *TaskCodeRepair) Run(repository evaltask.Repository) (repositoryAssessment metrics.Assessments, problems []error, err error) {
-	log, logClose, err := log.WithFile(t.Logger, filepath.Join(t.ResultPath, string(t.Identifier()), model.CleanModelNameForFileSystem(t.Model.ID()), t.Language.ID(), repository.Name()+".log"))
+	logFilePath := filepath.Join(t.ResultPath, string(t.Identifier()), model.CleanModelNameForFileSystem(t.Model.ID()), t.Language.ID())
+	log, logClose, err := log.WithFile(t.Logger, filepath.Join(logFilePath, repository.Name()+".log"))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -86,11 +91,13 @@ func (t *TaskCodeRepair) Run(repository evaltask.Repository) (repositoryAssessme
 			return nil, nil, err
 		}
 
+		fileName := strings.TrimSuffix(sourceFile, filepath.Ext(sourceFile))
 		ctx := evaltask.Context{
 			Language: t.Language,
 
-			RepositoryPath: packagePath,
-			FilePath:       sourceFile,
+			RepositoryPath:        packagePath,
+			FilePath:              sourceFile,
+			QueryResponseFilePath: filepath.Join(logFilePath, repository.Name()+"-"+fileName+"-"+strconv.Itoa(int(t.CurrentRun))+".md"),
 
 			Arguments: &TaskArgumentsCodeRepair{
 				Mistakes: mistakes,
@@ -155,4 +162,9 @@ func (t *TaskCodeRepair) unpackCodeRepairPackage(fileLogger *log.Logger, package
 	}
 
 	return sourceFilePath, mistakes, nil
+}
+
+// SetRun sets the current run being performed.
+func (t *TaskCodeRepair) SetCurrentRun(run uint) {
+	t.CurrentRun = run
 }

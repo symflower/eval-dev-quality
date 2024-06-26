@@ -25,6 +25,8 @@ type Context struct {
 	RepositoryPath string
 	// FilePath holds the path the file under test relative to the repository path.
 	FilePath string
+	// QueryResponseFilePath holds the file path were query responses are written to.
+	QueryResponseFilePath string
 
 	// Arguments holds extra data that can be used in a query prompt.
 	Arguments any
@@ -40,6 +42,8 @@ type Task interface {
 
 	// Run runs a task in a given repository.
 	Run(repository Repository) (assessments metrics.Assessments, problems []error, err error)
+	// SetCurrentRun sets the current run being performed.
+	SetCurrentRun(run uint)
 }
 
 // Repository defines a repository to be evaluated.

@@ -2,6 +2,8 @@ package task
 
 import (
 	"path/filepath"
+	"strconv"
+	"strings"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
@@ -20,6 +22,9 @@ type TaskWriteTests struct {
 	Language language.Language
 	// Model holds the model which the task should be evaluated.
 	Model model.Model
+
+	// CurrentRun holds the current run being performed.
+	CurrentRun uint
 
 	// Logger holds the logger for this tasks.
 	Logger *log.Logger
@@ -46,7 +51,8 @@ func (t *TaskWriteTests) Identifier() evaltask.Identifier {
 func (t *TaskWriteTests) Run(repository evaltask.Repository) (repositoryAssessment metrics.Assessments, problems []error, err error) {
 	dataPath := repository.DataPath()
 
-	log, logClose, err := log.WithFile(t.Logger, filepath.Join(t.ResultPath, string(t.Identifier()), model.CleanModelNameForFileSystem(t.Model.ID()), t.Language.ID(), repository.Name()+".log"))
+	logFilePath := filepath.Join(t.ResultPath, string(t.Identifier()), model.CleanModelNameForFileSystem(t.Model.ID()), t.Language.ID())
+	log, logClose, err := log.WithFile(t.Logger, filepath.Join(logFilePath, repository.Name()+".log"))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -68,11 +74,14 @@ func (t *TaskWriteTests) Run(repository evaltask.Repository) (repositoryAssessme
 			t.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 		}
 
+		fileNameWithExtension := filepath.Base(filePath)
+		fileName := strings.TrimSuffix(fileNameWithExtension, filepath.Ext(fileNameWithExtension))
 		ctx := evaltask.Context{
 			Language: t.Language,
 
-			RepositoryPath: dataPath,
-			FilePath:       filePath,
+			RepositoryPath:        dataPath,
+			FilePath:              filePath,
+			QueryResponseFilePath: filepath.Join(logFilePath, repository.Name()+"-"+fileName+"-"+strconv.Itoa(int(t.CurrentRun))+".md"),
 
 			Logger: log,
 		}
@@ -101,4 +110,9 @@ func (t *TaskWriteTests) Run(repository evaltask.Repository) (repositoryAssessme
 	}
 
 	return repositoryAssessment, problems, nil
+}
+
+// SetRun sets the current run being performed.
+func (t *TaskWriteTests) SetCurrentRun(run uint) {
+	t.CurrentRun = run
 }

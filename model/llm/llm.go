@@ -193,7 +193,7 @@ func (m *Model) generateTestsForFile(ctx task.Context) (assessment metrics.Asses
 		return nil, err
 	}
 
-	response, duration, err := m.query(ctx.Logger, request)
+	response, duration, err := m.query(ctx, ctx.Logger, request)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
@@ -221,7 +221,7 @@ func (m *Model) generateTestsForFile(ctx task.Context) (assessment metrics.Asses
 	return assessment, nil
 }
 
-func (m *Model) query(log *log.Logger, request string) (response string, duration time.Duration, err error) {
+func (m *Model) query(ctx task.Context, log *log.Logger, request string) (response string, duration time.Duration, err error) {
 	if err := retry.Do(
 		func() error {
 			log.Printf("Querying model %q with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
@@ -246,7 +246,23 @@ func (m *Model) query(log *log.Logger, request string) (response string, duratio
 		return "", 0, err
 	}
 
+	// Store the response in a file.
+	if err = writeQueryAndResponseToFile(ctx.QueryResponseFilePath, request, response); err != nil {
+		return "", 0, err
+	}
+
 	return response, duration, nil
+}
+
+// writeQueryAndResponseToFile writes the query and model response in a file.
+func writeQueryAndResponseToFile(filePath string, query string, response string) (err error) {
+	content := "# Query\n" + query + "\n# Response\n" + response
+
+	if err = os.WriteFile(filePath, []byte(content), 0644); err != nil {
+		return pkgerrors.WithStack(err)
+	}
+
+	return nil
 }
 
 // repairSourceCodeFile queries the model to repair a source code with compilation error.
@@ -276,7 +292,7 @@ func (m *Model) repairSourceCodeFile(ctx task.Context, codeRepairArguments *eval
 		return nil, err
 	}
 
-	response, duration, err := m.query(ctx.Logger, request)
+	response, duration, err := m.query(ctx, ctx.Logger, request)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}

@@ -341,3 +341,84 @@ func TestLLMCodeRepairSourceFilePrompt(t *testing.T) {
 		`),
 	})
 }
+
+func TestWriteQueryAndResponseToFile(t *testing.T) {
+	temporaryPath := t.TempDir()
+	filepath := filepath.Join(temporaryPath, "mistakes-importMissing-1.md")
+
+	query := bytesutil.StringTrimIndentations(`
+		Given the following Go code file "/path/to/foobar.go" with package "foobar" and a list of compilation errors, modify the code such that the errors are resolved.
+		The response must contain only the source code and nothing else.
+
+		` + "```" + `golang
+		package foobar
+		func foobar(i int) int
+			return i + 1
+		}
+		` + "```" + `
+
+		The list of compilation errors is the following:
+		- /path/to/foobar.go:3:1: expected 'IDENT', found 'func'
+		- /path/to/foobar.go: syntax error: non-declaration statement outside function body
+		- /path/to/foobar.go: missing return
+	`)
+	response := bytesutil.StringTrimIndentations(`
+		` + "```" + `
+		package com.eval;
+		public class OpeningBracketMissing {
+			public static int openingBracketMissing(int x) {
+				if (x > 0) {
+					return 1;
+				}
+				if (x < 0) {
+					return -1;
+				}
+				return 0;
+			}
+		}
+		` + "```" + `
+	`)
+
+	err := writeQueryAndResponseToFile(filepath, query, response)
+	require.NoError(t, err)
+
+	expectedFileContent := bytesutil.StringTrimIndentations(`
+		# Query
+		Given the following Go code file "/path/to/foobar.go" with package "foobar" and a list of compilation errors, modify the code such that the errors are resolved.
+		The response must contain only the source code and nothing else.
+
+		` + "```" + `golang
+		package foobar
+		func foobar(i int) int
+			return i + 1
+		}
+		` + "```" + `
+
+		The list of compilation errors is the following:
+		- /path/to/foobar.go:3:1: expected 'IDENT', found 'func'
+		- /path/to/foobar.go: syntax error: non-declaration statement outside function body
+		- /path/to/foobar.go: missing return
+
+		# Response
+		` + "```" + `
+		package com.eval;
+		public class OpeningBracketMissing {
+			public static int openingBracketMissing(int x) {
+				if (x > 0) {
+					return 1;
+				}
+				if (x < 0) {
+					return -1;
+				}
+				return 0;
+			}
+		}
+		` + "```" + `
+	`)
+
+	data, err := os.ReadFile(filepath)
+	require.NoError(t, err)
+	actualFileContent := string(data)
+
+	assert.Equal(t, expectedFileContent, actualFileContent)
+}

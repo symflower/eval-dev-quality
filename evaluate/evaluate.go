@@ -125,6 +125,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 								}
 
+								task.SetCurrentRun(rm + 1)
 								assessment, ps, err := task.Run(temporaryRepository)
 								assessments.Add(model, language, repositoryPath, taskIdentifier, assessment)
 								if err != nil {

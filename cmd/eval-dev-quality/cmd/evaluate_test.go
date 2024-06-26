@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
+	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
@@ -592,6 +593,19 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", "models-summed.csv"): nil,
 						filepath.Join("result-directory", "README.md"):         nil,
 						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+model.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+model.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain-plain-1.md"): func(t *testing.T, filePath, data string) {
+							assert.Contains(t, data, "# Query")
+							assert.Contains(t, data, bytesutil.StringTrimIndentations(`
+								`+"```"+`golang
+								package plain
+
+								func plain() {
+									return // This does not do anything but it gives us a line to cover.
+								}
+								`+"```"+`
+							`))
+							assert.Contains(t, data, "# Response")
+						},
 					},
 				})
 			}
@@ -640,6 +654,19 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", "models-summed.csv"): nil,
 						filepath.Join("result-directory", "README.md"):         nil,
 						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+model.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+model.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain-plain-1.md"): func(t *testing.T, filePath, data string) {
+							assert.Contains(t, data, "# Query")
+							assert.Contains(t, data, bytesutil.StringTrimIndentations(`
+								`+"```"+`golang
+								package plain
+
+								func plain() {
+									return // This does not do anything but it gives us a line to cover.
+								}
+								`+"```"+`
+							`))
+							assert.Contains(t, data, "# Response")
+						},
 					},
 				})
 			}
