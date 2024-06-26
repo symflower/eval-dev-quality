@@ -16,6 +16,9 @@ type Model interface {
 	IsTaskSupported(taskIdentifier task.Identifier) (isSupported bool)
 	// RunTask runs the given task.
 	RunTask(ctx task.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error)
+
+	// Cost returns the cost of a model in US dollars.
+	Cost() (cost float64)
 }
 
 // SetQueryAttempts defines a model that can set the number of query attempts when a model request errors in the process of solving a task.

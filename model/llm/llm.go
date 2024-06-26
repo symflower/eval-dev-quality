@@ -31,6 +31,9 @@ type Model struct {
 
 	// queryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	queryAttempts uint
+
+	// cost holds the cost of a model
+	cost float64
 }
 
 // NewModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
@@ -40,6 +43,18 @@ func NewModel(provider provider.Query, modelIdentifier string) *Model {
 		model:    modelIdentifier,
 
 		queryAttempts: 1,
+	}
+}
+
+// NewModelWithCost returns an LLM model corresponding to the given identifier which is queried via the given provider, and with pricing information.
+func NewModelWithCost(provider provider.Query, modelIdentifier string, cost float64) *Model {
+	return &Model{
+		provider: provider,
+		model:    modelIdentifier,
+
+		queryAttempts: 1,
+
+		cost: cost,
 	}
 }
 
@@ -272,6 +287,16 @@ func (m *Model) repairSourceCodeFile(ctx task.Context, codeRepairArguments *eval
 	}
 
 	return assessment, nil
+}
+
+// Cost returns the cost of the model.
+func (m *Model) Cost() (cost float64) {
+	return m.cost
+}
+
+// SetCost sets the cost of a model.
+func (m *Model) SetCost(cost float64) {
+	m.cost = cost
 }
 
 var _ model.SetQueryAttempts = (*Model)(nil)

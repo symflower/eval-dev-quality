@@ -14,6 +14,24 @@ type MockModel struct {
 	mock.Mock
 }
 
+// Cost provides a mock function with given fields:
+func (_m *MockModel) Cost() float64 {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for Cost")
+	}
+
+	var r0 float64
+	if rf, ok := ret.Get(0).(func() float64); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(float64)
+	}
+
+	return r0
+}
+
 // ID provides a mock function with given fields:
 func (_m *MockModel) ID() string {
 	ret := _m.Called()

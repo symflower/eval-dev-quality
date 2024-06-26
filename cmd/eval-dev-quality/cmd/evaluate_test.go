@@ -59,7 +59,8 @@ type extractMetricsMatch *regexp.Regexp
 var extractMetricsLogsMatch = extractMetricsMatch(regexp.MustCompile(`score=(\d+), coverage=(\d+), files-executed=(\d+), generate-tests-for-file-character-count=(\d+), processing-time=(\d+), response-character-count=(\d+), response-no-error=(\d+), response-no-excess=(\d+), response-with-code=(\d+)`))
 
 // extractMetricsCSVMatch is a regular expression to extract metrics from CSV rows.
-var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
+// REMARK The cost is not match as a group since it's just a model property that we carry along for informational purposes.
+var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`(?:\d+(?:\.\d+)?,)?(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
 
 // extractMetrics extracts multiple assessment metrics from the given string according to a given regular expression.
 func extractMetrics(t *testing.T, regex extractMetricsMatch, data string) (assessments []metrics.Assessments, scores []uint64) {
@@ -468,7 +469,7 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-					assert.Regexp(t, `Evaluation score for "symflower/symbolic-execution" \("code-no-excess"\): score=14, coverage=10, files-executed=1, generate-tests-for-file-character-count=254, processing-time=\d+, response-character-count=254, response-no-error=1, response-no-excess=1, response-with-code=1`, output)
+					assert.Regexp(t, `Evaluation score for "symflower/symbolic-execution" \("code-no-excess"\): cost=0.00, score=14, coverage=10, files-executed=1, generate-tests-for-file-character-count=254, processing-time=\d+, response-character-count=254, response-no-error=1, response-no-excess=1, response-with-code=1`, output)
 					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){

@@ -114,3 +114,8 @@ func countCharactersOfGeneratedFiles(repositoryPath string, filePaths []string) 
 
 	return count, nil
 }
+
+// Cost returns the cost of the model.
+func (m *Model) Cost() (cost float64) {
+	return 0
+}
