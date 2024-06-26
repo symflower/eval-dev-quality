@@ -5,6 +5,7 @@ import (
 	"io"
 	"os/exec"
 	"strings"
+	"sync"
 	"time"
 
 	pkgerrors "github.com/pkg/errors"
@@ -89,4 +90,44 @@ func FilterArgs(args []string, ignored []string) (filtered []string) {
 	}
 
 	return filtered
+}
+
+// Parallel holds a buffered channel for limiting parallel executions.
+type Parallel struct {
+	ch chan struct{}
+	wg sync.WaitGroup
+}
+
+// NewParallel returns a Parallel execution helper.
+func NewParallel(maxWorkers uint) *Parallel {
+	return &Parallel{
+		ch: make(chan struct{}, maxWorkers),
+	}
+}
+
+// acquire slot.
+func (p *Parallel) acquire() {
+	p.ch <- struct{}{}
+}
+
+// release slot.
+func (p *Parallel) release() {
+	<-p.ch
+}
+
+// Execute runs the given function while checking for a execution limit.
+func (p *Parallel) Execute(f func()) {
+	p.acquire()
+	p.wg.Add(1)
+
+	go func() {
+		defer p.release()
+		defer p.wg.Done()
+		f()
+	}()
+}
+
+// Wait waits until all executions are done.
+func (l *Parallel) Wait() {
+	l.wg.Wait()
 }
