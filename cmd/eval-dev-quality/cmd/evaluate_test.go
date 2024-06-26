@@ -816,11 +816,13 @@ func TestEvaluateInitialize(t *testing.T) {
 	// makeValidCommand is a helper to abstract all the default values that have to be set to make a command valid.
 	makeValidCommand := func(modify func(command *Evaluate)) *Evaluate {
 		c := &Evaluate{
-			QueryAttempts:    1,
-			Runs:             1,
 			ExecutionTimeout: 1,
-			TestdataPath:     filepath.Join("..", "..", "..", "testdata"),
+			Parallel:         1,
+			QueryAttempts:    1,
 			ResultPath:       filepath.Join("$TEMP_PATH", "result-directory"),
+			Runs:             1,
+			Runtime:          "local",
+			TestdataPath:     filepath.Join("..", "..", "..", "testdata"),
 		}
 
 		if modify != nil {

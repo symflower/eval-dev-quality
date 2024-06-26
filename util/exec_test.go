@@ -2,6 +2,7 @@ package util
 
 import (
 	"context"
+	"sync/atomic"
 	"testing"
 	"time"
 
