@@ -72,6 +72,8 @@ type Evaluate struct {
 
 	// Runtime indicates if the evaluation is run locally or inside a container.
 	Runtime string `long:"runtime" description:"The runtime which will be used for the evaluation." default:"local" choice:"local" choice:"docker"`
+	// RuntimeImage determines the container image used for any container runtime.
+	RuntimeImage string `long:"runtime-image" description:"The container image to use for the evaluation." default:""`
 
 	// logger holds the logger of the command.
 	logger *log.Logger
@@ -140,6 +142,10 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			if _, err := exec.LookPath("docker"); err != nil {
 				command.logger.Panic("docker runtime could not be found")
 			}
+		}
+
+		if command.RuntimeImage == "" {
+			command.RuntimeImage = "ghcr.io/symflower/eval-dev-quality:v" + evaluate.Version
 		}
 
 		evaluationContext.NoDisqualification = command.NoDisqualification
@@ -488,7 +494,7 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 			"-v", // bind volume
 			resultPath + ":/home/ubuntu/evaluation",
 			"--rm", // automatically remove container after it finished
-			"ghcr.io/symflower/eval-dev-quality:v0.5.0",
+			command.RuntimeImage,
 		}
 
 		// Commands for the evaluation to run inside the container.
