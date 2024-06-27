@@ -7,6 +7,7 @@ import (
 	"regexp"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/symflower/eval-dev-quality/log"
 )
 
 // CoverageBlockUnfolded is an unfolded representation of a coverage data block.
@@ -23,11 +24,15 @@ type CoverageBlockUnfolded struct {
 var FileRangeMatch = regexp.MustCompile(`^(.+):(\d+):(\d+)-(.+):(\d+):(\d+)$`)
 
 // CoverageObjectCountOfFile parses the given coverage file and returns its coverage object count.
-func CoverageObjectCountOfFile(coverageFilePath string) (coverageObjectCount uint64, err error) {
+func CoverageObjectCountOfFile(logger *log.Logger, coverageFilePath string) (coverageObjectCount uint64, err error) {
 	coverageFile, err := os.ReadFile(coverageFilePath)
 	if err != nil {
 		return 0, pkgerrors.WithMessage(pkgerrors.WithStack(err), coverageFilePath)
 	}
+
+	// Log coverage objects.
+	logger.Printf("coverage objects: %s", string(coverageFile))
+
 	var coverageData []CoverageBlockUnfolded
 	if err := json.Unmarshal(coverageFile, &coverageData); err != nil {
 		return 0, pkgerrors.WithMessage(pkgerrors.WithStack(err), string(coverageFile))
