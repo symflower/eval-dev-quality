@@ -129,7 +129,7 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		}
 	}
 
-	coverage, err = language.CoverageObjectCountOfFile(coverageFilePath)
+	coverage, err = language.CoverageObjectCountOfFile(logger, coverageFilePath)
 	if err != nil {
 		return 0, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}

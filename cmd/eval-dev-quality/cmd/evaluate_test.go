@@ -371,8 +371,12 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
-				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"):     nil,
+				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Contains(t, data, "coverage objects: [{")
+				},
+				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Contains(t, data, "coverage objects: [{")
+				},
 			},
 		})
 	})
