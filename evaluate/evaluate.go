@@ -126,7 +126,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 								}
 
 								assessment, ps, err := task.Run(temporaryRepository)
-								assessments.Add(model, language, repositoryPath, taskIdentifier, assessment)
+								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								if err != nil {
 									ps = append(ps, err)
 								}
@@ -226,7 +226,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 								}
 
 								assessment, ps, err := task.Run(temporaryRepository)
-								assessments.Add(model, language, repositoryPath, taskIdentifier, assessment)
+								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 								if err != nil {
 									ctx.Log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)

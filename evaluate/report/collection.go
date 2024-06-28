@@ -84,6 +84,13 @@ func (a *AssessmentStore) Add(model model.Model, l language.Language, repository
 	assessments.Add(assessment)
 }
 
+// AddAssessmentPerTask adds new assessments per task.
+func (a *AssessmentStore) AddAssessmentPerTask(model model.Model, l language.Language, repositoryPath string, taskAssessment map[task.Identifier]metrics.Assessments) {
+	for taskIdentifier, assessment := range taskAssessment {
+		a.Add(model, l, repositoryPath, taskIdentifier, assessment)
+	}
+}
+
 // Walk walks over all entries.
 func (a *AssessmentStore) Walk(function func(m model.Model, l language.Language, r string, t task.Identifier, a metrics.Assessments) error) (err error) {
 	models := maps.Keys(a.store)

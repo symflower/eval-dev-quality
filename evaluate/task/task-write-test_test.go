@@ -13,6 +13,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
+	"github.com/symflower/eval-dev-quality/task"
 )
 
 func TestTaskWriteTestsRun(t *testing.T) {
@@ -59,9 +60,11 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			TestDataPath:   temporaryDirectoryPath,
 			RepositoryPath: filepath.Join("golang", "plain"),
 
-			ExpectedRepositoryAssessment: metrics.Assessments{
-				metrics.AssessmentKeyFilesExecuted:   1,
-				metrics.AssessmentKeyResponseNoError: 2,
+			ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				IdentifierWriteTests: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecuted:   1,
+					metrics.AssessmentKeyResponseNoError: 2,
+				},
 			},
 			ExpectedProblemContains: []string{
 				"expected 'package', found does",

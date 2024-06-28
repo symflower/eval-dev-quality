@@ -43,7 +43,7 @@ func (t *TaskWriteTests) Identifier() evaltask.Identifier {
 }
 
 // TaskWriteTests generates test files for the given implementation file in a repository.
-func (t *TaskWriteTests) Run(repository evaltask.Repository) (repositoryAssessment metrics.Assessments, problems []error, err error) {
+func (t *TaskWriteTests) Run(repository evaltask.Repository) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
 	dataPath := repository.DataPath()
 
 	log, logClose, err := log.WithFile(t.Logger, filepath.Join(t.ResultPath, string(t.Identifier()), model.CleanModelNameForFileSystem(t.Model.ID()), t.Language.ID(), repository.Name()+".log"))
@@ -62,7 +62,7 @@ func (t *TaskWriteTests) Run(repository evaltask.Repository) (repositoryAssessme
 		return nil, problems, pkgerrors.WithStack(err)
 	}
 
-	repositoryAssessment = metrics.NewAssessments()
+	modelAssessment := metrics.NewAssessments()
 	for _, filePath := range filePaths {
 		if err := repository.Reset(t.Logger); err != nil {
 			t.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
@@ -85,8 +85,8 @@ func (t *TaskWriteTests) Run(repository evaltask.Repository) (repositoryAssessme
 		if assessments[metrics.AssessmentKeyProcessingTime] == 0 {
 			return nil, nil, pkgerrors.Errorf("no model response time measurement present for %q at repository %q", t.Model.ID(), repository.Name())
 		}
-		repositoryAssessment.Add(assessments)
-		repositoryAssessment.Award(metrics.AssessmentKeyResponseNoError)
+		modelAssessment.Add(assessments)
+		modelAssessment.Award(metrics.AssessmentKeyResponseNoError)
 
 		coverage, ps, err := t.Language.Execute(log, dataPath)
 		problems = append(problems, ps...)
@@ -96,8 +96,12 @@ func (t *TaskWriteTests) Run(repository evaltask.Repository) (repositoryAssessme
 			continue
 		}
 		log.Printf("Executes tests with %d coverage objects", coverage)
-		repositoryAssessment.Award(metrics.AssessmentKeyFilesExecuted)
-		repositoryAssessment.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
+		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
+		modelAssessment.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
+	}
+
+	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{
+		IdentifierWriteTests: modelAssessment,
 	}
 
 	return repositoryAssessment, problems, nil

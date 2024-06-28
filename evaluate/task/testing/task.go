@@ -24,7 +24,7 @@ type TestCaseTask struct {
 	TestDataPath   string
 	RepositoryPath string
 
-	ExpectedRepositoryAssessment metrics.Assessments
+	ExpectedRepositoryAssessment map[evaltask.Identifier]metrics.Assessments
 	ExpectedResultFiles          map[string]func(t *testing.T, filePath string, data string)
 	ExpectedProblemContains      []string
 	ExpectedError                error
@@ -33,7 +33,7 @@ type TestCaseTask struct {
 func (tc *TestCaseTask) Validate(t *testing.T, task evaltask.Task, repository evaltask.Repository, resultPath string) {
 	actualRepositoryAssessment, actualProblems, actualErr := task.Run(repository)
 
-	metricstesting.AssertAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
+	metricstesting.AssertTaskAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 	if assert.Equal(t, len(tc.ExpectedProblemContains), len(actualProblems), "problems count") {
 		for i, expectedProblem := range tc.ExpectedProblemContains {
 			actualProblem := actualProblems[i]

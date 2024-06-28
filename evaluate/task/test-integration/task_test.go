@@ -12,6 +12,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model/symflower"
+	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 )
@@ -48,14 +49,16 @@ func TestTaskWriteTestsRun(t *testing.T) {
 		TestDataPath:   filepath.Join("..", "..", "..", "testdata"),
 		RepositoryPath: filepath.Join("golang", "plain"),
 
-		ExpectedRepositoryAssessment: metrics.Assessments{
-			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
-			metrics.AssessmentKeyResponseCharacterCount:             254,
-			metrics.AssessmentKeyCoverage:                           10,
-			metrics.AssessmentKeyFilesExecuted:                      1,
-			metrics.AssessmentKeyResponseNoError:                    1,
-			metrics.AssessmentKeyResponseNoExcess:                   1,
-			metrics.AssessmentKeyResponseWithCode:                   1,
+		ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+			evaluatetask.IdentifierWriteTests: metrics.Assessments{
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
+				metrics.AssessmentKeyResponseCharacterCount:             254,
+				metrics.AssessmentKeyCoverage:                           10,
+				metrics.AssessmentKeyFilesExecuted:                      1,
+				metrics.AssessmentKeyResponseNoError:                    1,
+				metrics.AssessmentKeyResponseNoExcess:                   1,
+				metrics.AssessmentKeyResponseWithCode:                   1,
+			},
 		},
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 			filepath.Join(string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
