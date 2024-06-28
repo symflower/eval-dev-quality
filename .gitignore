@@ -22,3 +22,6 @@ go.work
 
 # Ignore local configurations.
 .envrc
+
+# Ignore the evaluation directories
+/evaluation-*

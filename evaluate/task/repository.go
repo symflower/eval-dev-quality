@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -114,6 +115,7 @@ func TemporaryRepository(logger *log.Logger, testDataPath string, repositoryPath
 	repositoryPathAbsolute := filepath.Join(testDataPath, repositoryPathRelative)
 
 	temporaryPath, err := os.MkdirTemp("", "eval-dev-quality")
+	copyFileToDir(".tool-versions", temporaryPath)
 	if err != nil {
 		return nil, cleanup, pkgerrors.WithStack(err)
 	}
@@ -206,4 +208,40 @@ func TemporaryRepository(logger *log.Logger, testDataPath string, repositoryPath
 	}
 
 	return repository, cleanup, nil
+}
+func copyFileToDir(srcFile, dstDir string) error {
+	// Open source file for reading
+	src, err := os.Open(srcFile)
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	// Ensure destination directory exists
+	if _, err := os.Stat(dstDir); os.IsNotExist(err) {
+		os.MkdirAll(dstDir, 0755)
+	}
+
+	// Create destination file
+	dstFile := filepath.Join(dstDir, filepath.Base(srcFile))
+	dst, err := os.Create(dstFile)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	// Copy the src file to dst file
+	_, err = io.Copy(dst, src)
+	if err != nil {
+		return err
+	}
+
+	// Commit the file contents
+	// Flushes memory to disk
+	err = dst.Sync()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
