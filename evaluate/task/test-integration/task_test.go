@@ -59,6 +59,15 @@ func TestTaskWriteTestsRun(t *testing.T) {
 				metrics.AssessmentKeyResponseNoExcess:                   1,
 				metrics.AssessmentKeyResponseWithCode:                   1,
 			},
+			evaluatetask.IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
+				metrics.AssessmentKeyResponseCharacterCount:             254,
+				metrics.AssessmentKeyCoverage:                           10,
+				metrics.AssessmentKeyFilesExecuted:                      1,
+				metrics.AssessmentKeyResponseNoError:                    1,
+				metrics.AssessmentKeyResponseNoExcess:                   1,
+				metrics.AssessmentKeyResponseWithCode:                   1,
+			},
 		},
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 			filepath.Join(string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {

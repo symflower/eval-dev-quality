@@ -152,3 +152,19 @@ func (a Assessments) StringCSV() (row []string) {
 
 	return row
 }
+
+// CombineWithSymflowerFixAssessments combines the model assessments with the ones from "symflower fix".
+func CombineWithSymflowerFixAssessments(model Assessments, fixed Assessments) (combined Assessments) {
+	combined = NewAssessments()
+
+	combined[AssessmentKeyCoverage] = fixed[AssessmentKeyCoverage]
+	combined[AssessmentKeyFilesExecuted] = fixed[AssessmentKeyFilesExecuted]
+	combined[AssessmentKeyGenerateTestsForFileCharacterCount] = model[AssessmentKeyGenerateTestsForFileCharacterCount]
+	combined[AssessmentKeyProcessingTime] = model[AssessmentKeyProcessingTime] + fixed[AssessmentKeyProcessingTime]
+	combined[AssessmentKeyResponseCharacterCount] = model[AssessmentKeyResponseCharacterCount]
+	combined[AssessmentKeyResponseNoError] = model[AssessmentKeyResponseNoError]
+	combined[AssessmentKeyResponseNoExcess] = model[AssessmentKeyResponseNoExcess]
+	combined[AssessmentKeyResponseWithCode] = model[AssessmentKeyResponseWithCode]
+
+	return combined
+}

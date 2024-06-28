@@ -249,7 +249,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 		}
 	}
 	if isOnlyPlainRepositories {
-		totalScore = uint64(len(ctx.Languages)) * uint64(ctx.Runs)
+		// For every write-test task in the plain repository, each model is also executed with the `symflower fix` which results in double the total results.
+		totalScore = 2 * uint64(len(ctx.Languages)) * uint64(ctx.Runs)
 	}
 
 	return assessments, totalScore

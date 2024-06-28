@@ -33,6 +33,8 @@ func registerIdentifier(name string) (identifier evaltask.Identifier) {
 var (
 	// IdentifierWriteTests holds the identifier for the "write test" task.
 	IdentifierWriteTests = registerIdentifier("write-tests")
+	// IdentifierWriteTestsSymflowerFix holds the identifier for the "write test" task with the "symflower fix" applied.
+	IdentifierWriteTestsSymflowerFix = registerIdentifier("write-tests-symflower-fix")
 	// IdentifierCodeRepair holds the identifier for the "code repair" task.
 	IdentifierCodeRepair = registerIdentifier("code-repair")
 )

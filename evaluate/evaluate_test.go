@@ -139,7 +139,7 @@ func TestEvaluate(t *testing.T) {
 				return nil
 			}))
 
-			assert.Equal(t, tc.ExpectedAssessments, actualAssessments)
+			assert.ElementsMatch(t, tc.ExpectedAssessments, actualAssessments)
 			assert.Equal(t, tc.ExpectedTotalScore, actualTotalScore)
 
 			if tc.ExpectedOutputValidate != nil {
@@ -200,8 +200,15 @@ func TestEvaluate(t *testing.T) {
 					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment:     metrics.Assessments{},
 				},
+				&metricstesting.AssessmentTuple{
+					Model:          mockedModel,
+					Language:       languageGolang,
+					RepositoryPath: repositoryPath,
+					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+					Assessment:     metrics.Assessments{},
+				},
 			},
-			ExpectedTotalScore: 1,
+			ExpectedTotalScore: 2,
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				filepath.Join(string(evaluatetask.IdentifierWriteTests), mockedModel.ID(), "golang", "golang", "plain.log"): nil,
 			},
@@ -246,8 +253,15 @@ func TestEvaluate(t *testing.T) {
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment:     metrics.Assessments{},
 					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment:     metrics.Assessments{},
+					},
 				},
-				ExpectedTotalScore: 1,
+				ExpectedTotalScore: 2,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, ErrEmptyResponseFromModel.Error())
@@ -301,8 +315,19 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyResponseNoError:                    1,
 						},
 					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
+							metrics.AssessmentKeyResponseCharacterCount:             14,
+							metrics.AssessmentKeyResponseNoError:                    1,
+						},
+					},
 				},
-				ExpectedTotalScore: 1,
+				ExpectedTotalScore: 2,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, "Attempt 1/3: "+ErrEmptyResponseFromModel.Error())
@@ -355,8 +380,19 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyResponseNoError:                    1,
 						},
 					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
+							metrics.AssessmentKeyResponseCharacterCount:             14,
+							metrics.AssessmentKeyResponseNoError:                    1,
+						},
+					},
 				},
-				ExpectedTotalScore: 1,
+				ExpectedTotalScore: 2,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, "DONE 0 tests, 1 error")
@@ -446,8 +482,30 @@ func TestEvaluate(t *testing.T) {
 					&metricstesting.AssessmentTuple{
 						Model:          mockedModel,
 						Language:       languageGolang,
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   1,
+							metrics.AssessmentKeyResponseNoError: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   2,
+							metrics.AssessmentKeyResponseNoError: 2,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyCoverage:        0,
 							metrics.AssessmentKeyFilesExecuted:   2,
@@ -519,8 +577,30 @@ func TestEvaluate(t *testing.T) {
 					&metricstesting.AssessmentTuple{
 						Model:          mockedModel,
 						Language:       languageGolang,
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   2,
+							metrics.AssessmentKeyResponseNoError: 2,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   1,
+							metrics.AssessmentKeyResponseNoError: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyCoverage:        0,
 							metrics.AssessmentKeyFilesExecuted:   1,
@@ -581,6 +661,13 @@ func TestEvaluate(t *testing.T) {
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment:     map[metrics.AssessmentKey]uint64{},
 					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment:     map[metrics.AssessmentKey]uint64{},
+					},
 				},
 				ExpectedTotalScore: 0,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -634,8 +721,19 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyResponseNoError: 3,
 						},
 					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   3,
+							metrics.AssessmentKeyResponseNoError: 3,
+						},
+					},
 				},
-				ExpectedTotalScore: 3,
+				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
@@ -690,8 +788,19 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyResponseNoError: 3,
 						},
 					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   3,
+							metrics.AssessmentKeyResponseNoError: 3,
+						},
+					},
 				},
-				ExpectedTotalScore: 3,
+				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
@@ -776,8 +885,19 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyResponseNoError: 3,
 						},
 					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   3,
+							metrics.AssessmentKeyResponseNoError: 3,
+						},
+					},
 				},
-				ExpectedTotalScore: 3,
+				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
@@ -845,8 +965,19 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyResponseNoError: 3,
 						},
 					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel,
+						Language:       languageGolang,
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyCoverage:        0,
+							metrics.AssessmentKeyFilesExecuted:   3,
+							metrics.AssessmentKeyResponseNoError: 3,
+						},
+					},
 				},
-				ExpectedTotalScore: 3,
+				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 				},
@@ -895,8 +1026,19 @@ func TestEvaluate(t *testing.T) {
 						metrics.AssessmentKeyResponseNoError: 1,
 					},
 				},
+				&metricstesting.AssessmentTuple{
+					Model:          mockedModel,
+					Language:       languageGolang,
+					RepositoryPath: repositoryPath,
+					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+					Assessment: map[metrics.AssessmentKey]uint64{
+						metrics.AssessmentKeyCoverage:        0,
+						metrics.AssessmentKeyFilesExecuted:   1,
+						metrics.AssessmentKeyResponseNoError: 1,
+					},
+				},
 			},
-			ExpectedTotalScore: 1,
+			ExpectedTotalScore: 2,
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 			},
