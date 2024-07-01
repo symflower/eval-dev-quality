@@ -1,13 +1,16 @@
 package cmd
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"slices"
 	"sort"
 	"strings"
+	"text/template"
 	"time"
 
 	pkgerrors "github.com/pkg/errors"
@@ -71,11 +74,13 @@ type Evaluate struct {
 	NoDisqualification bool `long:"no-disqualification" description:"By default, models that cannot solve basic language tasks are disqualified for more complex tasks. Overwriting this behavior runs all tasks regardless."`
 
 	// Runtime indicates if the evaluation is run locally or inside a container.
-	Runtime string `long:"runtime" description:"The runtime which will be used for the evaluation." default:"local" choice:"local" choice:"docker"`
+	Runtime string `long:"runtime" description:"The runtime which will be used for the evaluation." default:"local" choice:"local" choice:"docker" choice:"kubernetes"`
 	// RuntimeImage determines the container image used for any container runtime.
 	RuntimeImage string `long:"runtime-image" description:"The container image to use for the evaluation." default:""`
 	// Parallel holds the number of parallel executed runs.
 	Parallel uint `long:"parallel" description:"Amount of parallel containerized executed runs." default:"1"`
+	// Namespace the namespace under which the kubernetes resources should be created.
+	Namespace string `long:"namespace" description:"The Namespace which should be used for kubernetes resources." default:"eval-dev-quality"`
 
 	// logger holds the logger of the command.
 	logger *log.Logger
@@ -156,6 +161,10 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 		if command.RuntimeImage == "" {
 			command.RuntimeImage = "ghcr.io/symflower/eval-dev-quality:v" + evaluate.Version
+		}
+
+		if command.Runtime == "kubernetes" && command.Namespace == "" {
+			command.logger.Panic("the namespace parameter can't be empty when using the kubernetes runtime")
 		}
 
 		evaluationContext.NoDisqualification = command.NoDisqualification
@@ -388,6 +397,8 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		return command.evaluateLocal(evaluationContext)
 	case "docker":
 		return command.evaluateDocker(evaluationContext)
+	case "kubernetes":
+		return command.evaluateKubernetes(evaluationContext)
 	default:
 		command.logger.Panicf("ERROR: unknown runtime")
 	}
@@ -492,8 +503,122 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 				Command: cmd,
 			})
 			if err != nil {
-				err = pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
-				command.logger.Printf("ERROR: %s", err)
+				command.logger.Printf("ERROR: %s", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+
+				return
+			}
+		})
+	}
+	parallel.Wait()
+
+	return nil
+}
+
+// evaluateKubernetes executes the evaluation for each model inside a kubernetes run container.
+func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
+	tmpl, err := template.ParseFiles(filepath.Join("conf", "kubernetes-job.yml"))
+	if err != nil {
+		return pkgerrors.Wrap(err, "could not create kubernetes job template")
+	}
+
+	// Filter all the args to pass them onto the container.
+	args := util.FilterArgs(os.Args[2:], []string{
+		"--model",
+		"--parallel",
+		"--result-path",
+		"--runtime",
+	})
+
+	parallel := util.NewParallel(command.Parallel)
+
+	// Iterate over each model and start the container.
+	for i, model := range ctx.Models {
+		// We are skipping ollama models until we fully support pulling. https://github.com/symflower/eval-dev-quality/issues/100.
+		if ctx.ProviderForModel[model].ID() == "ollama" {
+			command.logger.Print("Skipping unsupported ollama model with kubernetes runtime")
+
+			continue
+		}
+
+		// Commands regarding the docker runtime.
+		kubeCommand := []string{
+			"kubectl",
+			"apply",
+			"-f",
+			"-", // apply STDIN
+		}
+
+		// Commands for the evaluation to run inside the container.
+		evaluationCommand := []string{
+			"eval-dev-quality",
+			"evaluate",
+			"--model",
+			model.ID(),
+			"--result-path",
+			"/var/evaluations/" + model.ID(),
+		}
+		cmd := append(evaluationCommand, args...)
+
+		// Template data
+		nameReplacer := strings.NewReplacer(
+			"/", "-",
+			"\\", "-",
+			":", "-",
+		)
+		jobName := fmt.Sprintf("%s-%v", nameReplacer.Replace(model.ID()), i)
+		data := map[string]string{
+			"name":      jobName,
+			"namespace": command.Namespace,
+			"image":     command.RuntimeImage,
+			"command":   `["` + strings.Join(cmd, `","`) + `"]`,
+		}
+
+		parallel.Execute(func() {
+			var tmplData bytes.Buffer
+			tmpl.Execute(&tmplData, data)
+
+			commandOutput, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
+				Command: kubeCommand,
+				Stdin:   tmplData.String(),
+			})
+			if err != nil {
+				command.logger.Printf("ERROR: %s", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+
+				return
+			}
+
+			// This should block until the job is completed.
+			commandOutput, err = util.CommandWithResult(context.Background(), command.logger, &util.Command{
+				Command: []string{
+					"kubectl",
+					"wait",
+					"--for=condition=complete",
+					"--namespace",
+					command.Namespace,
+					"jobs/" + jobName,
+				},
+			})
+			if err != nil {
+				command.logger.Printf("ERROR: %s", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+
+				return
+			}
+
+			// Remove the job from the cluster.
+			commandOutput, err = util.CommandWithResult(context.Background(), command.logger, &util.Command{
+				Command: []string{
+					"kubectl",
+					"--namespace",
+					command.Namespace,
+					"delete",
+					"job",
+					jobName,
+				},
+			})
+			if err != nil {
+				command.logger.Printf("ERROR: %s", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+
+				return
 			}
 		})
 	}
