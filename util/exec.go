@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"context"
 	"io"
 	"os/exec"
@@ -19,6 +20,8 @@ import (
 type Command struct {
 	// Command holds the command with its optional arguments.
 	Command []string
+	// Stdin holds a string which is passed on as STDIN.
+	Stdin string
 
 	// Directory defines the directory the execution should run in, without changing the working directory of the caller.
 	Directory string
@@ -43,6 +46,9 @@ func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command
 		for k, v := range envs {
 			c.Env = append(c.Env, k+"="+v)
 		}
+	}
+	if command.Stdin != "" {
+		c.Stdin = bytes.NewBufferString(command.Stdin)
 	}
 	c.Stdout = io.MultiWriter(logger.Writer(), &writer)
 	c.Stderr = c.Stdout
