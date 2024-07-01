@@ -2,6 +2,7 @@ package util
 
 import (
 	"context"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -90,4 +91,57 @@ func TestFilterArgs(t *testing.T) {
 			"bar",
 		},
 	})
+}
+
+func TestParallelExecute(t *testing.T) {
+	type testCase struct {
+		Limit uint
+		Times uint
+
+		Function func()
+	}
+
+	run := func(tc *testCase) {
+		p := NewParallel(tc.Limit)
+		for i := uint(0); i < tc.Times; i++ {
+			p.Execute(tc.Function)
+		}
+		p.Wait()
+	}
+
+	t.Run("Atomic count", func(t *testing.T) {
+		var count atomic.Uint32
+		expectedCount := uint(10)
+
+		tc := &testCase{
+			Limit: 2,
+			Times: expectedCount,
+
+			Function: func() {
+				count.Add(1)
+			},
+		}
+
+		run(tc)
+
+		assert.Equal(t, count.Load(), uint32(expectedCount))
+	})
+
+	t.Run("Timed limiting", func(t *testing.T) {
+		tc := &testCase{
+			Limit: 1,
+			Times: 3,
+
+			Function: func() {
+				time.Sleep(500 * time.Millisecond)
+			},
+		}
+
+		start := time.Now()
+		run(tc)
+		duration := time.Since(start)
+
+		assert.GreaterOrEqual(t, duration, 1500*time.Millisecond)
+	})
+
 }

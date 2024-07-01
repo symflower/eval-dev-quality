@@ -74,6 +74,8 @@ type Evaluate struct {
 	Runtime string `long:"runtime" description:"The runtime which will be used for the evaluation." default:"local" choice:"local" choice:"docker"`
 	// RuntimeImage determines the container image used for any container runtime.
 	RuntimeImage string `long:"runtime-image" description:"The container image to use for the evaluation." default:""`
+	// Parallel holds the number of parallel executed runs.
+	Parallel uint `long:"parallel" description:"Amount of parallel containerized executed runs." default:"1"`
 
 	// logger holds the logger of the command.
 	logger *log.Logger
@@ -142,6 +144,14 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			if _, err := exec.LookPath("docker"); err != nil {
 				command.logger.Panic("docker runtime could not be found")
 			}
+		}
+
+		if command.Parallel != 1 && command.Runtime == "local" {
+			command.logger.Panic("the 'parallel' parameter can't be used with local execution")
+		}
+
+		if command.Parallel == 0 {
+			command.logger.Panic("the 'parallel' parameter has to be greater then 0")
 		}
 
 		if command.RuntimeImage == "" {
@@ -385,42 +395,6 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	return nil
 }
 
-// WriteCSVs writes the various CSV reports to disk.
-func writeCSVs(resultPath string, assessments *report.AssessmentStore) (err error) {
-	// Write the "evaluation.csv" containing all data.
-	csv, err := report.GenerateCSV(assessments)
-	if err != nil {
-		return pkgerrors.Wrap(err, "could not create evaluation.csv summary")
-	}
-	if err := os.WriteFile(filepath.Join(resultPath, "evaluation.csv"), []byte(csv), 0644); err != nil {
-		return pkgerrors.Wrap(err, "could not write evaluation.csv summary")
-	}
-
-	// Write the "models-summed.csv" containing the summary per model.
-	byModel := assessments.CollapseByModel()
-	csvByModel, err := report.GenerateCSV(byModel)
-	if err != nil {
-		return pkgerrors.Wrap(err, "could not create models-summed.csv summary")
-	}
-	if err := os.WriteFile(filepath.Join(resultPath, "models-summed.csv"), []byte(csvByModel), 0644); err != nil {
-		return pkgerrors.Wrap(err, "could not write models-summed.csv summary")
-	}
-
-	// Write the individual "language-summed.csv" containing the summary per model per language.
-	byLanguage := assessments.CollapseByLanguage()
-	for language, modelsByLanguage := range byLanguage {
-		csvByLanguage, err := report.GenerateCSV(modelsByLanguage)
-		if err != nil {
-			return pkgerrors.Wrap(err, "could not create "+language.ID()+"-summed.csv summary")
-		}
-		if err := os.WriteFile(filepath.Join(resultPath, language.ID()+"-summed.csv"), []byte(csvByLanguage), 0644); err != nil {
-			return pkgerrors.Wrap(err, "could not write "+language.ID()+"-summed.csv summary")
-		}
-	}
-
-	return nil
-}
-
 // evaluateLocal executes the evaluation on the current system.
 func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err error) {
 	// Install required tools for the basic evaluation.
@@ -463,10 +437,13 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 	// Filter all the args to pass them onto the container.
 	args := util.FilterArgs(os.Args[2:], []string{
-		"--runtime",
 		"--model",
+		"--parallel",
 		"--result-path",
+		"--runtime",
 	})
+
+	parallel := util.NewParallel(command.Parallel)
 
 	// Iterate over each model and start the container.
 	for _, model := range ctx.Models {
@@ -510,13 +487,52 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 		cmd := append(dockerCommand, evaluationCommand...)
 		cmd = append(cmd, args...)
 
-		commandOutput, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
-			Command: cmd,
+		parallel.Execute(func() {
+			commandOutput, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
+				Command: cmd,
+			})
+			if err != nil {
+				err = pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+				command.logger.Printf("ERROR: %s", err)
+			}
 		})
-		if err != nil {
-			return pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
-		}
+	}
+	parallel.Wait()
 
+	return nil
+}
+
+// WriteCSVs writes the various CSV reports to disk.
+func writeCSVs(resultPath string, assessments *report.AssessmentStore) (err error) {
+	// Write the "evaluation.csv" containing all data.
+	csv, err := report.GenerateCSV(assessments)
+	if err != nil {
+		return pkgerrors.Wrap(err, "could not create evaluation.csv summary")
+	}
+	if err := os.WriteFile(filepath.Join(resultPath, "evaluation.csv"), []byte(csv), 0644); err != nil {
+		return pkgerrors.Wrap(err, "could not write evaluation.csv summary")
+	}
+
+	// Write the "models-summed.csv" containing the summary per model.
+	byModel := assessments.CollapseByModel()
+	csvByModel, err := report.GenerateCSV(byModel)
+	if err != nil {
+		return pkgerrors.Wrap(err, "could not create models-summed.csv summary")
+	}
+	if err := os.WriteFile(filepath.Join(resultPath, "models-summed.csv"), []byte(csvByModel), 0644); err != nil {
+		return pkgerrors.Wrap(err, "could not write models-summed.csv summary")
+	}
+
+	// Write the individual "language-summed.csv" containing the summary per model per language.
+	byLanguage := assessments.CollapseByLanguage()
+	for language, modelsByLanguage := range byLanguage {
+		csvByLanguage, err := report.GenerateCSV(modelsByLanguage)
+		if err != nil {
+			return pkgerrors.Wrap(err, "could not create "+language.ID()+"-summed.csv summary")
+		}
+		if err := os.WriteFile(filepath.Join(resultPath, language.ID()+"-summed.csv"), []byte(csvByLanguage), 0644); err != nil {
+			return pkgerrors.Wrap(err, "could not write "+language.ID()+"-summed.csv summary")
+		}
 	}
 
 	return nil
