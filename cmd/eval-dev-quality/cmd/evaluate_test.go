@@ -836,6 +836,7 @@ func TestEvaluateInitialize(t *testing.T) {
 		ValidateCommand func(t *testing.T, command *Evaluate)
 		ValidateContext func(t *testing.T, context *evaluate.Context)
 		ValidateResults func(t *testing.T, resultsPath string)
+		ValidatePanic   string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -854,6 +855,17 @@ func TestEvaluateInitialize(t *testing.T) {
 			tc.Command.ResultPath = strings.ReplaceAll(tc.Command.ResultPath, "$TEMP_PATH", temporaryDirectory)
 
 			var actualEvaluationContext *evaluate.Context
+
+			if tc.ValidatePanic != "" {
+				assert.PanicsWithValue(t, tc.ValidatePanic, func() {
+					c, cleanup := tc.Command.Initialize([]string{})
+					cleanup()
+					actualEvaluationContext = c
+				})
+
+				return
+			}
+
 			assert.NotPanics(t, func() {
 				c, cleanup := tc.Command.Initialize([]string{})
 				cleanup()
@@ -1013,4 +1025,59 @@ func TestEvaluateInitialize(t *testing.T) {
 			}
 		},
 	})
+	validate(t, &testCase{
+		Name: "Local runtime does not allow parallel parameter",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.Runtime = "local"
+			command.Parallel = 2
+		}),
+
+		ValidatePanic: "the 'parallel' parameter can't be used with local execution",
+	})
+	validate(t, &testCase{
+		Name: "Attempts parameter hast to be greater then zero",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.QueryAttempts = 0
+		}),
+
+		ValidatePanic: "number of configured query attempts must be greater than zero",
+	})
+	validate(t, &testCase{
+		Name: "Execution timeout parameter hast to be greater then zero",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.ExecutionTimeout = 0
+		}),
+
+		ValidatePanic: "execution timeout for compilation and tests must be greater than zero",
+	})
+	validate(t, &testCase{
+		Name: "Runs parameter hast to be greater then zero",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.Runs = 0
+		}),
+
+		ValidatePanic: "number of configured runs must be greater than zero",
+	})
+
+	t.Run("Docker", func(t *testing.T) {
+		if osutil.IsDarwin() { // The MacOS runner on Github do not have "docker" in their path and would mess with the test.
+			t.Skip("Unsupported OS")
+		}
+
+		validate(t, &testCase{
+			Name: "Parallel parameter hast to be greater then zero",
+
+			Command: makeValidCommand(func(command *Evaluate) {
+				command.Runtime = "docker"
+				command.Parallel = 0
+			}),
+
+			ValidatePanic: "the 'parallel' parameter has to be greater then zero",
+		})
+	})
+
 }

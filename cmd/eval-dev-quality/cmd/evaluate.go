@@ -156,7 +156,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 
 		if command.Parallel == 0 {
-			command.logger.Panic("the 'parallel' parameter has to be greater then 0")
+			command.logger.Panic("the 'parallel' parameter has to be greater then zero")
 		}
 
 		if command.RuntimeImage == "" {
