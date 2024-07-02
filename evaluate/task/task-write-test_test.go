@@ -12,6 +12,7 @@ import (
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	"github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
@@ -19,7 +20,7 @@ import (
 )
 
 func TestTaskWriteTestsRun(t *testing.T) {
-	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
+	validate := func(t *testing.T, tc *tasktesting.TestCaseTask[model.CapabilityWriteTests]) {
 		t.Run(tc.Name, func(t *testing.T) {
 			resultPath := t.TempDir()
 
@@ -47,14 +48,14 @@ func TestTaskWriteTestsRun(t *testing.T) {
 		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "taskA.go"), []byte("package plain\n\nfunc TaskA(){}"), 0600))
 		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "taskB.go"), []byte("package plain\n\nfunc TaskB(){}"), 0600))
 
-		modelMock := modeltesting.NewMockModelNamed(t, "mocked-model")
+		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
 
 		// Generate invalid code for the first taskcontext.
-		modelMock.RegisterGenerateSuccess(t, IdentifierWriteTests, "taskA_test.go", "does not compile", metricstesting.AssessmentsWithProcessingTime).Once()
+		modelMock.RegisterGenerateSuccess(t, "taskA_test.go", "does not compile", metricstesting.AssessmentsWithProcessingTime).Once()
 		// Generate valid code for the second taskcontext.
-		modelMock.RegisterGenerateSuccess(t, IdentifierWriteTests, "taskB_test.go", "package plain\n\nimport \"testing\"\n\nfunc TestTaskB(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Once()
+		modelMock.RegisterGenerateSuccess(t, "taskB_test.go", "package plain\n\nimport \"testing\"\n\nfunc TestTaskB(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Once()
 
-		validate(t, &tasktesting.TestCaseTask{
+		validate(t, &tasktesting.TestCaseTask[model.CapabilityWriteTests]{
 			Name: "Plain",
 
 			Model:          modelMock,

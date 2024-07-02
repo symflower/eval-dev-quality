@@ -66,7 +66,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 
 				Logger: logger,
 			}
-			actualAssessment, actualError := llm.generateTestsForFile(ctx)
+			actualAssessment, actualError := llm.WriteTests(ctx)
 			assert.NoError(t, actualError)
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 
@@ -164,14 +164,13 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 				RepositoryPath: repositoryPath,
 				FilePath:       tc.SourceFilePath,
 
-				Arguments: tc.Mistakes,
+				Arguments: &evaluatetask.TaskArgumentsCodeRepair{
+					Mistakes: tc.Mistakes,
+				},
 
 				Logger: logger,
 			}
-			codeRepairArguments := &evaluatetask.TaskArgumentsCodeRepair{
-				Mistakes: tc.Mistakes,
-			}
-			actualAssessment, actualError := llm.repairSourceCodeFile(ctx, codeRepairArguments)
+			actualAssessment, actualError := llm.RepairCode(ctx)
 			assert.NoError(t, actualError)
 			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 

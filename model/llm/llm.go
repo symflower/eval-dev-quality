@@ -19,7 +19,6 @@ import (
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm/prompt"
 	"github.com/symflower/eval-dev-quality/provider"
-	"github.com/symflower/eval-dev-quality/task"
 )
 
 // Model represents a LLM model accessed via a provider.
@@ -143,37 +142,10 @@ func (m *Model) Name() (name string) {
 	return m.name
 }
 
-// IsTaskSupported returns whether the model supports the given task or not.
-func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported bool) {
-	switch taskIdentifier {
-	case evaluatetask.IdentifierWriteTests:
-		return true
-	case evaluatetask.IdentifierCodeRepair:
-		return true
-	default:
-		return false
-	}
-}
+var _ model.CapabilityWriteTests = (*Model)(nil)
 
-// RunTask runs the given task.
-func (m *Model) RunTask(ctx model.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error) {
-	switch taskIdentifier {
-	case evaluatetask.IdentifierWriteTests:
-		return m.generateTestsForFile(ctx)
-	case evaluatetask.IdentifierCodeRepair:
-		codeRepairArguments, ok := ctx.Arguments.(*evaluatetask.TaskArgumentsCodeRepair)
-		if !ok {
-			return nil, pkgerrors.Errorf("unexpected type %#v", ctx.Arguments)
-		}
-
-		return m.repairSourceCodeFile(ctx, codeRepairArguments)
-	default:
-		return nil, pkgerrors.Wrap(task.ErrTaskUnsupported, string(taskIdentifier))
-	}
-}
-
-// generateTestsForFile generates test files for the given implementation file in a repository.
-func (m *Model) generateTestsForFile(ctx model.Context) (assessment metrics.Assessments, err error) {
+// WriteTests generates test files for the given implementation file in a repository.
+func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, err error) {
 	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
@@ -249,8 +221,15 @@ func (m *Model) query(log *log.Logger, request string) (response string, duratio
 	return response, duration, nil
 }
 
-// repairSourceCodeFile queries the model to repair a source code with compilation error.
-func (m *Model) repairSourceCodeFile(ctx model.Context, codeRepairArguments *evaluatetask.TaskArgumentsCodeRepair) (assessment metrics.Assessments, err error) {
+var _ model.CapabilityRepairCode = (*Model)(nil)
+
+// RepairCode queries the model to repair a source code with compilation error.
+func (m *Model) RepairCode(ctx model.Context) (assessment metrics.Assessments, err error) {
+	codeRepairArguments, ok := ctx.Arguments.(*evaluatetask.TaskArgumentsCodeRepair)
+	if !ok {
+		return nil, pkgerrors.Errorf("unexpected type %#v", ctx.Arguments)
+	}
+
 	assessment = map[metrics.AssessmentKey]uint64{}
 
 	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))

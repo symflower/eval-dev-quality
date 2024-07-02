@@ -8,8 +8,10 @@ import (
 )
 
 var (
-	// ErrTaskUnsupported indicates that a task is unsupported.
-	ErrTaskUnsupported = errors.New("task unsupported")
+	// ErrTaskUnknown indicates that a task is unknown.
+	ErrTaskUnknown = errors.New("task unknown")
+	// ErrTaskUnsupportedByModel indicates that the model does not support the task.
+	ErrTaskUnsupportedByModel = errors.New("model does not support task")
 )
 
 // Identifier holds the identifier of a task.

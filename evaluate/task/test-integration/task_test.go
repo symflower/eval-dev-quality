@@ -11,6 +11,7 @@ import (
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/symflower"
 	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
@@ -20,7 +21,7 @@ import (
 func TestTaskWriteTestsRun(t *testing.T) {
 	toolstesting.RequiresTool(t, tools.NewSymflower())
 
-	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
+	validate := func(t *testing.T, tc *tasktesting.TestCaseTask[model.CapabilityWriteTests]) {
 		t.Run(tc.Name, func(t *testing.T) {
 			resultPath := t.TempDir()
 
@@ -41,7 +42,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 		})
 	}
 
-	validate(t, &tasktesting.TestCaseTask{
+	validate(t, &tasktesting.TestCaseTask[model.CapabilityWriteTests]{
 		Name: "Plain",
 
 		Model:          symflower.NewModel(),

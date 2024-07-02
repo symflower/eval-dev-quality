@@ -21,7 +21,7 @@ type TaskCodeRepair struct {
 	// Language holds the language for which the task should be evaluated.
 	Language language.Language
 	// Model holds the model which the task should be evaluated.
-	Model model.Model
+	Model model.CapabilityRepairCode
 
 	// Logger holds the logger for this tasks.
 	Logger *log.Logger
@@ -36,7 +36,7 @@ type TaskArgumentsCodeRepair struct {
 var _ evaltask.Task = (*TaskCodeRepair)(nil)
 
 // newCodeRepairTask returns a code repair task.
-func newCodeRepairTask(logger *log.Logger, resultPath string, model model.Model, language language.Language) (task evaltask.Task) {
+func newCodeRepairTask(logger *log.Logger, resultPath string, model model.CapabilityRepairCode, language language.Language) (task evaltask.Task) {
 	return &TaskCodeRepair{
 		ResultPath: resultPath,
 		Language:   language,
@@ -98,7 +98,7 @@ func (t *TaskCodeRepair) Run(repository evaltask.Repository) (repositoryAssessme
 
 			Logger: log,
 		}
-		assessments, err := t.Model.RunTask(modelContext, t.Identifier())
+		assessments, err := t.Model.RepairCode(modelContext)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, sourceFile))
 

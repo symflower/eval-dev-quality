@@ -3,10 +3,8 @@ package model
 import (
 	"strings"
 
-	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/task"
 )
 
 // Model defines a model that can be queried for generations.
@@ -15,11 +13,6 @@ type Model interface {
 	ID() (id string)
 	// Name returns the human-readable name of this model.
 	Name() (name string)
-
-	// IsTaskSupported returns whether the model supports the given task or not.
-	IsTaskSupported(taskIdentifier task.Identifier) (isSupported bool)
-	// RunTask runs the given task.
-	RunTask(ctx Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error)
 
 	// Cost returns the cost of a model in US dollars.
 	Cost() (cost float64)

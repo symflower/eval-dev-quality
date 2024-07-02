@@ -66,7 +66,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 
 				Logger: logger,
 			}
-			actualAssessment, actualError := tc.Model.generateTestsForFile(ctx)
+			actualAssessment, actualError := tc.Model.WriteTests(ctx)
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, tc.ExpectedError, actualError)

@@ -19,7 +19,7 @@ type TaskWriteTests struct {
 	// Language holds the language for which the task should be evaluated.
 	Language language.Language
 	// Model holds the model which the task should be evaluated.
-	Model model.Model
+	Model model.CapabilityWriteTests
 
 	// Logger holds the logger for this tasks.
 	Logger *log.Logger
@@ -28,7 +28,7 @@ type TaskWriteTests struct {
 var _ evaltask.Task = (*TaskWriteTests)(nil)
 
 // NewTaskWriteTests returns a write test task.
-func newTaskWriteTests(logger *log.Logger, resultPath string, model model.Model, language language.Language) (task evaltask.Task) {
+func newTaskWriteTests(logger *log.Logger, resultPath string, model model.CapabilityWriteTests, language language.Language) (task evaltask.Task) {
 	return &TaskWriteTests{
 		ResultPath: resultPath,
 		Language:   language,
@@ -80,7 +80,7 @@ func (t *TaskWriteTests) Run(repository evaltask.Repository) (repositoryAssessme
 
 			Logger: log,
 		}
-		assessments, err := t.Model.RunTask(modelContext, t.Identifier())
+		assessments, err := t.Model.WriteTests(modelContext)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
 

@@ -11,15 +11,14 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	"github.com/symflower/eval-dev-quality/language"
-	"github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
 )
 
-type TestCaseTask struct {
+type TestCaseTask[ModelCapability any] struct {
 	Name string
 
-	Model          model.Model
+	Model          ModelCapability
 	Language       language.Language
 	TestDataPath   string
 	RepositoryPath string
@@ -30,7 +29,7 @@ type TestCaseTask struct {
 	ExpectedError                error
 }
 
-func (tc *TestCaseTask) Validate(t *testing.T, task evaltask.Task, repository evaltask.Repository, resultPath string) {
+func (tc *TestCaseTask[ModelCapability]) Validate(t *testing.T, task evaltask.Task, repository evaltask.Repository, resultPath string) {
 	actualRepositoryAssessment, actualProblems, actualErr := task.Run(repository)
 
 	metricstesting.AssertTaskAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)

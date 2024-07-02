@@ -6,7 +6,7 @@ import (
 	pkgerrors "github.com/pkg/errors"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/model"
+	evalmodel "github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 )
 
@@ -40,13 +40,23 @@ var (
 )
 
 // TaskForIdentifier returns a task based on the task identifier.
-func TaskForIdentifier(taskIdentifier evaltask.Identifier, logger *log.Logger, resultPath string, model model.Model, language language.Language) (task evaltask.Task, err error) {
+func TaskForIdentifier(taskIdentifier evaltask.Identifier, logger *log.Logger, resultPath string, model evalmodel.Model, language language.Language) (task evaltask.Task, err error) {
 	switch taskIdentifier {
 	case IdentifierWriteTests:
-		return newTaskWriteTests(logger, resultPath, model, language), nil
+		modelCapability, ok := model.(evalmodel.CapabilityWriteTests)
+		if !ok {
+			return nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", model.ID(), string(taskIdentifier)))
+		}
+
+		return newTaskWriteTests(logger, resultPath, modelCapability, language), nil
 	case IdentifierCodeRepair:
-		return newCodeRepairTask(logger, resultPath, model, language), nil
+		modelCapability, ok := model.(evalmodel.CapabilityRepairCode)
+		if !ok {
+			return nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", model.ID(), string(taskIdentifier)))
+		}
+
+		return newCodeRepairTask(logger, resultPath, modelCapability, language), nil
 	default:
-		return nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupported, string(taskIdentifier))
+		return nil, pkgerrors.Wrap(evaltask.ErrTaskUnknown, string(taskIdentifier))
 	}
 }

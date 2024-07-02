@@ -52,7 +52,7 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 
 		Assessments: metricstesting.AssessmentTuples{
 			&metricstesting.AssessmentTuple{
-				Model:          modeltesting.NewMockModelNamed(t, "some-model"),
+				Model:          modeltesting.NewMockCapabilityWriteTestsNamed(t, "some-model"),
 				Language:       languagetesting.NewMockLanguageNamed(t, "some-language"),
 				RepositoryPath: "some-repository",
 				Task:           evaluatetask.IdentifierWriteTests,
@@ -71,8 +71,8 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 
 	{
 
-		modelA := modeltesting.NewMockModelNamed(t, "some-model-a")
-		modelB := modeltesting.NewMockModelNamed(t, "some-model-b")
+		modelA := modeltesting.NewMockCapabilityWriteTestsNamed(t, "some-model-a")
+		modelB := modeltesting.NewMockCapabilityWriteTestsNamed(t, "some-model-b")
 		languageA := languagetesting.NewMockLanguageNamed(t, "some-language-a")
 		languageB := languagetesting.NewMockLanguageNamed(t, "some-language-b")
 
@@ -217,9 +217,9 @@ func TestWalkByScore(t *testing.T) {
 		})
 	}
 
-	modelA := modeltesting.NewMockModelNamed(t, "ModelA")
-	modelB := modeltesting.NewMockModelNamed(t, "ModelB")
-	modelC := modeltesting.NewMockModelNamed(t, "ModelC")
+	modelA := modeltesting.NewMockCapabilityWriteTestsNamed(t, "ModelA")
+	modelB := modeltesting.NewMockCapabilityWriteTestsNamed(t, "ModelB")
+	modelC := modeltesting.NewMockCapabilityWriteTestsNamed(t, "ModelC")
 
 	validate(t, &testCase{
 		Name: "No Assessment",
@@ -294,8 +294,8 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 		})
 	}
 
-	modelA := modeltesting.NewMockModelNamed(t, "some-model-a")
-	modelB := modeltesting.NewMockModelNamed(t, "some-model-b")
+	modelA := modeltesting.NewMockCapabilityWriteTestsNamed(t, "some-model-a")
+	modelB := modeltesting.NewMockCapabilityWriteTestsNamed(t, "some-model-b")
 	languageA := languagetesting.NewMockLanguageNamed(t, "some-language-a")
 	languageB := languagetesting.NewMockLanguageNamed(t, "some-language-b")
 
@@ -407,8 +407,8 @@ func TestAssessmentCollapseByLanguage(t *testing.T) {
 		})
 	}
 
-	modelA := modeltesting.NewMockModelNamed(t, "some-model-a")
-	modelB := modeltesting.NewMockModelNamed(t, "some-model-b")
+	modelA := modeltesting.NewMockCapabilityWriteTestsNamed(t, "some-model-a")
+	modelB := modeltesting.NewMockCapabilityWriteTestsNamed(t, "some-model-b")
 	languageA := languagetesting.NewMockLanguageNamed(t, "some-language-a")
 	languageB := languagetesting.NewMockLanguageNamed(t, "some-language-b")
 
