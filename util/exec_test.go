@@ -38,15 +38,16 @@ func TestFilterArgs(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		Args    []string
-		Ignored []string
+		Args   []string
+		Filter []string
+		Ignore bool
 
 		ExpectedFiltered []string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualFiltered := FilterArgs(tc.Args, tc.Ignored)
+			actualFiltered := FilterArgs(tc.Args, tc.Filter, tc.Ignore)
 
 			assert.Equal(t, tc.ExpectedFiltered, actualFiltered)
 		})
@@ -61,9 +62,10 @@ func TestFilterArgs(t *testing.T) {
 			"--runs",
 			"5",
 		},
-		Ignored: []string{
-			"--runtime",
+		Filter: []string{
+			"runtime",
 		},
+		Ignore: true,
 
 		ExpectedFiltered: []string{
 			"--runs",
@@ -80,15 +82,113 @@ func TestFilterArgs(t *testing.T) {
 			"--foo",
 			"bar",
 		},
-		Ignored: []string{
-			"--runtime",
+		Filter: []string{
+			"runtime",
 		},
+		Ignore: true,
 
 		ExpectedFiltered: []string{
 			"--runs",
 			"5",
 			"--foo",
 			"bar",
+		},
+	})
+
+	validate(t, &testCase{
+		Name: "Filter arguments with an allow list",
+
+		Args: []string{
+			"--runtime=abc",
+			"--runs=5",
+			"--foo",
+			"bar",
+		},
+
+		Filter: []string{
+			"runtime",
+		},
+
+		ExpectedFiltered: []string{
+			"--runtime",
+			"abc",
+		},
+	})
+}
+
+func TestFilterArgsKeep(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Args   []string
+		Filter []string
+
+		ExpectedFiltered []string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualFiltered := FilterArgsKeep(tc.Args, tc.Filter)
+
+			assert.Equal(t, tc.ExpectedFiltered, actualFiltered)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Keep arguments",
+
+		Args: []string{
+			"--runtime=abc",
+			"--runs=5",
+			"--foo",
+			"bar",
+		},
+
+		Filter: []string{
+			"runtime",
+		},
+
+		ExpectedFiltered: []string{
+			"--runtime",
+			"abc",
+		},
+	})
+}
+
+func TestFilterArgsRemove(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Args   []string
+		Filter []string
+
+		ExpectedFiltered []string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualFiltered := FilterArgsRemove(tc.Args, tc.Filter)
+
+			assert.Equal(t, tc.ExpectedFiltered, actualFiltered)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Remove arguments",
+
+		Args: []string{
+			"--runtime",
+			"abc",
+			"--runs",
+			"5",
+		},
+		Filter: []string{
+			"runtime",
+		},
+
+		ExpectedFiltered: []string{
+			"--runs",
+			"5",
 		},
 	})
 }

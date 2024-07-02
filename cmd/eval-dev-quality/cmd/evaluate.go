@@ -446,13 +446,14 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 
 // evaluateDocker executes the evaluation for each model inside a docker container.
 func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
-	// Filter all the args to pass them onto the container.
-	args := util.FilterArgs(os.Args[2:], []string{
-		"--model",
-		"--parallel",
-		"--result-path",
-		"--runtime",
-	})
+	ignoredFlags := []string{
+		"model",
+		"parallel",
+		"result-path",
+		"runtime",
+	}
+	// Filter the args to remove all flags unsuited for running the container.
+	args := util.FilterArgsRemove(os.Args[2:], ignoredFlags)
 
 	parallel := util.NewParallel(command.Parallel)
 
@@ -521,13 +522,14 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 		return pkgerrors.Wrap(err, "could not create kubernetes job template")
 	}
 
-	// Filter all the args to pass them onto the container.
-	args := util.FilterArgs(os.Args[2:], []string{
-		"--model",
-		"--parallel",
-		"--result-path",
-		"--runtime",
-	})
+	ignoredFlags := []string{
+		"model",
+		"parallel",
+		"result-path",
+		"runtime",
+	}
+	// Filter the args to remove all flags unsuited for running the container.
+	args := util.FilterArgsRemove(os.Args[2:], ignoredFlags)
 
 	parallel := util.NewParallel(command.Parallel)
 
