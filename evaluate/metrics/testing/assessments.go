@@ -1,10 +1,12 @@
 package metricstesting
 
 import (
-	"maps"
 	"testing"
 
+	"golang.org/x/exp/maps"
+
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
@@ -17,15 +19,39 @@ func AssertAssessmentsEqual(t *testing.T, expected metrics.Assessments, actual m
 	expected = maps.Clone(expected)
 	actual = maps.Clone(actual)
 
-	expected[metrics.AssessmentKeyProcessingTime] = 0
-	actual[metrics.AssessmentKeyProcessingTime] = 0
-
-	expected[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = 0
-	actual[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = 0
-	expected[metrics.AssessmentKeyResponseCharacterCount] = 0
-	actual[metrics.AssessmentKeyResponseCharacterCount] = 0
+	clearNonDeterministicAssessmentValues(expected)
+	clearNonDeterministicAssessmentValues(actual)
 
 	assert.Truef(t, expected.Equal(actual), "expected:%s\nactual:%s", expected, actual)
+}
+
+// AssertTaskAssessmentsEqual checks if the given assessments per task are equal ignoring default and nondeterministic values.
+func AssertTaskAssessmentsEqual(t *testing.T, expected map[task.Identifier]metrics.Assessments, actual map[task.Identifier]metrics.Assessments) {
+	expected = maps.Clone(expected)
+	actual = maps.Clone(actual)
+
+	// The expected and actual maps must have the same task identifiers.
+	require.ElementsMatch(t, maps.Keys(expected), maps.Keys(actual))
+
+	// Ignore non-deterministic values.
+	for _, assessment := range expected {
+		clearNonDeterministicAssessmentValues(assessment)
+	}
+	for _, assessment := range actual {
+		clearNonDeterministicAssessmentValues(assessment)
+	}
+
+	for task, expectedAssessment := range expected {
+		actualAssessment := actual[task]
+		assert.Truef(t, expectedAssessment.Equal(actualAssessment), "task:%s\nexpected:%s\nactual:%s", task, expected, actual)
+	}
+}
+
+// clearNonDeterministicAssessmentValues ignores non-deterministic values such as processing time and response character count.
+func clearNonDeterministicAssessmentValues(assessment metrics.Assessments) {
+	assessment[metrics.AssessmentKeyProcessingTime] = 0
+	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = 0
+	assessment[metrics.AssessmentKeyResponseCharacterCount] = 0
 }
 
 // AssessmentsWithProcessingTime is an empty assessment collection with positive processing time.

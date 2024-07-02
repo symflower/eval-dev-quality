@@ -13,6 +13,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
+	"github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 )
@@ -71,10 +72,12 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "mistakes"),
 
-				ExpectedRepositoryAssessment: metrics.Assessments{
-					metrics.AssessmentKeyCoverage:        30,
-					metrics.AssessmentKeyFilesExecuted:   1,
-					metrics.AssessmentKeyResponseNoError: 1,
+				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+					IdentifierCodeRepair: metrics.Assessments{
+						metrics.AssessmentKeyCoverage:        30,
+						metrics.AssessmentKeyFilesExecuted:   1,
+						metrics.AssessmentKeyResponseNoError: 1,
+					},
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(IdentifierCodeRepair), "mocked-model", "golang", "golang", "mistakes.log"): func(t *testing.T, filePath, data string) {
@@ -134,10 +137,12 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "mistakes"),
 
-				ExpectedRepositoryAssessment: metrics.Assessments{
-					metrics.AssessmentKeyCoverage:        60,
-					metrics.AssessmentKeyFilesExecuted:   2,
-					metrics.AssessmentKeyResponseNoError: 2,
+				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+					IdentifierCodeRepair: metrics.Assessments{
+						metrics.AssessmentKeyCoverage:        60,
+						metrics.AssessmentKeyFilesExecuted:   2,
+						metrics.AssessmentKeyResponseNoError: 2,
+					},
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(IdentifierCodeRepair), "mocked-model", "golang", "golang", "mistakes.log"): func(t *testing.T, filePath, data string) {
@@ -188,10 +193,12 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "mistakes"),
 
-				ExpectedRepositoryAssessment: metrics.Assessments{
-					metrics.AssessmentKeyCoverage:        80,
-					metrics.AssessmentKeyFilesExecuted:   1,
-					metrics.AssessmentKeyResponseNoError: 1,
+				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+					IdentifierCodeRepair: metrics.Assessments{
+						metrics.AssessmentKeyCoverage:        80,
+						metrics.AssessmentKeyFilesExecuted:   1,
+						metrics.AssessmentKeyResponseNoError: 1,
+					},
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(IdentifierCodeRepair), "mocked-model", "java", "java", "mistakes.log"): func(t *testing.T, filePath, data string) {
@@ -253,10 +260,12 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "mistakes"),
 
-				ExpectedRepositoryAssessment: metrics.Assessments{
-					metrics.AssessmentKeyCoverage:        160,
-					metrics.AssessmentKeyFilesExecuted:   2,
-					metrics.AssessmentKeyResponseNoError: 2,
+				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+					IdentifierCodeRepair: metrics.Assessments{
+						metrics.AssessmentKeyCoverage:        160,
+						metrics.AssessmentKeyFilesExecuted:   2,
+						metrics.AssessmentKeyResponseNoError: 2,
+					},
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(IdentifierCodeRepair), "mocked-model", "java", "java", "mistakes.log"): func(t *testing.T, filePath, data string) {

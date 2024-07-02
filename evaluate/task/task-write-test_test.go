@@ -13,6 +13,9 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
+	"github.com/symflower/eval-dev-quality/task"
+	"github.com/zimmski/osutil"
+	"github.com/zimmski/osutil/bytesutil"
 )
 
 func TestTaskWriteTestsRun(t *testing.T) {
@@ -59,12 +62,19 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			TestDataPath:   temporaryDirectoryPath,
 			RepositoryPath: filepath.Join("golang", "plain"),
 
-			ExpectedRepositoryAssessment: metrics.Assessments{
-				metrics.AssessmentKeyFilesExecuted:   1,
-				metrics.AssessmentKeyResponseNoError: 2,
+			ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				IdentifierWriteTests: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecuted:   1,
+					metrics.AssessmentKeyResponseNoError: 2,
+				},
+				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecuted:   1,
+					metrics.AssessmentKeyResponseNoError: 2,
+				},
 			},
 			ExpectedProblemContains: []string{
 				"expected 'package', found does",
+				"exit status 1",
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				filepath.Join(string(IdentifierWriteTests), "mocked-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
@@ -72,6 +82,108 @@ func TestTaskWriteTestsRun(t *testing.T) {
 					assert.Contains(t, data, "PASS: TestTaskB")
 				},
 			},
+		})
+	})
+
+	t.Run("Symflower Fix", func(t *testing.T) {
+		t.Run("Go", func(t *testing.T) {
+			validateGo := func(t *testing.T, testName string, testFileContent string, expectedAssessments map[task.Identifier]metrics.Assessments, expectedProblems []string, assertTestsPass bool) {
+				temporaryDirectoryPath := t.TempDir()
+				repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
+				require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
+
+				modelMock := modeltesting.NewMockModelNamed(t, "mocked-model")
+				modelMock.RegisterGenerateSuccess(t, IdentifierWriteTests, "plain_test.go", testFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+
+				validate(t, &tasktesting.TestCaseTask{
+					Name: testName,
+
+					Model:          modelMock,
+					Language:       &golang.Language{},
+					TestDataPath:   temporaryDirectoryPath,
+					RepositoryPath: filepath.Join("golang", "plain"),
+
+					ExpectedRepositoryAssessment: expectedAssessments,
+					ExpectedProblemContains:      expectedProblems,
+					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+						filepath.Join(string(IdentifierWriteTests), "mocked-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+							assert.Contains(t, data, "Evaluating model \"mocked-model\"")
+							if assertTestsPass {
+								assert.Contains(t, data, "PASS: TestPlain")
+							}
+						},
+					},
+				})
+			}
+			{
+				expectedAssessments := map[task.Identifier]metrics.Assessments{
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:   1,
+						metrics.AssessmentKeyResponseNoError: 1,
+						metrics.AssessmentKeyCoverage:        10,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:   1,
+						metrics.AssessmentKeyResponseNoError: 1,
+						metrics.AssessmentKeyCoverage:        10,
+					},
+				}
+				validateGo(t, "Model generated correct test", bytesutil.StringTrimIndentations(`
+					package plain
+
+					import "testing"
+
+					func TestPlain(t *testing.T) {
+						   plain()
+					}
+				`), expectedAssessments, nil, true)
+			}
+			{
+				expectedAssessments := map[task.Identifier]metrics.Assessments{
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoError: 1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:   1,
+						metrics.AssessmentKeyResponseNoError: 1,
+						metrics.AssessmentKeyCoverage:        10,
+					},
+				}
+				expectedProblems := []string{
+					"imported and not used",
+				}
+				validateGo(t, "Model generated test with unused import", bytesutil.StringTrimIndentations(`
+					package plain
+
+					import (
+						"testing"
+						"strings"
+					)
+
+					func TestPlain(t *testing.T) {
+					   	plain()
+					}
+				`), expectedAssessments, expectedProblems, true)
+			}
+			{
+				expectedAssessments := map[task.Identifier]metrics.Assessments{
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoError: 1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoError: 1,
+					},
+				}
+				expectedProblems := []string{
+					"expected declaration, found this",
+					"unable to format source code",
+				}
+				validateGo(t, "Model generated test that is unfixable", bytesutil.StringTrimIndentations(`
+					package plain
+
+					this is not valid go code
+				`), expectedAssessments, expectedProblems, false)
+			}
 		})
 	})
 }

@@ -272,3 +272,54 @@ func TestAssessmentsScore(t *testing.T) {
 		ExpectedScore: uint64(9),
 	})
 }
+
+func TestCombineModelAndSymflowerFixAssessments(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		ModelAssessment         Assessments
+		SymflowerFixAssessments Assessments
+
+		ExpectedAssessments Assessments
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualAssessments := CombineWithSymflowerFixAssessments(tc.ModelAssessment, tc.SymflowerFixAssessments)
+
+			assert.Equal(t, tc.ExpectedAssessments, actualAssessments)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Simple",
+
+		ModelAssessment: Assessments{
+			AssessmentKeyFilesExecuted:                      1,
+			AssessmentKeyProcessingTime:                     uint64(200),
+			AssessmentKeyCoverage:                           0,
+			AssessmentKeyResponseCharacterCount:             100,
+			AssessmentKeyGenerateTestsForFileCharacterCount: 50,
+			AssessmentKeyResponseNoError:                    0,
+			AssessmentKeyResponseWithCode:                   1,
+			AssessmentKeyResponseNoExcess:                   1,
+		},
+		SymflowerFixAssessments: Assessments{
+			AssessmentKeyFilesExecuted:   1,
+			AssessmentKeyProcessingTime:  uint64(100),
+			AssessmentKeyCoverage:        10,
+			AssessmentKeyResponseNoError: 1,
+		},
+
+		ExpectedAssessments: Assessments{
+			AssessmentKeyFilesExecuted:                      1,
+			AssessmentKeyProcessingTime:                     uint64(300),
+			AssessmentKeyCoverage:                           10,
+			AssessmentKeyResponseCharacterCount:             100,
+			AssessmentKeyGenerateTestsForFileCharacterCount: 50,
+			AssessmentKeyResponseNoError:                    0,
+			AssessmentKeyResponseWithCode:                   1,
+			AssessmentKeyResponseNoExcess:                   1,
+		},
+	})
+}

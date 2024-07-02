@@ -126,7 +126,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 								}
 
 								assessment, ps, err := task.Run(temporaryRepository)
-								assessments.Add(model, language, repositoryPath, taskIdentifier, assessment)
+								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								if err != nil {
 									ps = append(ps, err)
 								}
@@ -226,7 +226,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 								}
 
 								assessment, ps, err := task.Run(temporaryRepository)
-								assessments.Add(model, language, repositoryPath, taskIdentifier, assessment)
+								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 								if err != nil {
 									ctx.Log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
@@ -249,7 +249,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 		}
 	}
 	if isOnlyPlainRepositories {
-		totalScore = uint64(len(ctx.Languages)) * uint64(ctx.Runs)
+		// For every write-test task in the plain repository, each model is also executed with the `symflower fix` which results in double the total results.
+		totalScore = 2 * uint64(len(ctx.Languages)) * uint64(ctx.Runs)
 	}
 
 	return assessments, totalScore
