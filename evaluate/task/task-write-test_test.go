@@ -1,18 +1,23 @@
 package task
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
+	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
+	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
+	"github.com/symflower/eval-dev-quality/task"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
@@ -82,7 +87,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 
 	t.Run("Symflower Fix", func(t *testing.T) {
 		t.Run("Go", func(t *testing.T) {
-			validateGo := func(t *testing.T, testName string, testFileContent string, expectedAssessments map[evaltask.Identifier]metrics.Assessments, expectedProblems []string, assertTestsPass bool) {
+			validateGo := func(t *testing.T, testName string, language language.Language, testFileContent string, expectedAssessments map[evaltask.Identifier]metrics.Assessments, expectedProblems []string, assertTestsPass bool) {
 				temporaryDirectoryPath := t.TempDir()
 				repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
 				require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
@@ -94,7 +99,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 					Name: testName,
 
 					Model:          modelMock,
-					Language:       &golang.Language{},
+					Language:       language,
 					TestDataPath:   temporaryDirectoryPath,
 					RepositoryPath: filepath.Join("golang", "plain"),
 
@@ -123,7 +128,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 						metrics.AssessmentKeyCoverage:        10,
 					},
 				}
-				validateGo(t, "Model generated correct test", bytesutil.StringTrimIndentations(`
+				validateGo(t, "Model generated correct test", &golang.Language{}, bytesutil.StringTrimIndentations(`
 					package plain
 
 					import "testing"
@@ -147,7 +152,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 				expectedProblems := []string{
 					"imported and not used",
 				}
-				validateGo(t, "Model generated test with unused import", bytesutil.StringTrimIndentations(`
+				validateGo(t, "Model generated test with unused import", &golang.Language{}, bytesutil.StringTrimIndentations(`
 					package plain
 
 					import (
@@ -173,11 +178,30 @@ func TestTaskWriteTestsRun(t *testing.T) {
 					"expected declaration, found this",
 					"unable to format source code",
 				}
-				validateGo(t, "Model generated test that is unfixable", bytesutil.StringTrimIndentations(`
+				validateGo(t, "Model generated test that is unfixable", &golang.Language{}, bytesutil.StringTrimIndentations(`
 					package plain
 
 					this is not valid go code
 				`), expectedAssessments, expectedProblems, false)
+			}
+			{
+				expectedAssessments := map[task.Identifier]metrics.Assessments{
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoError: 1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyResponseNoError: 1,
+					},
+				}
+				expectedProblems := []string{
+					"context deadline exceeded",
+				}
+
+				languageMock := languagetesting.NewMockLanguageNamed(t, "golang")
+				languageMock.On("Files", mock.Anything, mock.Anything).Return([]string{filepath.Join("golang", "plain")}, nil).Once()
+				languageMock.On("Execute", mock.Anything, mock.Anything).Return(uint64(0), nil, context.DeadlineExceeded).Once()
+
+				validateGo(t, "Execution timeout", languageMock, "", expectedAssessments, expectedProblems, false)
 			}
 		})
 	})

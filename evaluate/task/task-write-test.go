@@ -1,6 +1,8 @@
 package task
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"path/filepath"
 
@@ -81,6 +83,14 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
+
+			// If there is an execution timeout do not run "symflower fix" because the code itself is correct.
+			if errors.Is(err, context.DeadlineExceeded) {
+				modelAssessment.Add(modelAssessmentForFile)
+				withSymflowerAssessment.Add(withSymflowerAssessmentForFile)
+
+				continue
+			}
 
 			// Run "symflower fix"  if the model response fails to execute.
 			if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
