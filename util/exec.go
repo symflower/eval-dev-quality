@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"os/exec"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
@@ -60,6 +61,32 @@ func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command
 	}
 
 	return writer.String(), nil
+}
+
+// Flags returns a list of `long` flags bound on the command or nil.
+func Flags(cmd any) (args []string) {
+	typ := reflect.TypeOf(cmd)
+
+	// Dereference pointer
+	if typ.Kind() == reflect.Pointer {
+		typ = typ.Elem()
+	}
+
+	if typ.Kind() != reflect.Struct {
+		return nil
+	}
+
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		arg, ok := field.Tag.Lookup("long")
+		if !ok {
+			continue
+		}
+
+		args = append(args, arg)
+	}
+
+	return args
 }
 
 // FilterArgs filters the arguments by either ignoring/allowing them in the result.

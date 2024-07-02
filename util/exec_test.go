@@ -245,3 +245,50 @@ func TestParallelExecute(t *testing.T) {
 	})
 
 }
+
+func TestFlags(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Cmd any
+
+		ExpectedArgs []string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualArgs := Flags(tc.Cmd)
+
+			assert.Equal(t, tc.ExpectedArgs, actualArgs)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Struct Command",
+
+		Cmd: struct {
+			PropA string `long:"PropA"`
+			PropB string `long:"PropB"`
+			PropC string `short:"hey"`
+		}{},
+
+		ExpectedArgs: []string{
+			"PropA",
+			"PropB",
+		},
+	})
+
+	validate(t, &testCase{
+		Name: "Pointer Struct Command",
+
+		Cmd: &struct {
+			PropA string `long:"PropA"`
+			PropB string `long:"PropB"`
+		}{},
+
+		ExpectedArgs: []string{
+			"PropA",
+			"PropB",
+		},
+	})
+}
