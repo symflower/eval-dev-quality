@@ -11,17 +11,9 @@ import (
 	"github.com/symflower/eval-dev-quality/model"
 )
 
-// NewMockCapabilityWriteTestsNamed returns a new named mocked model.
-func NewMockCapabilityWriteTestsNamed(t *testing.T, id string) *MockCapabilityWriteTests {
-	m := NewMockCapabilityWriteTests(t)
-	m.On("ID").Return(id).Maybe()
-
-	return m
-}
-
-// NewMockCapabilityRepairCodeNamed returns a new named mocked model.
-func NewMockCapabilityRepairCodeNamed(t *testing.T, id string) *MockCapabilityRepairCode {
-	m := NewMockCapabilityRepairCode(t)
+// NewMockModelNamed returns a new named mocked model.
+func NewMockModelNamed(t *testing.T, id string) *MockModel {
+	m := NewMockModel(t)
 	m.On("ID").Return(id).Maybe()
 
 	return m
@@ -61,4 +53,32 @@ func (m *MockCapabilityRepairCode) RegisterGenerateSuccess(t *testing.T, filePat
 // RegisterGenerateError registers a mock call that errors on generation.
 func (m *MockCapabilityRepairCode) RegisterGenerateError(err error) *mock.Call {
 	return m.On("RepairCode", mock.Anything).Return(nil, err)
+}
+
+// MockModelCapabilityWriteTests holds a mock implementing the "Model" and the "CapabilityWriteTests" interface.
+type MockModelCapabilityWriteTests struct {
+	*MockModel
+	*MockCapabilityWriteTests
+}
+
+// NewMockCapabilityWriteTestsNamed returns a new named mocked model.
+func NewMockCapabilityWriteTestsNamed(t *testing.T, id string) *MockModelCapabilityWriteTests {
+	return &MockModelCapabilityWriteTests{
+		MockModel:                NewMockModelNamed(t, id),
+		MockCapabilityWriteTests: NewMockCapabilityWriteTests(t),
+	}
+}
+
+// MockModelCapabilityRepairCode holds a mock implementing the "Model" and the "CapabilityRepairCode" interface.
+type MockModelCapabilityRepairCode struct {
+	*MockModel
+	*MockCapabilityRepairCode
+}
+
+// NewMockCapabilityRepairCodeNamed returns a new named mocked model.
+func NewMockCapabilityRepairCodeNamed(t *testing.T, id string) *MockModelCapabilityRepairCode {
+	return &MockModelCapabilityRepairCode{
+		MockModel:                NewMockModelNamed(t, id),
+		MockCapabilityRepairCode: NewMockCapabilityRepairCode(t),
+	}
 }

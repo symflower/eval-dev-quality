@@ -14,60 +14,6 @@ type MockCapabilityWriteTests struct {
 	mock.Mock
 }
 
-// Cost provides a mock function with given fields:
-func (_m *MockCapabilityWriteTests) Cost() float64 {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Cost")
-	}
-
-	var r0 float64
-	if rf, ok := ret.Get(0).(func() float64); ok {
-		r0 = rf()
-	} else {
-		r0 = ret.Get(0).(float64)
-	}
-
-	return r0
-}
-
-// ID provides a mock function with given fields:
-func (_m *MockCapabilityWriteTests) ID() string {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for ID")
-	}
-
-	var r0 string
-	if rf, ok := ret.Get(0).(func() string); ok {
-		r0 = rf()
-	} else {
-		r0 = ret.Get(0).(string)
-	}
-
-	return r0
-}
-
-// Name provides a mock function with given fields:
-func (_m *MockCapabilityWriteTests) Name() string {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Name")
-	}
-
-	var r0 string
-	if rf, ok := ret.Get(0).(func() string); ok {
-		r0 = rf()
-	} else {
-		r0 = ret.Get(0).(string)
-	}
-
-	return r0
-}
-
 // WriteTests provides a mock function with given fields: ctx
 func (_m *MockCapabilityWriteTests) WriteTests(ctx model.Context) (metrics.Assessments, error) {
 	ret := _m.Called(ctx)

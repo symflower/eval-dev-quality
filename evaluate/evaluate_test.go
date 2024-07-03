@@ -179,7 +179,7 @@ func TestEvaluate(t *testing.T) {
 
 			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 				// Set up mocks, when test is running.
-				mockedModel.On("WriteTests", mock.Anything).Return(nil, ErrEmptyResponseFromModel)
+				mockedModel.MockCapabilityWriteTests.On("WriteTests", mock.Anything).Return(nil, ErrEmptyResponseFromModel)
 			},
 
 			Context: &Context{
@@ -417,10 +417,10 @@ func TestEvaluate(t *testing.T) {
 
 		generateTestsForFilePlainError := errors.New("generateTestsForFile error")
 
-		generateSuccess := func(mockedModel *modeltesting.MockCapabilityWriteTests) {
+		generateSuccess := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) {
 			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime).Once()
 		}
-		generateError := func(mockedModel *modeltesting.MockCapabilityWriteTests) {
+		generateError := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) {
 			mockedModel.RegisterGenerateError(generateTestsForFilePlainError).Once()
 		}
 
@@ -446,7 +446,7 @@ func TestEvaluate(t *testing.T) {
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					mockedModel.AssertNumberOfCalls(t, "WriteTests", 4)
+					mockedModel.MockCapabilityWriteTests.AssertNumberOfCalls(t, "WriteTests", 4)
 				},
 
 				Context: &Context{
@@ -541,7 +541,7 @@ func TestEvaluate(t *testing.T) {
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					mockedModel.AssertNumberOfCalls(t, "WriteTests", 4)
+					mockedModel.MockCapabilityWriteTests.AssertNumberOfCalls(t, "WriteTests", 4)
 				},
 
 				Context: &Context{
@@ -632,7 +632,7 @@ func TestEvaluate(t *testing.T) {
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					mockedModel.AssertNumberOfCalls(t, "WriteTests", 2)
+					mockedModel.MockCapabilityWriteTests.AssertNumberOfCalls(t, "WriteTests", 2)
 				},
 
 				Context: &Context{
@@ -677,7 +677,7 @@ func TestEvaluate(t *testing.T) {
 		}
 	})
 	t.Run("Runs", func(t *testing.T) {
-		generateSuccess := func(mockedModel *modeltesting.MockCapabilityWriteTests) {
+		generateSuccess := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) {
 			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
 		{
@@ -817,7 +817,7 @@ func TestEvaluate(t *testing.T) {
 	})
 
 	t.Run("Preloading", func(t *testing.T) {
-		generateSuccess := func(mockedModel *modeltesting.MockCapabilityWriteTests) {
+		generateSuccess := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) {
 			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
 
