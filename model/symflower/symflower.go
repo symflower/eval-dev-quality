@@ -10,10 +10,8 @@ import (
 	pkgerrors "github.com/pkg/errors"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
-	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	"github.com/symflower/eval-dev-quality/util"
 )
@@ -22,7 +20,7 @@ import (
 type Model struct{}
 
 // NewModel returns a Symflower model.
-func NewModel() (model model.Model) {
+func NewModel() (model *Model) {
 	return &Model{}
 }
 
@@ -38,30 +36,10 @@ func (m *Model) Name() (name string) {
 	return "Symbolic Execution"
 }
 
-// IsTaskSupported returns whether the model supports the given task or not.
-func (m *Model) IsTaskSupported(taskIdentifier task.Identifier) (isSupported bool) {
-	switch taskIdentifier {
-	case evaluatetask.IdentifierWriteTests:
-		return true
-	case evaluatetask.IdentifierCodeRepair:
-		return false
-	default:
-		return false
-	}
-}
-
-// RunTask runs the given task.
-func (m *Model) RunTask(ctx task.Context, taskIdentifier task.Identifier) (assessments metrics.Assessments, err error) {
-	switch taskIdentifier {
-	case evaluatetask.IdentifierWriteTests:
-		return m.generateTestsForFile(ctx)
-	default:
-		return nil, pkgerrors.Wrap(task.ErrTaskUnsupported, string(taskIdentifier))
-	}
-}
+var _ model.CapabilityWriteTests = (*Model)(nil)
 
 // generateTestsForFile generates test files for the given implementation file in a repository.
-func (m *Model) generateTestsForFile(ctx task.Context) (assessment metrics.Assessments, err error) {
+func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, err error) {
 	start := time.Now()
 
 	output, err := util.CommandWithResult(context.Background(), ctx.Logger, &util.Command{

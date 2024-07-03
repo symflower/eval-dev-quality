@@ -4,9 +4,6 @@ import (
 	"fmt"
 
 	pkgerrors "github.com/pkg/errors"
-	"github.com/symflower/eval-dev-quality/language"
-	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 )
 
@@ -40,13 +37,13 @@ var (
 )
 
 // TaskForIdentifier returns a task based on the task identifier.
-func TaskForIdentifier(taskIdentifier evaltask.Identifier, logger *log.Logger, resultPath string, model model.Model, language language.Language) (task evaltask.Task, err error) {
+func TaskForIdentifier(taskIdentifier evaltask.Identifier) (task evaltask.Task, err error) {
 	switch taskIdentifier {
 	case IdentifierWriteTests:
-		return newTaskWriteTests(logger, resultPath, model, language), nil
+		return &TaskWriteTests{}, nil
 	case IdentifierCodeRepair:
-		return newCodeRepairTask(logger, resultPath, model, language), nil
+		return &TaskCodeRepair{}, nil
 	default:
-		return nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupported, string(taskIdentifier))
+		return nil, pkgerrors.Wrap(evaltask.ErrTaskUnknown, string(taskIdentifier))
 	}
 }

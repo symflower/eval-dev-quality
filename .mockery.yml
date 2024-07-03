@@ -13,6 +13,8 @@ packages:
   github.com/symflower/eval-dev-quality/model:
     interfaces:
       Model:
+      CapabilityWriteTests:
+      CapabilityRepairCode:
   github.com/symflower/eval-dev-quality/provider:
     interfaces:
       Loader:

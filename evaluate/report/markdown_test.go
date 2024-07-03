@@ -109,8 +109,8 @@ func TestMarkdownWriteToFile(t *testing.T) {
 
 			TotalScore: 1,
 			AssessmentPerModel: AssessmentPerModel{
-				modeltesting.NewMockModelNamed(t, "model/response/error"): metrics.NewAssessments(),
-				modeltesting.NewMockModelNamed(t, "model/no/code"): metrics.Assessments{
+				modeltesting.NewMockCapabilityWriteTestsNamed(t, "model/response/error"): metrics.NewAssessments(),
+				modeltesting.NewMockCapabilityWriteTestsNamed(t, "model/no/code"): metrics.Assessments{
 					metrics.AssessmentKeyResponseNoError: 1,
 				},
 			},

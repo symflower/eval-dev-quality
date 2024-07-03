@@ -1,6 +1,7 @@
 package testintegration
 
 import (
+	"log"
 	"path/filepath"
 	"testing"
 
@@ -10,9 +11,8 @@ import (
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
 	"github.com/symflower/eval-dev-quality/language/golang"
-	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model/symflower"
-	"github.com/symflower/eval-dev-quality/task"
+	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 )
@@ -22,22 +22,15 @@ func TestTaskWriteTestsRun(t *testing.T) {
 
 	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
-			resultPath := t.TempDir()
-
-			logOutput, logger := log.Buffer()
-			defer func() {
-				if t.Failed() {
-					t.Logf("Logging output: %s", logOutput.String())
-				}
-			}()
-			repository, cleanup, err := evaluatetask.TemporaryRepository(logger, tc.TestDataPath, tc.RepositoryPath)
-			assert.NoError(t, err)
-			defer cleanup()
-
-			taskWriteTests, err := evaluatetask.TaskForIdentifier(evaluatetask.IdentifierWriteTests, logger, resultPath, tc.Model, tc.Language)
+			task, err := evaluatetask.TaskForIdentifier(evaluatetask.IdentifierWriteTests)
 			require.NoError(t, err)
+			tc.Task = task
 
-			tc.Validate(t, taskWriteTests, repository, resultPath)
+			tc.Validate(t,
+				func(logger *log.Logger, testDataPath string, repositoryPathRelative string) (repository evaltask.Repository, cleanup func(), err error) {
+					return evaluatetask.TemporaryRepository(logger, testDataPath, repositoryPathRelative)
+				},
+			)
 		})
 	}
 
@@ -49,7 +42,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 		TestDataPath:   filepath.Join("..", "..", "..", "testdata"),
 		RepositoryPath: filepath.Join("golang", "plain"),
 
-		ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+		ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 			evaluatetask.IdentifierWriteTests: metrics.Assessments{
 				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
 				metrics.AssessmentKeyResponseCharacterCount:             254,

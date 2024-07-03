@@ -6,30 +6,32 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/model"
 )
 
 var (
-	// ErrTaskUnsupported indicates that a task is unsupported.
-	ErrTaskUnsupported = errors.New("task unsupported")
+	// ErrTaskUnknown indicates that a task is unknown.
+	ErrTaskUnknown = errors.New("task unknown")
+	// ErrTaskUnsupportedByModel indicates that the model does not support the task.
+	ErrTaskUnsupportedByModel = errors.New("model does not support task")
 )
 
 // Identifier holds the identifier of a task.
 type Identifier string
 
-// Context holds the data needed for running a task.
+// Context holds the data need by a task to be run.
 type Context struct {
 	// Language holds the language for which the task should be evaluated.
 	Language language.Language
+	// Repository holds the repository which should be evaluated.
+	Repository Repository
+	// Model holds the model which the task should be evaluated.
+	Model model.Model
 
-	// RepositoryPath holds the absolute path to the repository.
-	RepositoryPath string
-	// FilePath holds the path the file under test relative to the repository path.
-	FilePath string
+	// ResultPath holds the directory path where results should be written to.
+	ResultPath string
 
-	// Arguments holds extra data that can be used in a query prompt.
-	Arguments any
-
-	// Logger is used for logging during evaluation.
+	// Logger holds the logger for this tasks.
 	Logger *log.Logger
 }
 
@@ -39,7 +41,7 @@ type Task interface {
 	Identifier() (identifier Identifier)
 
 	// Run runs a task in a given repository.
-	Run(repository Repository) (assessments map[Identifier]metrics.Assessments, problems []error, err error)
+	Run(ctx Context) (assessments map[Identifier]metrics.Assessments, problems []error, err error)
 }
 
 // Repository defines a repository to be evaluated.

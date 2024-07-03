@@ -13,7 +13,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
-	"github.com/symflower/eval-dev-quality/task"
+	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 )
@@ -21,20 +21,15 @@ import (
 func TestTaskWriteTestsRun(t *testing.T) {
 	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
-			resultPath := t.TempDir()
+			task, err := TaskForIdentifier(IdentifierWriteTests)
+			require.NoError(t, err)
+			tc.Task = task
 
-			logOutput, logger := log.Buffer()
-			defer func() {
-				if t.Failed() {
-					t.Logf("Logging output: %s", logOutput.String())
-				}
-			}()
-			repository, cleanup, err := TemporaryRepository(logger, tc.TestDataPath, tc.RepositoryPath)
-			assert.NoError(t, err)
-			defer cleanup()
-
-			taskWriteTests := newTaskWriteTests(logger, resultPath, tc.Model, tc.Language)
-			tc.Validate(t, taskWriteTests, repository, resultPath)
+			tc.Validate(t,
+				func(logger *log.Logger, testDataPath string, repositoryPathRelative string) (repository evaltask.Repository, cleanup func(), err error) {
+					return TemporaryRepository(logger, testDataPath, repositoryPathRelative)
+				},
+			)
 		})
 	}
 
@@ -47,12 +42,12 @@ func TestTaskWriteTestsRun(t *testing.T) {
 		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "taskA.go"), []byte("package plain\n\nfunc TaskA(){}"), 0600))
 		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "taskB.go"), []byte("package plain\n\nfunc TaskB(){}"), 0600))
 
-		modelMock := modeltesting.NewMockModelNamed(t, "mocked-model")
+		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
 
 		// Generate invalid code for the first taskcontext.
-		modelMock.RegisterGenerateSuccess(t, IdentifierWriteTests, "taskA_test.go", "does not compile", metricstesting.AssessmentsWithProcessingTime).Once()
+		modelMock.RegisterGenerateSuccess(t, "taskA_test.go", "does not compile", metricstesting.AssessmentsWithProcessingTime).Once()
 		// Generate valid code for the second taskcontext.
-		modelMock.RegisterGenerateSuccess(t, IdentifierWriteTests, "taskB_test.go", "package plain\n\nimport \"testing\"\n\nfunc TestTaskB(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Once()
+		modelMock.RegisterGenerateSuccess(t, "taskB_test.go", "package plain\n\nimport \"testing\"\n\nfunc TestTaskB(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Once()
 
 		validate(t, &tasktesting.TestCaseTask{
 			Name: "Plain",
@@ -62,7 +57,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			TestDataPath:   temporaryDirectoryPath,
 			RepositoryPath: filepath.Join("golang", "plain"),
 
-			ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 				IdentifierWriteTests: metrics.Assessments{
 					metrics.AssessmentKeyFilesExecuted:   1,
 					metrics.AssessmentKeyResponseNoError: 2,
@@ -87,13 +82,13 @@ func TestTaskWriteTestsRun(t *testing.T) {
 
 	t.Run("Symflower Fix", func(t *testing.T) {
 		t.Run("Go", func(t *testing.T) {
-			validateGo := func(t *testing.T, testName string, testFileContent string, expectedAssessments map[task.Identifier]metrics.Assessments, expectedProblems []string, assertTestsPass bool) {
+			validateGo := func(t *testing.T, testName string, testFileContent string, expectedAssessments map[evaltask.Identifier]metrics.Assessments, expectedProblems []string, assertTestsPass bool) {
 				temporaryDirectoryPath := t.TempDir()
 				repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
 				require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
 
-				modelMock := modeltesting.NewMockModelNamed(t, "mocked-model")
-				modelMock.RegisterGenerateSuccess(t, IdentifierWriteTests, "plain_test.go", testFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+				modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+				modelMock.RegisterGenerateSuccess(t, "plain_test.go", testFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
 
 				validate(t, &tasktesting.TestCaseTask{
 					Name: testName,
@@ -116,7 +111,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 				})
 			}
 			{
-				expectedAssessments := map[task.Identifier]metrics.Assessments{
+				expectedAssessments := map[evaltask.Identifier]metrics.Assessments{
 					IdentifierWriteTests: metrics.Assessments{
 						metrics.AssessmentKeyFilesExecuted:   1,
 						metrics.AssessmentKeyResponseNoError: 1,
@@ -139,7 +134,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 				`), expectedAssessments, nil, true)
 			}
 			{
-				expectedAssessments := map[task.Identifier]metrics.Assessments{
+				expectedAssessments := map[evaltask.Identifier]metrics.Assessments{
 					IdentifierWriteTests: metrics.Assessments{
 						metrics.AssessmentKeyResponseNoError: 1,
 					},
@@ -166,7 +161,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 				`), expectedAssessments, expectedProblems, true)
 			}
 			{
-				expectedAssessments := map[task.Identifier]metrics.Assessments{
+				expectedAssessments := map[evaltask.Identifier]metrics.Assessments{
 					IdentifierWriteTests: metrics.Assessments{
 						metrics.AssessmentKeyResponseNoError: 1,
 					},

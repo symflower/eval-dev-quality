@@ -13,7 +13,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
-	"github.com/symflower/eval-dev-quality/task"
+	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 )
@@ -21,20 +21,15 @@ import (
 func TestTaskCodeRepairRun(t *testing.T) {
 	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
-			resultPath := t.TempDir()
+			task, err := TaskForIdentifier(IdentifierCodeRepair)
+			require.NoError(t, err)
+			tc.Task = task
 
-			logOutput, logger := log.Buffer()
-			defer func() {
-				if t.Failed() {
-					t.Logf("Logging output: %s", logOutput.String())
-				}
-			}()
-			repository, cleanup, err := TemporaryRepository(logger, tc.TestDataPath, tc.RepositoryPath)
-			assert.NoError(t, err)
-			defer cleanup()
-
-			taskWriteTests := newCodeRepairTask(logger, resultPath, tc.Model, tc.Language)
-			tc.Validate(t, taskWriteTests, repository, resultPath)
+			tc.Validate(t,
+				func(logger *log.Logger, testDataPath string, repositoryPathRelative string) (repository evaltask.Repository, cleanup func(), err error) {
+					return TemporaryRepository(logger, testDataPath, repositoryPathRelative)
+				},
+			)
 		})
 	}
 
@@ -45,7 +40,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 			repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "mistakes", "openingBracketMissing")
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "mistakes", "openingBracketMissing"), repositoryPath))
 
-			modelMock := modeltesting.NewMockModelNamed(t, "mocked-model")
+			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
 
 			// Generate valid code for the task.
 			sourceFileContent := bytesutil.StringTrimIndentations(`
@@ -62,7 +57,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 					return 0
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, IdentifierCodeRepair, "openingBracketMissing.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+			modelMock.RegisterGenerateSuccess(t, "openingBracketMissing.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Single test case",
@@ -72,7 +67,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
 						metrics.AssessmentKeyCoverage:        30,
 						metrics.AssessmentKeyFilesExecuted:   1,
@@ -95,7 +90,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "mistakes", "openingBracketMissing"), filepath.Join(repositoryPath, "openingBracketMissing")))
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "mistakes", "typeUnknown"), filepath.Join(repositoryPath, "typeUnknown")))
 
-			modelMock := modeltesting.NewMockModelNamed(t, "mocked-model")
+			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
 
 			// Generate valid code for the task.
 			sourceFileContent := bytesutil.StringTrimIndentations(`
@@ -112,7 +107,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 					return 0
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, IdentifierCodeRepair, "openingBracketMissing.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+			modelMock.RegisterGenerateSuccess(t, "openingBracketMissing.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
 			sourceFileContent = bytesutil.StringTrimIndentations(`
 				package typeUnknown
 
@@ -127,7 +122,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 					return 0
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, IdentifierCodeRepair, "typeUnknown.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+			modelMock.RegisterGenerateSuccess(t, "typeUnknown.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Multiple test cases",
@@ -137,7 +132,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
 						metrics.AssessmentKeyCoverage:        60,
 						metrics.AssessmentKeyFilesExecuted:   2,
@@ -164,7 +159,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 			repositoryPath := filepath.Join(temporaryDirectoryPath, "java", "mistakes", "openingBracketMissing")
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "mistakes", "openingBracketMissing"), repositoryPath))
 
-			modelMock := modeltesting.NewMockModelNamed(t, "mocked-model")
+			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
 
 			// Generate valid code for the task.
 			sourceFileContent := bytesutil.StringTrimIndentations(`
@@ -183,7 +178,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, IdentifierCodeRepair, filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+			modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Single test case",
@@ -193,7 +188,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
 						metrics.AssessmentKeyCoverage:        80,
 						metrics.AssessmentKeyFilesExecuted:   1,
@@ -214,7 +209,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "mistakes", "openingBracketMissing"), filepath.Join(repositoryPath, "openingBracketMissing")))
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "mistakes", "typeUnknown"), filepath.Join(repositoryPath, "typeUnknown")))
 
-			modelMock := modeltesting.NewMockModelNamed(t, "mocked-model")
+			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
 
 			// Generate valid code for the task.
 			sourceFileContent := bytesutil.StringTrimIndentations(`
@@ -233,7 +228,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, IdentifierCodeRepair, filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+			modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
 			sourceFileContent = bytesutil.StringTrimIndentations(`
 				package com.eval;
 
@@ -250,7 +245,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, IdentifierCodeRepair, filepath.Join("src", "main", "java", "com", "eval", "TypeUnknown.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+			modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "main", "java", "com", "eval", "TypeUnknown.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Multiple test cases",
@@ -260,7 +255,7 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
 						metrics.AssessmentKeyCoverage:        160,
 						metrics.AssessmentKeyFilesExecuted:   2,

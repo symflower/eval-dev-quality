@@ -171,7 +171,7 @@ func TestEvaluate(t *testing.T) {
 
 	{
 		languageGolang := &golang.Language{}
-		mockedModel := modeltesting.NewMockModelNamed(t, "empty-response-model")
+		mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, "empty-response-model")
 		repositoryPath := filepath.Join("golang", "plain")
 
 		validate(t, &testCase{
@@ -179,7 +179,7 @@ func TestEvaluate(t *testing.T) {
 
 			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 				// Set up mocks, when test is running.
-				mockedModel.On("RunTask", mock.Anything, evaluatetask.IdentifierWriteTests).Return(nil, ErrEmptyResponseFromModel)
+				mockedModel.MockCapabilityWriteTests.On("WriteTests", mock.Anything).Return(nil, ErrEmptyResponseFromModel)
 			},
 
 			Context: &Context{
@@ -417,17 +417,17 @@ func TestEvaluate(t *testing.T) {
 
 		generateTestsForFilePlainError := errors.New("generateTestsForFile error")
 
-		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, evaluatetask.IdentifierWriteTests, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime).Once()
+		generateSuccess := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) {
+			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime).Once()
 		}
-		generateError := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateError(evaluatetask.IdentifierWriteTests, generateTestsForFilePlainError).Once()
+		generateError := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) {
+			mockedModel.RegisterGenerateError(generateTestsForFilePlainError).Once()
 		}
 
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
-			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 
 			validate(t, &testCase{
 				Name: "Problems of previous runs shouldn't cancel successive runs",
@@ -446,7 +446,7 @@ func TestEvaluate(t *testing.T) {
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					mockedModel.AssertNumberOfCalls(t, "RunTask", 4)
+					mockedModel.MockCapabilityWriteTests.AssertNumberOfCalls(t, "WriteTests", 4)
 				},
 
 				Context: &Context{
@@ -523,7 +523,7 @@ func TestEvaluate(t *testing.T) {
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
-			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 
 			validate(t, &testCase{
 				Name: "Solving basic checks once is enough",
@@ -541,7 +541,7 @@ func TestEvaluate(t *testing.T) {
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					mockedModel.AssertNumberOfCalls(t, "RunTask", 4)
+					mockedModel.MockCapabilityWriteTests.AssertNumberOfCalls(t, "WriteTests", 4)
 				},
 
 				Context: &Context{
@@ -618,7 +618,7 @@ func TestEvaluate(t *testing.T) {
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
-			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 
 			validate(t, &testCase{
 				Name: "Never solving basic checks leads to exclusion",
@@ -632,7 +632,7 @@ func TestEvaluate(t *testing.T) {
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
-					mockedModel.AssertNumberOfCalls(t, "RunTask", 2)
+					mockedModel.MockCapabilityWriteTests.AssertNumberOfCalls(t, "WriteTests", 2)
 				},
 
 				Context: &Context{
@@ -677,13 +677,13 @@ func TestEvaluate(t *testing.T) {
 		}
 	})
 	t.Run("Runs", func(t *testing.T) {
-		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, evaluatetask.IdentifierWriteTests, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
+		generateSuccess := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) {
+			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
-			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 			repositoryPath := filepath.Join("golang", "plain")
 			validate(t, &testCase{
 				Name: "Interleaved",
@@ -750,7 +750,7 @@ func TestEvaluate(t *testing.T) {
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
-			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 			repositoryPath := filepath.Join("golang", "plain")
 			validate(t, &testCase{
 				Name: "Sequential",
@@ -817,15 +817,15 @@ func TestEvaluate(t *testing.T) {
 	})
 
 	t.Run("Preloading", func(t *testing.T) {
-		generateSuccess := func(mockedModel *modeltesting.MockModel) {
-			mockedModel.RegisterGenerateSuccess(t, evaluatetask.IdentifierWriteTests, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
+		generateSuccess := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) {
+			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
 
 		{
 			// Setup provider and model mocking.
 			languageGolang := &golang.Language{}
 			mockedModelID := "testing-provider/testing-model"
-			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 			mockedProviderID := "testing-provider"
 			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []model.Model{mockedModel})
 			mockedLoader := providertesting.NewMockLoader(t)
@@ -907,7 +907,7 @@ func TestEvaluate(t *testing.T) {
 			// Setup provider and model mocking.
 			languageGolang := &golang.Language{}
 			mockedModelID := "testing-provider/testing-model"
-			mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 			mockedProviderID := "testing-provider"
 			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []model.Model{mockedModel})
 			mockedLoader := providertesting.NewMockLoader(t)
@@ -988,14 +988,14 @@ func TestEvaluate(t *testing.T) {
 		// Setup provider and model mocking.
 		languageGolang := &golang.Language{}
 		mockedModelID := "testing-provider/testing-model"
-		mockedModel := modeltesting.NewMockModelNamed(t, mockedModelID)
+		mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 		repositoryPath := filepath.Join("golang", "plain")
 
 		validate(t, &testCase{
 			Name: "Download Go dependencies",
 
 			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
-				mockedModel.RegisterGenerateSuccess(t, evaluatetask.IdentifierWriteTests, testFiles["plain-with-assert"].Path, testFiles["plain-with-assert"].Content, metricstesting.AssessmentsWithProcessingTime)
+				mockedModel.RegisterGenerateSuccess(t, testFiles["plain-with-assert"].Path, testFiles["plain-with-assert"].Content, metricstesting.AssessmentsWithProcessingTime)
 			},
 
 			Context: &Context{
