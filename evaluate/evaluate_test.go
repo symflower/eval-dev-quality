@@ -180,6 +180,8 @@ func TestEvaluate(t *testing.T) {
 			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 				// Set up mocks, when test is running.
 				mockedModel.MockCapabilityWriteTests.On("WriteTests", mock.Anything).Return(nil, ErrEmptyResponseFromModel)
+				mockedModel.MockModel.On("Name").Return("Empty Response Model")
+				mockedModel.MockModel.On("Cost").Return(0.0001)
 			},
 
 			Context: &Context{
@@ -211,6 +213,7 @@ func TestEvaluate(t *testing.T) {
 			ExpectedTotalScore: 2,
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				filepath.Join(string(evaluatetask.IdentifierWriteTests), mockedModel.ID(), "golang", "golang", "plain.log"): nil,
+				filepath.Join("evaluation.csv"): nil,
 			},
 		})
 	}
@@ -266,6 +269,7 @@ func TestEvaluate(t *testing.T) {
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, ErrEmptyResponseFromModel.Error())
 					},
+					filepath.Join("evaluation.csv"): nil,
 				},
 			})
 		}
@@ -332,6 +336,7 @@ func TestEvaluate(t *testing.T) {
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, "Attempt 1/3: "+ErrEmptyResponseFromModel.Error())
 					},
+					filepath.Join("evaluation.csv"): nil,
 				},
 			})
 		}
@@ -397,6 +402,7 @@ func TestEvaluate(t *testing.T) {
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, "DONE 0 tests, 1 error")
 					},
+					filepath.Join("evaluation.csv"): nil,
 				},
 			})
 		}
@@ -428,6 +434,8 @@ func TestEvaluate(t *testing.T) {
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
 			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
+			mockedModel.MockModel.On("Name").Return("Mocked Generation Model")
+			mockedModel.MockModel.On("Cost").Return(0.0001)
 
 			validate(t, &testCase{
 				Name: "Problems of previous runs shouldn't cancel successive runs",
@@ -517,6 +525,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "next.log"):  nil,
+					filepath.Join("evaluation.csv"): nil,
 				},
 			})
 		}
@@ -524,6 +533,8 @@ func TestEvaluate(t *testing.T) {
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
 			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
+			mockedModel.MockModel.On("Name").Return("Mocked Generation Model")
+			mockedModel.MockModel.On("Cost").Return(0.0001)
 
 			validate(t, &testCase{
 				Name: "Solving basic checks once is enough",
@@ -612,6 +623,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "next.log"):  nil,
+					filepath.Join("evaluation.csv"): nil,
 				},
 			})
 		}
@@ -619,6 +631,8 @@ func TestEvaluate(t *testing.T) {
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
 			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
+			mockedModel.MockModel.On("Name").Return("Mocked Generation Model")
+			mockedModel.MockModel.On("Cost").Return(0.0001)
 
 			validate(t, &testCase{
 				Name: "Never solving basic checks leads to exclusion",
@@ -672,6 +686,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedTotalScore: 0,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join("evaluation.csv"): nil,
 				},
 			})
 		}
@@ -684,6 +699,9 @@ func TestEvaluate(t *testing.T) {
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
 			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
+			mockedModel.MockModel.On("Name").Return("Mocked Generation Model")
+			mockedModel.MockModel.On("Cost").Return(0.0001)
+
 			repositoryPath := filepath.Join("golang", "plain")
 			validate(t, &testCase{
 				Name: "Interleaved",
@@ -736,6 +754,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join("evaluation.csv"): nil,
 				},
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 					assert.Contains(t, output, "Run 1/3")
@@ -751,6 +770,9 @@ func TestEvaluate(t *testing.T) {
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
 			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
+			mockedModel.MockModel.On("Name").Return("Mocked Generation Model")
+			mockedModel.MockModel.On("Cost").Return(0.0001)
+
 			repositoryPath := filepath.Join("golang", "plain")
 			validate(t, &testCase{
 				Name: "Sequential",
@@ -803,6 +825,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join("evaluation.csv"): nil,
 				},
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 					assert.Contains(t, output, "Run 1/3 for model")
@@ -826,6 +849,8 @@ func TestEvaluate(t *testing.T) {
 			languageGolang := &golang.Language{}
 			mockedModelID := "testing-provider/testing-model"
 			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
+			mockedModel.MockModel.On("Name").Return("Testing Model")
+			mockedModel.MockModel.On("Cost").Return(0.0001)
 			mockedProviderID := "testing-provider"
 			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []model.Model{mockedModel})
 			mockedLoader := providertesting.NewMockLoader(t)
@@ -900,6 +925,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join("evaluation.csv"): nil,
 				},
 			})
 		}
@@ -908,6 +934,8 @@ func TestEvaluate(t *testing.T) {
 			languageGolang := &golang.Language{}
 			mockedModelID := "testing-provider/testing-model"
 			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
+			mockedModel.MockModel.On("Name").Return("Testing Model")
+			mockedModel.MockModel.On("Cost").Return(0.0001)
 			mockedProviderID := "testing-provider"
 			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []model.Model{mockedModel})
 			mockedLoader := providertesting.NewMockLoader(t)
@@ -980,6 +1008,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+					filepath.Join("evaluation.csv"): nil,
 				},
 			})
 		}
@@ -989,6 +1018,9 @@ func TestEvaluate(t *testing.T) {
 		languageGolang := &golang.Language{}
 		mockedModelID := "testing-provider/testing-model"
 		mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
+		mockedModel.MockModel.On("Name").Return("Testing Model")
+		mockedModel.MockModel.On("Cost").Return(0.0001)
+
 		repositoryPath := filepath.Join("golang", "plain")
 
 		validate(t, &testCase{
@@ -1041,6 +1073,7 @@ func TestEvaluate(t *testing.T) {
 			ExpectedTotalScore: 2,
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				filepath.Join(string(evaluatetask.IdentifierWriteTests), evalmodel.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain.log"): nil,
+				filepath.Join("evaluation.csv"): nil,
 			},
 		})
 	}

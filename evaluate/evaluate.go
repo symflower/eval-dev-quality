@@ -74,6 +74,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 	// Ensure we report metrics for every model even if they are excluded.
 	assessments = report.NewAssessmentStore()
 	problemsPerModel := map[string][]error{}
+	// Write the evaluation CSV header so it's only written once.
+	report.WriteEvaluationHeader(ctx.ResultPath)
 
 	{
 		// Create temporary repositories for each language so the repository is copied only once per language.
@@ -145,6 +147,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									modelSucceededBasicChecksOfLanguage[model][language] = true
 								}
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
+								// Write the task assessment to the evaluation CSV file.
+								report.WriteEvaluationRecord(ctx.ResultPath, model, language, temporaryRepository.Name(), assessment)
 							}
 						})
 					}
@@ -249,6 +253,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									ctx.Log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
 								}
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
+								// Write the task assessment to the evaluation CSV file.
+								report.WriteEvaluationRecord(ctx.ResultPath, model, language, temporaryRepository.Name(), assessment)
 							}
 						})
 					}
