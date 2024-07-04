@@ -44,6 +44,9 @@ var (
 	// AssessmentKeyCoverage counts execution coverage objects.
 	AssessmentKeyCoverage = RegisterAssessmentKey("coverage", 10)
 
+	// AssessmentKeyTestsPassing holds the percentage of passing tests.
+	AssessmentKeyTestsPassing = RegisterAssessmentKey("tests-passing", 10)
+
 	// AssessmentKeyResponseCharacterCount counts the number of characters of a response.
 	AssessmentKeyResponseCharacterCount = RegisterAssessmentKey("response-character-count", 0)
 	// AssessmentKeyGenerateTestsForFileCharacterCount counts the number of characters of a generated test file.
@@ -167,6 +170,7 @@ func CombineWithSymflowerFixAssessments(model Assessments, fixed Assessments) (c
 	combined[AssessmentKeyResponseNoError] = model[AssessmentKeyResponseNoError]
 	combined[AssessmentKeyResponseNoExcess] = model[AssessmentKeyResponseNoExcess]
 	combined[AssessmentKeyResponseWithCode] = model[AssessmentKeyResponseWithCode]
+	combined[AssessmentKeyTestsPassing] = fixed[AssessmentKeyTestsPassing]
 
 	return combined
 }

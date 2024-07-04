@@ -137,7 +137,7 @@ func TestAssessmentString(t *testing.T) {
 
 		Assessment: NewAssessments(),
 
-		ExpectedString: "score=0, coverage=0, files-executed=0, files-executed-maximum-reachable=0, generate-tests-for-file-character-count=0, processing-time=0, response-character-count=0, response-no-error=0, response-no-excess=0, response-with-code=0",
+		ExpectedString: "score=0, coverage=0, files-executed=0, files-executed-maximum-reachable=0, generate-tests-for-file-character-count=0, processing-time=0, response-character-count=0, response-no-error=0, response-no-excess=0, response-with-code=0, tests-passing=0",
 	})
 
 	validate(t, &testCase{
@@ -153,9 +153,10 @@ func TestAssessmentString(t *testing.T) {
 			AssessmentKeyResponseNoExcess:                   4,
 			AssessmentKeyResponseWithCode:                   5,
 			AssessmentKeyProcessingTime:                     200,
+			AssessmentKeyTestsPassing:                       70,
 		},
 
-		ExpectedString: "score=15, coverage=1, files-executed=2, files-executed-maximum-reachable=2, generate-tests-for-file-character-count=50, processing-time=200, response-character-count=100, response-no-error=3, response-no-excess=4, response-with-code=5",
+		ExpectedString: "score=85, coverage=1, files-executed=2, files-executed-maximum-reachable=2, generate-tests-for-file-character-count=50, processing-time=200, response-character-count=100, response-no-error=3, response-no-excess=4, response-with-code=5, tests-passing=70",
 	})
 }
 
@@ -310,6 +311,7 @@ func TestCombineModelAndSymflowerFixAssessments(t *testing.T) {
 			AssessmentKeyProcessingTime:  uint64(100),
 			AssessmentKeyCoverage:        10,
 			AssessmentKeyResponseNoError: 1,
+			AssessmentKeyTestsPassing:    100,
 		},
 
 		ExpectedAssessments: Assessments{
@@ -321,6 +323,7 @@ func TestCombineModelAndSymflowerFixAssessments(t *testing.T) {
 			AssessmentKeyResponseNoError:                    0,
 			AssessmentKeyResponseWithCode:                   1,
 			AssessmentKeyResponseNoExcess:                   1,
+			AssessmentKeyTestsPassing:                       100,
 		},
 	})
 }
