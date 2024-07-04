@@ -4,11 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"path/filepath"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 )
@@ -31,20 +29,16 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
 	}
 
-	dataPath := ctx.Repository.DataPath()
-
-	log, logClose, err := log.WithFile(ctx.Logger, filepath.Join(ctx.ResultPath, string(t.Identifier()), model.CleanModelNameForFileSystem(ctx.Model.ID()), ctx.Language.ID(), ctx.Repository.Name()+".log"))
+	taskLogger, err := newTaskLogger(ctx, t)
 	if err != nil {
 		return nil, nil, err
 	}
-	defer logClose()
-
-	log.Printf("Evaluating model %q on task %q using language %q and repository %q", ctx.Model.ID(), t.Identifier(), ctx.Language.ID(), ctx.Repository.Name())
 	defer func() {
-		log.Printf("Evaluated model %q on task %q using language %q and repository %q: encountered %d problems: %+v", ctx.Model.ID(), t.Identifier(), ctx.Language.ID(), ctx.Repository.Name(), len(problems), problems)
+		taskLogger.finalize(problems)
 	}()
 
-	filePaths, err := ctx.Language.Files(log, dataPath)
+	dataPath := ctx.Repository.DataPath()
+	filePaths, err := ctx.Language.Files(taskLogger.Logger, dataPath)
 	if err != nil {
 		return nil, problems, pkgerrors.WithStack(err)
 	}
@@ -65,7 +59,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 			RepositoryPath: dataPath,
 			FilePath:       filePath,
 
-			Logger: log,
+			Logger: taskLogger.Logger,
 		}
 		assessments, err := modelCapability.WriteTests(modelContext)
 		if err != nil {
@@ -79,7 +73,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 		modelAssessmentForFile.Add(assessments)
 		modelAssessmentForFile.Award(metrics.AssessmentKeyResponseNoError)
 
-		coverage, ps, err := ctx.Language.Execute(log, dataPath)
+		coverage, ps, err := ctx.Language.Execute(taskLogger.Logger, dataPath)
 		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
@@ -94,9 +88,9 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 
 			// Run "symflower fix"  if the model response fails to execute.
 			if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
-				log.Print("model response alone failed execution, attempting to fix with \"symflower fix \"")
+				taskLogger.Print("model response alone failed execution, attempting to fix with \"symflower fix \"")
 
-				duration, err := symflowerFix(log, modelAssessment, dataPath, ctx.Language)
+				duration, err := symflowerFix(taskLogger.Logger, modelAssessment, dataPath, ctx.Language)
 				if err != nil {
 					problems = append(problems, err)
 
@@ -106,7 +100,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 					continue
 				}
 
-				coverage, ps, err := ctx.Language.Execute(log, dataPath)
+				coverage, ps, err := ctx.Language.Execute(taskLogger.Logger, dataPath)
 				problems = append(problems, ps...)
 				if err != nil {
 					problems = append(problems, pkgerrors.WithMessage(err, "symflower fix"))
@@ -116,7 +110,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 
 					continue
 				}
-				log.Printf("with symflower repair: Executes tests with %d coverage objects", coverage)
+				taskLogger.Printf("with symflower repair: Executes tests with %d coverage objects", coverage)
 
 				// Symflower was able to fix a failure so now update the assessment with the improved results.
 				withSymflowerAssessmentForFile = metrics.NewAssessments()
@@ -127,7 +121,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 				withSymflowerAssessmentForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentForFile, withSymflowerAssessmentForFile)
 			}
 		} else {
-			log.Printf("Executes tests with %d coverage objects", coverage)
+			taskLogger.Printf("Executes tests with %d coverage objects", coverage)
 			modelAssessmentForFile.Award(metrics.AssessmentKeyFilesExecuted)
 			modelAssessmentForFile.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
 		}

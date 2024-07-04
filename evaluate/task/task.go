@@ -2,8 +2,11 @@ package task
 
 import (
 	"fmt"
+	"path/filepath"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 )
 
@@ -46,4 +49,37 @@ func TaskForIdentifier(taskIdentifier evaltask.Identifier) (task evaltask.Task, 
 	default:
 		return nil, pkgerrors.Wrap(evaltask.ErrTaskUnknown, string(taskIdentifier))
 	}
+}
+
+// taskLogger holds common logging functionality.
+type taskLogger struct {
+	*log.Logger
+
+	logClose func()
+	ctx      evaltask.Context
+	task     evaltask.Task
+}
+
+// newTaskLogger initializes the logging.
+func newTaskLogger(ctx evaltask.Context, task evaltask.Task) (logging *taskLogger, err error) {
+	logging = &taskLogger{
+		ctx:  ctx,
+		task: task,
+	}
+
+	logging.Logger, logging.logClose, err = log.WithFile(ctx.Logger, filepath.Join(ctx.ResultPath, string(task.Identifier()), model.CleanModelNameForFileSystem(ctx.Model.ID()), ctx.Language.ID(), ctx.Repository.Name()+".log"))
+	if err != nil {
+		return nil, err
+	}
+
+	logging.Logger.Printf("Evaluating model %q on task %q using language %q and repository %q", ctx.Model.ID(), task.Identifier(), ctx.Language.ID(), ctx.Repository.Name())
+
+	return logging, nil
+}
+
+// finalizeLogging finalizes the logging.
+func (t *taskLogger) finalize(problems []error) {
+	t.Logger.Printf("Evaluated model %q on task %q using language %q and repository %q: encountered %d problems: %+v", t.ctx.Model.ID(), t.task.Identifier(), t.ctx.Language.ID(), t.ctx.Repository.Name(), len(problems), problems)
+
+	t.logClose()
 }
