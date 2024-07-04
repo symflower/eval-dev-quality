@@ -38,15 +38,12 @@ func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
 	}
 
-	log, logClose, err := log.WithFile(ctx.Logger, filepath.Join(ctx.ResultPath, string(t.Identifier()), model.CleanModelNameForFileSystem(ctx.Model.ID()), ctx.Language.ID(), ctx.Repository.Name()+".log"))
+	logging, err := initializeLogging(ctx, t)
 	if err != nil {
 		return nil, nil, err
 	}
-	defer logClose()
-
-	log.Printf("Evaluating model %q on task %q using language %q and repository %q", ctx.Model.ID(), t.Identifier(), ctx.Language.ID(), ctx.Repository.Name())
 	defer func() {
-		log.Printf("Evaluated model %q on task %q using language %q and repository %q: encountered %d problems: %+v", ctx.Model.ID(), t.Identifier(), ctx.Language.ID(), ctx.Repository.Name(), len(problems), problems)
+		logging.finalize(problems)
 	}()
 
 	var packagePaths []string
@@ -66,7 +63,7 @@ func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 		}
 
-		sourceFile, mistakes, err := t.unpackCodeRepairPackage(ctx, log, packagePath)
+		sourceFile, mistakes, err := t.unpackCodeRepairPackage(ctx, logging.log, packagePath)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -81,7 +78,7 @@ func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 				Mistakes: mistakes,
 			},
 
-			Logger: log,
+			Logger: logging.log,
 		}
 		assessments, err := modelCapability.RepairCode(modelContext)
 		if err != nil {
@@ -95,14 +92,14 @@ func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 		modelAssessment.Add(assessments)
 		modelAssessment.Award(metrics.AssessmentKeyResponseNoError)
 
-		coverage, ps, err := ctx.Language.Execute(log, packagePath)
+		coverage, ps, err := ctx.Language.Execute(logging.log, packagePath)
 		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, sourceFile))
 
 			continue
 		}
-		log.Printf("Executes tests with %d coverage objects", coverage)
+		logging.log.Printf("Executes tests with %d coverage objects", coverage)
 		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
 		modelAssessment.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
 	}
