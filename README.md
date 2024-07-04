@@ -167,8 +167,8 @@ Please check the [Kubernetes](./docs/kubernetes/README.md) documentation.
 
 With `DevQualityEval` we answer answer the following questions:
 
--   Which LLMs can solve software development tasks?
--   How good is the quality of their results?
+- Which LLMs can solve software development tasks?
+- How good is the quality of their results?
 
 Programming is a non-trivial profession. Even writing tests for an empty function requires substantial knowledge of the used programming language and its conventions. We already investigated this challenge and how many LLMs failed at it in our [first `DevQualityEval` report](https://symflower.com/en/company/blog/2024/can-ai-test-a-go-function-that-does-nothing/#why-evaluate-an-empty-function). This highlights the need for a **benchmarking framework for evaluating AI performance on software development task solving**.
 
@@ -188,9 +188,7 @@ Each repository can contain a configuration file `repository.json` in its root d
 
 ```json
 {
-  "tasks": [
-    "write-tests"
-  ]
+  "tasks": ["write-tests"]
 }
 ```
 
@@ -211,21 +209,21 @@ On a high level, `DevQualityEval` asks the model to produce tests for an example
 
 Currently, the following points are awarded for this task:
 
--   `response-no-error`: `+1` if the response did not encounter an error
--   `response-not-empty`: `+1` if the response is not empty
--   `response-with-code`: `+1` if the response contained source code
--   `compiled`: `+1` if the source code compiled
--   `statement-coverage-reached`: `+10` if the generated tests reach 100% coverage
--   `no-excess`: `+1` if the response did not contain more content than requested
+- `response-no-error`: `+1` if the response did not encounter an error
+- `response-not-empty`: `+1` if the response is not empty
+- `response-with-code`: `+1` if the response contained source code
+- `compiled`: `+1` if the source code compiled
+- `statement-coverage-reached`: `+10` if the generated tests reach 100% coverage
+- `no-excess`: `+1` if the response did not contain more content than requested
 
 #### Cases
 
 Currently, the following cases are available for this task:
 
--   Java
-    -   `plain/src/main/java/plain.java`: An empty function that does nothing.
--   Go
-    -   `plain/plain.go`: An empty function that does nothing.
+- Java
+  - `plain/src/main/java/plain.java`: An empty function that does nothing.
+- Go
+  - `plain/plain.go`: An empty function that does nothing.
 
 ## Results
 
@@ -243,10 +241,41 @@ To add new tasks to the benchmark, add features, or fix bugs, you'll need a deve
 
 First of all, thank you for thinking about contributing! There are multiple ways to contribute:
 
--   Add more files to existing language repositories.
--   Add more repositories to languages.
--   Implement another language and add repositories for it.
--   Implement new tasks for existing languages and repositories.
--   Add more features and fix bugs in the evaluation, development environment, or CI: [best to have a look at the list of issues](https://github.com/symflower/eval-dev-quality/issues).
+- Add more files to existing language repositories.
+- Add more repositories to languages.
+- Implement another language and add repositories for it.
+- Implement new tasks for existing languages and repositories.
+- Add more features and fix bugs in the evaluation, development environment, or CI: [best to have a look at the list of issues](https://github.com/symflower/eval-dev-quality/issues).
 
 If you want to contribute but are unsure how: [create a discussion](https://github.com/symflower/eval-dev-quality/discussions) or write us directly at [markus.zimmermann@symflower.com](mailto:markus.zimmermann@symflower.com).
+
+# When and how to release?
+
+## Publishing Content
+
+Releasing a new version of `DevQualityEval` and publishing content about it are two different things!
+But, we plan development and releases to be "content-driven", i.e. we work on / add features that are interesting to write about (see "Release Roadmap" below).
+Hence, for every release we also publish a deep dive blog post with our latest features and findings.
+Our published content is aimed at giving insight into our work and educating the reader.
+
+- new features that add value (i.e. change / add to the scoring / ranking) are always publish-worthy / release-worthy
+- new tools / models are very often not release-worthy but still publish-worthy (i.e. how is new model `XYZ` doing in the benchmark)
+- insights, learnings, problems, surprises, achieved goals and experiments are always publish-worthy
+  - they need to be documented for later publishing (in a deep-dive blog post)
+  - they can also be published right away already (depending on the nature of the finding) as a small report / post
+
+❗ Always publish / release / journal early:
+
+- if something works, but is not merged yet: publish about it already
+- if some feature is merged that is release-worthy, but we were planning on adding other things to that release: release anyways
+- if something else is publish-worth: at least write down a few bullet-points immediately why it is interesting, including examples
+
+## Release Roadmap
+
+The `main` branch is always stable and could theoretically be used to form a new release at any given time.
+To avoid having hundreds of releases for every merge to `main`, we perform releases only when a (group of) publish-worthy feature(s) or important bugfix(es) is merged (see "Publishing Content" above).
+
+Therefore, we plan releases in special `Roadmap for vX.Y.Z` issues.
+Such an issue contains a current list of publish-worthy goals that must be met for that release, a `TODO` section with items not planned for the current but a future release, and instructions on how issues / PRs / tasks need to be groomed and what needs to be done for a release to happen.
+
+The issue template for roadmap issues can be found at [`.github/ISSUE_TEMPLATE/roadmap.md`](.github/ISSUE_TEMPLATE/roadmap.md)
