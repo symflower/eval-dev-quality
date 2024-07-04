@@ -639,15 +639,6 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 
 // WriteCSVs writes the various CSV reports to disk.
 func writeCSVs(resultPath string, assessments *report.AssessmentStore) (err error) {
-	// Write the "evaluation.csv" containing all data.
-	csv, err := report.GenerateCSV(assessments)
-	if err != nil {
-		return pkgerrors.Wrap(err, "could not create evaluation.csv summary")
-	}
-	if err := os.WriteFile(filepath.Join(resultPath, "evaluation.csv"), []byte(csv), 0644); err != nil {
-		return pkgerrors.Wrap(err, "could not write evaluation.csv summary")
-	}
-
 	// Write the "models-summed.csv" containing the summary per model.
 	byModel := assessments.CollapseByModel()
 	csvByModel, err := report.GenerateCSV(byModel)
