@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"os/exec"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
@@ -62,11 +63,37 @@ func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command
 	return writer.String(), nil
 }
 
-// FilterArgs parses args and removes the ignored ones.
-func FilterArgs(args []string, ignored []string) (filtered []string) {
+// Flags returns a list of `long` flags bound on the command or nil.
+func Flags(cmd any) (args []string) {
+	typ := reflect.TypeOf(cmd)
+
+	// Dereference pointer
+	if typ.Kind() == reflect.Pointer {
+		typ = typ.Elem()
+	}
+
+	if typ.Kind() != reflect.Struct {
+		return nil
+	}
+
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		arg, ok := field.Tag.Lookup("long")
+		if !ok {
+			continue
+		}
+
+		args = append(args, arg)
+	}
+
+	return args
+}
+
+// FilterArgs filters the arguments by either ignoring/allowing them in the result.
+func FilterArgs(args []string, filter []string, ignore bool) (filtered []string) {
 	filterMap := map[string]bool{}
-	for _, v := range ignored {
-		filterMap[v] = true
+	for _, v := range filter {
+		filterMap["--"+v] = true
 	}
 
 	// Resolve args with equals sign.
@@ -79,13 +106,14 @@ func FilterArgs(args []string, ignored []string) (filtered []string) {
 		}
 	}
 
-	skip := false
+	skip := true
 	for _, v := range resolvedArgs {
-		if skip && strings.HasPrefix(v, "--") {
-			skip = false
-		}
-		if filterMap[v] {
-			skip = true
+		if strings.HasPrefix(v, "--") {
+			if ignore {
+				skip = filterMap[v]
+			} else {
+				skip = !filterMap[v]
+			}
 		}
 
 		if skip {
@@ -96,6 +124,16 @@ func FilterArgs(args []string, ignored []string) (filtered []string) {
 	}
 
 	return filtered
+}
+
+// FilterArgsKeep filters the given argument list and only returns arguments defined present in "filter".
+func FilterArgsKeep(args []string, filter []string) (filtered []string) {
+	return FilterArgs(args, filter, false)
+}
+
+// FilterArgsRemove filters the given argument list and returns arguments where "filter" entries are removed.
+func FilterArgsRemove(args []string, filter []string) (filtered []string) {
+	return FilterArgs(args, filter, true)
 }
 
 // Parallel holds a buffered channel for limiting parallel executions.

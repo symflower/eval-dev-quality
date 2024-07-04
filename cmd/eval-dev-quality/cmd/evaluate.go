@@ -156,7 +156,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 
 		if command.Parallel == 0 {
-			command.logger.Panic("the 'parallel' parameter has to be greater then 0")
+			command.logger.Panic("the 'parallel' parameter has to be greater then zero")
 		}
 
 		if command.RuntimeImage == "" {
@@ -446,13 +446,18 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 
 // evaluateDocker executes the evaluation for each model inside a docker container.
 func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
-	// Filter all the args to pass them onto the container.
-	args := util.FilterArgs(os.Args[2:], []string{
-		"--model",
-		"--parallel",
-		"--result-path",
-		"--runtime",
-	})
+	availableFlags := util.Flags(command)
+	ignoredFlags := []string{
+		"model",
+		"parallel",
+		"result-path",
+		"runtime",
+	}
+
+	// Filter all the args to only contain flags which can be used.
+	args := util.FilterArgsKeep(os.Args[2:], availableFlags)
+	// Filter the args to remove all flags unsuited for running the container.
+	args = util.FilterArgsRemove(args, ignoredFlags)
 
 	parallel := util.NewParallel(command.Parallel)
 
@@ -521,13 +526,18 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 		return pkgerrors.Wrap(err, "could not create kubernetes job template")
 	}
 
-	// Filter all the args to pass them onto the container.
-	args := util.FilterArgs(os.Args[2:], []string{
-		"--model",
-		"--parallel",
-		"--result-path",
-		"--runtime",
-	})
+	availableFlags := util.Flags(command)
+	ignoredFlags := []string{
+		"model",
+		"parallel",
+		"result-path",
+		"runtime",
+	}
+
+	// Filter all the args to only contain flags which can be used.
+	args := util.FilterArgsKeep(os.Args[2:], availableFlags)
+	// Filter the args to remove all flags unsuited for running the container.
+	args = util.FilterArgsRemove(args, ignoredFlags)
 
 	parallel := util.NewParallel(command.Parallel)
 
