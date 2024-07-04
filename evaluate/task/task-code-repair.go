@@ -35,7 +35,7 @@ func (t *TaskCodeRepair) Identifier() evaltask.Identifier {
 func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
 	modelCapability, ok := ctx.Model.(model.CapabilityRepairCode)
 	if !ok {
-		pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
+		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
 	}
 
 	log, logClose, err := log.WithFile(ctx.Logger, filepath.Join(ctx.ResultPath, string(t.Identifier()), model.CleanModelNameForFileSystem(ctx.Model.ID()), ctx.Language.ID(), ctx.Repository.Name()+".log"))

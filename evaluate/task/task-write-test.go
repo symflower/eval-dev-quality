@@ -28,7 +28,7 @@ func (t *TaskWriteTests) Identifier() evaltask.Identifier {
 func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
 	modelCapability, ok := ctx.Model.(model.CapabilityWriteTests)
 	if !ok {
-		pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
+		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
 	}
 
 	dataPath := ctx.Repository.DataPath()
