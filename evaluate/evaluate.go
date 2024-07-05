@@ -135,7 +135,6 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									Logger: ctx.Log,
 								}
 								assessment, ps, err := task.Run(taskContext)
-								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								if err != nil {
 									ps = append(ps, err)
 								}
@@ -145,6 +144,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 								} else {
 									modelSucceededBasicChecksOfLanguage[model][language] = true
 								}
+								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 							}
 						})
 					}
@@ -244,11 +244,11 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									Logger: ctx.Log,
 								}
 								assessment, ps, err := task.Run(taskContext)
-								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 								if err != nil {
 									ctx.Log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
 								}
+								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 							}
 						})
 					}
