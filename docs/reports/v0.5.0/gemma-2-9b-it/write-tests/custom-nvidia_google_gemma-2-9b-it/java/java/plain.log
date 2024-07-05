@@ -1,0 +1,825 @@
+2024/07/05 06:55:46 Evaluating model "custom-nvidia/google/gemma-2-9b-it" on task "write-tests" using language "java" and repository "java/plain"
+2024/07/05 06:55:46 Querying model "custom-nvidia/google/gemma-2-9b-it" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/07/05 06:55:47 Model "custom-nvidia/google/gemma-2-9b-it" responded (1232 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class PlainTest {
+
+	    @Test
+	    void plain() {
+	        Plain.plain();
+	    }
+	}
+	```
+2024/07/05 06:55:47 $ symflower test --language java --workspace /tmp/eval-dev-quality3006756369/plain --coverage-file /tmp/eval-dev-quality3006756369/plain/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ test-java-plain ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 1 test method detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ test-java-plain ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.PlainTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.053 s -- in com.eval.PlainTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.216 s
+[INFO] Finished at: 2024-07-05T06:55:51Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-plain ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-plain ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn13345959603051706852resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3006756369/plain/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.034 s
+[INFO] Finished at: 2024-07-05T06:55:54Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/05 06:55:54 coverage objects: [{"FileRange":"com/eval/Plain.java:4:1-com/eval/Plain.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/Plain.java:4:1-com/eval/Plain.java:4:99999","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/05 06:55:54 Executes tests with 1 coverage objects
+2024/07/05 06:55:54 Evaluated model "custom-nvidia/google/gemma-2-9b-it" on task "write-tests" using language "java" and repository "java/plain": encountered 0 problems: []
+2024/07/05 06:56:07 Evaluating model "custom-nvidia/google/gemma-2-9b-it" on task "write-tests" using language "java" and repository "java/plain"
+2024/07/05 06:56:07 Querying model "custom-nvidia/google/gemma-2-9b-it" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/07/05 06:56:08 Model "custom-nvidia/google/gemma-2-9b-it" responded (1047 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class PlainTest {
+
+	    @Test
+	    void plain() {
+	        Plain.plain();
+	    }
+	}
+	```
+2024/07/05 06:56:08 $ symflower test --language java --workspace /tmp/eval-dev-quality3006756369/plain --coverage-file /tmp/eval-dev-quality3006756369/plain/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ test-java-plain ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 1 test method detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ test-java-plain ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.PlainTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.160 s -- in com.eval.PlainTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.291 s
+[INFO] Finished at: 2024-07-05T06:56:11Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-plain ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-plain ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn335026529523739725resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3006756369/plain/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.041 s
+[INFO] Finished at: 2024-07-05T06:56:14Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/05 06:56:15 coverage objects: [{"FileRange":"com/eval/Plain.java:4:1-com/eval/Plain.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/Plain.java:4:1-com/eval/Plain.java:4:99999","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/05 06:56:15 Executes tests with 1 coverage objects
+2024/07/05 06:56:15 Evaluated model "custom-nvidia/google/gemma-2-9b-it" on task "write-tests" using language "java" and repository "java/plain": encountered 0 problems: []
+2024/07/05 06:56:27 Evaluating model "custom-nvidia/google/gemma-2-9b-it" on task "write-tests" using language "java" and repository "java/plain"
+2024/07/05 06:56:27 Querying model "custom-nvidia/google/gemma-2-9b-it" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/07/05 06:56:28 Model "custom-nvidia/google/gemma-2-9b-it" responded (1020 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class PlainTest {
+
+	    @Test
+	    void plain() {
+	        Plain.plain();
+	    }
+	}
+	```
+2024/07/05 06:56:28 $ symflower test --language java --workspace /tmp/eval-dev-quality3006756369/plain --coverage-file /tmp/eval-dev-quality3006756369/plain/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ test-java-plain ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 1 test method detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ test-java-plain ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.PlainTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 s -- in com.eval.PlainTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.244 s
+[INFO] Finished at: 2024-07-05T06:56:31Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-plain ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-plain ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn300715754018444135resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3006756369/plain/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.029 s
+[INFO] Finished at: 2024-07-05T06:56:35Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/05 06:56:35 coverage objects: [{"FileRange":"com/eval/Plain.java:4:1-com/eval/Plain.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/Plain.java:4:1-com/eval/Plain.java:4:99999","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/05 06:56:35 Executes tests with 1 coverage objects
+2024/07/05 06:56:35 Evaluated model "custom-nvidia/google/gemma-2-9b-it" on task "write-tests" using language "java" and repository "java/plain": encountered 0 problems: []
+2024/07/05 06:56:47 Evaluating model "custom-nvidia/google/gemma-2-9b-it" on task "write-tests" using language "java" and repository "java/plain"
+2024/07/05 06:56:47 Querying model "custom-nvidia/google/gemma-2-9b-it" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/07/05 06:56:48 Model "custom-nvidia/google/gemma-2-9b-it" responded (1035 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class PlainTest {
+
+	    @Test
+	    void plain() {
+	        Plain.plain();
+	    }
+	}
+	```
+2024/07/05 06:56:48 $ symflower test --language java --workspace /tmp/eval-dev-quality3006756369/plain --coverage-file /tmp/eval-dev-quality3006756369/plain/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ test-java-plain ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 1 test method detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ test-java-plain ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.PlainTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.050 s -- in com.eval.PlainTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.138 s
+[INFO] Finished at: 2024-07-05T06:56:52Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-plain ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-plain ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn5608020383007866839resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3006756369/plain/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.070 s
+[INFO] Finished at: 2024-07-05T06:56:55Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/05 06:56:55 coverage objects: [{"FileRange":"com/eval/Plain.java:4:1-com/eval/Plain.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/Plain.java:4:1-com/eval/Plain.java:4:99999","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/05 06:56:55 Executes tests with 1 coverage objects
+2024/07/05 06:56:55 Evaluated model "custom-nvidia/google/gemma-2-9b-it" on task "write-tests" using language "java" and repository "java/plain": encountered 0 problems: []
+2024/07/05 06:57:08 Evaluating model "custom-nvidia/google/gemma-2-9b-it" on task "write-tests" using language "java" and repository "java/plain"
+2024/07/05 06:57:08 Querying model "custom-nvidia/google/gemma-2-9b-it" with:
+	Given the following Java code file "src/main/java/com/eval/Plain.java" with package "com.eval", provide a test file for this code with JUnit 5 as a test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```java
+	package com.eval;
+
+	class Plain {
+	    static void plain() {
+	    }
+	}
+	```
+2024/07/05 06:57:09 Model "custom-nvidia/google/gemma-2-9b-it" responded (1018 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class PlainTest {
+
+	    @Test
+	    void plain() {
+	        Plain.plain();
+	    }
+	}
+	```
+2024/07/05 06:57:09 $ symflower test --language java --workspace /tmp/eval-dev-quality3006756369/plain --coverage-file /tmp/eval-dev-quality3006756369/plain/coverage.json
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ test-java-plain ---
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ test-java-plain ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 1 test method detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ test-java-plain ---
+[WARNING] Using platform encoding (ANSI_X3.4-1968 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality3006756369/plain/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ test-java-plain ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding ANSI_X3.4-1968, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality3006756369/plain/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ test-java-plain ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.PlainTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.048 s -- in com.eval.PlainTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.150 s
+[INFO] Finished at: 2024-07-05T06:57:12Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for eval.dev.quality:test-java-plain:jar:SNAPSHOT
+[WARNING] 'version' uses an unsupported snapshot version format, should be '*-SNAPSHOT' instead. @ line 6, column 11
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ test-java-plain ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:test-java-plain >------------------
+[INFO] Building test-java-plain SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ test-java-plain ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn4751294665597786780resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality3006756369/plain/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality3006756369/plain/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.004 s
+[INFO] Finished at: 2024-07-05T06:57:15Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/05 06:57:15 coverage objects: [{"FileRange":"com/eval/Plain.java:4:1-com/eval/Plain.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/Plain.java:4:1-com/eval/Plain.java:4:99999","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/05 06:57:15 Executes tests with 1 coverage objects
+2024/07/05 06:57:15 Evaluated model "custom-nvidia/google/gemma-2-9b-it" on task "write-tests" using language "java" and repository "java/plain": encountered 0 problems: []
