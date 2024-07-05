@@ -1,0 +1,5 @@
+model-id,model-name,cost,language,repository,task,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+openrouter/databricks/dbrx-instruct,Databricks: DBRX 132B Instruct,0.00000216,golang,golang/light,write-tests,453,390,12,16259,156214,17673,19,15,17
+openrouter/databricks/dbrx-instruct,Databricks: DBRX 132B Instruct,0.00000216,golang,golang/light,write-tests-symflower-fix,607,540,16,16259,157831,17673,19,15,17
+openrouter/databricks/dbrx-instruct,Databricks: DBRX 132B Instruct,0.00000216,golang,golang/plain,write-tests,14,10,1,110,1105,120,1,1,1
+openrouter/databricks/dbrx-instruct,Databricks: DBRX 132B Instruct,0.00000216,golang,golang/plain,write-tests-symflower-fix,14,10,1,110,1105,120,1,1,1

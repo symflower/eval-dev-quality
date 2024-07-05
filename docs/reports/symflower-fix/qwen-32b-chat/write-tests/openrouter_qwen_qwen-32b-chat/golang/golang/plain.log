@@ -1,0 +1,42 @@
+2024/07/02 12:32:42 Evaluating model "openrouter/qwen/qwen-32b-chat" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/07/02 12:32:42 Querying model "openrouter/qwen/qwen-32b-chat" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+2024/07/02 12:32:44 Model "openrouter/qwen/qwen-32b-chat" responded (2397 ms) with:
+	Here's the test file "plain_test.go" for the given "plain.go" file:
+
+	```golang
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain()
+	}
+	```
+
+	This test file includes a test function "TestPlain" which calls the "plain" function in the "plain" package. This ensures 100% code coverage as it exercises the single line in the "plain" function.
+2024/07/02 12:32:44 $ go mod tidy
+2024/07/02 12:32:44 $ symflower test --language golang --workspace /tmp/eval-dev-quality2037179517/plain --coverage-file /tmp/eval-dev-quality2037179517/plain/coverage.json
+Checking for updates
+Latest version already installed
+=== RUN   TestPlain
+--- PASS: TestPlain (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	plain	0.003s	coverage: 100.0% of statements
+
+DONE 1 tests in 0.504s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/02 12:32:45 coverage objects: [{"FileRange":"plain/plain.go:3:14-plain/plain.go:5:2","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/02 12:32:45 Executes tests with 1 coverage objects
+2024/07/02 12:32:45 Evaluated model "openrouter/qwen/qwen-32b-chat" on task "write-tests" using language "golang" and repository "golang/plain": encountered 0 problems: []

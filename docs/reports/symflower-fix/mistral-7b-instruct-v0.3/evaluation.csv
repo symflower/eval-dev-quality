@@ -1,0 +1,5 @@
+model-id,model-name,cost,language,repository,task,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+openrouter/mistralai/mistral-7b-instruct-v0.3,Mistral: Mistral 7B Instruct v0.3,0.00000013,golang,golang/light,write-tests-symflower-fix,472,410,14,21836,150860,29965,23,2,23
+openrouter/mistralai/mistral-7b-instruct-v0.3,Mistral: Mistral 7B Instruct v0.3,0.00000013,golang,golang/light,write-tests,368,310,10,21836,149394,29965,23,2,23
+openrouter/mistralai/mistral-7b-instruct-v0.3,Mistral: Mistral 7B Instruct v0.3,0.00000013,golang,golang/plain,write-tests-symflower-fix,2,0,0,187,2171,454,1,0,1
+openrouter/mistralai/mistral-7b-instruct-v0.3,Mistral: Mistral 7B Instruct v0.3,0.00000013,golang,golang/plain,write-tests,2,0,0,187,2171,454,1,0,1

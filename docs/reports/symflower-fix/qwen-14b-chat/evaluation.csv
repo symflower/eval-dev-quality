@@ -1,0 +1,5 @@
+model-id,model-name,cost,language,repository,task,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+openrouter/qwen/qwen-14b-chat,Qwen 1.5 14B Chat,0.00000054,golang,golang/light,write-tests,99,50,3,30945,142067,43249,23,0,23
+openrouter/qwen/qwen-14b-chat,Qwen 1.5 14B Chat,0.00000054,golang,golang/light,write-tests-symflower-fix,294,240,8,30945,143834,43249,23,0,23
+openrouter/qwen/qwen-14b-chat,Qwen 1.5 14B Chat,0.00000054,golang,golang/plain,write-tests-symflower-fix,13,10,1,187,3727,1157,1,0,1
+openrouter/qwen/qwen-14b-chat,Qwen 1.5 14B Chat,0.00000054,golang,golang/plain,write-tests,13,10,1,187,3727,1157,1,0,1

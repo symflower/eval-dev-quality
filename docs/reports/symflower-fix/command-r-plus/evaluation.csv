@@ -1,0 +1,5 @@
+model-id,model-name,cost,language,repository,task,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+openrouter/cohere/command-r-plus,Cohere: Command R+,0.000018,golang,golang/light,write-tests,272,200,5,23141,226253,23456,23,22,22
+openrouter/cohere/command-r-plus,Cohere: Command R+,0.000018,golang,golang/light,write-tests-symflower-fix,272,200,5,23141,226253,23456,23,22,22
+openrouter/cohere/command-r-plus,Cohere: Command R+,0.000018,golang,golang/plain,write-tests,3,0,0,132,1535,146,1,1,1
+openrouter/cohere/command-r-plus,Cohere: Command R+,0.000018,golang,golang/plain,write-tests-symflower-fix,3,0,0,132,1535,146,1,1,1

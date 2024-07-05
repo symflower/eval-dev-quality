@@ -1,0 +1,5 @@
+model-id,model-name,cost,language,repository,task,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+ollama/granite-code:34b-instruct-q8_0,granite-code:34b-instruct-q8_0,0,golang,golang/light,write-tests,379,320,11,16696,4233551,19821,23,9,16
+ollama/granite-code:34b-instruct-q8_0,granite-code:34b-instruct-q8_0,0,golang,golang/light,write-tests-symflower-fix,482,420,14,16696,4234549,19821,23,9,16
+ollama/granite-code:34b-instruct-q8_0,granite-code:34b-instruct-q8_0,0,golang,golang/plain,write-tests,3,0,0,109,30809,123,1,1,1
+ollama/granite-code:34b-instruct-q8_0,granite-code:34b-instruct-q8_0,0,golang,golang/plain,write-tests-symflower-fix,3,0,0,109,30809,123,1,1,1

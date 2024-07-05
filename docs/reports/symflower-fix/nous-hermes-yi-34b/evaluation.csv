@@ -1,0 +1,5 @@
+model-id,model-name,cost,language,repository,task,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
+openrouter/nousresearch/nous-hermes-yi-34b,Nous: Hermes 2 Yi 34B,0.00000144,golang,golang/light,write-tests,118,60,3,35817,785666,36014,23,16,16
+openrouter/nousresearch/nous-hermes-yi-34b,Nous: Hermes 2 Yi 34B,0.00000144,golang,golang/light,write-tests-symflower-fix,291,230,6,35817,786661,36014,23,16,16
+openrouter/nousresearch/nous-hermes-yi-34b,Nous: Hermes 2 Yi 34B,0.00000144,golang,golang/plain,write-tests,3,0,0,154,5677,164,1,1,1
+openrouter/nousresearch/nous-hermes-yi-34b,Nous: Hermes 2 Yi 34B,0.00000144,golang,golang/plain,write-tests-symflower-fix,3,0,0,154,5677,164,1,1,1
