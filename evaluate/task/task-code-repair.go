@@ -121,24 +121,9 @@ func (t *TaskCodeRepair) unpackCodeRepairPackage(ctx evaltask.Context, fileLogge
 		return "", nil, pkgerrors.Errorf("package %q in repository %q must contain source files with compilation errors", packagePath, ctx.Repository.Name())
 	}
 
-	filePaths, err := ctx.Language.Files(fileLogger, packagePath)
+	sourceFilePath, err = packageHasSourceAndTestFile(fileLogger, ctx.Repository.Name(), packagePath, ctx.Language)
 	if err != nil {
-		return "", nil, pkgerrors.WithStack(err)
-	} else if len(filePaths) != 2 {
-		return "", nil, pkgerrors.Errorf("package %q in repository %q must only contain an implementation file and the corresponding test file, but found %#v", packagePath, ctx.Repository.Name(), filePaths)
-	}
-	var hasTestFile bool
-	for _, file := range filePaths {
-		if strings.HasSuffix(file, ctx.Language.DefaultTestFileSuffix()) {
-			hasTestFile = true
-		} else if filepath.Ext(file) == ctx.Language.DefaultFileExtension() {
-			sourceFilePath = file
-		}
-	}
-	if sourceFilePath == "" {
-		return "", nil, pkgerrors.Errorf("package %q in repository %q does not contain a source file", packagePath, ctx.Repository.Name())
-	} else if !hasTestFile {
-		return "", nil, pkgerrors.Errorf("package %q in repository %q does not contain a test file", packagePath, ctx.Repository.Name())
+		return "", nil, err
 	}
 
 	return sourceFilePath, mistakes, nil
