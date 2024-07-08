@@ -220,6 +220,21 @@ Currently, the following cases are available for this task:
   - [`golang/plain`](testdata/golang/plain)
   - [`golang/light`](testdata/golang/light)
 
+### Task: Code Repair
+
+Code repair is the task of repairing source code with compilation errors.
+
+For this task, we introduced the `mistakes` repository, which includes examples of source code with compilation errors. Each example is isolated in its own package, along with a valid test suite. We compile each package in the `mistakes` repository and provide the LLM's with both the source code and the list of compilation errors. The LLM's response is then validated with the predefined test suite.
+
+#### Cases
+
+Currently, the following cases are available for this task:
+
+- Java
+  - [`java/mistakes`](testdata/java/mistakes)
+- Go
+  - [`golang/mistakes`](testdata/golang/mistakes)
+
 ### Reward Points
 
 Currently, the following points are awarded for any task:
