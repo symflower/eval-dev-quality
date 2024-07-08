@@ -2,7 +2,7 @@
 
 An evaluation benchmark 📈 and framework to compare and evolve the quality of code generation of LLMs.
 
-This repository gives developers of LLMs (and other code generation tools) a standardized benchmark and framework to improve real-world usage in the software development domain and provides users of LLMs with metrics and comparisions to check if a given LLM is useful for their tasks.
+This repository gives developers of LLMs (and other code generation tools) a standardized benchmark and framework to improve real-world usage in the software development domain and provides users of LLMs with metrics and comparisons to check if a given LLM is useful for their tasks.
 
 The [latest results](docs/reports/v0.4.0) are discussed in a deep dive: [Is Llama-3 better than GPT-4 for generating tests?](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.4.0-is-llama-3-better-than-gpt-4-for-generating-tests/)
 
@@ -133,7 +133,7 @@ Total coverage 100.000000%
 
 </details>
 
-The execution by default also creates an report file `REPORT.md` that contains additional evaluation results and links to individual result files.
+The execution by default also creates a report file `REPORT.md` that contains additional evaluation results and links to individual result files.
 
 # Docker
 
