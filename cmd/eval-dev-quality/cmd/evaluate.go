@@ -163,15 +163,17 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 	// Ensure the "testdata" path exists and make it absolute.
 	{
-		if err := osutil.DirExists(command.TestdataPath); err != nil {
-			command.logger.Panicf("ERROR: testdata path %q cannot be accessed: %s", command.TestdataPath, err)
+		if command.Runtime == "local" { // Ignore testdata path during containerized execution.
+			if err := osutil.DirExists(command.TestdataPath); err != nil {
+				command.logger.Panicf("ERROR: testdata path %q cannot be accessed: %s", command.TestdataPath, err)
+			}
+			testdataPath, err := filepath.Abs(command.TestdataPath)
+			if err != nil {
+				command.logger.Panicf("ERROR: could not resolve testdata path %q to an absolute path: %s", command.TestdataPath, err)
+			}
+			command.TestdataPath = testdataPath
+			evaluationContext.TestdataPath = testdataPath
 		}
-		testdataPath, err := filepath.Abs(command.TestdataPath)
-		if err != nil {
-			command.logger.Panicf("ERROR: could not resolve testdata path %q to an absolute path: %s", command.TestdataPath, err)
-		}
-		command.TestdataPath = testdataPath
-		evaluationContext.TestdataPath = testdataPath
 	}
 
 	// Setup evaluation result directory.
