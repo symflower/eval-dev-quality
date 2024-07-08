@@ -1,13 +1,5 @@
-name: docker image
-
 on:
-  push:
-  release:
-    types: [released]
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  workflow_call:
 
 jobs:
   docker:
@@ -32,10 +24,11 @@ jobs:
           images: |
             ghcr.io/symflower/eval-dev-quality
           tags: |
+            type=raw,value={{ sha }}
             type=raw,value={{ branch }}
             type=raw,value=latest,enable={{ is_default_branch }}
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./
           platforms: linux/amd64
