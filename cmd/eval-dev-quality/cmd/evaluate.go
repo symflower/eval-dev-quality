@@ -437,7 +437,7 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		return nil
 	})
 
-	if err := writeCSVs(command.ResultPath, assessments); err != nil {
+	if err := report.WriteCSVs(command.ResultPath); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
 	}
 
@@ -633,33 +633,6 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 		})
 	}
 	parallel.Wait()
-
-	return nil
-}
-
-// WriteCSVs writes the various CSV reports to disk.
-func writeCSVs(resultPath string, assessments *report.AssessmentStore) (err error) {
-	// Write the "models-summed.csv" containing the summary per model.
-	byModel := assessments.CollapseByModel()
-	csvByModel, err := report.GenerateCSV(byModel)
-	if err != nil {
-		return pkgerrors.Wrap(err, "could not create models-summed.csv summary")
-	}
-	if err := os.WriteFile(filepath.Join(resultPath, "models-summed.csv"), []byte(csvByModel), 0644); err != nil {
-		return pkgerrors.Wrap(err, "could not write models-summed.csv summary")
-	}
-
-	// Write the individual "language-summed.csv" containing the summary per model per language.
-	byLanguage := assessments.CollapseByLanguage()
-	for language, modelsByLanguage := range byLanguage {
-		csvByLanguage, err := report.GenerateCSV(modelsByLanguage)
-		if err != nil {
-			return pkgerrors.Wrap(err, "could not create "+language.ID()+"-summed.csv summary")
-		}
-		if err := os.WriteFile(filepath.Join(resultPath, language.ID()+"-summed.csv"), []byte(csvByLanguage), 0644); err != nil {
-			return pkgerrors.Wrap(err, "could not write "+language.ID()+"-summed.csv summary")
-		}
-	}
 
 	return nil
 }
