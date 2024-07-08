@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"path/filepath"
@@ -22,6 +21,7 @@ import (
 	"github.com/zimmski/osutil"
 	"golang.org/x/mod/semver"
 
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/util"
 )
 

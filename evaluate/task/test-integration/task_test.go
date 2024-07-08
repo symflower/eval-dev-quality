@@ -1,7 +1,6 @@
 package testintegration
 
 import (
-	"log"
 	"path/filepath"
 	"testing"
 
@@ -11,6 +10,7 @@ import (
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
 	"github.com/symflower/eval-dev-quality/language/golang"
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model/symflower"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
