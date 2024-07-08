@@ -11,7 +11,6 @@ import (
 	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
@@ -78,7 +77,7 @@ func benchmarkModel(logger *log.Logger, resultPrefix string, repository string, 
 			"eval-dev-quality",
 			"evaluate",
 			"--runs", "5",
-			"--result-path", resultPrefix + model.CleanModelNameForFileSystem(id),
+			"--result-path", resultPrefix + log.CleanModelNameForFileSystem(id),
 			"--repository", filepath.Join("java", repository),
 			"--repository", filepath.Join("golang", repository),
 			"--model", id,

@@ -99,18 +99,24 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 
 			temporaryRepositories[repositoryPath] = temporaryRepository
 		}
+
+		logger := ctx.Log
 		for rl := uint(0); rl < ctx.runsAtLanguageLevel(); rl++ {
 			if ctx.Runs > 1 && !ctx.RunsSequential {
-				ctx.Log.Printf("Run %d/%d", rl+1, ctx.Runs)
+				logger.Printf("Run %d/%d", rl+1, ctx.Runs)
 			}
 
 			for _, language := range ctx.Languages {
+				logger := logger.With(log.AttributeKeyLanguage, language.ID())
+
 				languageID := language.ID()
 				repositoryPath := filepath.Join(language.ID(), RepositoryPlainName)
 				temporaryRepository := temporaryRepositories[repositoryPath]
 
+				logger = logger.With(log.AttributeKeyRepository, temporaryRepository.Name())
 				for _, model := range ctx.Models {
 					modelID := model.ID()
+					logger := logger.With(log.AttributeKeyModel, modelID)
 
 					if modelSucceededBasicChecksOfLanguage[model] == nil {
 						modelSucceededBasicChecksOfLanguage[model] = map[evallanguage.Language]bool{}
@@ -123,16 +129,18 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 					for _, taskIdentifier := range temporaryRepository.SupportedTasks() {
 						task, err := evaluatetask.TaskForIdentifier(taskIdentifier)
 						if err != nil {
-							ctx.Log.Fatal(err)
+							logger.Fatal(err)
 						}
-						withLoadedModel(ctx.Log, model, ctx.ProviderForModel[model], func() {
+
+						logger := logger.With(log.AttributeKeyTask, taskIdentifier)
+						withLoadedModel(logger, model, ctx.ProviderForModel[model], func() {
 							for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
 								if ctx.Runs > 1 && ctx.RunsSequential {
-									ctx.Log.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+									logger.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
 								}
 
-								if err := temporaryRepository.Reset(ctx.Log); err != nil {
-									ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+								if err := temporaryRepository.Reset(logger); err != nil {
+									logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 								}
 
 								taskContext := evaltask.Context{
@@ -142,14 +150,14 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 
 									ResultPath: ctx.ResultPath,
 
-									Logger: ctx.Log,
+									Logger: logger,
 								}
 								assessment, ps, err := task.Run(taskContext)
 								if err != nil {
 									ps = append(ps, err)
 								}
 								if len(ps) > 0 {
-									ctx.Log.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
+									logger.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
 									problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 								} else {
 									modelSucceededBasicChecksOfLanguage[model][language] = true
@@ -196,18 +204,20 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 			temporaryRepositories[repositoryPath] = temporaryRepository
 		}
 	}
+	logger := ctx.Log
 	for rl := uint(0); rl < ctx.runsAtLanguageLevel(); rl++ {
 		if ctx.Runs > 1 && !ctx.RunsSequential {
-			ctx.Log.Printf("Run %d/%d", rl+1, ctx.Runs)
+			logger.Printf("Run %d/%d", rl+1, ctx.Runs)
 		}
 
 		for _, language := range ctx.Languages {
 			languageID := language.ID()
+			logger := logger.With(log.AttributeKeyLanguage, languageID)
 
 			languagePath := filepath.Join(ctx.TestdataPath, languageID)
 			repositories, err := os.ReadDir(languagePath)
 			if err != nil {
-				ctx.Log.Panicf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
+				logger.Panicf("ERROR: language path %q cannot be accessed: %s", languagePath, err)
 			}
 
 			for _, repository := range repositories {
@@ -223,27 +233,30 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 					continue
 				}
 
+				logger = logger.With(log.AttributeKeyRepository, repositoryPath)
 				for _, model := range ctx.Models {
 					modelID := model.ID()
+					logger := logger.With(log.AttributeKeyModel, modelID)
 
 					if !ctx.NoDisqualification && !modelSucceededBasicChecksOfLanguage[model][language] {
-						ctx.Log.Printf("Excluding model %q for language %q cause it did not succeed basic checks", model.ID(), language.ID())
+						logger.Printf("Excluding model %q for language %q cause it did not succeed basic checks", model.ID(), language.ID())
 
 						continue
 					}
 					for _, taskIdentifier := range temporaryRepository.Tasks {
 						task, err := evaluatetask.TaskForIdentifier(taskIdentifier)
 						if err != nil {
-							ctx.Log.Fatal(err)
+							logger.Fatal(err)
 						}
-						withLoadedModel(ctx.Log, model, ctx.ProviderForModel[model], func() {
+						logger := logger.With(log.AttributeKeyTask, taskIdentifier)
+						withLoadedModel(logger, model, ctx.ProviderForModel[model], func() {
 							for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
 								if ctx.Runs > 1 && ctx.RunsSequential {
-									ctx.Log.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+									logger.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
 								}
 
-								if err := temporaryRepository.Reset(ctx.Log); err != nil {
-									ctx.Log.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+								if err := temporaryRepository.Reset(logger); err != nil {
+									logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 								}
 
 								taskContext := evaltask.Context{
@@ -253,12 +266,12 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 
 									ResultPath: ctx.ResultPath,
 
-									Logger: ctx.Log,
+									Logger: logger,
 								}
 								assessment, ps, err := task.Run(taskContext)
 								problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 								if err != nil {
-									ctx.Log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
+									logger.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
 								}
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								// Write the task assessment to the evaluation CSV file.
