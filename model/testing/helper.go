@@ -69,6 +69,14 @@ func NewMockCapabilityWriteTestsNamed(t *testing.T, id string) *MockModelCapabil
 	}
 }
 
+// NewMockCapabilityWriteTestsNamedWithCost returns a new named mocked model with costs.
+func NewMockCapabilityWriteTestsNamedWithCost(t *testing.T, id string, name string, cost float64) *MockModelCapabilityWriteTests {
+	return &MockModelCapabilityWriteTests{
+		MockModel:                NewMockModelNamedWithCosts(t, id, name, cost),
+		MockCapabilityWriteTests: NewMockCapabilityWriteTests(t),
+	}
+}
+
 // MockModelCapabilityRepairCode holds a mock implementing the "Model" and the "CapabilityRepairCode" interface.
 type MockModelCapabilityRepairCode struct {
 	*MockModel

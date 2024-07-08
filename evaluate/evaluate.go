@@ -74,6 +74,16 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 	// Ensure we report metrics for every model even if they are excluded.
 	assessments = report.NewAssessmentStore()
 	problemsPerModel := map[string][]error{}
+	// Write the evaluation CSV header so it's only written once.
+	evaluationCSVFile, err := os.OpenFile(filepath.Join(ctx.ResultPath, "evaluation.csv"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		ctx.Log.Panicf("ERROR: unable to create evaluation CSV file: %+v", err)
+	}
+	defer evaluationCSVFile.Close()
+	evaluationFile, err := report.NewEvaluationFile(evaluationCSVFile)
+	if err != nil {
+		ctx.Log.Panicf("ERROR: %+v", err)
+	}
 
 	{
 		// Create temporary repositories for each language so the repository is copied only once per language.
@@ -145,6 +155,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									modelSucceededBasicChecksOfLanguage[model][language] = true
 								}
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
+								// Write the task assessment to the evaluation CSV file.
+								evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), assessment)
 							}
 						})
 					}
@@ -249,6 +261,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 									ctx.Log.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
 								}
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
+								// Write the task assessment to the evaluation CSV file.
+								evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), assessment)
 							}
 						})
 					}
