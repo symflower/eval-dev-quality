@@ -41,7 +41,7 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 		Name: "Single empty model",
 
 		CSVFormatter: EvaluationRecordsPerModel{
-			"some-model-a": &EvaluationRecord{
+			"some-model-a": &EvaluationRecordSummary{
 				ModelID:     "some-model-a",
 				ModelName:   "Some Model A",
 				ModelCost:   0.0001,
@@ -59,7 +59,7 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 		Name: "Multiple models with assessments",
 
 		CSVFormatter: EvaluationRecordsPerModel{
-			"some-model-a": &EvaluationRecord{
+			"some-model-a": &EvaluationRecordSummary{
 				ModelID:    "some-model-a",
 				ModelName:  "Some Model A",
 				ModelCost:  0.0001,
@@ -75,7 +75,7 @@ func TestGenerateCSVForAssessmentPerModel(t *testing.T) {
 					metrics.AssessmentKeyProcessingTime:                     200,
 				},
 			},
-			"some-model-b": &EvaluationRecord{
+			"some-model-b": &EvaluationRecordSummary{
 				ModelID:    "some-model-b",
 				ModelName:  "Some Model B",
 				ModelCost:  0.0003,
@@ -335,7 +335,7 @@ func TestEvaluationRecordsGroupByModel(t *testing.T) {
 
 		EvaluationRecords EvaluationRecords
 
-		ExpectedEvaluationRecords map[string]*EvaluationRecord
+		ExpectedEvaluationRecords map[string]*EvaluationRecordSummary
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -373,8 +373,8 @@ func TestEvaluationRecordsGroupByModel(t *testing.T) {
 				},
 			},
 		},
-		ExpectedEvaluationRecords: map[string]*EvaluationRecord{
-			"openrouter/anthropic/claude-1.2": &EvaluationRecord{
+		ExpectedEvaluationRecords: map[string]*EvaluationRecordSummary{
+			"openrouter/anthropic/claude-1.2": &EvaluationRecordSummary{
 				ModelID:    "openrouter/anthropic/claude-1.2",
 				ModelName:  "Claude 1.2",
 				ModelCost:  0.0001,
@@ -445,8 +445,8 @@ func TestEvaluationRecordsGroupByModel(t *testing.T) {
 				},
 			},
 		},
-		ExpectedEvaluationRecords: map[string]*EvaluationRecord{
-			"openrouter/anthropic/claude-1.2": &EvaluationRecord{
+		ExpectedEvaluationRecords: map[string]*EvaluationRecordSummary{
+			"openrouter/anthropic/claude-1.2": &EvaluationRecordSummary{
 				ModelID:    "openrouter/anthropic/claude-1.2",
 				ModelName:  "Claude 1.2",
 				ModelCost:  0.0001,
@@ -462,7 +462,7 @@ func TestEvaluationRecordsGroupByModel(t *testing.T) {
 					metrics.AssessmentKeyResponseWithCode:                   16,
 				},
 			},
-			"ollama/codeqwen:latest": &EvaluationRecord{
+			"ollama/codeqwen:latest": &EvaluationRecordSummary{
 				ModelID:    "ollama/codeqwen:latest",
 				ModelName:  "Code Qwen",
 				ModelCost:  0.0003,
@@ -514,7 +514,7 @@ func TestEvaluationRecordsGroupByLanguageAndModel(t *testing.T) {
 
 		ExpectedEvaluationRecordsPerLanguagePerModel: EvaluationRecordsPerLanguagePerModel{
 			"golang": EvaluationRecordsPerModel{
-				"openrouter/anthropic/claude-1.2": &EvaluationRecord{
+				"openrouter/anthropic/claude-1.2": &EvaluationRecordSummary{
 					ModelID:     "openrouter/anthropic/claude-1.2",
 					ModelName:   "Claude 1.2",
 					ModelCost:   0.0001,
@@ -612,7 +612,7 @@ func TestEvaluationRecordsGroupByLanguageAndModel(t *testing.T) {
 
 		ExpectedEvaluationRecordsPerLanguagePerModel: EvaluationRecordsPerLanguagePerModel{
 			"golang": EvaluationRecordsPerModel{
-				"openrouter/anthropic/claude-1.2": &EvaluationRecord{
+				"openrouter/anthropic/claude-1.2": &EvaluationRecordSummary{
 					ModelID:    "openrouter/anthropic/claude-1.2",
 					ModelName:  "Claude 1.2",
 					ModelCost:  0.0001,
@@ -628,7 +628,7 @@ func TestEvaluationRecordsGroupByLanguageAndModel(t *testing.T) {
 						metrics.AssessmentKeyResponseWithCode:                   16,
 					},
 				},
-				"ollama/codeqwen:latest": &EvaluationRecord{
+				"ollama/codeqwen:latest": &EvaluationRecordSummary{
 					ModelID:    "ollama/codeqwen:latest",
 					ModelName:  "Code Qwen",
 					ModelCost:  0.0003,
@@ -646,7 +646,7 @@ func TestEvaluationRecordsGroupByLanguageAndModel(t *testing.T) {
 				},
 			},
 			"java": EvaluationRecordsPerModel{
-				"openrouter/anthropic/claude-1.2": &EvaluationRecord{
+				"openrouter/anthropic/claude-1.2": &EvaluationRecordSummary{
 					ModelID:    "openrouter/anthropic/claude-1.2",
 					ModelName:  "Claude 1.2",
 					ModelCost:  0.0001,
@@ -662,7 +662,7 @@ func TestEvaluationRecordsGroupByLanguageAndModel(t *testing.T) {
 						metrics.AssessmentKeyResponseWithCode:                   8,
 					},
 				},
-				"ollama/codeqwen:latest": &EvaluationRecord{
+				"ollama/codeqwen:latest": &EvaluationRecordSummary{
 					ModelID:    "ollama/codeqwen:latest",
 					ModelName:  "Code Qwen",
 					ModelCost:  0.0003,

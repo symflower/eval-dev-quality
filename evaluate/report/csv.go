@@ -94,36 +94,50 @@ type EvaluationRecord struct {
 	Assessments metrics.Assessments
 }
 
-// Clone clones an evaluation record.
-func (e *EvaluationRecord) Clone() (new *EvaluationRecord) {
-	new = &EvaluationRecord{}
+// EvaluationRecordSummary holds a subset of an evaluation record.
+type EvaluationRecordSummary struct {
+	// ModelID holds the model id.
+	ModelID string
+	// ModelName holds the model name.
+	ModelName string
+	// ModelCost holds the model cost.
+	ModelCost float64
 
-	new.ModelID = e.ModelID
-	new.ModelName = e.ModelName
-	new.ModelCost = e.ModelCost
-	new.LanguageID = e.LanguageID
-	new.Assessments = metrics.Merge(e.Assessments, nil)
+	// LanguageID holds the language id.
+	LanguageID string
 
-	return new
+	// Assessments holds the assessments of an entry.
+	Assessments metrics.Assessments
+}
+
+// NewEvaluationRecordSummary creates a new evaluation record summary given an evaluation record.
+func NewEvaluationRecordSummary(evaluationRecord *EvaluationRecord) (subset *EvaluationRecordSummary) {
+	return &EvaluationRecordSummary{
+		ModelID:     evaluationRecord.ModelID,
+		ModelName:   evaluationRecord.ModelName,
+		ModelCost:   evaluationRecord.ModelCost,
+		LanguageID:  evaluationRecord.LanguageID,
+		Assessments: metrics.Merge(evaluationRecord.Assessments, nil),
+	}
 }
 
 // EvaluationRecords holds all the evaluation records.
 type EvaluationRecords []*EvaluationRecord
 
 // EvaluationRecordsPerModel holds the collection of evaluation records per model.
-type EvaluationRecordsPerModel map[string]*EvaluationRecord
+type EvaluationRecordsPerModel map[string]*EvaluationRecordSummary
 
 // GroupByModel groups the evaluation records by model.
 func (e EvaluationRecords) GroupByModel() EvaluationRecordsPerModel {
-	perModel := map[string]*EvaluationRecord{}
+	perModel := map[string]*EvaluationRecordSummary{}
 
 	for _, record := range e {
 		_, ok := perModel[record.ModelID]
 		if !ok {
-			perModel[record.ModelID] = record.Clone()
+			perModel[record.ModelID] = NewEvaluationRecordSummary(record)
 		} else {
 			r := perModel[record.ModelID]
-			r.Assessments = metrics.Merge(r.Assessments, record.Assessments)
+			r.Assessments.Add(record.Assessments)
 		}
 	}
 
@@ -166,14 +180,14 @@ func (e EvaluationRecords) GroupByLanguageAndModel() EvaluationRecordsPerLanguag
 		perModel, ok := perLanguageAndModel[record.LanguageID]
 		if !ok {
 			perLanguageAndModel[record.LanguageID] = EvaluationRecordsPerModel{
-				record.ModelID: record,
+				record.ModelID: NewEvaluationRecordSummary(record),
 			}
 		} else {
 			_, ok := perModel[record.ModelID]
 			if !ok {
-				perModel[record.ModelID] = record.Clone()
+				perModel[record.ModelID] = NewEvaluationRecordSummary(record)
 			} else {
-				perModel[record.ModelID].Assessments = metrics.Merge(perModel[record.ModelID].Assessments, record.Assessments)
+				perModel[record.ModelID].Assessments.Add(record.Assessments)
 			}
 		}
 	}
