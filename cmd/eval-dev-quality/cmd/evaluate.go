@@ -160,7 +160,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 
 		if command.RuntimeImage == "" {
-			command.RuntimeImage = "ghcr.io/symflower/eval-dev-quality:v" + evaluate.Version
+			command.RuntimeImage = "ghcr.io/symflower/eval-dev-quality:main"
 		}
 
 		if command.Runtime == "kubernetes" && command.Namespace == "" {
