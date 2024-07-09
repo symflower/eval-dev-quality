@@ -257,10 +257,12 @@ func TestLoadEvaluationRecords(t *testing.T) {
 
 		ExpectedEvaluationRecords: EvaluationRecords{
 			&EvaluationRecord{
-				ModelID:    "openrouter/anthropic/claude-1.2",
-				ModelName:  "Claude 1.2",
-				ModelCost:  0.0001,
-				LanguageID: "golang",
+				ModelID:        "openrouter/anthropic/claude-1.2",
+				ModelName:      "Claude 1.2",
+				ModelCost:      0.0001,
+				LanguageID:     "golang",
+				RepositoryName: "golang/light",
+				Task:           "write-tests",
 				Assessments: metrics.Assessments{
 					metrics.AssessmentKeyCoverage:                           750,
 					metrics.AssessmentKeyFilesExecuted:                      18,
@@ -281,17 +283,19 @@ func TestLoadEvaluationRecords(t *testing.T) {
 			fileContent := bytesutil.StringTrimIndentations(`
 					model-id,model-name,cost,language,repository,task,score,coverage,files-executed,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code
 					openrouter/anthropic/claude-1.2,Claude 1.2,0.0001,golang,golang/light,write-tests,982,750,18,70179,720571,71195,115,49,50
-					openrouter/anthropic/claude-1.2,Claude 1.2,0.0002,golang,golang/plain,write-tests,37,20,2,441,11042,523,5,5,5
+					openrouter/anthropic/claude-1.2,Claude 1.2,0.0002,golang,golang/plain,transpile,37,20,2,441,11042,523,5,5,5
 				`)
 			require.NoError(t, os.WriteFile(filepath.Join(resultPath, "evaluation.csv"), []byte(fileContent), 0644))
 		},
 
 		ExpectedEvaluationRecords: EvaluationRecords{
 			&EvaluationRecord{
-				ModelID:    "openrouter/anthropic/claude-1.2",
-				ModelName:  "Claude 1.2",
-				ModelCost:  0.0001,
-				LanguageID: "golang",
+				ModelID:        "openrouter/anthropic/claude-1.2",
+				ModelName:      "Claude 1.2",
+				ModelCost:      0.0001,
+				LanguageID:     "golang",
+				RepositoryName: "golang/light",
+				Task:           "write-tests",
 				Assessments: metrics.Assessments{
 					metrics.AssessmentKeyCoverage:                           750,
 					metrics.AssessmentKeyFilesExecuted:                      18,
@@ -304,10 +308,12 @@ func TestLoadEvaluationRecords(t *testing.T) {
 				},
 			},
 			&EvaluationRecord{
-				ModelID:    "openrouter/anthropic/claude-1.2",
-				ModelName:  "Claude 1.2",
-				ModelCost:  0.0002,
-				LanguageID: "golang",
+				ModelID:        "openrouter/anthropic/claude-1.2",
+				ModelName:      "Claude 1.2",
+				ModelCost:      0.0002,
+				LanguageID:     "golang",
+				RepositoryName: "golang/plain",
+				Task:           "transpile",
 				Assessments: metrics.Assessments{
 					metrics.AssessmentKeyCoverage:                           20,
 					metrics.AssessmentKeyFilesExecuted:                      2,

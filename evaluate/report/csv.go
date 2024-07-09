@@ -85,6 +85,11 @@ type EvaluationRecord struct {
 	// LanguageID holds the language id.
 	LanguageID string
 
+	// RepositoryName holds the name of a repository .
+	RepositoryName string
+	// Task holds the task identifier.
+	Task string
+
 	// Assessments holds the assessments of an entry.
 	Assessments metrics.Assessments
 }
@@ -225,6 +230,9 @@ func convertRawRecordToEvaluationRecord(raw []string) (record *EvaluationRecord,
 
 	languageID := raw[3]
 
+	repositoryName := raw[4]
+	task := raw[5]
+
 	rawMetrics := raw[7:]
 	for i, assessementKey := range metrics.AllAssessmentKeysStrings {
 		metric, err := strconv.ParseUint(rawMetrics[i], 10, 64)
@@ -241,6 +249,9 @@ func convertRawRecordToEvaluationRecord(raw []string) (record *EvaluationRecord,
 		ModelCost: modelCost,
 
 		LanguageID: languageID,
+
+		RepositoryName: repositoryName,
+		Task:           task,
 
 		Assessments: assessments,
 	}, nil
