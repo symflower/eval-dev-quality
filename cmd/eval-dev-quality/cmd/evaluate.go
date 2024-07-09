@@ -500,6 +500,7 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 		dockerCommand := []string{
 			"docker",
 			"run",
+			"-e", "PROVIDER_TOKEN",
 			"-v", // bind volume
 			resultPath + ":/app/evaluation",
 			"--user",
