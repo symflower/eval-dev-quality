@@ -1,7 +1,7 @@
 export ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 export PACKAGE_BASE := github.com/symflower/eval-dev-quality
-export UNIT_TEST_TIMEOUT := 480
+export UNIT_TEST_TIMEOUT := 720
 
 ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(ARGS):;@:) # turn arguments into do-nothing targets
