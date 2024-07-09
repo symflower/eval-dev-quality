@@ -64,13 +64,11 @@ func TestTaskWriteTestsRun(t *testing.T) {
 				metrics.AssessmentKeyResponseWithCode:                   1,
 			},
 		},
-		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			filepath.Join(string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
-				assert.Contains(t, data, "Evaluating model \"symflower/symbolic-execution\"")
-				assert.Contains(t, data, "Generated 1 test")
-				assert.Contains(t, data, "PASS: TestSymflowerPlain")
-				assert.Contains(t, data, "Evaluated model \"symflower/symbolic-execution\"")
-			},
+		ValidateLog: func(t *testing.T, data string) {
+			assert.Contains(t, data, "Evaluating model \"symflower/symbolic-execution\"")
+			assert.Contains(t, data, "Generated 1 test")
+			assert.Contains(t, data, "PASS: TestSymflowerPlain")
+			assert.Contains(t, data, "Evaluated model \"symflower/symbolic-execution\"")
 		},
 	})
 }

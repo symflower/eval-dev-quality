@@ -78,11 +78,9 @@ func TestTaskWriteTestsRun(t *testing.T) {
 				"expected 'package', found does",
 				"exit status 1",
 			},
-			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				filepath.Join(string(IdentifierWriteTests), "mocked-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
-					assert.Contains(t, data, "Evaluating model \"mocked-model\"")
-					assert.Contains(t, data, "PASS: TestTaskB")
-				},
+			ValidateLog: func(t *testing.T, data string) {
+				assert.Contains(t, data, "Evaluating model \"mocked-model\"")
+				assert.Contains(t, data, "PASS: TestTaskB")
 			},
 		})
 	})
@@ -107,13 +105,11 @@ func TestTaskWriteTestsRun(t *testing.T) {
 
 					ExpectedRepositoryAssessment: expectedAssessments,
 					ExpectedProblemContains:      expectedProblems,
-					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-						filepath.Join(string(IdentifierWriteTests), "mocked-model", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
-							assert.Contains(t, data, "Evaluating model \"mocked-model\"")
-							if assertTestsPass {
-								assert.Contains(t, data, "PASS: TestPlain")
-							}
-						},
+					ValidateLog: func(t *testing.T, data string) {
+						assert.Contains(t, data, "Evaluating model \"mocked-model\"")
+						if assertTestsPass {
+							assert.Contains(t, data, "PASS: TestPlain")
+						}
 					},
 				})
 			}
