@@ -22,7 +22,7 @@ jobs:
           java-version: '11'
 
       - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.5
+        uses: stCarolas/setup-maven@v5
         with:
           maven-version: '3.9.1'
 
@@ -34,6 +34,11 @@ jobs:
 
       - name: Build
         run: make install
+        shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
+
+      - name: Install required tools
+        run: |
+          make install-tools
         shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
 
       - name: Install testing tools

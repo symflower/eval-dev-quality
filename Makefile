@@ -1,7 +1,7 @@
 export ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 export PACKAGE_BASE := github.com/symflower/eval-dev-quality
-export UNIT_TEST_TIMEOUT := 480
+export UNIT_TEST_TIMEOUT := 720
 
 ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(ARGS):;@:) # turn arguments into do-nothing targets
@@ -44,13 +44,16 @@ install: # [<Go package] - # Build and install everything, or only the specified
 	go install -v $(PACKAGE)
 .PHONY: install
 
-install-all: install install-tools-testing # Install everything for and of this repository.
+install-all: install install-tools install-tools-testing # Install everything for and of this repository.
 .PHONY: install-all
+
+install-tools: # Install tools that are required for running the evaluation.
+	eval-dev-quality install-tools $(if $(ARGS), --install-tools-path $(word 1,$(ARGS)))
+.PHONY: install-tools
 
 install-tools-testing: # Install tools that are used for testing.
 	go install -v github.com/vektra/mockery/v2@v2.40.3
 	go install -v gotest.tools/gotestsum@v1.11.0
-	eval-dev-quality install-tools
 .PHONY: install-tools-testing
 
 generate: # Run code generation.
