@@ -13,17 +13,19 @@ FROM ubuntu:noble
 RUN apt-get update && apt-get install -y ca-certificates wget unzip git make && update-ca-certificates
 
 # Non-root ollama need a hardcoded directory to store ssh-key.
-RUN mkdir -p /.ollama && chmod 777 /.ollama
-# Same for symflower
-RUN mkdir -p /.config && chmod 777 /.config
-RUN mkdir -p /.eval-dev-quality && chmod 777 /.eval-dev-quality
-RUN mkdir -p /.cache && chmod 777 /.cache
+# RUN mkdir -p /.ollama && chmod 777 /.ollama
+# # Same for symflower
+# RUN mkdir -p /.config && chmod 777 /.config
+# RUN mkdir -p /.eval-dev-quality && chmod 777 /.eval-dev-quality
+# RUN mkdir -p /.cache && chmod 777 /.cache
+# # Non-root go folder
+# RUN mkdir -p /go && chmod 777 /go
 
 # Switch to the ubuntu user as we want it to run as non-root.
-USER ubuntu
+#USER ubuntu
 WORKDIR /app
-COPY --chown=ubuntu:ubuntu ./testdata ./testdata
-COPY --chown=ubuntu:ubuntu ./Makefile ./Makefile
+COPY ./testdata ./testdata
+COPY ./Makefile ./Makefile
 RUN mkdir -p .eval-dev-quality
 
 # Install Maven
@@ -50,10 +52,11 @@ RUN wget https://go.dev/dl/go1.21.5.linux-amd64.tar.gz && \
 	tar -xf go1.21.5.linux-amd64.tar.gz -C /app/.eval-dev-quality/ && \
 	rm go1.21.5.linux-amd64.tar.gz
 ENV PATH="${PATH}:/app/.eval-dev-quality/go/bin"
-RUN go env -w GOPATH=/app/.eval-dev-quality/go
+ENV GOROOT="/app/.eval-dev-quality/go"
+ENV GOPATH="/app/.eval-dev-quality/go"
 
 # Install the binary
-COPY --from=builder --chown=ubuntu:ubuntu /app/eval-dev-quality /app/.eval-dev-quality/bin/
+COPY --from=builder /app/eval-dev-quality /app/.eval-dev-quality/bin/
 ENV PATH="${PATH}:/app/.eval-dev-quality/bin"
 RUN make install-tools-testing
 RUN make install-tools /app/.eval-dev-quality/bin
