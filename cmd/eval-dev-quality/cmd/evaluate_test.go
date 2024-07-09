@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -25,6 +27,7 @@ import (
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 	"github.com/symflower/eval-dev-quality/tools"
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // validateReportLinks checks if the Markdown report data contains all the links to other relevant report files.
@@ -790,6 +793,249 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "README.md"):         nil,
 				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 3, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+				},
+			},
+		})
+	})
+
+	t.Run("Runtime", func(t *testing.T) {
+		// Skip containerized runtime tests if special cases.
+		if osutil.IsWindows() {
+			t.Skip("Docker runtime not supported on Windows")
+		} else if _, err := exec.LookPath("docker"); err != nil {
+			t.Skip("Docker runtime not found")
+		}
+
+		// TODO: Make the docker runtime run on both local and CI
+		if os.Getenv("GITHUB_ACTIONS") != "true" {
+			t.Skip("We are currently only supporting the Github CI")
+		}
+
+		// Prerequisite
+		dockerImage := ""
+		{
+			// Get current branch name
+			_, logger := log.Buffer()
+			branch, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+				Command: []string{
+					"git",
+					"rev-parse",
+					"--short",
+					"HEAD",
+				},
+			})
+			assert.NoError(t, err)
+
+			dockerImage = "ghcr.io/symflower/eval-dev-quality:" + strings.TrimSpace(branch)
+
+			// Pull the image
+			_, err = util.CommandWithResult(context.Background(), logger, &util.Command{
+				Command: []string{
+					"docker",
+					"pull",
+					dockerImage,
+				},
+			})
+			assert.NoError(t, err)
+		}
+
+		validate(t, &testCase{
+			Name: "Docker",
+
+			Arguments: []string{
+				"--runtime", "docker",
+				"--model", "symflower/symbolic-execution",
+				"--model", "symflower/symbolic-execution",
+				"--model", "symflower/symbolic-execution",
+				"--testdata", "testdata/", // Our own tests set the "testdata" argument to the temporary directory that they create. This temporary directory does not exist in docker, so set the "testdata" manually here to overrule the testing behavior and use the original one.
+				"--repository", filepath.Join("golang", "plain"),
+				"--repository", filepath.Join("java", "plain"),
+				"--runs=1",
+				"--parallel=3",
+				"--runtime-image=" + dockerImage,
+			},
+
+			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
+				actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
+					metrics.Assessments{
+						metrics.AssessmentKeyCoverage:         40,
+						metrics.AssessmentKeyFilesExecuted:    4,
+						metrics.AssessmentKeyResponseNoError:  4,
+						metrics.AssessmentKeyResponseNoExcess: 4,
+						metrics.AssessmentKeyResponseWithCode: 4,
+					},
+					metrics.Assessments{
+						metrics.AssessmentKeyCoverage:         40,
+						metrics.AssessmentKeyFilesExecuted:    4,
+						metrics.AssessmentKeyResponseNoError:  4,
+						metrics.AssessmentKeyResponseNoExcess: 4,
+						metrics.AssessmentKeyResponseWithCode: 4,
+					},
+					metrics.Assessments{
+						metrics.AssessmentKeyCoverage:         40,
+						metrics.AssessmentKeyFilesExecuted:    4,
+						metrics.AssessmentKeyResponseNoError:  4,
+						metrics.AssessmentKeyResponseNoExcess: 4,
+						metrics.AssessmentKeyResponseWithCode: 4,
+					},
+				}, []uint64{56, 56, 56})
+				// Assert non-deterministic behavior.
+				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
+				assert.Equal(t, uint64(786), actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount])
+				assert.Equal(t, uint64(786), actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount])
+				assert.Equal(t, 3, strings.Count(output, "Evaluation score for"))
+			},
+			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+				filepath.Join("result-directory", "evaluation.log"): nil,
+
+				// Parallel run 1
+				filepath.Join("result-directory", "symflower", "symbolic-execution", "categories.svg"): nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution", "evaluation.csv"): func(t *testing.T, filePath, data string) {
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+					}, []uint64{14, 14, 14, 14})
+					// Assert non-deterministic behavior.
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
+					assert.Equal(t, uint64(254), actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount])
+					assert.Equal(t, uint64(254), actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount])
+				},
+				filepath.Join("result-directory", "symflower", "symbolic-execution", "evaluation.log"):    nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution", "golang-summed.csv"): nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution", "java-summed.csv"):   nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution", "models-summed.csv"): nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution", "README.md"):         nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+				},
+				filepath.Join("result-directory", "symflower", "symbolic-execution", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+				},
+
+				// Parallel run 2
+				filepath.Join("result-directory", "symflower", "symbolic-execution-0", "categories.svg"): nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-0", "evaluation.csv"): func(t *testing.T, filePath, data string) {
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+					}, []uint64{14, 14, 14, 14})
+					// Assert non-deterministic behavior.
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
+					assert.Equal(t, uint64(254), actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount])
+					assert.Equal(t, uint64(254), actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount])
+				},
+				filepath.Join("result-directory", "symflower", "symbolic-execution-0", "evaluation.log"):    nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-0", "golang-summed.csv"): nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-0", "java-summed.csv"):   nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-0", "models-summed.csv"): nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-0", "README.md"):         nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-0", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+				},
+				filepath.Join("result-directory", "symflower", "symbolic-execution-0", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+				},
+
+				// Parallel run 3
+				filepath.Join("result-directory", "symflower", "symbolic-execution-1", "categories.svg"): nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-1", "evaluation.csv"): func(t *testing.T, filePath, data string) {
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:         10,
+							metrics.AssessmentKeyFilesExecuted:    1,
+							metrics.AssessmentKeyResponseNoError:  1,
+							metrics.AssessmentKeyResponseNoExcess: 1,
+							metrics.AssessmentKeyResponseWithCode: 1,
+						},
+					}, []uint64{14, 14, 14, 14})
+					// Assert non-deterministic behavior.
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
+					assert.Equal(t, uint64(254), actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount])
+					assert.Equal(t, uint64(254), actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount])
+				},
+				filepath.Join("result-directory", "symflower", "symbolic-execution-1", "evaluation.log"):    nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-1", "golang-summed.csv"): nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-1", "java-summed.csv"):   nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-1", "models-summed.csv"): nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-1", "README.md"):         nil,
+				filepath.Join("result-directory", "symflower", "symbolic-execution-1", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+				},
+				filepath.Join("result-directory", "symflower", "symbolic-execution-1", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"): func(t *testing.T, filePath, data string) {
+					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
 			},
 		})

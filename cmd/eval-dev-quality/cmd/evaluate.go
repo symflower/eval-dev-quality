@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/user"
 	"path/filepath"
 	"slices"
 	"sort"
@@ -82,6 +83,8 @@ type Evaluate struct {
 	// Namespace the namespace under which the kubernetes resources should be created.
 	Namespace string `long:"namespace" description:"The Namespace which should be used for kubernetes resources." default:"eval-dev-quality"`
 
+	// args holds a list of all the passed arguments.
+	args []string
 	// logger holds the logger of the command.
 	logger *log.Logger
 	// timestamp holds the timestamp of the command execution.
@@ -93,6 +96,14 @@ var _ SetLogger = (*Evaluate)(nil)
 // SetLogger sets the logger of the command.
 func (command *Evaluate) SetLogger(logger *log.Logger) {
 	command.logger = logger
+}
+
+var _ SetArguments = (*Evaluate)(nil)
+
+// SetArguments sets the commands arguments.
+func (command *Evaluate) SetArguments(args []string) {
+	availableFlags := util.Flags(command)
+	command.args = util.FilterArgsKeep(args, availableFlags)
 }
 
 // Initialize initializes the command according to the arguments.
@@ -172,15 +183,17 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 	// Ensure the "testdata" path exists and make it absolute.
 	{
-		if err := osutil.DirExists(command.TestdataPath); err != nil {
-			command.logger.Panicf("ERROR: testdata path %q cannot be accessed: %s", command.TestdataPath, err)
+		if command.Runtime == "local" { // Ignore testdata path during containerized execution.
+			if err := osutil.DirExists(command.TestdataPath); err != nil {
+				command.logger.Panicf("ERROR: testdata path %q cannot be accessed: %s", command.TestdataPath, err)
+			}
+			testdataPath, err := filepath.Abs(command.TestdataPath)
+			if err != nil {
+				command.logger.Panicf("ERROR: could not resolve testdata path %q to an absolute path: %s", command.TestdataPath, err)
+			}
+			command.TestdataPath = testdataPath
+			evaluationContext.TestdataPath = testdataPath
 		}
-		testdataPath, err := filepath.Abs(command.TestdataPath)
-		if err != nil {
-			command.logger.Panicf("ERROR: could not resolve testdata path %q to an absolute path: %s", command.TestdataPath, err)
-		}
-		command.TestdataPath = testdataPath
-		evaluationContext.TestdataPath = testdataPath
 	}
 
 	// Setup evaluation result directory.
@@ -446,18 +459,31 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 
 // evaluateDocker executes the evaluation for each model inside a docker container.
 func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
-	availableFlags := util.Flags(command)
 	ignoredFlags := []string{
 		"model",
 		"parallel",
 		"result-path",
+		"runtime-image",
 		"runtime",
 	}
 
-	// Filter all the args to only contain flags which can be used.
-	args := util.FilterArgsKeep(os.Args[2:], availableFlags)
 	// Filter the args to remove all flags unsuited for running the container.
-	args = util.FilterArgsRemove(args, ignoredFlags)
+	args := util.FilterArgsRemove(command.args, ignoredFlags)
+
+	// Get current user for volume ID mapping.
+	user, err := user.Current()
+	if err != nil {
+		return pkgerrors.WithStack(err)
+	}
+
+	resultPath, err := filepath.Abs(command.ResultPath)
+	if err != nil {
+		return pkgerrors.WithStack(err)
+	}
+	// Set permission 777 so the non-root docker image is able to store its results inside the result path.
+	if err := os.Chmod(resultPath, 0777); err != nil {
+		return pkgerrors.WithStack(err)
+	}
 
 	parallel := util.NewParallel(command.Parallel)
 
@@ -470,22 +496,14 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 			continue
 		}
 
-		// Create for each model a dedicated subfolder inside the results path.
-		resultPath, err := filepath.Abs(command.ResultPath)
-		if err != nil {
-			return err
-		}
-		// Set permission 777 so the non-root docker image is able to store its results inside the result path.
-		if err := os.Chmod(resultPath, 0777); err != nil {
-			return err
-		}
-
 		// Commands regarding the docker runtime.
 		dockerCommand := []string{
 			"docker",
 			"run",
 			"-v", // bind volume
-			resultPath + ":/home/ubuntu/evaluation",
+			resultPath + ":/app/evaluation",
+			"--user",
+			user.Uid + ":" + user.Gid,
 			"--rm", // automatically remove container after it finished
 			command.RuntimeImage,
 		}
@@ -497,7 +515,7 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 			"--model",
 			model.ID(),
 			"--result-path",
-			"/home/ubuntu/evaluation/" + model.ID(),
+			"/app/evaluation/" + model.ID(),
 		}
 
 		cmd := append(dockerCommand, evaluationCommand...)
@@ -531,6 +549,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 		"model",
 		"parallel",
 		"result-path",
+		"runtime-image",
 		"runtime",
 	}
 
