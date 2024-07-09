@@ -31,10 +31,6 @@ func Execute(logger *log.Logger, arguments []string) {
 			c.SetLogger(logger)
 		}
 
-		if c, ok := command.(SetArguments); ok {
-			c.SetArguments(arguments)
-		}
-
 		return command.Execute(args)
 	}
 
@@ -54,10 +50,4 @@ func Execute(logger *log.Logger, arguments []string) {
 type SetLogger interface {
 	// SetLogger sets the logger of the command.
 	SetLogger(logger *log.Logger)
-}
-
-// SetArguments defines a command that allows to set its arguments.
-type SetArguments interface {
-	// SetArguments sets the commands arguments.
-	SetArguments(args []string)
 }
