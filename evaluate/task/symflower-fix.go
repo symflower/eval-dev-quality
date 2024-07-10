@@ -5,7 +5,6 @@ import (
 	"time"
 
 	pkgerrors "github.com/pkg/errors"
-	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/tools"
@@ -13,7 +12,7 @@ import (
 )
 
 // symflowerFix runs the "symflower fix" command and returns its execution time in milliseconds.
-func symflowerFix(logger *log.Logger, modelAssessment metrics.Assessments, repositoryPath string, language language.Language) (duration uint64, err error) {
+func symflowerFix(logger *log.Logger, repositoryPath string, language language.Language) (duration uint64, err error) {
 	start := time.Now()
 	_, err = util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{

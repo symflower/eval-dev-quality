@@ -95,7 +95,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 			if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
 				taskLogger.Print("model response alone failed execution, attempting to fix with \"symflower fix \"")
 
-				duration, err := symflowerFix(taskLogger.Logger, modelAssessment, dataPath, ctx.Language)
+				duration, err := symflowerFix(taskLogger.Logger, dataPath, ctx.Language)
 				if err != nil {
 					problems = append(problems, err)
 
