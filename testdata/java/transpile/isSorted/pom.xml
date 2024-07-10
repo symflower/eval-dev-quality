@@ -4,7 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eval.dev.quality</groupId>
-	<artifactId>sort</artifactId>
+	<artifactId>is-sorted</artifactId>
 	<version>SNAPSHOT</version>
 	<properties>
 		<maven.compiler.target>11</maven.compiler.target>

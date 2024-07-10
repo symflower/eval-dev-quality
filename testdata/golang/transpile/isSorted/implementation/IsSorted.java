@@ -1,6 +1,6 @@
 package com.eval;
 
-class Sort {
+class IsSorted {
     static boolean isSorted(int[] a) {
         int i = 0;
         while (i < a.length - 1 && a[i] <= a[i + 1]) {

@@ -1,6 +1,6 @@
 package com.eval;
 
-class Sort {
+class IsSorted {
 	static boolean isSorted(int[] a) {
 	}
 }
