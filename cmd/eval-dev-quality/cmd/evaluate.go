@@ -437,10 +437,6 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		return nil
 	})
 
-	if err := report.WriteCSVs(command.ResultPath); err != nil {
-		command.logger.Panicf("ERROR: %s", err)
-	}
-
 	return nil
 }
 
