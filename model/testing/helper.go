@@ -19,16 +19,6 @@ func NewMockModelNamed(t *testing.T, id string) *MockModel {
 	return m
 }
 
-// NewMockModelNamed returns a new named mocked model with cost information.
-func NewMockModelNamedWithCosts(t *testing.T, id string, name string, cost float64) *MockModel {
-	m := NewMockModel(t)
-	m.On("ID").Return(id).Maybe()
-	m.On("Name").Return(name).Maybe()
-	m.On("Cost").Return(cost).Maybe()
-
-	return m
-}
-
 // RegisterGenerateSuccess registers a mock call for successful generation.
 func (m *MockCapabilityWriteTests) RegisterGenerateSuccess(t *testing.T, filePath string, fileContent string, assessment metrics.Assessments) *mock.Call {
 	return m.On("WriteTests", mock.Anything).Return(assessment, nil).Run(func(args mock.Arguments) {
@@ -65,14 +55,6 @@ type MockModelCapabilityWriteTests struct {
 func NewMockCapabilityWriteTestsNamed(t *testing.T, id string) *MockModelCapabilityWriteTests {
 	return &MockModelCapabilityWriteTests{
 		MockModel:                NewMockModelNamed(t, id),
-		MockCapabilityWriteTests: NewMockCapabilityWriteTests(t),
-	}
-}
-
-// NewMockCapabilityWriteTestsNamedWithCost returns a new named mocked model with costs.
-func NewMockCapabilityWriteTestsNamedWithCost(t *testing.T, id string, name string, cost float64) *MockModelCapabilityWriteTests {
-	return &MockModelCapabilityWriteTests{
-		MockModel:                NewMockModelNamedWithCosts(t, id, name, cost),
 		MockCapabilityWriteTests: NewMockCapabilityWriteTests(t),
 	}
 }

@@ -31,11 +31,6 @@ func (m *Model) ID() (id string) {
 	return "symflower" + provider.ProviderModelSeparator + "symbolic-execution"
 }
 
-// Name returns the name of this model.
-func (m *Model) Name() (name string) {
-	return "Symbolic Execution"
-}
-
 var _ model.CapabilityWriteTests = (*Model)(nil)
 
 // generateTestsForFile generates test files for the given implementation file in a repository.
@@ -96,9 +91,4 @@ func countCharactersOfGeneratedFiles(repositoryPath string, filePaths []string) 
 	}
 
 	return count, nil
-}
-
-// Cost returns the cost of the model.
-func (m *Model) Cost() (cost float64) {
-	return 0
 }

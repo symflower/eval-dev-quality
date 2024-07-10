@@ -2,11 +2,7 @@ package openrouter
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"io"
-	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -85,49 +81,16 @@ type Pricing struct {
 
 // Models returns which models are available to be queried via this provider.
 func (p *Provider) Models() (models []model.Model, err error) {
-	responseModels, err := providerModels(p.baseURL + "/models")
-	if err != nil {
-		return nil, err
-	}
+	client := p.client()
 
-	models = make([]model.Model, len(responseModels.Models))
-	for i, model := range responseModels.Models {
-		cost, err := sumModelCosts(model)
-		if err != nil {
-			return nil, err
-		}
-		models[i] = llm.NewNamedModelWithCost(p, p.ID()+provider.ProviderModelSeparator+model.ID, model.Name, cost)
-	}
-
-	return models, nil
-}
-
-// providerModels returns the provider's list of models given the URL to fetch the models.
-func providerModels(url string) (models ModelsList, err error) {
-	request, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return ModelsList{}, pkgerrors.WithStack(err)
-	}
-	request.Header.Set("Accept", "application/json")
-
-	client := &http.Client{}
-	var responseBody []byte
+	var responseModels openai.ModelsList
 	if err := retry.Do( // Query available models with a retry logic cause "openrouter.ai" has failed us in the past.
 		func() error {
-			response, err := client.Do(request)
+			ms, err := client.ListModels(context.Background())
 			if err != nil {
 				return pkgerrors.WithStack(err)
 			}
-			defer response.Body.Close()
-
-			if response.StatusCode != http.StatusOK {
-				return pkgerrors.Errorf("received status code %d when querying provider models", response.StatusCode)
-			}
-
-			responseBody, err = io.ReadAll(response.Body)
-			if err != nil {
-				return pkgerrors.WithStack(err)
-			}
+			responseModels = ms
 
 			return nil
 		},
@@ -136,36 +99,15 @@ func providerModels(url string) (models ModelsList, err error) {
 		retry.DelayType(retry.BackOffDelay),
 		retry.LastErrorOnly(true),
 	); err != nil {
-		return ModelsList{}, err
+		return nil, err
 	}
 
-	if err = json.Unmarshal(responseBody, &models); err != nil {
-		return ModelsList{}, pkgerrors.WithStack(err)
+	models = make([]model.Model, len(responseModels.Models))
+	for i, model := range responseModels.Models {
+		models[i] = llm.NewModel(p, p.ID()+provider.ProviderModelSeparator+model.ID)
 	}
 
 	return models, nil
-}
-
-// sumModelCosts sums the different costs of a model.
-func sumModelCosts(model Model) (cost float64, err error) {
-	prompt, err := strconv.ParseFloat(strings.TrimSpace(model.Pricing.Prompt), 64)
-	if err != nil {
-		return 0, pkgerrors.WithStack(err)
-	}
-	completion, err := strconv.ParseFloat(strings.TrimSpace(model.Pricing.Completion), 64)
-	if err != nil {
-		return 0, pkgerrors.WithStack(err)
-	}
-	request, err := strconv.ParseFloat(strings.TrimSpace(model.Pricing.Request), 64)
-	if err != nil {
-		return 0, pkgerrors.WithStack(err)
-	}
-	image, err := strconv.ParseFloat(strings.TrimSpace(model.Pricing.Image), 64)
-	if err != nil {
-		return 0, pkgerrors.WithStack(err)
-	}
-
-	return prompt + completion + request + image, nil
 }
 
 var _ provider.InjectToken = (*Provider)(nil)

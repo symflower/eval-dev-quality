@@ -11,11 +11,6 @@ import (
 type Model interface {
 	// ID returns the unique ID of this model.
 	ID() (id string)
-	// Name returns the human-readable name of this model.
-	Name() (name string)
-
-	// Cost returns the cost of a model in US dollars.
-	Cost() (cost float64)
 }
 
 // Context holds the data needed by a model for running a task.

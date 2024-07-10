@@ -60,7 +60,7 @@ func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language langu
 
 	for _, task := range tasks {
 		assessment := assessmentsPerTask[task]
-		row := append([]string{model.ID(), model.Name(), strconv.FormatFloat(model.Cost(), 'f', -1, 64), language.ID(), repositoryName, string(task), strconv.FormatUint(uint64(assessment.Score()), 10)}, assessment.StringCSV()...)
+		row := append([]string{model.ID(), language.ID(), repositoryName, string(task), strconv.FormatUint(uint64(assessment.Score()), 10)}, assessment.StringCSV()...)
 		csv.Write(row)
 	}
 	csv.Flush()
@@ -70,17 +70,13 @@ func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language langu
 
 // evaluationHeader returns the CSV header for the evaluation CSV.
 func evaluationHeader() (header []string) {
-	return append([]string{"model-id", "model-name", "cost", "language", "repository", "task", "score"}, metrics.AllAssessmentKeysStrings...)
+	return append([]string{"model-id", "language", "repository", "task", "score"}, metrics.AllAssessmentKeysStrings...)
 }
 
 // EvaluationRecord holds a line of the evaluation CSV.
 type EvaluationRecord struct {
 	// ModelID holds the model id.
 	ModelID string
-	// ModelName holds the model name.
-	ModelName string
-	// ModelCost holds the model cost.
-	ModelCost float64
 
 	// LanguageID holds the language id.
 	LanguageID string
@@ -94,8 +90,6 @@ func (e *EvaluationRecord) Clone() (new *EvaluationRecord) {
 	new = &EvaluationRecord{}
 
 	new.ModelID = e.ModelID
-	new.ModelName = e.ModelName
-	new.ModelCost = e.ModelCost
 	new.LanguageID = e.LanguageID
 	new.Assessments = metrics.Merge(e.Assessments, nil)
 
@@ -127,7 +121,7 @@ func (e EvaluationRecords) GroupByModel() EvaluationRecordsPerModel {
 
 // Header returns the header description as a CSV row.
 func (EvaluationRecordsPerModel) Header() (header []string) {
-	return append([]string{"model-id", "model-name", "cost", "score"}, metrics.AllAssessmentKeysStrings...)
+	return append([]string{"model-id", "score"}, metrics.AllAssessmentKeysStrings...)
 }
 
 // Rows returns all data as CSV rows.
@@ -141,9 +135,8 @@ func (e EvaluationRecordsPerModel) Rows() (rows [][]string) {
 		record := e[model]
 		metrics := record.Assessments.StringCSV()
 		score := record.Assessments.Score()
-		modelCost := record.ModelCost
 
-		row := append([]string{record.ModelID, record.ModelName, strconv.FormatFloat(modelCost, 'f', -1, 64), strconv.FormatUint(uint64(score), 10)}, metrics...)
+		row := append([]string{record.ModelID, strconv.FormatUint(uint64(score), 10)}, metrics...)
 		rows = append(rows, row)
 	}
 
@@ -217,15 +210,13 @@ func convertRawRecordToEvaluationRecord(raw []string) (record *EvaluationRecord,
 	assessments := metrics.NewAssessments()
 
 	modelID := raw[0]
-	modelName := raw[1]
-	modelCost, err := strconv.ParseFloat(raw[2], 64)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	languageID := raw[3]
+	languageID := raw[1]
 
-	rawMetrics := raw[7:]
+	rawMetrics := raw[5:]
 	for i, assessementKey := range metrics.AllAssessmentKeysStrings {
 		metric, err := strconv.ParseUint(rawMetrics[i], 10, 64)
 		if err != nil {
@@ -236,9 +227,7 @@ func convertRawRecordToEvaluationRecord(raw []string) (record *EvaluationRecord,
 	}
 
 	return &EvaluationRecord{
-		ModelID:   modelID,
-		ModelName: modelName,
-		ModelCost: modelCost,
+		ModelID: modelID,
 
 		LanguageID: languageID,
 
