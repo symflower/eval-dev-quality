@@ -419,6 +419,7 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 	if err := (report.Markdown{
 		DateTime: command.timestamp,
 		Version:  evaluate.Version,
+		Revision: evaluate.Revision,
 
 		CSVPath:       "./evaluation.csv",
 		LogPath:       "./evaluation.log",
