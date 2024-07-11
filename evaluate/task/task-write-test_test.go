@@ -64,12 +64,14 @@ func TestTaskWriteTestsRun(t *testing.T) {
 
 			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 				IdentifierWriteTests: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecuted:   1,
-					metrics.AssessmentKeyResponseNoError: 2,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyResponseNoError:               2,
 				},
 				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecuted:   1,
-					metrics.AssessmentKeyResponseNoError: 2,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyResponseNoError:               2,
 				},
 			},
 			ExpectedProblemContains: []string{
@@ -118,14 +120,16 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			{
 				expectedAssessments := map[evaltask.Identifier]metrics.Assessments{
 					IdentifierWriteTests: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:   1,
-						metrics.AssessmentKeyResponseNoError: 1,
-						metrics.AssessmentKeyCoverage:        10,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyCoverage:                      10,
 					},
 					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:   1,
-						metrics.AssessmentKeyResponseNoError: 1,
-						metrics.AssessmentKeyCoverage:        10,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyCoverage:                      10,
 					},
 				}
 				validateGo(t, "Model generated correct test", &golang.Language{}, bytesutil.StringTrimIndentations(`
@@ -141,12 +145,14 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			{
 				expectedAssessments := map[evaltask.Identifier]metrics.Assessments{
 					IdentifierWriteTests: metrics.Assessments{
-						metrics.AssessmentKeyResponseNoError: 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
 					},
 					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:   1,
-						metrics.AssessmentKeyResponseNoError: 1,
-						metrics.AssessmentKeyCoverage:        10,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyCoverage:                      10,
 					},
 				}
 				expectedProblems := []string{
@@ -168,10 +174,12 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			{
 				expectedAssessments := map[evaltask.Identifier]metrics.Assessments{
 					IdentifierWriteTests: metrics.Assessments{
-						metrics.AssessmentKeyResponseNoError: 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
 					},
 					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyResponseNoError: 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
 					},
 				}
 				expectedProblems := []string{
@@ -187,10 +195,12 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			{
 				expectedAssessments := map[task.Identifier]metrics.Assessments{
 					IdentifierWriteTests: metrics.Assessments{
-						metrics.AssessmentKeyResponseNoError: 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
 					},
 					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyResponseNoError: 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
 					},
 				}
 				expectedProblems := []string{

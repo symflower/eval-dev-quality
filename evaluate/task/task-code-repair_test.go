@@ -69,9 +69,10 @@ func TestTaskCodeRepairRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyCoverage:        30,
-						metrics.AssessmentKeyFilesExecuted:   1,
-						metrics.AssessmentKeyResponseNoError: 1,
+						metrics.AssessmentKeyCoverage:                      30,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
 					},
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -134,9 +135,10 @@ func TestTaskCodeRepairRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyCoverage:        60,
-						metrics.AssessmentKeyFilesExecuted:   2,
-						metrics.AssessmentKeyResponseNoError: 2,
+						metrics.AssessmentKeyCoverage:                      60,
+						metrics.AssessmentKeyFilesExecuted:                 2,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+						metrics.AssessmentKeyResponseNoError:               2,
 					},
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -190,9 +192,10 @@ func TestTaskCodeRepairRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyCoverage:        80,
-						metrics.AssessmentKeyFilesExecuted:   1,
-						metrics.AssessmentKeyResponseNoError: 1,
+						metrics.AssessmentKeyCoverage:                      80,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
 					},
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -257,9 +260,10 @@ func TestTaskCodeRepairRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyCoverage:        160,
-						metrics.AssessmentKeyFilesExecuted:   2,
-						metrics.AssessmentKeyResponseNoError: 2,
+						metrics.AssessmentKeyCoverage:                      160,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+						metrics.AssessmentKeyFilesExecuted:                 2,
+						metrics.AssessmentKeyResponseNoError:               2,
 					},
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){

@@ -45,6 +45,11 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 
 	modelAssessment := metrics.NewAssessments()
 	withSymflowerAssessment := metrics.NewAssessments()
+
+	maximumReachableFiles := uint64(len(filePaths))
+	modelAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
+	withSymflowerAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
+
 	for _, filePath := range filePaths {
 		modelAssessmentForFile := metrics.NewAssessments()
 		withSymflowerAssessmentForFile := modelAssessmentForFile // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until a failure actually happens.
