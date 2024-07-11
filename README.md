@@ -226,7 +226,7 @@ Currently, the following points are awarded for any task:
 - `response-not-empty`: `+1` if the response is not empty
 - `response-with-code`: `+1` if the response contained source code
 - `compiled`: `+1` if the source code compiled
-- `statement-coverage-reached`: `+10` if the generated tests reach 100% coverage
+- `statement-coverage-reached`: `+10` for each coverage object of executed code
 - `no-excess`: `+1` if the response did not contain more content than requested
 
 ## Results
