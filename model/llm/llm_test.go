@@ -324,7 +324,7 @@ func TestLLMCodeRepairSourceFilePrompt(t *testing.T) {
 
 		ExpectedMessage: bytesutil.StringTrimIndentations(`
 			Given the following Go code file "/path/to/foobar.go" with package "foobar" and a list of compilation errors, modify the code such that the errors are resolved.
-			The response must contain only the source code and nothing else.
+			The response must contain only the source code in a fenced code block and nothing else.
 
 			` + "```" + `golang
 			package foobar

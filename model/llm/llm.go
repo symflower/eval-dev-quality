@@ -108,7 +108,7 @@ type llmCodeRepairSourceFilePromptContext struct {
 // llmCodeRepairSourceFilePromptTemplate is the template for generating an LLM code repair prompt.
 var llmCodeRepairSourceFilePromptTemplate = template.Must(template.New("model-llm-code-repair-source-file-prompt").Parse(bytesutil.StringTrimIndentations(`
 	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" with package "{{ .ImportPath }}" and a list of compilation errors, modify the code such that the errors are resolved.
-	The response must contain only the source code and nothing else.
+	The response must contain only the source code in a fenced code block and nothing else.
 
 	` + "```" + `{{ .Language.ID }}
 	{{ .Code }}
