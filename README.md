@@ -214,9 +214,11 @@ On a high level, `DevQualityEval` asks the model to produce tests for an example
 Currently, the following cases are available for this task:
 
 - Java
-  - `plain/src/main/java/plain.java`: An empty function that does nothing.
+  - [`java/plain`](testdata/java/plain)
+  - [`java/light`](testdata/java/light)
 - Go
-  - `plain/plain.go`: An empty function that does nothing.
+  - [`golang/plain`](testdata/golang/plain)
+  - [`golang/light`](testdata/golang/light)
 
 ### Reward Points
 
