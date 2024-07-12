@@ -78,27 +78,20 @@ func (t *taskLogger) finalize(problems []error) {
 	t.Logger.Printf("Evaluated model %q on task %q using language %q and repository %q: encountered %d problems: %+v", t.ctx.Model.ID(), t.task.Identifier(), t.ctx.Language.ID(), t.ctx.Repository.Name(), len(problems), problems)
 }
 
-// packageHasSourceAndTestFile checks if a package as a source file and the corresponding test file for the given language, and returns the source file path.
-func packageHasSourceAndTestFile(log *log.Logger, repositoryName string, packagePath string, language language.Language) (sourceFilePath string, err error) {
+// packageSourceFile returns the source file of a package.
+func packageSourceFile(log *log.Logger, packagePath string, language language.Language) (sourceFilePath string, err error) {
 	filePaths, err := language.Files(log, packagePath)
 	if err != nil {
 		return "", pkgerrors.WithStack(err)
-	} else if len(filePaths) != 2 {
-		return "", pkgerrors.Errorf("package %q in repository %q must only contain an implementation file and the corresponding test file, but found %#v", packagePath, repositoryName, filePaths)
-	}
-	var hasTestFile bool
-	for _, file := range filePaths {
-		if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
-			hasTestFile = true
-		} else if filepath.Ext(file) == language.DefaultFileExtension() {
-			sourceFilePath = file
-		}
-	}
-	if sourceFilePath == "" {
-		return "", pkgerrors.Errorf("package %q in repository %q does not contain a source file", packagePath, repositoryName)
-	} else if !hasTestFile {
-		return "", pkgerrors.Errorf("package %q in repository %q does not contain a test file", packagePath, repositoryName)
 	}
 
-	return sourceFilePath, nil
+	for _, file := range filePaths {
+		if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
+			continue
+		} else if filepath.Ext(file) == language.DefaultFileExtension() { // We can assume there is only one source file because the package structure was previously verified.
+			return file, nil
+		}
+	}
+
+	return "", pkgerrors.WithStack(pkgerrors.Errorf("could not find any %s source file in package %q", language.Name(), packagePath))
 }

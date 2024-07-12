@@ -93,6 +93,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 			temporaryRepository, cleanup, err := evaluatetask.TemporaryRepository(ctx.Log, ctx.TestdataPath, repositoryPath)
 			if err != nil {
 				ctx.Log.Panicf("ERROR: unable to create temporary repository path: %+v", err)
+			} else if err = temporaryRepository.Validate(ctx.Log, language); err != nil {
+				ctx.Log.Panicf("ERROR: malformed repository %q: %+v", temporaryRepository.Name(), err)
 			}
 
 			defer cleanup()
@@ -197,6 +199,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 			temporaryRepository, cleanup, err := evaluatetask.TemporaryRepository(ctx.Log, ctx.TestdataPath, repositoryPath)
 			if err != nil {
 				ctx.Log.Panicf("ERROR: unable to create temporary repository path: %s", err)
+			} else if err = temporaryRepository.Validate(ctx.Log, l); err != nil {
+				ctx.Log.Panicf("ERROR: malformed repository %q: %+v", temporaryRepository.Name(), err)
 			}
 
 			defer cleanup()

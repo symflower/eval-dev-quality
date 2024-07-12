@@ -97,3 +97,44 @@ func (tc *TestCaseTask) Validate(t *testing.T, createRepository createRepository
 		tc.ValidateLog(t, logOutput.String())
 	}
 }
+
+type TestCaseValidateRepository struct {
+	Name string
+
+	Before func(repositoryPath string)
+
+	TestdataPath   string
+	RepositoryPath string
+	Language       language.Language
+
+	ExpectedErrorContains string
+}
+
+type validateRepositoryForTask func(logger *log.Logger, repositoryPath string, language language.Language) (err error)
+
+func (tc *TestCaseValidateRepository) Validate(t *testing.T, validateRepositoryForTask validateRepositoryForTask) {
+	t.Run(tc.Name, func(t *testing.T) {
+		logOutput, logger := log.Buffer()
+		defer func() {
+			if t.Failed() {
+				t.Logf("Logging output: %s", logOutput.String())
+			}
+		}()
+
+		temporaryDirectory := t.TempDir()
+		repositoryPath := filepath.Join(temporaryDirectory, "testdata", tc.RepositoryPath)
+		require.NoError(t, osutil.CopyTree(filepath.Join(tc.TestdataPath, tc.RepositoryPath), repositoryPath))
+
+		if tc.Before != nil {
+			tc.Before(repositoryPath)
+		}
+
+		actualErr := validateRepositoryForTask(logger, repositoryPath, tc.Language)
+		if len(tc.ExpectedErrorContains) > 0 {
+			assert.ErrorContains(t, actualErr, tc.ExpectedErrorContains)
+		} else {
+			require.NoError(t, actualErr)
+		}
+
+	})
+}

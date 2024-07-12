@@ -54,6 +54,9 @@ type Repository interface {
 	// SupportedTasks returns the list of task identifiers the repository supports.
 	SupportedTasks() (tasks []Identifier)
 
+	// Validate checks it the repository is well-formed.
+	Validate(logger *log.Logger, language language.Language) (err error)
+
 	// Reset resets the repository to its initial state.
 	Reset(logger *log.Logger) (err error)
 }

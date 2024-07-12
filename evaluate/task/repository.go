@@ -12,6 +12,7 @@ import (
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/util"
@@ -85,6 +86,18 @@ func (r *Repository) DataPath() (dataPath string) {
 // SupportedTasks returns the list of task identifiers the repository supports.
 func (r *Repository) SupportedTasks() (tasks []task.Identifier) {
 	return r.Tasks
+}
+
+// Validate checks it the repository is well-formed.
+func (r *Repository) Validate(logger *log.Logger, language language.Language) (err error) {
+	for _, taskIdentifier := range r.SupportedTasks() {
+		switch taskIdentifier {
+		case IdentifierCodeRepair:
+			return validateCodeRepairRepository(logger, r.DataPath(), language)
+		}
+	}
+
+	return nil
 }
 
 // Reset resets a repository back to its "initial" commit.
