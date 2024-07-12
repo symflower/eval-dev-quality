@@ -60,7 +60,7 @@ var extractMetricsLogsMatch = extractMetricsMatch(regexp.MustCompile(`score=(\d+
 
 // extractMetricsCSVMatch is a regular expression to extract metrics from CSV rows.
 // REMARK The cost is not match as a group since it's just a model property that we carry along for informational purposes.
-var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`(?:\d+(?:\.\d+)?,)?(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
+var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
 
 // extractMetrics extracts multiple assessment metrics from the given string according to a given regular expression.
 func extractMetrics(t *testing.T, regex extractMetricsMatch, data string) (assessments []metrics.Assessments, scores []uint64) {
@@ -246,38 +246,6 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, actualAssessments[1][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 				},
 				filepath.Join("result-directory", "evaluation.log"): nil,
-				filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
-					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
-						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                      20,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-							metrics.AssessmentKeyResponseNoExcess:              2,
-							metrics.AssessmentKeyResponseWithCode:              2,
-						},
-					}, []uint64{28})
-					// Assert non-deterministic behavior.
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
-					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(508))
-					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(508))
-				},
-				filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
-					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
-						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                      20,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-							metrics.AssessmentKeyResponseNoExcess:              2,
-							metrics.AssessmentKeyResponseWithCode:              2,
-						},
-					}, []uint64{28})
-					// Assert non-deterministic behavior.
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
-					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(508))
-					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(508))
-				},
 				filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
@@ -363,54 +331,6 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, actualAssessments[3][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(139))
 					assert.Equal(t, actualAssessments[3][metrics.AssessmentKeyResponseCharacterCount], uint64(139))
 				},
-				filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
-					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
-						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                      20,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-							metrics.AssessmentKeyResponseNoExcess:              2,
-							metrics.AssessmentKeyResponseWithCode:              2,
-						},
-					}, []uint64{28})
-					// Assert non-deterministic behavior.
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
-					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(508))
-					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(508))
-				},
-				filepath.Join("result-directory", "java-summed.csv"): func(t *testing.T, filePath, data string) {
-					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
-						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                      20,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-							metrics.AssessmentKeyResponseNoExcess:              2,
-							metrics.AssessmentKeyResponseWithCode:              2,
-						},
-					}, []uint64{28})
-					// Assert non-deterministic behavior.
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
-					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(278))
-					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(278))
-				},
-				filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
-					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
-						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                      40,
-							metrics.AssessmentKeyFilesExecuted:                 4,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
-							metrics.AssessmentKeyResponseNoError:               4,
-							metrics.AssessmentKeyResponseNoExcess:              4,
-							metrics.AssessmentKeyResponseWithCode:              4,
-						},
-					}, []uint64{56})
-					// Assert non-deterministic behavior.
-					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
-					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(786))
-					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(786))
-				},
 				filepath.Join("result-directory", "evaluation.log"): nil,
 				filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
@@ -485,38 +405,6 @@ func TestEvaluateExecute(t *testing.T) {
 						assert.Equal(t, actualAssessments[1][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 					},
 					filepath.Join("result-directory", "evaluation.log"): nil,
-					filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
-						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
-							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                      20,
-								metrics.AssessmentKeyFilesExecuted:                 2,
-								metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-								metrics.AssessmentKeyResponseNoError:               2,
-								metrics.AssessmentKeyResponseNoExcess:              2,
-								metrics.AssessmentKeyResponseWithCode:              2,
-							},
-						}, []uint64{28})
-						// Assert non-deterministic behavior.
-						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
-						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(508))
-						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(508))
-					},
-					filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
-						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
-							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                      20,
-								metrics.AssessmentKeyFilesExecuted:                 2,
-								metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-								metrics.AssessmentKeyResponseNoError:               2,
-								metrics.AssessmentKeyResponseNoExcess:              2,
-								metrics.AssessmentKeyResponseWithCode:              2,
-							},
-						}, []uint64{28})
-						// Assert non-deterministic behavior.
-						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
-						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(508))
-						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(508))
-					},
 					filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
@@ -532,7 +420,7 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-					assert.Regexp(t, `Evaluation score for "symflower/symbolic-execution" \("code-no-excess"\): cost=0.00, score=28, coverage=20, files-executed=2, files-executed-maximum-reachable=2, generate-tests-for-file-character-count=508, processing-time=\d+, response-character-count=508, response-no-error=2, response-no-excess=2, response-with-code=2`, output)
+					assert.Regexp(t, `Evaluation score for "symflower/symbolic-execution" \("code-no-excess"\): score=28, coverage=20, files-executed=2, files-executed-maximum-reachable=2, generate-tests-for-file-character-count=508, processing-time=\d+, response-character-count=508, response-no-error=2, response-no-excess=2, response-with-code=2`, output)
 					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -567,38 +455,6 @@ func TestEvaluateExecute(t *testing.T) {
 						assert.Equal(t, actualAssessments[1][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
 					},
 					filepath.Join("result-directory", "evaluation.log"): nil,
-					filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
-						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
-							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                      20,
-								metrics.AssessmentKeyFilesExecuted:                 2,
-								metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-								metrics.AssessmentKeyResponseNoError:               2,
-								metrics.AssessmentKeyResponseNoExcess:              2,
-								metrics.AssessmentKeyResponseWithCode:              2,
-							},
-						}, []uint64{28})
-						// Assert non-deterministic behavior.
-						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
-						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(508))
-						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(508))
-					},
-					filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
-						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
-							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                      20,
-								metrics.AssessmentKeyFilesExecuted:                 2,
-								metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-								metrics.AssessmentKeyResponseNoError:               2,
-								metrics.AssessmentKeyResponseNoExcess:              2,
-								metrics.AssessmentKeyResponseWithCode:              2,
-							},
-						}, []uint64{28})
-						// Assert non-deterministic behavior.
-						assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
-						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(508))
-						assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(508))
-					},
 					filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
@@ -665,9 +521,7 @@ func TestEvaluateExecute(t *testing.T) {
 							assert.Contains(t, data, "preloading model")
 							assert.Contains(t, data, "unloading model")
 						},
-						filepath.Join("result-directory", "golang-summed.csv"): nil,
-						filepath.Join("result-directory", "models-summed.csv"): nil,
-						filepath.Join("result-directory", "README.md"):         nil,
+						filepath.Join("result-directory", "README.md"): nil,
 						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+model.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
 					},
 				})
@@ -713,9 +567,7 @@ func TestEvaluateExecute(t *testing.T) {
 							assert.Contains(t, data, fmt.Sprintf(`Evaluation score for "custom-ollama/%s"`, providertesting.OllamaTestModel))
 							assert.Contains(t, data, "response-no-error=2")
 						},
-						filepath.Join("result-directory", "golang-summed.csv"): nil,
-						filepath.Join("result-directory", "models-summed.csv"): nil,
-						filepath.Join("result-directory", "README.md"):         nil,
+						filepath.Join("result-directory", "README.md"): nil,
 						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+model.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
 					},
 				})
@@ -815,9 +667,7 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Contains(t, data, "Run 2/3")
 					assert.Contains(t, data, "Run 3/3")
 				},
-				filepath.Join("result-directory", "golang-summed.csv"): nil,
-				filepath.Join("result-directory", "models-summed.csv"): nil,
-				filepath.Join("result-directory", "README.md"):         nil,
+				filepath.Join("result-directory", "README.md"): nil,
 				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 3, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
@@ -850,12 +700,10 @@ func TestEvaluateExecute(t *testing.T) {
 		},
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			filepath.Join("result-directory", "categories.svg"):    nil,
-			filepath.Join("result-directory", "evaluation.csv"):    nil,
-			filepath.Join("result-directory", "evaluation.log"):    nil,
-			filepath.Join("result-directory", "golang-summed.csv"): nil,
-			filepath.Join("result-directory", "models-summed.csv"): nil,
-			filepath.Join("result-directory", "README.md"):         nil,
+			filepath.Join("result-directory", "categories.svg"): nil,
+			filepath.Join("result-directory", "evaluation.csv"): nil,
+			filepath.Join("result-directory", "evaluation.log"): nil,
+			filepath.Join("result-directory", "README.md"):      nil,
 			filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 		},
 	})
@@ -873,12 +721,10 @@ func TestEvaluateExecute(t *testing.T) {
 		},
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			filepath.Join("result-directory-0", "categories.svg"):    nil,
-			filepath.Join("result-directory-0", "evaluation.csv"):    nil,
-			filepath.Join("result-directory-0", "evaluation.log"):    nil,
-			filepath.Join("result-directory-0", "golang-summed.csv"): nil,
-			filepath.Join("result-directory-0", "models-summed.csv"): nil,
-			filepath.Join("result-directory-0", "README.md"):         nil,
+			filepath.Join("result-directory-0", "categories.svg"): nil,
+			filepath.Join("result-directory-0", "evaluation.csv"): nil,
+			filepath.Join("result-directory-0", "evaluation.log"): nil,
+			filepath.Join("result-directory-0", "README.md"):      nil,
 			filepath.Join("result-directory-0", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
 		},
 	})

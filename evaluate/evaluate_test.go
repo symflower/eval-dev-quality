@@ -171,7 +171,7 @@ func TestEvaluate(t *testing.T) {
 
 	{
 		languageGolang := &golang.Language{}
-		mockedModel := modeltesting.NewMockCapabilityWriteTestsNamedWithCost(t, "empty-response-model", "Empty Response Model", 0.0001)
+		mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, "empty-response-model")
 		repositoryPath := filepath.Join("golang", "plain")
 
 		validate(t, &testCase{
@@ -443,7 +443,7 @@ func TestEvaluate(t *testing.T) {
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
-			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamedWithCost(t, mockedModelID, "Mocked Generation Model", 0.0001)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 
 			validate(t, &testCase{
 				Name: "Problems of previous runs shouldn't cancel successive runs",
@@ -544,7 +544,7 @@ func TestEvaluate(t *testing.T) {
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
-			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamedWithCost(t, mockedModelID, "Mocked Generation Model", 0.0001)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 
 			validate(t, &testCase{
 				Name: "Solving basic checks once is enough",
@@ -644,7 +644,7 @@ func TestEvaluate(t *testing.T) {
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
-			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamedWithCost(t, mockedModelID, "Mocked Generation Model", 0.0001)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 
 			validate(t, &testCase{
 				Name: "Never solving basic checks leads to exclusion",
@@ -714,7 +714,7 @@ func TestEvaluate(t *testing.T) {
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
-			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamedWithCost(t, mockedModelID, "Mocked Generation Model", 0.0001)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 
 			repositoryPath := filepath.Join("golang", "plain")
 			validate(t, &testCase{
@@ -785,7 +785,7 @@ func TestEvaluate(t *testing.T) {
 		{
 			languageGolang := &golang.Language{}
 			mockedModelID := "mocked-generation-model"
-			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamedWithCost(t, mockedModelID, "Mocked Generation Model", 0.0001)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 
 			repositoryPath := filepath.Join("golang", "plain")
 			validate(t, &testCase{
@@ -864,7 +864,7 @@ func TestEvaluate(t *testing.T) {
 			// Setup provider and model mocking.
 			languageGolang := &golang.Language{}
 			mockedModelID := "testing-provider/testing-model"
-			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamedWithCost(t, mockedModelID, "Testing Model", 0.0001)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 			mockedProviderID := "testing-provider"
 			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []model.Model{mockedModel})
 			mockedLoader := providertesting.NewMockLoader(t)
@@ -949,7 +949,7 @@ func TestEvaluate(t *testing.T) {
 			// Setup provider and model mocking.
 			languageGolang := &golang.Language{}
 			mockedModelID := "testing-provider/testing-model"
-			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamedWithCost(t, mockedModelID, "Testing Model", 0.0001)
+			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 			mockedProviderID := "testing-provider"
 			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []model.Model{mockedModel})
 			mockedLoader := providertesting.NewMockLoader(t)
@@ -1033,7 +1033,7 @@ func TestEvaluate(t *testing.T) {
 		// Setup provider and model mocking.
 		languageGolang := &golang.Language{}
 		mockedModelID := "testing-provider/testing-model"
-		mockedModel := modeltesting.NewMockCapabilityWriteTestsNamedWithCost(t, mockedModelID, "Testing Model", 0.0001)
+		mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 
 		repositoryPath := filepath.Join("golang", "plain")
 

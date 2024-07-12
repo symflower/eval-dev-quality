@@ -27,14 +27,9 @@ type Model struct {
 	provider provider.Query
 	// model holds the identifier for the LLM model.
 	model string
-	// name holds the name for the LLM model.
-	name string
 
 	// queryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	queryAttempts uint
-
-	// cost holds the cost of a model
-	cost float64
 }
 
 // NewModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
@@ -44,19 +39,6 @@ func NewModel(provider provider.Query, modelIdentifier string) *Model {
 		model:    modelIdentifier,
 
 		queryAttempts: 1,
-	}
-}
-
-// NewNamedModelWithCost returns an LLM model corresponding to the given identifier which is queried via the given provider, and with name and pricing information.
-func NewNamedModelWithCost(provider provider.Query, modelIdentifier string, name string, cost float64) *Model {
-	return &Model{
-		provider: provider,
-		model:    modelIdentifier,
-		name:     name,
-
-		queryAttempts: 1,
-
-		cost: cost,
 	}
 }
 
@@ -135,11 +117,6 @@ var _ model.Model = (*Model)(nil)
 // ID returns the unique ID of this model.
 func (m *Model) ID() (id string) {
 	return m.model
-}
-
-// Name returns the name of this model.
-func (m *Model) Name() (name string) {
-	return m.name
 }
 
 var _ model.CapabilityWriteTests = (*Model)(nil)
@@ -270,16 +247,6 @@ func (m *Model) RepairCode(ctx model.Context) (assessment metrics.Assessments, e
 	}
 
 	return assessment, nil
-}
-
-// Cost returns the cost of the model.
-func (m *Model) Cost() (cost float64) {
-	return m.cost
-}
-
-// SetCost sets the cost of a model.
-func (m *Model) SetCost(cost float64) {
-	m.cost = cost
 }
 
 var _ model.SetQueryAttempts = (*Model)(nil)

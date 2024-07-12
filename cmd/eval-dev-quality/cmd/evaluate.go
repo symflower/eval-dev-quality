@@ -232,8 +232,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				command.logger.Panicf("ERROR: unknown custom provider %q for model %q", providerID, model)
 			}
 
-			modelName := strings.Split(model, provider.ProviderModelSeparator)
-			modelProvider.AddModel(llm.NewNamedModelWithCost(modelProvider, model, modelName[len(modelName)-1], 0))
+			modelProvider.AddModel(llm.NewModel(modelProvider, model))
 		}
 	}
 
@@ -433,14 +432,10 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 	}
 
 	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint64) (err error) {
-		command.logger.Printf("Evaluation score for %q (%q): cost=%.2f, %s", model.ID(), assessment.Category(totalScore).ID, model.Cost(), assessment)
+		command.logger.Printf("Evaluation score for %q (%q): %s", model.ID(), assessment.Category(totalScore).ID, assessment)
 
 		return nil
 	})
-
-	if err := report.WriteCSVs(command.ResultPath); err != nil {
-		command.logger.Panicf("ERROR: %s", err)
-	}
 
 	return nil
 }
