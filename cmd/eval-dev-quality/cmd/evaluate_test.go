@@ -56,11 +56,11 @@ func atoiUint64(t *testing.T, s string) uint64 {
 type extractMetricsMatch *regexp.Regexp
 
 // extractMetricsLogsMatch is a regular expression to extract metrics from log messages.
-var extractMetricsLogsMatch = extractMetricsMatch(regexp.MustCompile(`score=(\d+), coverage=(\d+), files-executed=(\d+), generate-tests-for-file-character-count=(\d+), processing-time=(\d+), response-character-count=(\d+), response-no-error=(\d+), response-no-excess=(\d+), response-with-code=(\d+)`))
+var extractMetricsLogsMatch = extractMetricsMatch(regexp.MustCompile(`score=(\d+), coverage=(\d+), files-executed=(\d+), files-executed-maximum-reachable=(\d+), generate-tests-for-file-character-count=(\d+), processing-time=(\d+), response-character-count=(\d+), response-no-error=(\d+), response-no-excess=(\d+), response-with-code=(\d+)`))
 
 // extractMetricsCSVMatch is a regular expression to extract metrics from CSV rows.
 // REMARK The cost is not match as a group since it's just a model property that we carry along for informational purposes.
-var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`(?:\d+(?:\.\d+)?,)?(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
+var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`(?:\d+(?:\.\d+)?,)?(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
 
 // extractMetrics extracts multiple assessment metrics from the given string according to a given regular expression.
 func extractMetrics(t *testing.T, regex extractMetricsMatch, data string) (assessments []metrics.Assessments, scores []uint64) {
@@ -70,12 +70,13 @@ func extractMetrics(t *testing.T, regex extractMetricsMatch, data string) (asses
 		assessments = append(assessments, metrics.Assessments{
 			metrics.AssessmentKeyCoverage:                           atoiUint64(t, match[2]),
 			metrics.AssessmentKeyFilesExecuted:                      atoiUint64(t, match[3]),
-			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: atoiUint64(t, match[4]),
-			metrics.AssessmentKeyProcessingTime:                     atoiUint64(t, match[5]),
-			metrics.AssessmentKeyResponseCharacterCount:             atoiUint64(t, match[6]),
-			metrics.AssessmentKeyResponseNoError:                    atoiUint64(t, match[7]),
-			metrics.AssessmentKeyResponseNoExcess:                   atoiUint64(t, match[8]),
-			metrics.AssessmentKeyResponseWithCode:                   atoiUint64(t, match[9]),
+			metrics.AssessmentKeyFilesExecutedMaximumReachable:      atoiUint64(t, match[4]),
+			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: atoiUint64(t, match[5]),
+			metrics.AssessmentKeyProcessingTime:                     atoiUint64(t, match[6]),
+			metrics.AssessmentKeyResponseCharacterCount:             atoiUint64(t, match[7]),
+			metrics.AssessmentKeyResponseNoError:                    atoiUint64(t, match[8]),
+			metrics.AssessmentKeyResponseNoExcess:                   atoiUint64(t, match[9]),
+			metrics.AssessmentKeyResponseWithCode:                   atoiUint64(t, match[10]),
 		})
 		scores = append(scores, atoiUint64(t, match[1]))
 	}
@@ -199,11 +200,12 @@ func TestEvaluateExecute(t *testing.T) {
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 				actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
 					metrics.Assessments{
-						metrics.AssessmentKeyCoverage:         20,
-						metrics.AssessmentKeyFilesExecuted:    2,
-						metrics.AssessmentKeyResponseNoError:  2,
-						metrics.AssessmentKeyResponseNoExcess: 2,
-						metrics.AssessmentKeyResponseWithCode: 2,
+						metrics.AssessmentKeyCoverage:                      20,
+						metrics.AssessmentKeyFilesExecuted:                 2,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+						metrics.AssessmentKeyResponseNoError:               2,
+						metrics.AssessmentKeyResponseNoExcess:              2,
+						metrics.AssessmentKeyResponseWithCode:              2,
 					},
 				}, []uint64{28})
 				// Assert non-deterministic behavior.
@@ -219,18 +221,20 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 					}, []uint64{14, 14})
 					// Assert non-deterministic behavior.
@@ -245,11 +249,12 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         20,
-							metrics.AssessmentKeyFilesExecuted:    2,
-							metrics.AssessmentKeyResponseNoError:  2,
-							metrics.AssessmentKeyResponseNoExcess: 2,
-							metrics.AssessmentKeyResponseWithCode: 2,
+							metrics.AssessmentKeyCoverage:                      20,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyResponseNoExcess:              2,
+							metrics.AssessmentKeyResponseWithCode:              2,
 						},
 					}, []uint64{28})
 					// Assert non-deterministic behavior.
@@ -260,11 +265,12 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         20,
-							metrics.AssessmentKeyFilesExecuted:    2,
-							metrics.AssessmentKeyResponseNoError:  2,
-							metrics.AssessmentKeyResponseNoExcess: 2,
-							metrics.AssessmentKeyResponseWithCode: 2,
+							metrics.AssessmentKeyCoverage:                      20,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyResponseNoExcess:              2,
+							metrics.AssessmentKeyResponseWithCode:              2,
 						},
 					}, []uint64{28})
 					// Assert non-deterministic behavior.
@@ -290,11 +296,12 @@ func TestEvaluateExecute(t *testing.T) {
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 				actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
 					metrics.Assessments{
-						metrics.AssessmentKeyCoverage:         40,
-						metrics.AssessmentKeyFilesExecuted:    4,
-						metrics.AssessmentKeyResponseNoError:  4,
-						metrics.AssessmentKeyResponseNoExcess: 4,
-						metrics.AssessmentKeyResponseWithCode: 4,
+						metrics.AssessmentKeyCoverage:                      40,
+						metrics.AssessmentKeyFilesExecuted:                 4,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
+						metrics.AssessmentKeyResponseNoError:               4,
+						metrics.AssessmentKeyResponseNoExcess:              4,
+						metrics.AssessmentKeyResponseWithCode:              4,
 					},
 				}, []uint64{56})
 				// Assert non-deterministic behavior.
@@ -310,32 +317,36 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 					}, []uint64{14, 14, 14, 14})
 					// Assert non-deterministic behavior.
@@ -355,11 +366,12 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         20,
-							metrics.AssessmentKeyFilesExecuted:    2,
-							metrics.AssessmentKeyResponseNoError:  2,
-							metrics.AssessmentKeyResponseNoExcess: 2,
-							metrics.AssessmentKeyResponseWithCode: 2,
+							metrics.AssessmentKeyCoverage:                      20,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyResponseNoExcess:              2,
+							metrics.AssessmentKeyResponseWithCode:              2,
 						},
 					}, []uint64{28})
 					// Assert non-deterministic behavior.
@@ -370,11 +382,12 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "java-summed.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         20,
-							metrics.AssessmentKeyFilesExecuted:    2,
-							metrics.AssessmentKeyResponseNoError:  2,
-							metrics.AssessmentKeyResponseNoExcess: 2,
-							metrics.AssessmentKeyResponseWithCode: 2,
+							metrics.AssessmentKeyCoverage:                      20,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyResponseNoExcess:              2,
+							metrics.AssessmentKeyResponseWithCode:              2,
 						},
 					}, []uint64{28})
 					// Assert non-deterministic behavior.
@@ -385,11 +398,12 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         40,
-							metrics.AssessmentKeyFilesExecuted:    4,
-							metrics.AssessmentKeyResponseNoError:  4,
-							metrics.AssessmentKeyResponseNoExcess: 4,
-							metrics.AssessmentKeyResponseWithCode: 4,
+							metrics.AssessmentKeyCoverage:                      40,
+							metrics.AssessmentKeyFilesExecuted:                 4,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
+							metrics.AssessmentKeyResponseNoError:               4,
+							metrics.AssessmentKeyResponseNoExcess:              4,
+							metrics.AssessmentKeyResponseWithCode:              4,
 						},
 					}, []uint64{56})
 					// Assert non-deterministic behavior.
@@ -425,11 +439,12 @@ func TestEvaluateExecute(t *testing.T) {
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 					actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         20,
-							metrics.AssessmentKeyFilesExecuted:    2,
-							metrics.AssessmentKeyResponseNoError:  2,
-							metrics.AssessmentKeyResponseNoExcess: 2,
-							metrics.AssessmentKeyResponseWithCode: 2,
+							metrics.AssessmentKeyCoverage:                      20,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyResponseNoExcess:              2,
+							metrics.AssessmentKeyResponseWithCode:              2,
 						},
 					}, []uint64{28})
 					// Assert non-deterministic behavior.
@@ -445,18 +460,20 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:         10,
-								metrics.AssessmentKeyFilesExecuted:    1,
-								metrics.AssessmentKeyResponseNoError:  1,
-								metrics.AssessmentKeyResponseNoExcess: 1,
-								metrics.AssessmentKeyResponseWithCode: 1,
+								metrics.AssessmentKeyCoverage:                      10,
+								metrics.AssessmentKeyFilesExecuted:                 1,
+								metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+								metrics.AssessmentKeyResponseNoError:               1,
+								metrics.AssessmentKeyResponseNoExcess:              1,
+								metrics.AssessmentKeyResponseWithCode:              1,
 							},
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:         10,
-								metrics.AssessmentKeyFilesExecuted:    1,
-								metrics.AssessmentKeyResponseNoError:  1,
-								metrics.AssessmentKeyResponseNoExcess: 1,
-								metrics.AssessmentKeyResponseWithCode: 1,
+								metrics.AssessmentKeyCoverage:                      10,
+								metrics.AssessmentKeyFilesExecuted:                 1,
+								metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+								metrics.AssessmentKeyResponseNoError:               1,
+								metrics.AssessmentKeyResponseNoExcess:              1,
+								metrics.AssessmentKeyResponseWithCode:              1,
 							},
 						}, []uint64{14, 14})
 						// Assert non-deterministic behavior.
@@ -471,11 +488,12 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:         20,
-								metrics.AssessmentKeyFilesExecuted:    2,
-								metrics.AssessmentKeyResponseNoError:  2,
-								metrics.AssessmentKeyResponseNoExcess: 2,
-								metrics.AssessmentKeyResponseWithCode: 2,
+								metrics.AssessmentKeyCoverage:                      20,
+								metrics.AssessmentKeyFilesExecuted:                 2,
+								metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+								metrics.AssessmentKeyResponseNoError:               2,
+								metrics.AssessmentKeyResponseNoExcess:              2,
+								metrics.AssessmentKeyResponseWithCode:              2,
 							},
 						}, []uint64{28})
 						// Assert non-deterministic behavior.
@@ -486,11 +504,12 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:         20,
-								metrics.AssessmentKeyFilesExecuted:    2,
-								metrics.AssessmentKeyResponseNoError:  2,
-								metrics.AssessmentKeyResponseNoExcess: 2,
-								metrics.AssessmentKeyResponseWithCode: 2,
+								metrics.AssessmentKeyCoverage:                      20,
+								metrics.AssessmentKeyFilesExecuted:                 2,
+								metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+								metrics.AssessmentKeyResponseNoError:               2,
+								metrics.AssessmentKeyResponseNoExcess:              2,
+								metrics.AssessmentKeyResponseWithCode:              2,
 							},
 						}, []uint64{28})
 						// Assert non-deterministic behavior.
@@ -513,7 +532,7 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-					assert.Regexp(t, `Evaluation score for "symflower/symbolic-execution" \("code-no-excess"\): cost=0.00, score=28, coverage=20, files-executed=2, generate-tests-for-file-character-count=508, processing-time=\d+, response-character-count=508, response-no-error=2, response-no-excess=2, response-with-code=2`, output)
+					assert.Regexp(t, `Evaluation score for "symflower/symbolic-execution" \("code-no-excess"\): cost=0.00, score=28, coverage=20, files-executed=2, files-executed-maximum-reachable=2, generate-tests-for-file-character-count=508, processing-time=\d+, response-character-count=508, response-no-error=2, response-no-excess=2, response-with-code=2`, output)
 					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
@@ -523,18 +542,20 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:         10,
-								metrics.AssessmentKeyFilesExecuted:    1,
-								metrics.AssessmentKeyResponseNoError:  1,
-								metrics.AssessmentKeyResponseNoExcess: 1,
-								metrics.AssessmentKeyResponseWithCode: 1,
+								metrics.AssessmentKeyCoverage:                      10,
+								metrics.AssessmentKeyFilesExecuted:                 1,
+								metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+								metrics.AssessmentKeyResponseNoError:               1,
+								metrics.AssessmentKeyResponseNoExcess:              1,
+								metrics.AssessmentKeyResponseWithCode:              1,
 							},
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:         10,
-								metrics.AssessmentKeyFilesExecuted:    1,
-								metrics.AssessmentKeyResponseNoError:  1,
-								metrics.AssessmentKeyResponseNoExcess: 1,
-								metrics.AssessmentKeyResponseWithCode: 1,
+								metrics.AssessmentKeyCoverage:                      10,
+								metrics.AssessmentKeyFilesExecuted:                 1,
+								metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+								metrics.AssessmentKeyResponseNoError:               1,
+								metrics.AssessmentKeyResponseNoExcess:              1,
+								metrics.AssessmentKeyResponseWithCode:              1,
 							},
 						}, []uint64{14, 14})
 						// Assert non-deterministic behavior.
@@ -549,11 +570,12 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "golang-summed.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:         20,
-								metrics.AssessmentKeyFilesExecuted:    2,
-								metrics.AssessmentKeyResponseNoError:  2,
-								metrics.AssessmentKeyResponseNoExcess: 2,
-								metrics.AssessmentKeyResponseWithCode: 2,
+								metrics.AssessmentKeyCoverage:                      20,
+								metrics.AssessmentKeyFilesExecuted:                 2,
+								metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+								metrics.AssessmentKeyResponseNoError:               2,
+								metrics.AssessmentKeyResponseNoExcess:              2,
+								metrics.AssessmentKeyResponseWithCode:              2,
 							},
 						}, []uint64{28})
 						// Assert non-deterministic behavior.
@@ -564,11 +586,12 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "models-summed.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:         20,
-								metrics.AssessmentKeyFilesExecuted:    2,
-								metrics.AssessmentKeyResponseNoError:  2,
-								metrics.AssessmentKeyResponseNoExcess: 2,
-								metrics.AssessmentKeyResponseWithCode: 2,
+								metrics.AssessmentKeyCoverage:                      20,
+								metrics.AssessmentKeyFilesExecuted:                 2,
+								metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+								metrics.AssessmentKeyResponseNoError:               2,
+								metrics.AssessmentKeyResponseNoExcess:              2,
+								metrics.AssessmentKeyResponseWithCode:              2,
 							},
 						}, []uint64{28})
 						// Assert non-deterministic behavior.
@@ -713,11 +736,12 @@ func TestEvaluateExecute(t *testing.T) {
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 				actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
 					metrics.Assessments{
-						metrics.AssessmentKeyCoverage:         60,
-						metrics.AssessmentKeyFilesExecuted:    6,
-						metrics.AssessmentKeyResponseNoError:  6,
-						metrics.AssessmentKeyResponseNoExcess: 6,
-						metrics.AssessmentKeyResponseWithCode: 6,
+						metrics.AssessmentKeyCoverage:                      60,
+						metrics.AssessmentKeyFilesExecuted:                 6,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 6,
+						metrics.AssessmentKeyResponseNoError:               6,
+						metrics.AssessmentKeyResponseNoExcess:              6,
+						metrics.AssessmentKeyResponseWithCode:              6,
 					},
 				}, []uint64{84})
 				// Assert non-deterministic behavior.
@@ -731,46 +755,52 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:         10,
-							metrics.AssessmentKeyFilesExecuted:    1,
-							metrics.AssessmentKeyResponseNoError:  1,
-							metrics.AssessmentKeyResponseNoExcess: 1,
-							metrics.AssessmentKeyResponseWithCode: 1,
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
 						},
 					}, []uint64{14, 14, 14, 14, 14, 14})
 					// Assert non-deterministic behavior.

@@ -58,6 +58,7 @@ func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 	}
 
 	modelAssessment := metrics.NewAssessments()
+	modelAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = uint64(len(packagePaths))
 	for _, packagePath := range packagePaths {
 		if err := ctx.Repository.Reset(ctx.Logger); err != nil {
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)

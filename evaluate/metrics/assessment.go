@@ -36,6 +36,8 @@ func RegisterAssessmentKey(key string, multiplier uint64) AssessmentKey {
 var (
 	// AssessmentKeyFilesExecuted holds the successfully executed files.
 	AssessmentKeyFilesExecuted = RegisterAssessmentKey("files-executed", 1)
+	// AssessmentKeyFilesExecutedMaximumReachable holds the maximum theoretically reachable executed files.
+	AssessmentKeyFilesExecutedMaximumReachable = RegisterAssessmentKey("files-executed-maximum-reachable", 0)
 	// AssessmentKeyProcessingTime holds the time in milliseconds that it took to complete the task.
 	AssessmentKeyProcessingTime = RegisterAssessmentKey("processing-time", 0)
 
