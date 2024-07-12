@@ -91,11 +91,10 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 				continue
 			}
 
-			// Run "symflower fix"  if the model response fails to execute.
+			// Run "symflower fix" if the model response fails to execute.
 			if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
-				taskLogger.Print("model response alone failed execution, attempting to fix with \"symflower fix \"")
-
-				duration, err := symflowerFix(taskLogger.Logger, modelAssessment, dataPath, ctx.Language)
+				withSymflowerFixAssessments, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, ctx.Repository.DataPath())
+				problems = append(problems, ps...)
 				if err != nil {
 					problems = append(problems, err)
 
@@ -103,27 +102,9 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 					withSymflowerAssessment.Add(withSymflowerAssessmentForFile)
 
 					continue
+				} else {
+					withSymflowerAssessmentForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentForFile, withSymflowerFixAssessments)
 				}
-
-				coverage, ps, err := ctx.Language.Execute(taskLogger.Logger, dataPath)
-				problems = append(problems, ps...)
-				if err != nil {
-					problems = append(problems, pkgerrors.WithMessage(err, "symflower fix"))
-
-					modelAssessment.Add(modelAssessmentForFile)
-					withSymflowerAssessment.Add(withSymflowerAssessmentForFile)
-
-					continue
-				}
-				taskLogger.Printf("with symflower repair: Executes tests with %d coverage objects", coverage)
-
-				// Symflower was able to fix a failure so now update the assessment with the improved results.
-				withSymflowerAssessmentForFile = metrics.NewAssessments()
-				withSymflowerAssessmentForFile[metrics.AssessmentKeyProcessingTime] = duration
-				withSymflowerAssessmentForFile.Award(metrics.AssessmentKeyFilesExecuted)
-				withSymflowerAssessmentForFile.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
-
-				withSymflowerAssessmentForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentForFile, withSymflowerAssessmentForFile)
 			}
 		} else {
 			taskLogger.Printf("Executes tests with %d coverage objects", coverage)

@@ -2,7 +2,7 @@
 
 An evaluation benchmark 📈 and framework to compare and evolve the quality of code generation of LLMs.
 
-This repository gives developers of LLMs (and other code generation tools) a standardized benchmark and framework to improve real-world usage in the software development domain and provides users of LLMs with metrics and comparisions to check if a given LLM is useful for their tasks.
+This repository gives developers of LLMs (and other code generation tools) a standardized benchmark and framework to improve real-world usage in the software development domain and provides users of LLMs with metrics and comparisons to check if a given LLM is useful for their tasks.
 
 The [latest results](docs/reports/v0.4.0) are discussed in a deep dive: [Is Llama-3 better than GPT-4 for generating tests?](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.4.0-is-llama-3-better-than-gpt-4-for-generating-tests/)
 
@@ -133,7 +133,7 @@ Total coverage 100.000000%
 
 </details>
 
-The execution by default also creates an report file `REPORT.md` that contains additional evaluation results and links to individual result files.
+The execution by default also creates a report file `REPORT.md` that contains additional evaluation results and links to individual result files.
 
 # Docker
 
@@ -142,22 +142,26 @@ The execution by default also creates an report file `REPORT.md` that contains a
 Ensure that docker is installed on the system.
 
 ### Build or pull the image
+
 ```bash
 docker build . -t eval-dev-quality
 ```
+
 ```bash
 docker pull ghcr.io/symflower/eval-dev-quality:latest
 ```
 
 ### Run the evaluation either with the built or pulled image
+
 The following command will run the model `symflower/symbolic-execution` and stores the the results of the run inside the local directory `evaluation`.
+
 ```bash
 docker run -v ./:/home/ubuntu/evaluation --user $(id -u):$(id -g) eval-dev-quality:latest eval-dev-quality evaluate --model symflower/symbolic-execution --result-path /home/ubuntu/evaluation/%datetime%
 ```
+
 ```bash
 docker run -v ./:/home/ubuntu/evaluation --user $(id -u):$(id -g) ghcr.io/symflower/eval-dev-quality:latest eval-dev-quality evaluate --model symflower/symbolic-execution --result-path /home/ubuntu/evaluation/%datetime%
 ```
-
 
 # Kubernetes
 
@@ -205,25 +209,42 @@ It needs to compile and provide 100% coverage. A model can only write such tests
 
 On a high level, `DevQualityEval` asks the model to produce tests for an example case, saves the response to a file and tries to execute the resulting tests together with the original source code.
 
-#### Reward Points
+#### Cases
 
-Currently, the following points are awarded for this task:
+Currently, the following cases are available for this task:
 
-- `response-no-error`: `+1` if the response did not encounter an error
-- `response-not-empty`: `+1` if the response is not empty
-- `response-with-code`: `+1` if the response contained source code
-- `compiled`: `+1` if the source code compiled
-- `statement-coverage-reached`: `+10` if the generated tests reach 100% coverage
-- `no-excess`: `+1` if the response did not contain more content than requested
+- Java
+  - [`java/plain`](testdata/java/plain)
+  - [`java/light`](testdata/java/light)
+- Go
+  - [`golang/plain`](testdata/golang/plain)
+  - [`golang/light`](testdata/golang/light)
+
+### Task: Code Repair
+
+Code repair is the task of repairing source code with compilation errors.
+
+For this task, we introduced the `mistakes` repository, which includes examples of source code with compilation errors. Each example is isolated in its own package, along with a valid test suite. We compile each package in the `mistakes` repository and provide the LLM's with both the source code and the list of compilation errors. The LLM's response is then validated with the predefined test suite.
 
 #### Cases
 
 Currently, the following cases are available for this task:
 
 - Java
-  - `plain/src/main/java/plain.java`: An empty function that does nothing.
+  - [`java/mistakes`](testdata/java/mistakes)
 - Go
-  - `plain/plain.go`: An empty function that does nothing.
+  - [`golang/mistakes`](testdata/golang/mistakes)
+
+### Reward Points
+
+Currently, the following points are awarded for any task:
+
+- `response-no-error`: `+1` if the response did not encounter an error
+- `response-not-empty`: `+1` if the response is not empty
+- `response-with-code`: `+1` if the response contained source code
+- `compiled`: `+1` if the source code compiled
+- `statement-coverage-reached`: `+10` for each coverage object of executed code
+- `no-excess`: `+1` if the response did not contain more content than requested
 
 ## Results
 

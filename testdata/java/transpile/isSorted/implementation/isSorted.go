@@ -1,4 +1,4 @@
-package sort
+package isSorted
 
 func isSorted(a []int) bool {
 	i := 0
