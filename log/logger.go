@@ -58,7 +58,7 @@ func WithFile(parent *Logger, filePath string) (logger *Logger, loggerClose func
 		return nil, nil, pkgerrors.WithStack(err)
 	}
 
-	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		return nil, nil, pkgerrors.WithStack(err)
 	}
