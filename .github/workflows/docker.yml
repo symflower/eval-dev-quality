@@ -34,3 +34,5 @@ jobs:
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

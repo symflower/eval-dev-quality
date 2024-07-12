@@ -10,6 +10,9 @@ export ARGS
 HAVE_CHANGED_FILES := ! git --no-pager diff --exit-code
 HAVE_UNTRACKED_FILES := git ls-files --others --exclude-standard | grep .
 
+export GIT_REVISION := $(shell git rev-parse --short HEAD)
+export GO_LDFLAGS=-X $(PACKAGE_BASE)/evaluate.Revision=$(GIT_REVISION)
+
 ifdef ARGS
 	HAS_ARGS := "1"
 	PACKAGE := $(ARGS)
@@ -41,7 +44,7 @@ help: # Show this help message.
 .PHONY: help
 
 install: # [<Go package] - # Build and install everything, or only the specified package.
-	go install -v $(PACKAGE)
+	go install -v -ldflags="$(GO_LDFLAGS)" $(PACKAGE)
 .PHONY: install
 
 install-all: install install-tools-testing # Install everything for and of this repository.
