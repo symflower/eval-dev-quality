@@ -26,7 +26,7 @@ public class Knapsack {
     return knapsack[items.length][maximumWeight];
   }
 
-  class Item {
+  static class Item {
     int weight;
     int value;
   }
