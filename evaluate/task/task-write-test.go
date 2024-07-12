@@ -4,9 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	"github.com/symflower/eval-dev-quality/language"
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 )
@@ -122,4 +125,32 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 	}
 
 	return repositoryAssessment, problems, nil
+}
+
+// validateWriteTestsRepository checks if the repository for the "write-tests" task is well-formed.
+func validateWriteTestsRepository(logger *log.Logger, repositoryPath string, language language.Language) (err error) {
+	logger.Printf("validating repository %q", repositoryPath)
+
+	files, err := language.Files(logger, repositoryPath)
+	if err != nil {
+		return pkgerrors.WithStack(err)
+	}
+
+	var sourceFiles []string
+	var testFiles []string
+	for _, file := range files {
+		if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
+			testFiles = append(testFiles, file)
+		} else if strings.HasSuffix(file, language.DefaultFileExtension()) {
+			sourceFiles = append(sourceFiles, file)
+		}
+	}
+
+	if len(sourceFiles) == 0 {
+		return pkgerrors.Errorf("the repository %q must contain at least one %s source file, but found none", repositoryPath, language.Name())
+	} else if len(testFiles) > 0 {
+		return pkgerrors.Errorf("the repository %q must contain only %s source files, but found %+v", repositoryPath, language.Name(), testFiles)
+	}
+
+	return nil
 }
