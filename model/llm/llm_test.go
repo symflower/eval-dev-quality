@@ -307,36 +307,38 @@ func TestLLMCodeRepairSourceFilePrompt(t *testing.T) {
 				Language: &golang.Language{},
 
 				Code: bytesutil.StringTrimIndentations(`
-					package foobar
-					func foobar(i int) int
+					package increment
+
+					func increment(i int) int
 						return i + 1
 					}
 				`),
-				FilePath:   "/path/to/foobar.go",
-				ImportPath: "foobar",
+				FilePath:   "/path/to/increment.go",
+				ImportPath: "increment",
 			},
 			Mistakes: []string{
-				"/path/to/foobar.go:3:1: expected 'IDENT', found 'func'",
-				"/path/to/foobar.go: syntax error: non-declaration statement outside function body",
-				"/path/to/foobar.go: missing return",
+				"/path/to/increment.go:3:1: expected 'IDENT', found 'func'",
+				"/path/to/increment.go: syntax error: non-declaration statement outside function body",
+				"/path/to/increment.go: missing return",
 			},
 		},
 
 		ExpectedMessage: bytesutil.StringTrimIndentations(`
-			Given the following Go code file "/path/to/foobar.go" with package "foobar" and a list of compilation errors, modify the code such that the errors are resolved.
+			Given the following Go code file "/path/to/increment.go" with package "increment" and a list of compilation errors, modify the code such that the errors are resolved.
 			The response must contain only the source code in a fenced code block and nothing else.
 
 			` + "```" + `golang
-			package foobar
-			func foobar(i int) int
+			package increment
+
+			func increment(i int) int
 				return i + 1
 			}
 			` + "```" + `
 
 			The list of compilation errors is the following:
-			- /path/to/foobar.go:3:1: expected 'IDENT', found 'func'
-			- /path/to/foobar.go: syntax error: non-declaration statement outside function body
-			- /path/to/foobar.go: missing return
+			- /path/to/increment.go:3:1: expected 'IDENT', found 'func'
+			- /path/to/increment.go: syntax error: non-declaration statement outside function body
+			- /path/to/increment.go: missing return
 		`),
 	})
 }
