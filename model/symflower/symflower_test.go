@@ -1,8 +1,10 @@
 package symflower
 
 import (
+	"context"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -72,13 +74,14 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 				assert.ErrorIs(t, tc.ExpectedError, actualError)
 			} else if actualError != nil || tc.ExpectedErrorText != "" {
 				assert.ErrorContains(t, actualError, tc.ExpectedErrorText)
-			}
-			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
+			} else {
+				metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 
-			actualCoverage, actualProblems, err := tc.Language.Execute(logger, repositoryPath)
-			require.NoError(t, err)
-			require.Empty(t, actualProblems)
-			assert.Equal(t, tc.ExpectedCoverage, actualCoverage)
+				actualCoverage, actualProblems, err := tc.Language.Execute(logger, repositoryPath)
+				require.NoError(t, err)
+				require.Empty(t, actualProblems)
+				assert.Equal(t, tc.ExpectedCoverage, actualCoverage)
+			}
 		})
 	}
 
@@ -113,6 +116,26 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			metrics.AssessmentKeyResponseWithCode:                   1,
 		},
 		ExpectedCoverage: 1,
+	})
+	t.Run("Timeout", func(t *testing.T) {
+		var expectedErrorText string
+		if osutil.IsWindows() {
+			expectedErrorText = context.DeadlineExceeded.Error()
+		} else {
+			expectedErrorText = "signal: killed"
+		}
+
+		validate(t, &testCase{
+			Name: "Timeout",
+
+			Model:    NewModelWithTimeout(time.Duration(1 * time.Millisecond)),
+			Language: &java.Language{},
+
+			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "light"),
+			FilePath:       filepath.Join("src", "main", "java", "com", "eval", "Knapsack.java"),
+
+			ExpectedErrorText: expectedErrorText,
+		})
 	})
 }
 

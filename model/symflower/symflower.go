@@ -16,12 +16,27 @@ import (
 	"github.com/symflower/eval-dev-quality/util"
 )
 
+// defaultSymbolicExecutionTimeout defines the default symbolic execution timeout.
+var defaultSymbolicExecutionTimeout = time.Duration(10 * time.Minute)
+
 // Model holds a Symflower model using the locally installed CLI.
-type Model struct{}
+type Model struct {
+	// symbolicExecutionTimeout defines the symbolic execution timeout.
+	symbolicExecutionTimeout time.Duration
+}
 
 // NewModel returns a Symflower model.
 func NewModel() (model *Model) {
-	return &Model{}
+	return &Model{
+		symbolicExecutionTimeout: defaultSymbolicExecutionTimeout,
+	}
+}
+
+// NewModelWithTimeout returns a Symflower model with a given timeout.
+func NewModelWithTimeout(timeout time.Duration) (model *Model) {
+	return &Model{
+		symbolicExecutionTimeout: timeout,
+	}
 }
 
 var _ model.Model = (*Model)(nil)
@@ -35,9 +50,12 @@ var _ model.CapabilityWriteTests = (*Model)(nil)
 
 // generateTestsForFile generates test files for the given implementation file in a repository.
 func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, err error) {
+	ctxWithTimeout, cancel := context.WithTimeout(context.Background(), m.symbolicExecutionTimeout)
+	defer cancel()
+
 	start := time.Now()
 
-	output, err := util.CommandWithResult(context.Background(), ctx.Logger, &util.Command{
+	output, err := util.CommandWithResult(ctxWithTimeout, ctx.Logger, &util.Command{
 		Command: []string{
 			tools.SymflowerPath, "unit-tests",
 			"--code-disable-fetch-dependencies",
