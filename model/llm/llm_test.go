@@ -281,6 +281,57 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 	})
 }
 
+func TestLLMGenerateTestForFilePrompt(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Data *llmSourceFilePromptContext
+
+		ExpectedMessage string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualMessage, actualErr := llmGenerateTestForFilePrompt(tc.Data)
+			require.NoError(t, actualErr)
+
+			assert.Equal(t, tc.ExpectedMessage, actualMessage)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Plain",
+
+		Data: &llmSourceFilePromptContext{
+			Language: &golang.Language{},
+
+			Code: bytesutil.StringTrimIndentations(`
+					package increment
+
+					func increment(i int) int
+						return i + 1
+					}
+				`),
+			FilePath:   filepath.Join("path", "to", "increment.go"),
+			ImportPath: "increment",
+		},
+
+		ExpectedMessage: bytesutil.StringTrimIndentations(`
+			Given the following Go code file "path/to/increment.go" with package "increment", provide a test file for this code.
+			The tests should produce 100 percent code coverage and must compile.
+			The response must contain only the test code in a fenced code block and nothing else.
+
+			` + "```" + `golang
+			package increment
+
+			func increment(i int) int
+				return i + 1
+			}
+			` + "```" + `
+		`),
+	})
+}
+
 func TestLLMCodeRepairSourceFilePrompt(t *testing.T) {
 	type testCase struct {
 		Name string
@@ -313,18 +364,18 @@ func TestLLMCodeRepairSourceFilePrompt(t *testing.T) {
 						return i + 1
 					}
 				`),
-				FilePath:   "/path/to/increment.go",
+				FilePath:   filepath.Join("path", "to", "increment.go"),
 				ImportPath: "increment",
 			},
 			Mistakes: []string{
-				"/path/to/increment.go:3:1: expected 'IDENT', found 'func'",
-				"/path/to/increment.go: syntax error: non-declaration statement outside function body",
-				"/path/to/increment.go: missing return",
+				"path/to/increment.go:3:1: expected 'IDENT', found 'func'",
+				"path/to/increment.go: syntax error: non-declaration statement outside function body",
+				"path/to/increment.go: missing return",
 			},
 		},
 
 		ExpectedMessage: bytesutil.StringTrimIndentations(`
-			Given the following Go code file "/path/to/increment.go" with package "increment" and a list of compilation errors, modify the code such that the errors are resolved.
+			Given the following Go code file "path/to/increment.go" with package "increment" and a list of compilation errors, modify the code such that the errors are resolved.
 			The response must contain only the source code in a fenced code block and nothing else.
 
 			` + "```" + `golang
@@ -336,9 +387,9 @@ func TestLLMCodeRepairSourceFilePrompt(t *testing.T) {
 			` + "```" + `
 
 			The list of compilation errors is the following:
-			- /path/to/increment.go:3:1: expected 'IDENT', found 'func'
-			- /path/to/increment.go: syntax error: non-declaration statement outside function body
-			- /path/to/increment.go: missing return
+			- path/to/increment.go:3:1: expected 'IDENT', found 'func'
+			- path/to/increment.go: syntax error: non-declaration statement outside function body
+			- path/to/increment.go: missing return
 		`),
 	})
 }

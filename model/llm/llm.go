@@ -68,6 +68,8 @@ var llmGenerateTestForFilePromptTemplate = template.Must(template.New("model-llm
 
 // llmGenerateTestForFilePrompt returns the prompt for generating an LLM test generation.
 func llmGenerateTestForFilePrompt(data *llmSourceFilePromptContext) (message string, err error) {
+	// Use Linux paths even when running the evaluation on Windows to ensure consistency in prompting.
+	data.FilePath = filepath.ToSlash(data.FilePath)
 	data.Code = strings.TrimSpace(data.Code)
 
 	var b strings.Builder
@@ -102,6 +104,8 @@ var llmCodeRepairSourceFilePromptTemplate = template.Must(template.New("model-ll
 
 // llmCodeRepairSourceFilePrompt returns the prompt to code repair a source file.
 func llmCodeRepairSourceFilePrompt(data *llmCodeRepairSourceFilePromptContext) (message string, err error) {
+	// Use Linux paths even when running the evaluation on Windows to ensure consistency in prompting.
+	data.FilePath = filepath.ToSlash(data.FilePath)
 	data.Code = strings.TrimSpace(data.Code)
 
 	var b strings.Builder
