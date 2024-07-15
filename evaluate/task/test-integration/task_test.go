@@ -1,7 +1,6 @@
 package testintegration
 
 import (
-	"log"
 	"path/filepath"
 	"testing"
 
@@ -11,6 +10,7 @@ import (
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
 	"github.com/symflower/eval-dev-quality/language/golang"
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model/symflower"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
@@ -64,13 +64,11 @@ func TestTaskWriteTestsRun(t *testing.T) {
 				metrics.AssessmentKeyResponseWithCode:                   1,
 			},
 		},
-		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			filepath.Join(string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
-				assert.Contains(t, data, "Evaluating model \"symflower/symbolic-execution\"")
-				assert.Contains(t, data, "Generated 1 test")
-				assert.Contains(t, data, "PASS: TestSymflowerPlain")
-				assert.Contains(t, data, "Evaluated model \"symflower/symbolic-execution\"")
-			},
+		ValidateLog: func(t *testing.T, data string) {
+			assert.Contains(t, data, "Evaluating model \"symflower/symbolic-execution\"")
+			assert.Contains(t, data, "Generated 1 test")
+			assert.Contains(t, data, "PASS: TestSymflowerPlain")
+			assert.Contains(t, data, "Evaluated model \"symflower/symbolic-execution\"")
 		},
 	})
 }

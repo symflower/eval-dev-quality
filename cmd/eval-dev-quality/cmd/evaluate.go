@@ -96,16 +96,7 @@ func (command *Evaluate) SetLogger(logger *log.Logger) {
 }
 
 // Initialize initializes the command according to the arguments.
-func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.Context, cleanup func()) {
-	// Ensure the cleanup always runs in case there is a panic.
-	defer func() {
-		if r := recover(); r != nil {
-			if cleanup != nil {
-				cleanup()
-			}
-			panic(r)
-		}
-	}()
+func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.Context) {
 	evaluationContext = &evaluate.Context{}
 
 	// Check and validate common options.
@@ -197,11 +188,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 	// Initialize logging within result directory.
 	{
-		log, logClose, err := log.WithFile(command.logger, filepath.Join(command.ResultPath, "evaluation.log"))
-		if err != nil {
-			command.logger.Panicf("ERROR: %s", err)
-		}
-		cleanup = logClose
+		log := command.logger.With(log.AttributeKeyResultPath, command.ResultPath)
 		command.logger = log
 		evaluationContext.Log = log
 	}
@@ -378,15 +365,14 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 	}
 
-	return evaluationContext, cleanup
+	return evaluationContext
 }
 
 // Execute executes the command.
 func (command *Evaluate) Execute(args []string) (err error) {
 	command.timestamp = time.Now()
 
-	evaluationContext, cleanup := command.Initialize(args)
-	defer cleanup()
+	evaluationContext := command.Initialize(args)
 	if evaluationContext == nil {
 		command.logger.Panic("ERROR: empty evaluation context")
 	}

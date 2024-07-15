@@ -21,7 +21,6 @@ import (
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/model"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 	"github.com/symflower/eval-dev-quality/tools"
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
@@ -122,6 +121,8 @@ func TestEvaluateExecute(t *testing.T) {
 
 			logOutput, logger := log.Buffer()
 			defer func() {
+				log.CloseOpenLogFiles()
+
 				if t.Failed() {
 					t.Logf("Logging output: %s", logOutput.String())
 				}
@@ -522,7 +523,7 @@ func TestEvaluateExecute(t *testing.T) {
 							assert.Contains(t, data, "unloading model")
 						},
 						filepath.Join("result-directory", "README.md"): nil,
-						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+model.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
 					},
 				})
 			}
@@ -568,7 +569,7 @@ func TestEvaluateExecute(t *testing.T) {
 							assert.Contains(t, data, "response-no-error=2")
 						},
 						filepath.Join("result-directory", "README.md"): nil,
-						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+model.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
 					},
 				})
 			}
@@ -749,6 +750,8 @@ func TestEvaluateInitialize(t *testing.T) {
 			temporaryDirectory := t.TempDir()
 			buffer, logger := log.Buffer()
 			defer func() {
+				log.CloseOpenLogFiles()
+
 				if t.Failed() {
 					t.Logf("Logs:\n%s", buffer.String())
 				}
@@ -761,18 +764,14 @@ func TestEvaluateInitialize(t *testing.T) {
 
 			if tc.ValidatePanic != "" {
 				assert.PanicsWithValue(t, tc.ValidatePanic, func() {
-					c, cleanup := tc.Command.Initialize([]string{})
-					cleanup()
-					actualEvaluationContext = c
+					actualEvaluationContext = tc.Command.Initialize([]string{})
 				})
 
 				return
 			}
 
 			assert.NotPanics(t, func() {
-				c, cleanup := tc.Command.Initialize([]string{})
-				cleanup()
-				actualEvaluationContext = c
+				actualEvaluationContext = tc.Command.Initialize([]string{})
 			})
 
 			if tc.ValidateCommand != nil {

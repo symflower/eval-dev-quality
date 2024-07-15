@@ -75,12 +75,10 @@ func TestTaskCodeRepairRun(t *testing.T) {
 						metrics.AssessmentKeyResponseNoError:               1,
 					},
 				},
-				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(IdentifierCodeRepair), "mocked-model", "golang", "golang", "mistakes.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#00")
-						assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#01")
-						assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#02")
-					},
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#00")
+					assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#01")
+					assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#02")
 				},
 			})
 		}
@@ -141,15 +139,13 @@ func TestTaskCodeRepairRun(t *testing.T) {
 						metrics.AssessmentKeyResponseNoError:               2,
 					},
 				},
-				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(IdentifierCodeRepair), "mocked-model", "golang", "golang", "mistakes.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#00")
-						assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#01")
-						assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#02")
-						assert.Contains(t, data, "TestSymflowerTypeUnknown/#00")
-						assert.Contains(t, data, "TestSymflowerTypeUnknown/#01")
-						assert.Contains(t, data, "TestSymflowerTypeUnknown/#02")
-					},
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#00")
+					assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#01")
+					assert.Contains(t, data, "TestSymflowerOpeningBracketMissing/#02")
+					assert.Contains(t, data, "TestSymflowerTypeUnknown/#00")
+					assert.Contains(t, data, "TestSymflowerTypeUnknown/#01")
+					assert.Contains(t, data, "TestSymflowerTypeUnknown/#02")
 				},
 			})
 		}
@@ -198,10 +194,8 @@ func TestTaskCodeRepairRun(t *testing.T) {
 						metrics.AssessmentKeyResponseNoError:               1,
 					},
 				},
-				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(IdentifierCodeRepair), "mocked-model", "java", "java", "mistakes.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "BUILD SUCCESS")
-					},
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Contains(t, data, "BUILD SUCCESS")
 				},
 			})
 		}
@@ -266,10 +260,8 @@ func TestTaskCodeRepairRun(t *testing.T) {
 						metrics.AssessmentKeyResponseNoError:               2,
 					},
 				},
-				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join(string(IdentifierCodeRepair), "mocked-model", "java", "java", "mistakes.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "BUILD SUCCESS")
-					},
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Contains(t, data, "BUILD SUCCESS")
 				},
 			})
 		}

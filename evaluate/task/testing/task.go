@@ -30,6 +30,7 @@ type TestCaseTask struct {
 	ExpectedResultFiles          map[string]func(t *testing.T, filePath string, data string)
 	ExpectedProblemContains      []string
 	ExpectedError                error
+	ValidateLog                  func(t *testing.T, data string)
 }
 
 type createRepositoryFunction func(logger *log.Logger, testDataPath string, repositoryPathRelative string) (repository evaltask.Repository, cleanup func(), err error)
@@ -78,7 +79,7 @@ func (tc *TestCaseTask) Validate(t *testing.T, createRepository createRepository
 		require.NoError(t, err)
 	}
 	sort.Strings(actualResultFiles)
-	expectedResultFiles := make([]string, 0, len(tc.ExpectedResultFiles))
+	var expectedResultFiles []string
 	for filePath, validate := range tc.ExpectedResultFiles {
 		expectedResultFiles = append(expectedResultFiles, filePath)
 
@@ -91,4 +92,8 @@ func (tc *TestCaseTask) Validate(t *testing.T, createRepository createRepository
 	}
 	sort.Strings(expectedResultFiles)
 	assert.Equal(t, expectedResultFiles, actualResultFiles)
+
+	if tc.ValidateLog != nil {
+		tc.ValidateLog(t, logOutput.String())
+	}
 }
