@@ -4,7 +4,9 @@ import (
 	"cmp"
 	"encoding/csv"
 	"io"
+	"os"
 	"slices"
+	"sort"
 	"strconv"
 
 	pkgerrors "github.com/pkg/errors"
@@ -57,7 +59,61 @@ func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language langu
 	return nil
 }
 
+// WriteLines takes a slice of raw records and writes them into the evaluation file.
+func (e *EvaluationFile) WriteLines(records [][]string) (err error) {
+	if len(records) == 0 {
+		return nil
+	}
+
+	csv := csv.NewWriter(e.Writer)
+	if err := csv.WriteAll(records); err != nil {
+		return pkgerrors.WithStack(err)
+	}
+	csv.Flush()
+
+	return nil
+}
+
 // evaluationHeader returns the CSV header for the evaluation CSV.
 func EvaluationHeader() (header []string) {
 	return append([]string{"model-id", "language", "repository", "task", "score"}, metrics.AllAssessmentKeysStrings...)
+}
+
+// RecordsFromEvaluationCSVFiles returns all the records from all the given evaluation CSV files.
+func RecordsFromEvaluationCSVFiles(evaluationCSVFilePaths []string) (records [][]string, err error) {
+	for _, evaluationCSVFilePath := range evaluationCSVFilePaths {
+		file, err := os.Open(evaluationCSVFilePath)
+		if err != nil {
+			return nil, pkgerrors.WithStack(err)
+		}
+		defer file.Close()
+
+		csv := csv.NewReader(file)
+
+		// Ignore the CSV header.
+		csv.Read()
+
+		evaluationRecords, err := csv.ReadAll()
+		if err != nil {
+			return nil, pkgerrors.WithStack(err)
+		}
+		records = append(records, evaluationRecords...)
+	}
+
+	return records, nil
+}
+
+// SortEvaluationRecords sorts the evaluation records.
+func SortEvaluationRecords(records [][]string) {
+	sort.Slice(records, func(i, j int) bool {
+		for x := range records[i] {
+			if records[i][x] == records[j][x] {
+				continue
+			}
+
+			return records[i][x] < records[j][x]
+		}
+
+		return false
+	})
 }

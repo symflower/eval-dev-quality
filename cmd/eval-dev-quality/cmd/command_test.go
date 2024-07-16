@@ -35,7 +35,7 @@ func TestExecute(t *testing.T) {
 
 			ExpectedOutput: bytesutil.StringTrimIndentations(`
 				Usage:
-				  eval-dev-quality [OPTIONS] [evaluate | install-tools | version]
+				  eval-dev-quality [OPTIONS] [command]
 
 				Command to manage, update and actually execute the ` + "`" + `eval-dev-quality` + "`" + `
 				evaluation benchmark.
@@ -47,6 +47,7 @@ func TestExecute(t *testing.T) {
 				Available commands:
 				  evaluate       Run an evaluation, by default with all defined models, repositories and tasks.
 				  install-tools  Checks and installs all tools required for the evaluation benchmark.
+				  report         Combines the results of multiple evaluations.
 				  version        Display the version information of the binary.
 			`),
 		})
@@ -56,7 +57,7 @@ func TestExecute(t *testing.T) {
 
 			ExpectedOutput: bytesutil.StringTrimIndentations(`
 				Usage:
-				  eval-dev-quality [OPTIONS] [evaluate | install-tools | version]
+				  eval-dev-quality [OPTIONS] [command]
 
 				Command to manage, update and actually execute the ` + "`" + `eval-dev-quality` + "`" + `
 				evaluation benchmark.
@@ -67,6 +68,7 @@ func TestExecute(t *testing.T) {
 				Available commands:
 				  evaluate       Run an evaluation, by default with all defined models, repositories and tasks.
 				  install-tools  Checks and installs all tools required for the evaluation benchmark.
+				  report         Combines the results of multiple evaluations.
 				  version        Display the version information of the binary.
 			`),
 		})
