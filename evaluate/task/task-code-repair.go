@@ -8,6 +8,7 @@ import (
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
@@ -121,10 +122,60 @@ func (t *TaskCodeRepair) unpackCodeRepairPackage(ctx evaltask.Context, fileLogge
 		return "", nil, pkgerrors.Errorf("package %q in repository %q must contain source files with compilation errors", packagePath, ctx.Repository.Name())
 	}
 
-	sourceFilePath, err = packageHasSourceAndTestFile(fileLogger, ctx.Repository.Name(), packagePath, ctx.Language)
+	sourceFilePath, err = packageSourceFile(fileLogger, packagePath, ctx.Language)
 	if err != nil {
 		return "", nil, err
 	}
 
 	return sourceFilePath, mistakes, nil
+}
+
+// validateCodeRepairRepository checks if the repository for the "code-repair" task is well-formed.
+func validateCodeRepairRepository(logger *log.Logger, repositoryPath string, language language.Language) (err error) {
+	logger.Printf("validating repository %q", repositoryPath)
+
+	files, err := os.ReadDir(repositoryPath)
+	if err != nil {
+		return pkgerrors.WithStack(err)
+	}
+
+	var packagePaths []string
+	var otherFiles []string
+	for _, file := range files {
+		if file.Name() == "repository.json" {
+			continue
+		} else if file.IsDir() {
+			packagePaths = append(packagePaths, filepath.Join(repositoryPath, file.Name()))
+		} else {
+			otherFiles = append(otherFiles, file.Name())
+		}
+	}
+
+	if len(otherFiles) > 0 {
+		return pkgerrors.Errorf("the code repair repository %q must contain only packages, but found %+v", repositoryPath, otherFiles)
+	}
+
+	for _, packagePath := range packagePaths {
+		files, err := language.Files(logger, packagePath)
+		if err != nil {
+			return pkgerrors.WithStack(err)
+		}
+
+		sourceFiles := []string{}
+		testFiles := []string{}
+		for _, file := range files {
+			if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
+				testFiles = append(testFiles, file)
+			} else if strings.HasSuffix(file, language.DefaultFileExtension()) {
+				sourceFiles = append(sourceFiles, file)
+			}
+		}
+		if len(sourceFiles) != 1 {
+			return pkgerrors.Errorf("the code repair package %q in repository %q must contain exactly one %s source file, but found %+v", packagePath, repositoryPath, language.Name(), sourceFiles)
+		} else if len(testFiles) != 1 {
+			return pkgerrors.Errorf("the code repair repository %q must contain exactly one %s test file, but found %+v", repositoryPath, language.Name(), testFiles)
+		}
+	}
+
+	return nil
 }

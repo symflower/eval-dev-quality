@@ -2,6 +2,7 @@ package task
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -14,6 +15,7 @@ import (
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
+	"github.com/symflower/eval-dev-quality/language/java"
 	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
@@ -209,6 +211,85 @@ func TestTaskWriteTestsRun(t *testing.T) {
 
 				validateGo(t, "Execution timeout", languageMock, "", expectedAssessments, expectedProblems, false)
 			}
+		})
+	})
+}
+
+func TestValidateWriteTestsRepository(t *testing.T) {
+	validate := func(t *testing.T, tc *tasktesting.TestCaseValidateRepository) {
+		tc.Validate(t, validateWriteTestsRepository)
+	}
+
+	t.Run("Go", func(t *testing.T) {
+		t.Run("Plain", func(t *testing.T) {
+			validate(t, &tasktesting.TestCaseValidateRepository{
+				Name: "Well-formed",
+
+				TestdataPath:   filepath.Join("..", "..", "testdata"),
+				RepositoryPath: filepath.Join("golang", "plain"),
+				Language:       &golang.Language{},
+			})
+		})
+		t.Run("Light", func(t *testing.T) {
+			validate(t, &tasktesting.TestCaseValidateRepository{
+				Name: "Repository with test files",
+
+				Before: func(repositoryPath string) {
+					fileATest, err := os.Create(filepath.Join(repositoryPath, "fileA_test.go"))
+					require.NoError(t, err)
+					fileATest.Close()
+				},
+
+				TestdataPath:          filepath.Join("..", "..", "testdata"),
+				RepositoryPath:        filepath.Join("golang", "light"),
+				Language:              &golang.Language{},
+				ExpectedErrorContains: "must contain only Go source files, but found [fileA_test.go]",
+			})
+			validate(t, &tasktesting.TestCaseValidateRepository{
+				Name: "Well-formed",
+
+				TestdataPath:   filepath.Join("..", "..", "testdata"),
+				RepositoryPath: filepath.Join("golang", "light"),
+				Language:       &golang.Language{},
+			})
+		})
+	})
+	t.Run("Java", func(t *testing.T) {
+		t.Run("Plain", func(t *testing.T) {
+			validate(t, &tasktesting.TestCaseValidateRepository{
+				Name: "Well-formed",
+
+				TestdataPath:   filepath.Join("..", "..", "testdata"),
+				RepositoryPath: filepath.Join("java", "plain"),
+				Language:       &java.Language{},
+			})
+		})
+		t.Run("Light", func(t *testing.T) {
+			validate(t, &tasktesting.TestCaseValidateRepository{
+				Name: "Repository with test files",
+
+				Before: func(repositoryPath string) {
+					somePackage := filepath.Join(repositoryPath, "src", "test", "java", "com", "eval")
+					require.NoError(t, os.MkdirAll(somePackage, 0700))
+
+					fileATest, err := os.Create(filepath.Join(somePackage, "FileATest.java"))
+					require.NoError(t, err)
+					fileATest.Close()
+				},
+
+				TestdataPath:   filepath.Join("..", "..", "testdata"),
+				RepositoryPath: filepath.Join("java", "light"),
+				Language:       &java.Language{},
+
+				ExpectedErrorContains: fmt.Sprintf("must contain only Java source files, but found [%s]", filepath.Join("src", "test", "java", "com", "eval", "FileATest.java")),
+			})
+			validate(t, &tasktesting.TestCaseValidateRepository{
+				Name: "Well-formed",
+
+				TestdataPath:   filepath.Join("..", "..", "testdata"),
+				RepositoryPath: filepath.Join("java", "light"),
+				Language:       &java.Language{},
+			})
 		})
 	})
 }
