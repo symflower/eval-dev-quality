@@ -300,10 +300,25 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 	// Gather models.
 	{
+		// Check which providers are needed for the evaluation.
+		providersSelected := map[string]provider.Provider{}
+		if len(command.Models) == 0 {
+			providersSelected = provider.Providers
+		} else {
+			for _, model := range command.Models {
+				p := strings.SplitN(model, provider.ProviderModelSeparator, 2)[0]
+				if provider, ok := provider.Providers[p]; !ok {
+					command.logger.Panicf("Provider %q does not exist", p)
+				} else {
+					providersSelected[provider.ID()] = provider
+				}
+			}
+		}
+
 		models := map[string]model.Model{}
 		modelsSelected := map[string]model.Model{}
 		evaluationContext.ProviderForModel = map[model.Model]provider.Provider{}
-		for _, p := range provider.Providers {
+		for _, p := range providersSelected {
 			command.logger.Printf("Checking provider %q for models", p.ID())
 
 			if t, ok := p.(provider.InjectToken); ok {
