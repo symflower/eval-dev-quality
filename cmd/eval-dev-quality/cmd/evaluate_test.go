@@ -525,6 +525,31 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", "README.md"): nil,
 						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
 					},
+					ExpectedOutputValidate: func(t *testing.T, output, resultPath string) {
+						assert.Contains(t, output, `Starting services for provider "ollama"`)
+					},
+				})
+			}
+			{
+				validate(t, &testCase{
+					Name: "Ollama services are not started",
+
+					Arguments: []string{
+						"--language", "golang",
+						"--model", "symflower/symbolic-execution",
+						"--repository", filepath.Join("golang", "plain"),
+					},
+
+					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+						filepath.Join("result-directory", "categories.svg"): nil,
+						filepath.Join("result-directory", "evaluation.csv"): nil,
+						filepath.Join("result-directory", "evaluation.log"): nil,
+						filepath.Join("result-directory", "README.md"):      nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+					},
+					ExpectedOutputValidate: func(t *testing.T, output, resultPath string) {
+						assert.NotContains(t, output, `Starting services for provider "ollama"`)
+					},
 				})
 			}
 		})
