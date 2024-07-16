@@ -30,7 +30,7 @@ func NewEvaluationFile(writer io.Writer) (evaluationFile *EvaluationFile, err er
 
 	csv := csv.NewWriter(writer)
 
-	if err := csv.Write(evaluationHeader()); err != nil {
+	if err := csv.Write(EvaluationHeader()); err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 	csv.Flush()
@@ -58,6 +58,6 @@ func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language langu
 }
 
 // evaluationHeader returns the CSV header for the evaluation CSV.
-func evaluationHeader() (header []string) {
+func EvaluationHeader() (header []string) {
 	return append([]string{"model-id", "language", "repository", "task", "score"}, metrics.AllAssessmentKeysStrings...)
 }
