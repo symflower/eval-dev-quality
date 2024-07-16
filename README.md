@@ -135,9 +135,16 @@ Total coverage 100.000000%
 
 The execution by default also creates a report file `REPORT.md` that contains additional evaluation results and links to individual result files.
 
-# Docker
+# Containerized use
 
-## Setup
+## Notes
+
+The following parameters do have a special behavior when using a containerized runtime.
+- `--testdata`: The check if the path exists is ignored on the host system but still enforced inside the container because the paths of the host and inside the container might differ.
+
+## Docker
+
+### Setup
 
 Ensure that docker is installed on the system.
 
@@ -163,7 +170,7 @@ docker run -v ./:/home/ubuntu/evaluation --user $(id -u):$(id -g) eval-dev-quali
 docker run -v ./:/home/ubuntu/evaluation --user $(id -u):$(id -g) ghcr.io/symflower/eval-dev-quality:latest eval-dev-quality evaluate --model symflower/symbolic-execution --result-path /home/ubuntu/evaluation/%datetime%
 ```
 
-# Kubernetes
+## Kubernetes
 
 Please check the [Kubernetes](./docs/kubernetes/README.md) documentation.
 
