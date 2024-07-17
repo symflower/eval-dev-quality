@@ -100,8 +100,8 @@ func (l *Language) DefaultTestFileSuffix() string {
 
 var languageJavaCoverageMatch = regexp.MustCompile(`Total coverage (.+?)%`)
 
-// Execute invokes the language specific testing on the given repository.
-func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage uint64, problems []error, err error) {
+// ExecuteTests invokes the language specific testing on the given repository.
+func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (testResult *language.TestResult, problems []error, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), language.DefaultExecutionTimeout)
 	defer cancel()
 	coverageFilePath := filepath.Join(repositoryPath, "coverage.json")
@@ -116,15 +116,16 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		Directory: repositoryPath,
 	})
 	if err != nil {
-		return 0, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+		return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
-	coverage, err = language.CoverageObjectCountOfFile(logger, coverageFilePath)
+	testResult = &language.TestResult{}
+	testResult.Coverage, err = language.CoverageObjectCountOfFile(logger, coverageFilePath)
 	if err != nil {
-		return 0, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+		return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
-	return coverage, nil, nil
+	return testResult, nil, nil
 }
 
 // Mistakes builds a Java repository and returns the list of mistakes found.

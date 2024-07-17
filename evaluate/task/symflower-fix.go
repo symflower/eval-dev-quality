@@ -42,18 +42,18 @@ func ExecuteWithSymflowerFix(ctx evaltask.Context, logger *log.Logger, packagePa
 		return nil, problems, pkgerrors.WithStack(err)
 	}
 
-	coverage, ps, err := ctx.Language.Execute(logger, packagePath)
+	testResult, ps, err := ctx.Language.ExecuteTests(logger, packagePath)
 	problems = append(problems, ps...)
 	if err != nil {
 		return nil, problems, pkgerrors.WithMessage(err, "symflower fix")
 	}
-	logger.Printf("with symflower repair: Executes tests with %d coverage objects", coverage)
+	logger.Printf("with symflower repair: Executes tests with %d coverage objects", testResult.Coverage)
 
 	// Symflower was able to fix a failure so now update the assessment with the improved results.
 	assessments = metrics.NewAssessments()
 	assessments[metrics.AssessmentKeyProcessingTime] = duration
 	assessments.Award(metrics.AssessmentKeyFilesExecuted)
-	assessments.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
+	assessments.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
 
 	return assessments, problems, nil
 }

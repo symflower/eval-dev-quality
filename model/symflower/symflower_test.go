@@ -80,10 +80,10 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 
 				metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 
-				actualCoverage, actualProblems, err := tc.Language.Execute(logger, repositoryPath)
+				actualTestResult, actualProblems, err := tc.Language.ExecuteTests(logger, repositoryPath)
 				require.NoError(t, err)
 				require.Empty(t, actualProblems)
-				assert.Equal(t, tc.ExpectedCoverage, actualCoverage)
+				assert.Equal(t, tc.ExpectedCoverage, actualTestResult.Coverage)
 			}
 		})
 	}

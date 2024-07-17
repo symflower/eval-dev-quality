@@ -11,7 +11,7 @@ import (
 	"github.com/zimmski/osutil"
 )
 
-type TestCaseExecute struct {
+type TestCaseExecuteTests struct {
 	Name string
 
 	Language language.Language
@@ -19,13 +19,13 @@ type TestCaseExecute struct {
 	RepositoryPath   string
 	RepositoryChange func(t *testing.T, repositoryPath string)
 
-	ExpectedCoverage     uint64
+	ExpectedTestResult   *language.TestResult
 	ExpectedProblemTexts []string
 	ExpectedError        error
 	ExpectedErrorText    string
 }
 
-func (tc *TestCaseExecute) Validate(t *testing.T) {
+func (tc *TestCaseExecuteTests) Validate(t *testing.T) {
 	t.Run(tc.Name, func(t *testing.T) {
 		logOutput, logger := log.Buffer()
 		defer func() {
@@ -42,7 +42,7 @@ func (tc *TestCaseExecute) Validate(t *testing.T) {
 			tc.RepositoryChange(t, repositoryPath)
 		}
 
-		actualCoverage, actualProblems, actualError := tc.Language.Execute(logger, repositoryPath)
+		actualTestResult, actualProblems, actualError := tc.Language.ExecuteTests(logger, repositoryPath)
 
 		require.Equal(t, len(tc.ExpectedProblemTexts), len(actualProblems), "the number of expected problems need to match the number of actual problems")
 		for i, expectedProblemText := range tc.ExpectedProblemTexts {
@@ -55,7 +55,7 @@ func (tc *TestCaseExecute) Validate(t *testing.T) {
 			assert.ErrorContains(t, actualError, tc.ExpectedErrorText)
 		} else {
 			assert.NoError(t, actualError)
-			assert.Equal(t, tc.ExpectedCoverage, actualCoverage)
+			assert.Equal(t, tc.ExpectedTestResult, actualTestResult)
 		}
 	})
 }

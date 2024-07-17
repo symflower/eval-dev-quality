@@ -87,8 +87,8 @@ func (l *Language) DefaultTestFileSuffix() string {
 
 var languageGoTestsErrorMatch = regexp.MustCompile(`DONE (\d+) tests, (\d+) failure`)
 
-// Execute invokes the language specific testing on the given repository.
-func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage uint64, problems []error, err error) {
+// ExecuteTests invokes the language specific testing on the given repository.
+func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (testResult *language.TestResult, problems []error, err error) {
 	commandOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
 			"go",
@@ -99,7 +99,7 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		Directory: repositoryPath,
 	})
 	if err != nil {
-		return 0, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+		return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), language.DefaultExecutionTimeout)
@@ -119,22 +119,22 @@ func (l *Language) Execute(logger *log.Logger, repositoryPath string) (coverage 
 		testSummary := languageGoTestsErrorMatch.FindStringSubmatch(commandOutput)
 		if len(testSummary) > 0 {
 			if failureCount, e := strconv.Atoi(testSummary[2]); e != nil {
-				return 0, problems, pkgerrors.WithStack(e)
+				return nil, nil, pkgerrors.WithStack(e)
 			} else if failureCount > 0 {
 				// If there are test failures, then this is just a soft error since we still are able to receive coverage data.
 				problems = append(problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
 			}
 		} else {
-			return 0, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+			return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 		}
 	}
 
-	coverage, err = language.CoverageObjectCountOfFile(logger, coverageFilePath)
+	testResult.Coverage, err = language.CoverageObjectCountOfFile(logger, coverageFilePath)
 	if err != nil {
-		return 0, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+		return testResult, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
-	return coverage, problems, nil
+	return testResult, problems, nil
 }
 
 // Mistakes builds a Go repository and returns the list of mistakes found.

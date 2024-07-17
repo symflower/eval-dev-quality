@@ -10,6 +10,7 @@ import (
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-dev-quality/language"
 	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	"github.com/symflower/eval-dev-quality/log"
 )
@@ -133,7 +134,7 @@ func TestLanguageTestFilePath(t *testing.T) {
 }
 
 func TestLanguageExecute(t *testing.T) {
-	validate := func(t *testing.T, tc *languagetesting.TestCaseExecute) {
+	validate := func(t *testing.T, tc *languagetesting.TestCaseExecuteTests) {
 		if tc.Language == nil {
 			tc.Language = &Language{}
 		}
@@ -141,17 +142,19 @@ func TestLanguageExecute(t *testing.T) {
 		tc.Validate(t)
 	}
 
-	validate(t, &languagetesting.TestCaseExecute{
+	validate(t, &languagetesting.TestCaseExecuteTests{
 		Name: "No test files",
 
 		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
 
-		ExpectedCoverage:  0,
+		ExpectedTestResult: &language.TestResult{
+			Coverage: 0,
+		},
 		ExpectedErrorText: "exit status 1",
 	})
 
 	t.Run("With test file", func(t *testing.T) {
-		validate(t, &languagetesting.TestCaseExecute{
+		validate(t, &languagetesting.TestCaseExecuteTests{
 			Name: "Valid",
 
 			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
@@ -172,10 +175,12 @@ func TestLanguageExecute(t *testing.T) {
 				`)), 0660))
 			},
 
-			ExpectedCoverage: 1,
+			ExpectedTestResult: &language.TestResult{
+				Coverage: 1,
+			},
 		})
 
-		validate(t, &languagetesting.TestCaseExecute{
+		validate(t, &languagetesting.TestCaseExecuteTests{
 			Name: "Failing tests",
 
 			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "light"),
@@ -197,10 +202,12 @@ func TestLanguageExecute(t *testing.T) {
 				`)), 0660))
 			},
 
-			ExpectedCoverage: 3,
+			ExpectedTestResult: &language.TestResult{
+				Coverage: 3,
+			},
 		})
 
-		validate(t, &languagetesting.TestCaseExecute{
+		validate(t, &languagetesting.TestCaseExecuteTests{
 			Name: "Syntax error",
 
 			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),

@@ -207,7 +207,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 
 				languageMock := languagetesting.NewMockLanguageNamed(t, "golang")
 				languageMock.On("Files", mock.Anything, mock.Anything).Return([]string{filepath.Join("golang", "plain")}, nil).Once()
-				languageMock.On("Execute", mock.Anything, mock.Anything).Return(uint64(0), nil, context.DeadlineExceeded).Once()
+				languageMock.On("ExecuteTests", mock.Anything, mock.Anything).Return(nil, nil, context.DeadlineExceeded).Once()
 
 				validateGo(t, "Execution timeout", languageMock, "", expectedAssessments, expectedProblems, false)
 			}

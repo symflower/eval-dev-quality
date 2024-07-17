@@ -81,7 +81,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 		modelAssessmentForFile.Add(assessments)
 		modelAssessmentForFile.Award(metrics.AssessmentKeyResponseNoError)
 
-		coverage, ps, err := ctx.Language.Execute(taskLogger.Logger, dataPath)
+		testResult, ps, err := ctx.Language.ExecuteTests(taskLogger.Logger, dataPath)
 		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
@@ -110,9 +110,9 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 				}
 			}
 		} else {
-			taskLogger.Printf("Executes tests with %d coverage objects", coverage)
+			taskLogger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
 			modelAssessmentForFile.Award(metrics.AssessmentKeyFilesExecuted)
-			modelAssessmentForFile.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
+			modelAssessmentForFile.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
 		}
 
 		modelAssessment.Add(modelAssessmentForFile)
