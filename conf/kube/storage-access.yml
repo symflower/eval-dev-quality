@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: evaluation-storage-access
-  namespace: eval-dev-quality
+  name: {{.name}}
+  namespace: {{.namespace}}
 spec:
   selector:
     matchLabels:
-      app: eval-dev-quality-storage
+      app: eval-storage-access
   template:
     metadata:
       labels:
-        app: eval-dev-quality-storage
+        app: eval-storage-access
     spec:
       containers:
       - name: storage-access

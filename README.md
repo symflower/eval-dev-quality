@@ -151,11 +151,11 @@ Ensure that docker is installed on the system.
 ### Build or pull the image
 
 ```bash
-docker build . -t eval-dev-quality
+docker build . -t eval-dev-quality:dev
 ```
 
 ```bash
-docker pull ghcr.io/symflower/eval-dev-quality:latest
+docker pull ghcr.io/symflower/eval-dev-quality:main
 ```
 
 ### Run the evaluation either with the built or pulled image
@@ -163,11 +163,12 @@ docker pull ghcr.io/symflower/eval-dev-quality:latest
 The following command will run the model `symflower/symbolic-execution` and stores the the results of the run inside the local directory `evaluation`.
 
 ```bash
-docker run -v ./:/home/ubuntu/evaluation --user $(id -u):$(id -g) eval-dev-quality:latest eval-dev-quality evaluate --model symflower/symbolic-execution --result-path /home/ubuntu/evaluation/%datetime%
+eval-dev-quality evaluate --runtime docker --runtime-image eval-dev-quality:dev --model symflower/symbolic-execution
 ```
 
+Omitting the `--runtime-image` parameter will default to the image from the `main` branch. `ghcr.io/symflower/eval-dev-quality:main`
 ```bash
-docker run -v ./:/home/ubuntu/evaluation --user $(id -u):$(id -g) ghcr.io/symflower/eval-dev-quality:latest eval-dev-quality evaluate --model symflower/symbolic-execution --result-path /home/ubuntu/evaluation/%datetime%
+eval-dev-quality evaluate --runtime docker --model symflower/symbolic-execution
 ```
 
 ## Kubernetes
