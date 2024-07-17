@@ -42,21 +42,19 @@ func NewEvaluationFile(writer io.Writer) (evaluationFile *EvaluationFile, err er
 
 // WriteEvaluationRecord writes the assessments of a task into the evaluation CSV.
 func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language language.Language, repositoryName string, assessmentsPerTask map[task.Identifier]metrics.Assessments) (err error) {
-	csv := csv.NewWriter(e.Writer)
-
 	tasks := maps.Keys(assessmentsPerTask)
 	slices.SortStableFunc(tasks, func(a, b task.Identifier) int {
 		return cmp.Compare(a, b)
 	})
 
+	allRecords := [][]string{}
 	for _, task := range tasks {
 		assessment := assessmentsPerTask[task]
 		row := append([]string{model.ID(), language.ID(), repositoryName, string(task), strconv.FormatUint(uint64(assessment.Score()), 10)}, assessment.StringCSV()...)
-		csv.Write(row)
+		allRecords = append(allRecords, row)
 	}
-	csv.Flush()
 
-	return nil
+	return e.WriteLines(allRecords)
 }
 
 // WriteLines takes a slice of raw records and writes them into the evaluation file.
