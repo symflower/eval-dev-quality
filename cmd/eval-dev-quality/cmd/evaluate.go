@@ -596,7 +596,7 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 
 // evaluateKubernetes executes the evaluation for each model inside a kubernetes run container.
 func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
-	tmpl, err := template.ParseFiles(filepath.Join("conf", "kubernetes-job.yml"))
+	jobTmpl, err := template.ParseFiles(filepath.Join("conf", "kube", "job.yml"))
 	if err != nil {
 		return pkgerrors.Wrap(err, "could not create kubernetes job template")
 	}
@@ -661,7 +661,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 
 		parallel.Execute(func() {
 			var tmplData bytes.Buffer
-			tmpl.Execute(&tmplData, data)
+			jobTmpl.Execute(&tmplData, data)
 
 			commandOutput, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
 				Command: kubeCommand,
@@ -709,6 +709,83 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 		})
 	}
 	parallel.Wait()
+
+	// Copy data from volume back to host.
+	{
+		storageTmpl, err := template.ParseFiles(filepath.Join("conf", "kube", "storage-access.yml"))
+		if err != nil {
+			return pkgerrors.Wrap(err, "could not create kubernetes storage access template")
+		}
+
+		data := map[string]string{
+			"name":      "eval-storage-access",
+			"namespace": command.Namespace,
+		}
+
+		var tmplData bytes.Buffer
+		storageTmpl.Execute(&tmplData, data)
+
+		// Create the storage access pod.
+		output, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
+			Command: []string{
+				"kubectl",
+				"apply",
+				"-f",
+				"-", // apply STDIN
+			},
+			Stdin: tmplData.String(),
+		})
+		if err != nil {
+			return pkgerrors.WithMessage(pkgerrors.WithStack(err), output)
+		}
+
+		// Fetch the container name.
+		output, err = util.CommandWithResult(context.Background(), command.logger, &util.Command{
+			Command: []string{
+				"kubectl",
+				"get",
+				"pods",
+				"--namespace", command.Namespace,
+				"-l", "app=eval-storage-access",
+				"-o", "custom-columns=:metadata.name",
+			},
+			Stdin: tmplData.String(),
+		})
+		if err != nil {
+			return pkgerrors.WithMessage(pkgerrors.WithStack(err), output)
+		}
+		podName := strings.TrimSpace(output)
+
+		// Copy data from volume to filesystem.
+		output, err = util.CommandWithResult(context.Background(), command.logger, &util.Command{
+			Command: []string{
+				"kubectl",
+				"cp",
+				"--namespace", command.Namespace,
+				command.Namespace + "/" + podName + ":/var/evaluations/.",
+				command.ResultPath,
+			},
+		})
+		if err != nil {
+			return pkgerrors.WithMessage(pkgerrors.WithStack(err), output)
+		}
+
+		// Remove the data from the cluster volume
+		output, err = util.CommandWithResult(context.Background(), command.logger, &util.Command{
+			Command: []string{
+				"kubectl",
+				"exec",
+				"--namespace", command.Namespace,
+				podName,
+				"--",
+				"sh", "-c",
+				"rm -rf /var/evaluations/*",
+			},
+		})
+		if err != nil {
+			return pkgerrors.WithMessage(pkgerrors.WithStack(err), output)
+		}
+	}
 
 	return nil
 }
