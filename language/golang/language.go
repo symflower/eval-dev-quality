@@ -85,8 +85,6 @@ func (l *Language) DefaultTestFileSuffix() string {
 	return "_test.go"
 }
 
-var languageGoTestsErrorMatch = regexp.MustCompile(`DONE (\d+) tests, (\d+) failure`)
-
 // ExecuteTests invokes the language specific testing on the given repository.
 func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (testResult *language.TestResult, problems []error, err error) {
 	commandOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
@@ -115,26 +113,54 @@ func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (test
 
 		Directory: repositoryPath,
 	})
+
+	testsTotal, testsPass, e := parseSymflowerTestOutput(commandOutput)
+	if e != nil {
+		problems = append(problems, pkgerrors.WithMessage(pkgerrors.WithStack(e), commandOutput))
+	}
+	// If there are test failures, then this is just a soft error since we still are able to receive coverage data.
 	if err != nil {
-		testSummary := languageGoTestsErrorMatch.FindStringSubmatch(commandOutput)
-		if len(testSummary) > 0 {
-			if failureCount, e := strconv.Atoi(testSummary[2]); e != nil {
-				return nil, nil, pkgerrors.WithStack(e)
-			} else if failureCount > 0 {
-				// If there are test failures, then this is just a soft error since we still are able to receive coverage data.
-				problems = append(problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
-			}
+		if testsTotal-testsPass > 0 {
+			problems = append(problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
 		} else {
 			return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 		}
 	}
 
+	testResult = &language.TestResult{
+		TestsTotal: uint(testsTotal),
+		TestsPass:  uint(testsPass),
+	}
 	testResult.Coverage, err = language.CoverageObjectCountOfFile(logger, coverageFilePath)
 	if err != nil {
 		return testResult, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
 	return testResult, problems, nil
+}
+
+var languageGoTestSummaryRE = regexp.MustCompile(`DONE (\d+) tests(?:, (\d+) failure)?`)
+
+func parseSymflowerTestOutput(data string) (testsTotal int, testsPass int, err error) {
+	testSummary := languageGoTestSummaryRE.FindStringSubmatch(data)
+	if len(testSummary) == 0 {
+		return 0, 0, pkgerrors.WithMessage(pkgerrors.WithStack(language.ErrCannotParseTestSummary), data)
+	}
+
+	testsTotal, err = strconv.Atoi(testSummary[1])
+	if err != nil {
+		return 0, 0, pkgerrors.WithStack(err)
+	}
+
+	var testsFail int
+	if len(testSummary[2]) > 0 {
+		if testsFail, err = strconv.Atoi(testSummary[2]); err != nil {
+			return 0, 0, pkgerrors.WithStack(err)
+		}
+	}
+	testsPass = testsTotal - testsFail
+
+	return testsTotal, testsPass, nil
 }
 
 // Mistakes builds a Go repository and returns the list of mistakes found.

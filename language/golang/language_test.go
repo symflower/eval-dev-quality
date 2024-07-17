@@ -97,6 +97,9 @@ func TestLanguageExecute(t *testing.T) {
 			},
 
 			ExpectedTestResult: &language.TestResult{
+				TestsTotal: 1,
+				TestsPass:  1,
+
 				Coverage: 1,
 			},
 		})
@@ -121,6 +124,9 @@ func TestLanguageExecute(t *testing.T) {
 			},
 
 			ExpectedTestResult: &language.TestResult{
+				TestsTotal: 1,
+				TestsPass:  0,
+
 				Coverage: 1,
 			},
 			ExpectedProblemTexts: []string{
@@ -230,5 +236,98 @@ func TestExtractMistakes(t *testing.T) {
 			"./foobar.go:4:2: syntax error: non-declaration statement outside function body",
 			"./foobar.go:5:1: missing return",
 		},
+	})
+}
+
+func TestParseSymflowerTestOutput(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Data string
+
+		ExpectedTestsTotal int
+		ExpectedTestsPass  int
+		ExpectedErr        error
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualTestsTotal, actualTestsPass, actualErr := parseSymflowerTestOutput(bytesutil.StringTrimIndentations(tc.Data))
+
+			assert.Equal(t, tc.ExpectedTestsTotal, actualTestsTotal)
+			assert.Equal(t, tc.ExpectedTestsPass, actualTestsPass)
+			assert.Equal(t, tc.ExpectedErr, actualErr)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Passing tests only",
+
+		Data: `
+			=== RUN   TestSymflowerIsSorted
+			=== RUN   TestSymflowerIsSorted/#00
+			--- PASS: TestSymflowerIsSorted/#00 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#01
+			--- PASS: TestSymflowerIsSorted/#01 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#02
+			--- PASS: TestSymflowerIsSorted/#02 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#03
+			--- PASS: TestSymflowerIsSorted/#03 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#04
+			--- PASS: TestSymflowerIsSorted/#04 (0.00s)
+			--- PASS: TestSymflowerIsSorted (0.00s)
+			PASS
+			coverage: 100.0% of statements
+			ok      isSorted        0.003s
+
+			DONE 6 tests in 0.281s
+		`,
+
+		ExpectedTestsTotal: 6,
+		ExpectedTestsPass:  6,
+	})
+	validate(t, &testCase{
+		Name: "Failing tests",
+
+		Data: `
+			=== RUN   TestSymflowerIsSorted
+			=== RUN   TestSymflowerIsSorted/#00
+				isSorted_test.go:22:
+							Error Trace:    /home/andreas/repos/eval-dev-quality/testdata/golang/transpile/isSorted/isSorted_test.go:22
+							Error:          Not equal:
+											expected: true
+											actual  : false
+							Test:           TestSymflowerIsSorted/#00
+			--- FAIL: TestSymflowerIsSorted/#00 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#01
+			--- PASS: TestSymflowerIsSorted/#01 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#02
+			--- PASS: TestSymflowerIsSorted/#02 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#03
+			--- PASS: TestSymflowerIsSorted/#03 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#04
+			--- PASS: TestSymflowerIsSorted/#04 (0.00s)
+			--- FAIL: TestSymflowerIsSorted (0.00s)
+			FAIL
+			coverage: 100.0% of statements
+			exit status 1
+			FAIL    isSorted        0.002s
+
+			=== Failed
+			=== FAIL: . TestSymflowerIsSorted/#00 (0.00s)
+				isSorted_test.go:22:
+							Error Trace:    /home/andreas/repos/eval-dev-quality/testdata/golang/transpile/isSorted/isSorted_test.go:22
+							Error:          Not equal:
+											expected: true
+											actual  : false
+							Test:           TestSymflowerIsSorted/#00
+
+			=== FAIL: . TestSymflowerIsSorted (0.00s)
+
+			DONE 6 tests, 2 failures in 0.288s
+		`,
+
+		ExpectedTestsTotal: 6,
+		ExpectedTestsPass:  4,
 	})
 }

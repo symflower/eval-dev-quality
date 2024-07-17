@@ -1,6 +1,7 @@
 package language
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"sort"
@@ -9,6 +10,11 @@ import (
 	pkgerrors "github.com/pkg/errors"
 
 	"github.com/symflower/eval-dev-quality/log"
+)
+
+var (
+	// ErrCannotParseTestSummary indicates that the test summary cannot be parsed.
+	ErrCannotParseTestSummary = errors.New("cannot parse test summary")
 )
 
 // DefaultExecutionTimeout defines the timeout for an execution.
@@ -77,5 +83,13 @@ func RepositoriesForLanguage(language Language, testdataPath string) (relativeRe
 
 // TestResult holds the result of running tests.
 type TestResult struct {
+	TestsTotal uint
+	TestsPass  uint
+
 	Coverage uint64
+}
+
+// PassingTestsPercentage returns the percentage of passing tests.
+func (tr *TestResult) PassingTestsPercentage() (percentage uint) {
+	return tr.TestsPass / tr.TestsTotal * 100
 }

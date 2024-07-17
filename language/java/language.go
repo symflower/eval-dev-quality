@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
@@ -119,13 +120,49 @@ func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (test
 		return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
-	testResult = &language.TestResult{}
+	testsTotal, testsPass, err := parseSymflowerTestOutput(commandOutput)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	testResult = &language.TestResult{
+		TestsTotal: uint(testsTotal),
+		TestsPass:  uint(testsPass),
+	}
+
 	testResult.Coverage, err = language.CoverageObjectCountOfFile(logger, coverageFilePath)
 	if err != nil {
 		return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
 
 	return testResult, nil, nil
+}
+
+var languageMavenTestSummaryRE = regexp.MustCompile(`Tests run: (\d+), Failures: (\d+), Errors: (\d+)`)
+
+func parseSymflowerTestOutput(data string) (testsTotal int, testsPass int, err error) {
+	testSummaries := languageMavenTestSummaryRE.FindAllStringSubmatch(data, -1)
+	if len(testSummaries) == 0 {
+		return 0, 0, pkgerrors.WithMessage(pkgerrors.WithStack(language.ErrCannotParseTestSummary), data)
+	}
+
+	testSummary := testSummaries[len(testSummaries)-1]
+	testsTotal, err = strconv.Atoi(testSummary[1])
+	if err != nil {
+		return 0, 0, pkgerrors.WithStack(err)
+	}
+	testsFail, err := strconv.Atoi(testSummary[2])
+	if err != nil {
+		return 0, 0, pkgerrors.WithStack(err)
+	}
+	testsError, err := strconv.Atoi(testSummary[3])
+	if err != nil {
+		return 0, 0, pkgerrors.WithStack(err)
+	}
+
+	testsPass = testsTotal - testsFail - testsError
+
+	return testsTotal, testsPass, nil
 }
 
 // Mistakes builds a Java repository and returns the list of mistakes found.
