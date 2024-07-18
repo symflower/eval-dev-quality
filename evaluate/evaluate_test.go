@@ -352,6 +352,7 @@ func TestEvaluate(t *testing.T) {
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, "Attempt 1/3: "+ErrEmptyResponseFromModel.Error())
 					},
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "response-1.log"): nil,
 					"evaluation.csv": nil,
 				},
 			})
@@ -421,6 +422,7 @@ func TestEvaluate(t *testing.T) {
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 						assert.Contains(t, data, "DONE 0 tests, 1 error")
 					},
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "response-1.log"): nil,
 					"evaluation.csv": nil,
 				},
 			})

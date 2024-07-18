@@ -527,6 +527,7 @@ func TestEvaluateExecute(t *testing.T) {
 						},
 						filepath.Join("result-directory", "README.md"): nil,
 						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "evaluation.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "response-1.log"): nil,
 					},
 					ExpectedOutputValidate: func(t *testing.T, output, resultPath string) {
 						assert.Contains(t, output, `Starting services for provider "ollama"`)
@@ -598,6 +599,7 @@ func TestEvaluateExecute(t *testing.T) {
 						},
 						filepath.Join("result-directory", "README.md"): nil,
 						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "evaluation.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "response-1.log"): nil,
 					},
 				})
 			}

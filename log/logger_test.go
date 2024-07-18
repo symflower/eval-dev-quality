@@ -181,6 +181,45 @@ func TestLoggerWith(t *testing.T) {
 			filepath.Join("taskA", "modelA", "languageA", "repositoryB", "evaluation.log"): "",
 		},
 	})
+
+	t.Run("Artifacts", func(t *testing.T) {
+		validate(t, &testCase{
+			Name: "Response",
+
+			Do: func(logger *Logger, temporaryPath string) {
+				logger = logger.With(AttributeKeyResultPath, temporaryPath)
+				logger = logger.With(AttributeKeyLanguage, "languageA")
+				logger = logger.With(AttributeKeyModel, "modelA")
+				logger = logger.With(AttributeKeyRepository, "repositoryA")
+				logger = logger.With(AttributeKeyTask, "taskA")
+				logger = logger.With(AttributeKeyRun, "1")
+
+				logger.PrintWith("Artifact content", Attribute(AttributeKeyArtifact, "response"))
+				logger.Print("No artifact content")
+			},
+
+			ExpectedLogOutput: `
+				Spawning new log file at $TEMPORARY_PATH/evaluation.log
+				Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA/evaluation.log
+				Artifact content
+				No artifact content
+			`,
+			ExpectedFiles: map[string]string{
+				"evaluation.log": `
+					Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA/evaluation.log
+					Artifact content
+					No artifact content
+				`,
+				filepath.Join("taskA", "modelA", "languageA", "repositoryA", "evaluation.log"): `
+					Artifact content
+					No artifact content
+				`,
+				filepath.Join("taskA", "modelA", "languageA", "repositoryA", "response-1.log"): `
+					Artifact content
+				`,
+			},
+		})
+	})
 }
 
 func TestCleanModelNameForFileSystem(t *testing.T) {
