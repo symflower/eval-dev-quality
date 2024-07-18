@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"text/template"
 	"time"
@@ -503,7 +504,8 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 	}
 
 	// Iterate over each model and start the container.
-	for _, model := range ctx.Models {
+	models := map[string]bool{}
+	for i, model := range ctx.Models {
 		// We are skipping ollama models until we fully support pulling. https://github.com/symflower/eval-dev-quality/issues/100.
 		if ctx.ProviderForModel[model].ID() == "ollama" {
 			command.logger.Print("Skipping unsupported ollama model with docker runtime")
@@ -522,11 +524,18 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 		}
 
 		// Commands for the evaluation to run inside the container.
+		resultPath := "/app/evaluation/" + log.CleanModelNameForFileSystem(model.ID())
+		if models[model.ID()] {
+			resultPath += "_" + strconv.Itoa(i)
+		} else {
+			models[model.ID()] = true
+		}
+
 		evaluationCommand := []string{
 			"eval-dev-quality",
 			"evaluate",
 			"--model", model.ID(),
-			"--result-path", "/app/evaluation/" + model.ID(),
+			"--result-path", resultPath,
 		}
 
 		cmd := append(dockerCommand, evaluationCommand...)
@@ -618,6 +627,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 	parallel := util.NewParallel(command.Parallel)
 
 	// Iterate over each model and start the container.
+	models := map[string]bool{}
 	for i, model := range ctx.Models {
 		// We are skipping ollama models until we fully support pulling. https://github.com/symflower/eval-dev-quality/issues/100.
 		if ctx.ProviderForModel[model].ID() == "ollama" {
@@ -635,13 +645,17 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 		}
 
 		// Commands for the evaluation to run inside the container.
+		resultPath := "/var/evaluation/" + log.CleanModelNameForFileSystem(model.ID())
+		if models[model.ID()] {
+			resultPath += "_" + strconv.Itoa(i)
+		} else {
+			models[model.ID()] = true
+		}
 		evaluationCommand := []string{
 			"eval-dev-quality",
 			"evaluate",
-			"--model",
-			model.ID(),
-			"--result-path",
-			"/var/evaluations/" + model.ID(),
+			"--model", model.ID(),
+			"--result-path", resultPath,
 		}
 		cmd := append(evaluationCommand, args...)
 
