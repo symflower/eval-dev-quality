@@ -157,7 +157,7 @@ func (m Markdown) format(writer io.Writer, markdownFileDirectoryPath string) (er
 	templateContext.ModelsPerCategory = make(map[*metrics.AssessmentCategory][]string, len(metrics.AllAssessmentCategories))
 	for model, assessment := range m.AssessmentPerModel {
 		category := assessment.Category(m.TotalScore)
-		templateContext.ModelsPerCategory[category] = append(templateContext.ModelsPerCategory[category], model.ID())
+		templateContext.ModelsPerCategory[category] = append(templateContext.ModelsPerCategory[category], model)
 	}
 
 	svgFile, err := os.Create(filepath.Join(markdownFileDirectoryPath, m.SVGPath))
