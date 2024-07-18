@@ -218,6 +218,8 @@ func (h *spawningHandler) Clone() (clone *spawningHandler) {
 		attributes: maps.Clone(h.attributes),
 
 		logFileSpawners: slices.Clone(h.logFileSpawners),
+
+		flags: h.flags,
 	}
 }
 
