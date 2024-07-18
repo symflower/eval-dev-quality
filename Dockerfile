@@ -33,10 +33,10 @@ RUN wget https://services.gradle.org/distributions/gradle-8.0.2-bin.zip && \
 ENV PATH="${PATH}:/app/.eval-dev-quality/gradle-8.0.2/bin"
 
 # Install Java
-RUN wget https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.tar.gz && \
-	tar -xf amazon-corretto-11-x64-linux-jdk.tar.gz -C /app/.eval-dev-quality/ && \
-	rm amazon-corretto-11-x64-linux-jdk.tar.gz
-ENV JAVA_HOME="/app/.eval-dev-quality/amazon-corretto-11.0.23.9.1-linux-x64"
+RUN wget https://corretto.aws/downloads/resources/11.0.24.8.1/amazon-corretto-11.0.24.8.1-linux-x64.tar.gz && \
+	tar -xf amazon-corretto-11.0.24.8.1-linux-x64.tar.gz -C /app/.eval-dev-quality/ && \
+	rm amazon-corretto-11.0.24.8.1-linux-x64.tar.gz
+ENV JAVA_HOME="/app/.eval-dev-quality/amazon-corretto-11.0.24.8.1-linux-x64"
 ENV PATH="${PATH}:${JAVA_HOME}/bin"
 
 # Install Go
