@@ -3,6 +3,7 @@ package symflower
 import (
 	"context"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -34,10 +35,10 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		RepositoryChange func(t *testing.T, repositoryPath string)
 		FilePath         string
 
-		ExpectedAssessment metrics.Assessments
-		ExpectedCoverage   uint64
-		ExpectedError      error
-		ExpectedErrorText  string
+		ExpectedAssessment   metrics.Assessments
+		ExpectedCoverage     uint64
+		ExpectedError        error
+		ExpectedErrorHandler func(err error)
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -58,7 +59,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			}
 
 			if tc.Model == nil {
-				tc.Model = &Model{}
+				tc.Model = NewModel()
 			}
 			ctx := model.Context{
 				Language: tc.Language,
@@ -72,9 +73,11 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, tc.ExpectedError, actualError)
-			} else if actualError != nil || tc.ExpectedErrorText != "" {
-				assert.ErrorContains(t, actualError, tc.ExpectedErrorText)
+			} else if tc.ExpectedErrorHandler != nil {
+				tc.ExpectedErrorHandler(actualError)
 			} else {
+				require.NoError(t, actualError)
+
 				metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
 
 				actualCoverage, actualProblems, err := tc.Language.Execute(logger, repositoryPath)
@@ -118,13 +121,6 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		ExpectedCoverage: 1,
 	})
 	t.Run("Timeout", func(t *testing.T) {
-		var expectedErrorText string
-		if osutil.IsWindows() {
-			expectedErrorText = context.DeadlineExceeded.Error()
-		} else {
-			expectedErrorText = "signal: killed"
-		}
-
 		validate(t, &testCase{
 			Name: "Timeout",
 
@@ -134,7 +130,14 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "light"),
 			FilePath:       filepath.Join("src", "main", "java", "com", "eval", "Knapsack.java"),
 
-			ExpectedErrorText: expectedErrorText,
+			ExpectedErrorHandler: func(err error) {
+				if osutil.IsWindows() {
+					isProcessKilled := strings.Contains(err.Error(), context.DeadlineExceeded.Error()) || strings.Contains(err.Error(), "exit status 1")
+					assert.True(t, err != nil && isProcessKilled)
+				} else {
+					assert.ErrorContains(t, err, "signal: killed")
+				}
+			},
 		})
 	})
 }
