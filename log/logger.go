@@ -333,7 +333,7 @@ var defaultLogFileSpawners = []logFileSpawner{
 			repositoryName := attributes[AttributeKeyRepository]
 			taskIdentifier := attributes[AttributeKeyTask]
 
-			return filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName+".log")
+			return filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, "evaluation.log")
 		},
 	},
 }

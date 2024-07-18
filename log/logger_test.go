@@ -104,15 +104,15 @@ func TestLoggerWith(t *testing.T) {
 
 		ExpectedLogOutput: `
 			Spawning new log file at $TEMPORARY_PATH/evaluation.log
-			Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA.log
+			Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA/evaluation.log
 			Every log file
 		`,
 		ExpectedFiles: map[string]string{
 			"evaluation.log": `
-				Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA.log
+				Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA/evaluation.log
 				Every log file
 			`,
-			filepath.Join("taskA", "modelA", "languageA", "repositoryA.log"): `
+			filepath.Join("taskA", "modelA", "languageA", "repositoryA", "evaluation.log"): `
 				Every log file
 			`,
 		},
@@ -135,20 +135,20 @@ func TestLoggerWith(t *testing.T) {
 
 		ExpectedLogOutput: `
 			Spawning new log file at $TEMPORARY_PATH/evaluation.log
-			Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA.log
-			Spawning new log file at $TEMPORARY_PATH/taskB/modelA/languageA/repositoryA.log
+			Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA/evaluation.log
+			Spawning new log file at $TEMPORARY_PATH/taskB/modelA/languageA/repositoryA/evaluation.log
 			Only in A log files
 		`,
 		ExpectedFiles: map[string]string{
 			"evaluation.log": `
-				Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA.log
-				Spawning new log file at $TEMPORARY_PATH/taskB/modelA/languageA/repositoryA.log
+				Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA/evaluation.log
+				Spawning new log file at $TEMPORARY_PATH/taskB/modelA/languageA/repositoryA/evaluation.log
 				Only in A log files
 			`,
-			filepath.Join("taskA", "modelA", "languageA", "repositoryA.log"): `
+			filepath.Join("taskA", "modelA", "languageA", "repositoryA", "evaluation.log"): `
 				Only in A log files
 			`,
-			filepath.Join("taskB", "modelA", "languageA", "repositoryA.log"): "",
+			filepath.Join("taskB", "modelA", "languageA", "repositoryA", "evaluation.log"): "",
 		},
 	})
 	validate(t, &testCase{
@@ -169,16 +169,16 @@ func TestLoggerWith(t *testing.T) {
 
 		ExpectedLogOutput: `
 			Spawning new log file at $TEMPORARY_PATH/evaluation.log
-			Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA.log
-			Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryB.log
+			Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA/evaluation.log
+			Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryB/evaluation.log
 		`,
 		ExpectedFiles: map[string]string{
 			"evaluation.log": `
-				Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA.log
-				Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryB.log
+				Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryA/evaluation.log
+				Spawning new log file at $TEMPORARY_PATH/taskA/modelA/languageA/repositoryB/evaluation.log
 			`,
-			filepath.Join("taskA", "modelA", "languageA", "repositoryA.log"): "",
-			filepath.Join("taskA", "modelA", "languageA", "repositoryB.log"): "",
+			filepath.Join("taskA", "modelA", "languageA", "repositoryA", "evaluation.log"): "",
+			filepath.Join("taskA", "modelA", "languageA", "repositoryB", "evaluation.log"): "",
 		},
 	})
 }
