@@ -21,12 +21,19 @@ import (
 type AttributeKey string
 
 const (
-	AttributeKeyLanguage   AttributeKey = "Language"
+	AttributeKeyArtifact   AttributeKey = "Artifact"
+	AttributeKeyLanguage                = "Language"
 	AttributeKeyModel                   = "Model"
 	AttributeKeyRepository              = "Repository"
 	AttributeKeyResultPath              = "ResultPath"
+	AttributeKeyRun                     = "Run"
 	AttributeKeyTask                    = "Task"
 )
+
+// Attribute returns a logging attribute.
+func Attribute(key AttributeKey, value any) (attribute slog.Attr) {
+	return slog.Any(string(key), value)
+}
 
 // Flags defines how log messages should be printed.
 type Flags int
@@ -104,6 +111,11 @@ func (l *Logger) Printf(format string, args ...any) {
 	l.Logger.Info(fmt.Sprintf(format, args...))
 }
 
+// PrintWith logs the given message at the "info" level.
+func (l *Logger) PrintWith(message string, args ...any) {
+	l.Logger.Info(message, args...)
+}
+
 // Panicf is equivalent to "Printf" followed by a panic.
 func (l *Logger) Panicf(format string, args ...any) {
 	message := fmt.Sprintf(format, args...)
@@ -169,19 +181,29 @@ func STDOUT() (logger *Logger) {
 
 // newLogWriter returns a logger that writes to a file and to the parent logger at the same time.
 func newLogWriter(parent io.Writer, filePath string) (writer io.Writer, err error) {
-	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-
-	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	file, err := openLogFile(filePath)
 	if err != nil {
-		return nil, pkgerrors.WithStack(err)
+		return nil, err
 	}
 	addOpenLogFile(file)
 
 	writer = io.MultiWriter(parent, file)
 
 	return writer, nil
+}
+
+// openLogFile opens the given file and creates it if necessary.
+func openLogFile(filePath string) (file *os.File, err error) {
+	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	file, err = os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	return file, nil
 }
 
 // spawningHandler is a structural logging handler which spawns a new log file if one of the given log file spawners triggers.
@@ -218,6 +240,8 @@ func (h *spawningHandler) Clone() (clone *spawningHandler) {
 		attributes: maps.Clone(h.attributes),
 
 		logFileSpawners: slices.Clone(h.logFileSpawners),
+
+		flags: h.flags,
 	}
 }
 
@@ -229,17 +253,36 @@ func (h *spawningHandler) Enabled(ctx context.Context, level slog.Level) bool {
 }
 
 // Handle handles the Record.
-func (h *spawningHandler) Handle(ctx context.Context, record slog.Record) error {
-	if h.flags&FlagDate != 0 {
-		fmt.Fprint(h.writer, record.Time.Format("2006/01/02"))
-		fmt.Fprint(h.writer, " ")
-	}
-	if h.flags&FlagTime != 0 {
-		fmt.Fprint(h.writer, record.Time.Format("15:04:05"))
-		fmt.Fprint(h.writer, " ")
+func (h *spawningHandler) Handle(ctx context.Context, record slog.Record) (err error) {
+	writer := h.writer
+	attributes := maps.Clone(h.attributes)
+	record.Attrs(func(attribute slog.Attr) bool {
+		attributes[AttributeKey(attribute.Key)] = attribute.Value.String()
+
+		return true
+	})
+	for _, spawner := range artifactLogFileSpawners {
+		if !spawner.NeedsSpawn(attributes) {
+			continue
+		}
+
+		logFilePath := spawner.FilePath(attributes)
+		writer, err = newLogWriter(writer, logFilePath)
+		if err != nil {
+			return err
+		}
 	}
 
-	fmt.Fprintln(h.writer, record.Message)
+	if h.flags&FlagDate != 0 {
+		fmt.Fprint(writer, record.Time.Format("2006/01/02"))
+		fmt.Fprint(writer, " ")
+	}
+	if h.flags&FlagTime != 0 {
+		fmt.Fprint(writer, record.Time.Format("15:04:05"))
+		fmt.Fprint(writer, " ")
+	}
+
+	fmt.Fprintln(writer, record.Message)
 
 	return nil
 }
@@ -331,7 +374,33 @@ var defaultLogFileSpawners = []logFileSpawner{
 			repositoryName := attributes[AttributeKeyRepository]
 			taskIdentifier := attributes[AttributeKeyTask]
 
-			return filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName+".log")
+			return filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, "evaluation.log")
+		},
+	},
+}
+
+var artifactLogFileSpawners = []logFileSpawner{
+	logFileSpawner{
+		NeededAttributes: []AttributeKey{
+			AttributeKeyResultPath,
+
+			AttributeKeyArtifact,
+			AttributeKeyLanguage,
+			AttributeKeyModel,
+			AttributeKeyRepository,
+			AttributeKeyRun,
+			AttributeKeyTask,
+		},
+		FilePath: func(attributes map[AttributeKey]string) string {
+			resultPath := attributes[AttributeKeyResultPath]
+			modelID := attributes[AttributeKeyModel]
+			languageID := attributes[AttributeKeyLanguage]
+			repositoryName := attributes[AttributeKeyRepository]
+			taskIdentifier := attributes[AttributeKeyTask]
+			run := attributes[AttributeKeyRun]
+			artifact := attributes[AttributeKeyArtifact]
+
+			return filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, fmt.Sprintf("%s-%s.log", artifact, run))
 		},
 	},
 }

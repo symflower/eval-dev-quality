@@ -108,6 +108,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 				logger.Printf("Run %d/%d", rl+1, ctx.Runs)
 			}
 
+			logger := logger.With(log.AttributeKeyRun, rl+1)
+
 			for _, language := range ctx.Languages {
 				logger := logger.With(log.AttributeKeyLanguage, language.ID())
 
@@ -213,6 +215,8 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 		if ctx.Runs > 1 && !ctx.RunsSequential {
 			logger.Printf("Run %d/%d", rl+1, ctx.Runs)
 		}
+
+		logger := logger.With(log.AttributeKeyRun, rl+1)
 
 		for _, language := range ctx.Languages {
 			languageID := language.ID()

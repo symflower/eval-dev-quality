@@ -253,7 +253,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): nil,
 			},
 		})
 		validate(t, &testCase{
@@ -339,10 +339,10 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 					validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 				},
-				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 					assert.Contains(t, data, "coverage objects: [{")
 				},
-				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 					assert.Contains(t, data, "coverage objects: [{")
 				},
 			},
@@ -412,7 +412,7 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
-					filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+					filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): nil,
 				},
 			})
 			validate(t, &testCase{
@@ -462,7 +462,7 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
 						validateReportLinks(t, data, []string{"symflower_symbolic-execution"})
 					},
-					filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+					filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): nil,
 				},
 			})
 		})
@@ -526,7 +526,8 @@ func TestEvaluateExecute(t *testing.T) {
 							assert.Contains(t, data, "unloading model")
 						},
 						filepath.Join("result-directory", "README.md"): nil,
-						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "evaluation.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "response-1.log"): nil,
 					},
 					ExpectedOutputValidate: func(t *testing.T, output, resultPath string) {
 						assert.Contains(t, output, `Starting services for provider "ollama"`)
@@ -548,7 +549,7 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", "evaluation.csv"): nil,
 						filepath.Join("result-directory", "evaluation.log"): nil,
 						filepath.Join("result-directory", "README.md"):      nil,
-						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): nil,
 					},
 					ExpectedOutputValidate: func(t *testing.T, output, resultPath string) {
 						assert.NotContains(t, output, `Starting services for provider "ollama"`)
@@ -597,7 +598,8 @@ func TestEvaluateExecute(t *testing.T) {
 							assert.Contains(t, data, "response-no-error=2")
 						},
 						filepath.Join("result-directory", "README.md"): nil,
-						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "evaluation.log"): nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "custom-ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "response-1.log"): nil,
 					},
 				})
 			}
@@ -697,7 +699,7 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Contains(t, data, "Run 3/3")
 				},
 				filepath.Join("result-directory", "README.md"): nil,
-				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 3, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
 			},
@@ -852,10 +854,10 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 				filepath.Join("result-directory", "symflower_symbolic-execution", "evaluation.log"): nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution", "README.md"):      nil,
-				filepath.Join("result-directory", "symflower_symbolic-execution", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "symflower_symbolic-execution", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
-				filepath.Join("result-directory", "symflower_symbolic-execution", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "symflower_symbolic-execution", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
 
@@ -903,10 +905,10 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 				filepath.Join("result-directory", "symflower_symbolic-execution_1", "evaluation.log"): nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution_1", "README.md"):      nil,
-				filepath.Join("result-directory", "symflower_symbolic-execution_1", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "symflower_symbolic-execution_1", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
-				filepath.Join("result-directory", "symflower_symbolic-execution_1", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "symflower_symbolic-execution_1", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
 
@@ -954,10 +956,10 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 				filepath.Join("result-directory", "symflower_symbolic-execution_2", "evaluation.log"): nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution_2", "README.md"):      nil,
-				filepath.Join("result-directory", "symflower_symbolic-execution_2", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "symflower_symbolic-execution_2", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
-				filepath.Join("result-directory", "symflower_symbolic-execution_2", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain.log"): func(t *testing.T, filePath, data string) {
+				filepath.Join("result-directory", "symflower_symbolic-execution_2", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
 				},
 			},
@@ -993,7 +995,7 @@ func TestEvaluateExecute(t *testing.T) {
 			filepath.Join("result-directory", "evaluation.csv"): nil,
 			filepath.Join("result-directory", "evaluation.log"): nil,
 			filepath.Join("result-directory", "README.md"):      nil,
-			filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+			filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): nil,
 		},
 	})
 	validate(t, &testCase{
@@ -1014,7 +1016,7 @@ func TestEvaluateExecute(t *testing.T) {
 			filepath.Join("result-directory-0", "evaluation.csv"): nil,
 			filepath.Join("result-directory-0", "evaluation.log"): nil,
 			filepath.Join("result-directory-0", "README.md"):      nil,
-			filepath.Join("result-directory-0", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain.log"): nil,
+			filepath.Join("result-directory-0", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): nil,
 		},
 	})
 }
