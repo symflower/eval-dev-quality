@@ -10,6 +10,7 @@ import (
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
+	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	"github.com/symflower/eval-dev-quality/log"
 )
 
@@ -132,59 +133,15 @@ func TestLanguageTestFilePath(t *testing.T) {
 }
 
 func TestLanguageExecute(t *testing.T) {
-	type testCase struct {
-		Name string
+	validate := func(t *testing.T, tc *languagetesting.TestCaseExecute) {
+		if tc.Language == nil {
+			tc.Language = &Language{}
+		}
 
-		Language *Language
-
-		RepositoryPath   string
-		RepositoryChange func(t *testing.T, repositoryPath string)
-
-		ExpectedCoverage     uint64
-		ExpectedProblemTexts []string
-		ExpectedError        error
-		ExpectedErrorText    string
+		tc.Validate(t)
 	}
 
-	validate := func(t *testing.T, tc *testCase) {
-		t.Run(tc.Name, func(t *testing.T) {
-			logOutput, logger := log.Buffer()
-			defer func() {
-				if t.Failed() {
-					t.Logf("Logging output: %s", logOutput.String())
-				}
-			}()
-
-			temporaryPath := t.TempDir()
-			repositoryPath := filepath.Join(temporaryPath, filepath.Base(tc.RepositoryPath))
-			require.NoError(t, osutil.CopyTree(tc.RepositoryPath, repositoryPath))
-
-			if tc.RepositoryChange != nil {
-				tc.RepositoryChange(t, repositoryPath)
-			}
-
-			if tc.Language == nil {
-				tc.Language = &Language{}
-			}
-			actualCoverage, actualProblems, actualError := tc.Language.Execute(logger, repositoryPath)
-
-			require.Equal(t, len(tc.ExpectedProblemTexts), len(actualProblems), "the number of expected problems need to match the number of actual problems")
-			for i, expectedProblemText := range tc.ExpectedProblemTexts {
-				assert.ErrorContains(t, actualProblems[i], expectedProblemText)
-			}
-
-			if tc.ExpectedError != nil {
-				assert.ErrorIs(t, actualError, tc.ExpectedError)
-			} else if actualError != nil && tc.ExpectedErrorText != "" {
-				assert.ErrorContains(t, actualError, tc.ExpectedErrorText)
-			} else {
-				assert.NoError(t, actualError)
-				assert.Equal(t, tc.ExpectedCoverage, actualCoverage)
-			}
-		})
-	}
-
-	validate(t, &testCase{
+	validate(t, &languagetesting.TestCaseExecute{
 		Name: "No test files",
 
 		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
@@ -194,7 +151,7 @@ func TestLanguageExecute(t *testing.T) {
 	})
 
 	t.Run("With test file", func(t *testing.T) {
-		validate(t, &testCase{
+		validate(t, &languagetesting.TestCaseExecute{
 			Name: "Valid",
 
 			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
@@ -218,7 +175,7 @@ func TestLanguageExecute(t *testing.T) {
 			ExpectedCoverage: 1,
 		})
 
-		validate(t, &testCase{
+		validate(t, &languagetesting.TestCaseExecute{
 			Name: "Failing tests",
 
 			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "light"),
@@ -243,7 +200,7 @@ func TestLanguageExecute(t *testing.T) {
 			ExpectedCoverage: 3,
 		})
 
-		validate(t, &testCase{
+		validate(t, &languagetesting.TestCaseExecute{
 			Name: "Syntax error",
 
 			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "plain"),
