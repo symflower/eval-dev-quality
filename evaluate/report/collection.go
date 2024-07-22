@@ -13,17 +13,15 @@ import (
 	"github.com/symflower/eval-dev-quality/task"
 )
 
-// AssessmentPerModel holds a collection of assessments per model.
-type AssessmentPerModel map[model.Model]metrics.Assessments
+// AssessmentPerModel holds a collection of assessments per model id.
+type AssessmentPerModel map[string]metrics.Assessments
 
 // WalkByScore walks the given assessment metrics by their score.
-func (a AssessmentPerModel) WalkByScore(function func(model model.Model, assessment metrics.Assessments, score uint64) error) (err error) {
+func (a AssessmentPerModel) WalkByScore(function func(model string, assessment metrics.Assessments, score uint64) error) (err error) {
 	models := maps.Keys(a)
-	slices.SortStableFunc(models, func(a, b model.Model) int {
-		return cmp.Compare(a.ID(), b.ID())
-	})
+	sort.Strings(models)
 
-	scores := make(map[model.Model]uint64, len(models))
+	scores := make(map[string]uint64, len(models))
 	for _, model := range models {
 		scores[model] = a[model].Score()
 	}
@@ -120,10 +118,10 @@ func (a *AssessmentStore) Walk(function func(m model.Model, l language.Language,
 func (a *AssessmentStore) CollapseByModel() AssessmentPerModel {
 	perModel := make(AssessmentPerModel, len(a.store))
 	for _, m := range maps.Keys(a.store) {
-		perModel[m] = metrics.NewAssessments()
+		perModel[m.ID()] = metrics.NewAssessments()
 	}
 	_ = a.Walk(func(m model.Model, l language.Language, r string, t task.Identifier, a metrics.Assessments) (err error) {
-		perModel[m].Add(a)
+		perModel[m.ID()].Add(a)
 
 		return nil
 	})

@@ -190,7 +190,7 @@ func TestWalkByScore(t *testing.T) {
 
 		AssessmentPerModel AssessmentPerModel
 
-		ExpectedModelOrder []model.Model
+		ExpectedModelOrder []string
 		ExpectedScoreOrder []uint64
 	}
 
@@ -198,10 +198,10 @@ func TestWalkByScore(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			require.Equal(t, len(tc.ExpectedModelOrder), len(tc.ExpectedScoreOrder), "expected order needs equal lengths")
 
-			actualModelOrder := make([]model.Model, 0, len(tc.ExpectedModelOrder))
+			actualModelOrder := make([]string, 0, len(tc.ExpectedModelOrder))
 			actualAssessmentOrder := make([]metrics.Assessments, 0, len(tc.ExpectedModelOrder))
 			actualScoreOrder := make([]uint64, 0, len(tc.ExpectedScoreOrder))
-			assert.NoError(t, tc.AssessmentPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint64) (err error) {
+			assert.NoError(t, tc.AssessmentPerModel.WalkByScore(func(model string, assessment metrics.Assessments, score uint64) (err error) {
 				actualModelOrder = append(actualModelOrder, model)
 				actualAssessmentOrder = append(actualAssessmentOrder, assessment)
 				actualScoreOrder = append(actualScoreOrder, score)
@@ -217,16 +217,12 @@ func TestWalkByScore(t *testing.T) {
 		})
 	}
 
-	modelA := modeltesting.NewMockCapabilityWriteTestsNamed(t, "ModelA")
-	modelB := modeltesting.NewMockCapabilityWriteTestsNamed(t, "ModelB")
-	modelC := modeltesting.NewMockCapabilityWriteTestsNamed(t, "ModelC")
-
 	validate(t, &testCase{
 		Name: "No Assessment",
 
 		AssessmentPerModel: AssessmentPerModel{},
 
-		ExpectedModelOrder: []model.Model{},
+		ExpectedModelOrder: []string{},
 		ExpectedScoreOrder: []uint64{},
 	})
 
@@ -234,13 +230,13 @@ func TestWalkByScore(t *testing.T) {
 		Name: "Single Assessment",
 
 		AssessmentPerModel: AssessmentPerModel{
-			modelA: metrics.Assessments{
+			"modelA": metrics.Assessments{
 				metrics.AssessmentKeyFilesExecuted: 1,
 			},
 		},
 
-		ExpectedModelOrder: []model.Model{
-			modelA,
+		ExpectedModelOrder: []string{
+			"modelA",
 		},
 		ExpectedScoreOrder: []uint64{
 			1,
@@ -251,21 +247,21 @@ func TestWalkByScore(t *testing.T) {
 		Name: "Multiple Assessments",
 
 		AssessmentPerModel: AssessmentPerModel{
-			modelA: metrics.Assessments{
+			"modelA": metrics.Assessments{
 				metrics.AssessmentKeyFilesExecuted: 1,
 			},
-			modelB: metrics.Assessments{
+			"modelB": metrics.Assessments{
 				metrics.AssessmentKeyFilesExecuted: 2,
 			},
-			modelC: metrics.Assessments{
+			"modelC": metrics.Assessments{
 				metrics.AssessmentKeyFilesExecuted: 3,
 			},
 		},
 
-		ExpectedModelOrder: []model.Model{
-			modelA,
-			modelB,
-			modelC,
+		ExpectedModelOrder: []string{
+			"modelA",
+			"modelB",
+			"modelC",
 		},
 		ExpectedScoreOrder: []uint64{
 			1,
@@ -378,10 +374,10 @@ func TestAssessmentCollapseByModel(t *testing.T) {
 		},
 
 		ExpectedAssessmentPerModel: AssessmentPerModel{
-			modelA: metrics.Assessments{
+			"some-model-a": metrics.Assessments{
 				metrics.AssessmentKeyResponseNoExcess: 10,
 			},
-			modelB: metrics.Assessments{
+			"some-model-b": metrics.Assessments{
 				metrics.AssessmentKeyResponseNoExcess: 26,
 			},
 		},

@@ -3,11 +3,13 @@ package cmd
 import (
 	"os"
 	"path/filepath"
+	"time"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
 	"golang.org/x/exp/maps"
 
+	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/log"
 )
@@ -21,6 +23,8 @@ type Report struct {
 
 	// logger holds the logger of the command.
 	logger *log.Logger
+	// timestamp holds the timestamp of the command execution.
+	timestamp time.Time
 }
 
 var _ SetLogger = (*Evaluate)(nil)
@@ -83,7 +87,46 @@ func (command *Report) Execute(args []string) (err error) {
 		command.logger.Panicf("ERROR: %s", err)
 	}
 
+	// Write markdown reports.
+	assessmentsPerModel, err := report.RecordsToAssessmentsPerModel(records)
+	if err != nil {
+		return err
+	}
+	currentDirectory, err := os.Getwd()
+	if err != nil {
+		command.logger.Panicf("ERROR: %s", err)
+	}
+	evaluationLogFiles := collectAllEvaluationLogFiles(append(maps.Keys(allEvaluationPaths), currentDirectory))
+	if err := (report.Markdown{
+		DateTime: command.timestamp,
+		Version:  evaluate.Version,
+		Revision: evaluate.Revision,
+
+		LogPaths: evaluationLogFiles,
+		CSVPath:  "./evaluation.csv",
+		SVGPath:  "./categories.svg",
+
+		AssessmentPerModel: assessmentsPerModel,
+	}).WriteToFile(filepath.Join(command.ResultPath, "README.md")); err != nil {
+		command.logger.Panicf("ERROR: %s", err)
+	}
+
 	return nil
+}
+
+// collectAllEvaluationLogFiles collects all evaluation log file paths.
+func collectAllEvaluationLogFiles(evaluationCSVFilePaths []string) (evaluationLogFilePaths []string) {
+	for _, evaluationCSVFilePath := range evaluationCSVFilePaths {
+		evaluationDirectory := filepath.Dir(evaluationCSVFilePath)
+		_, err := os.Stat(filepath.Join(evaluationDirectory, "evaluation.log"))
+		if err != nil {
+			continue
+		}
+		filepath.Base(evaluationDirectory)
+		evaluationLogFilePaths = append(evaluationLogFilePaths, filepath.Join(filepath.Base(evaluationDirectory), "evaluation.log"))
+	}
+
+	return evaluationLogFilePaths
 }
 
 // pathsFromGlobPattern returns all evaluation CSV file paths.

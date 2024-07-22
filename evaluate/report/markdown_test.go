@@ -14,7 +14,6 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 )
 
 func TestMarkdownWriteToFile(t *testing.T) {
@@ -65,7 +64,7 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			Revision: "abcd",
 
 			CSVPath:       "./file.csv",
-			LogPath:       "./file.log",
+			LogPaths:      []string{"./file.log"},
 			ModelLogsPath: ".",
 			SVGPath:       "./file.svg",
 		},
@@ -90,7 +89,8 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			- statement coverage reached: Models in this category produced code that reached full statement coverage.
 			- no excess response: Models in this category did not respond with more content than requested.
 
-			The following sections list all models with their categories. The complete log of the evaluation with all outputs can be found [here](./file.log). Detailed scoring can be found [here](./file.csv).
+			The following sections list all models with their categories. Detailed scoring can be found [here](./file.csv). The complete log of the evaluation with all outputs can be found here:
+			- ./file.log
 
 		`,
 		ExpectedSVGFile: "testdata/empty.svg",
@@ -105,14 +105,14 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			Revision: "abcd",
 
 			CSVPath:       "./file.csv",
-			LogPath:       "./file.log",
+			LogPaths:      []string{"./file.log"},
 			ModelLogsPath: ".",
 			SVGPath:       "./file.svg",
 
 			TotalScore: 1,
 			AssessmentPerModel: AssessmentPerModel{
-				modeltesting.NewMockCapabilityWriteTestsNamed(t, "model/response/error"): metrics.NewAssessments(),
-				modeltesting.NewMockCapabilityWriteTestsNamed(t, "model/no/code"): metrics.Assessments{
+				"model/response/error": metrics.NewAssessments(),
+				"model/no/code": metrics.Assessments{
 					metrics.AssessmentKeyResponseNoError: 1,
 				},
 			},
@@ -138,7 +138,8 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			- statement coverage reached: Models in this category produced code that reached full statement coverage.
 			- no excess response: Models in this category did not respond with more content than requested.
 
-			The following sections list all models with their categories. The complete log of the evaluation with all outputs can be found [here](./file.log). Detailed scoring can be found [here](./file.csv).
+			The following sections list all models with their categories. Detailed scoring can be found [here](./file.csv). The complete log of the evaluation with all outputs can be found here:
+			- ./file.log
 
 			### Result category "response error"
 

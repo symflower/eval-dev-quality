@@ -436,7 +436,7 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		Revision: evaluate.Revision,
 
 		CSVPath:       "./evaluation.csv",
-		LogPath:       "./evaluation.log",
+		LogPaths:      []string{"./evaluation.log"},
 		ModelLogsPath: ".",
 		SVGPath:       "./categories.svg",
 
@@ -446,8 +446,8 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		command.logger.Panicf("ERROR: %s", err)
 	}
 
-	_ = assessmentsPerModel.WalkByScore(func(model model.Model, assessment metrics.Assessments, score uint64) (err error) {
-		command.logger.Printf("Evaluation score for %q (%q): %s", model.ID(), assessment.Category(totalScore).ID, assessment)
+	_ = assessmentsPerModel.WalkByScore(func(model string, assessment metrics.Assessments, score uint64) (err error) {
+		command.logger.Printf("Evaluation score for %q (%q): %s", model, assessment.Category(totalScore).ID, assessment)
 
 		return nil
 	})

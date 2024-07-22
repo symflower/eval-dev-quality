@@ -1,6 +1,7 @@
 package report
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -308,6 +309,168 @@ func TestSortEvaluationRecords(t *testing.T) {
 			[]string{"modelC", "languageA", "repositoryB", "taskB", "5", "5", "5", "5", "5", "5", "5", "5", "5", "5"},
 			[]string{"modelD", "languageA", "repositoryA", "taskB", "6", "6", "6", "6", "6", "6", "6", "6", "6", "6"},
 			[]string{"modelD", "languageB", "repositoryA", "taskA", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7"},
+		},
+	})
+}
+
+func TestAssessmentFromRecord(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Record []string
+
+		ExpectedAssessments metrics.Assessments
+		ExpectedErrText     string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualAssessments, actualErr := assessmentFromRecord(tc.Record)
+
+			if len(tc.ExpectedErrText) > 0 {
+				assert.ErrorContains(t, actualErr, tc.ExpectedErrText)
+			} else {
+				require.NoError(t, actualErr)
+			}
+
+			assert.Equal(t, tc.ExpectedAssessments, actualAssessments)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Invalid assessments",
+
+		Record: []string{"1", "2", "3"},
+
+		ExpectedErrText: fmt.Sprintf("expected %d assessments, but found %d", len(metrics.AllAssessmentKeysStrings), 3),
+	})
+	validate(t, &testCase{
+		Name: "Valid assessments",
+
+		Record: []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"},
+
+		ExpectedAssessments: metrics.Assessments{
+			metrics.AssessmentKeyCoverage:                           1,
+			metrics.AssessmentKeyFilesExecuted:                      2,
+			metrics.AssessmentKeyFilesExecutedMaximumReachable:      3,
+			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 4,
+			metrics.AssessmentKeyProcessingTime:                     5,
+			metrics.AssessmentKeyResponseCharacterCount:             6,
+			metrics.AssessmentKeyResponseNoError:                    7,
+			metrics.AssessmentKeyResponseNoExcess:                   8,
+			metrics.AssessmentKeyResponseWithCode:                   9,
+		},
+	})
+}
+
+func TestRecordsToAssessmentsPerModel(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Records [][]string
+
+		ExpectedAssessmentsPerModel AssessmentPerModel
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualAssessmentsPerModel, actualErr := RecordsToAssessmentsPerModel(tc.Records)
+			require.NoError(t, actualErr)
+
+			assert.Equal(t, tc.ExpectedAssessmentsPerModel, actualAssessmentsPerModel)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Single record",
+
+		Records: [][]string{
+			[]string{"modelA", "languageB", "repositoryA", "taskA", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"},
+		},
+
+		ExpectedAssessmentsPerModel: map[string]metrics.Assessments{
+			"modelA": metrics.Assessments{
+				metrics.AssessmentKeyCoverage:                           1,
+				metrics.AssessmentKeyFilesExecuted:                      2,
+				metrics.AssessmentKeyFilesExecutedMaximumReachable:      3,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 4,
+				metrics.AssessmentKeyProcessingTime:                     5,
+				metrics.AssessmentKeyResponseCharacterCount:             6,
+				metrics.AssessmentKeyResponseNoError:                    7,
+				metrics.AssessmentKeyResponseNoExcess:                   8,
+				metrics.AssessmentKeyResponseWithCode:                   9,
+			},
+		},
+	})
+	validate(t, &testCase{
+		Name: "Multiple records from the same model",
+
+		Records: [][]string{
+			[]string{"modelA", "languageB", "repositoryA", "taskA", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"},
+			[]string{"modelA", "languageB", "repositoryA", "taskA", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"},
+			[]string{"modelA", "languageB", "repositoryA", "taskA", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"},
+		},
+
+		ExpectedAssessmentsPerModel: map[string]metrics.Assessments{
+			"modelA": metrics.Assessments{
+				metrics.AssessmentKeyCoverage:                           3,
+				metrics.AssessmentKeyFilesExecuted:                      6,
+				metrics.AssessmentKeyFilesExecutedMaximumReachable:      9,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 12,
+				metrics.AssessmentKeyProcessingTime:                     15,
+				metrics.AssessmentKeyResponseCharacterCount:             18,
+				metrics.AssessmentKeyResponseNoError:                    21,
+				metrics.AssessmentKeyResponseNoExcess:                   24,
+				metrics.AssessmentKeyResponseWithCode:                   27,
+			},
+		},
+	})
+	validate(t, &testCase{
+		Name: "Multiple records from different models",
+
+		Records: [][]string{
+			[]string{"modelA", "languageB", "repositoryA", "taskA", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"},
+			[]string{"modelA", "languageB", "repositoryA", "taskA", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"},
+			[]string{"modelA", "languageB", "repositoryA", "taskA", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"},
+			[]string{"modelB", "languageB", "repositoryA", "taskA", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"},
+			[]string{"modelB", "languageB", "repositoryA", "taskA", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"},
+			[]string{"modelC", "languageB", "repositoryA", "taskA", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"},
+		},
+
+		ExpectedAssessmentsPerModel: map[string]metrics.Assessments{
+			"modelA": metrics.Assessments{
+				metrics.AssessmentKeyCoverage:                           3,
+				metrics.AssessmentKeyFilesExecuted:                      6,
+				metrics.AssessmentKeyFilesExecutedMaximumReachable:      9,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 12,
+				metrics.AssessmentKeyProcessingTime:                     15,
+				metrics.AssessmentKeyResponseCharacterCount:             18,
+				metrics.AssessmentKeyResponseNoError:                    21,
+				metrics.AssessmentKeyResponseNoExcess:                   24,
+				metrics.AssessmentKeyResponseWithCode:                   27,
+			},
+			"modelB": metrics.Assessments{
+				metrics.AssessmentKeyCoverage:                           2,
+				metrics.AssessmentKeyFilesExecuted:                      4,
+				metrics.AssessmentKeyFilesExecutedMaximumReachable:      6,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 8,
+				metrics.AssessmentKeyProcessingTime:                     10,
+				metrics.AssessmentKeyResponseCharacterCount:             12,
+				metrics.AssessmentKeyResponseNoError:                    14,
+				metrics.AssessmentKeyResponseNoExcess:                   16,
+				metrics.AssessmentKeyResponseWithCode:                   18,
+			},
+			"modelC": metrics.Assessments{
+				metrics.AssessmentKeyCoverage:                           1,
+				metrics.AssessmentKeyFilesExecuted:                      2,
+				metrics.AssessmentKeyFilesExecutedMaximumReachable:      3,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 4,
+				metrics.AssessmentKeyProcessingTime:                     5,
+				metrics.AssessmentKeyResponseCharacterCount:             6,
+				metrics.AssessmentKeyResponseNoError:                    7,
+				metrics.AssessmentKeyResponseNoExcess:                   8,
+				metrics.AssessmentKeyResponseWithCode:                   9,
+			},
 		},
 	})
 }
