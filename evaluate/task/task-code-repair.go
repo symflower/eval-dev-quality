@@ -144,6 +144,8 @@ func validateCodeRepairRepository(logger *log.Logger, repositoryPath string, lan
 	for _, file := range files {
 		if file.Name() == "repository.json" {
 			continue
+		} else if file.Name() == ".git" || file.Name() == "target" { // Do not validate Git or Maven directories.
+			continue
 		} else if file.IsDir() {
 			packagePaths = append(packagePaths, filepath.Join(repositoryPath, file.Name()))
 		} else {
