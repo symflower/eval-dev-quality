@@ -33,7 +33,7 @@ import (
 func validateReportLinks(t *testing.T, data string, modelLogNames []string) {
 	assert.Contains(t, data, "](./categories.svg)")
 	assert.Contains(t, data, "](./evaluation.csv)")
-	assert.Contains(t, data, "](./evaluation.log)")
+	assert.Contains(t, data, "evaluation.log")
 	for _, m := range modelLogNames {
 		assert.Contains(t, data, fmt.Sprintf("](./%s/)", m))
 	}

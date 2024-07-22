@@ -64,7 +64,7 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			Revision: "abcd",
 
 			CSVPath:       "./file.csv",
-			LogPath:       "./file.log",
+			LogPaths:      []string{"./file.log"},
 			ModelLogsPath: ".",
 			SVGPath:       "./file.svg",
 		},
@@ -89,7 +89,8 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			- statement coverage reached: Models in this category produced code that reached full statement coverage.
 			- no excess response: Models in this category did not respond with more content than requested.
 
-			The following sections list all models with their categories. The complete log of the evaluation with all outputs can be found [here](./file.log). Detailed scoring can be found [here](./file.csv).
+			The following sections list all models with their categories. Detailed scoring can be found [here](./file.csv). The complete log of the evaluation with all outputs can be found here:
+			- ./file.log
 
 		`,
 		ExpectedSVGFile: "testdata/empty.svg",
@@ -104,7 +105,7 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			Revision: "abcd",
 
 			CSVPath:       "./file.csv",
-			LogPath:       "./file.log",
+			LogPaths:      []string{"./file.log"},
 			ModelLogsPath: ".",
 			SVGPath:       "./file.svg",
 
@@ -137,7 +138,8 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			- statement coverage reached: Models in this category produced code that reached full statement coverage.
 			- no excess response: Models in this category did not respond with more content than requested.
 
-			The following sections list all models with their categories. The complete log of the evaluation with all outputs can be found [here](./file.log). Detailed scoring can be found [here](./file.csv).
+			The following sections list all models with their categories. Detailed scoring can be found [here](./file.csv). The complete log of the evaluation with all outputs can be found here:
+			- ./file.log
 
 			### Result category "response error"
 

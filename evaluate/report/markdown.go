@@ -30,8 +30,8 @@ type Markdown struct {
 
 	// CSVPath holds the path of detailed CSV results.
 	CSVPath string
-	// LogPath holds the path of detailed logs.
-	LogPath string
+	// LogPaths holds the path of detailed logs.
+	LogPaths []string
 	// ModelLogsPath holds the path of the model logs.
 	ModelLogsPath string
 	// SVGPath holds the path of the charted results.
@@ -83,7 +83,8 @@ var markdownTemplate = template.Must(template.New("template-report").Parse(bytes
 	{{ range $category := .Categories -}}
 	- {{ $category.Name }}: {{ $category.Description }}
 	{{ end }}
-	The following sections list all models with their categories. The complete log of the evaluation with all outputs can be found [here]({{.LogPath}}). Detailed scoring can be found [here]({{.CSVPath}}).
+	The following sections list all models with their categories. Detailed scoring can be found [here]({{.CSVPath}}). The complete log of the evaluation with all outputs can be found here:{{ range .LogPaths }}
+	- {{.}}{{ end }}
 
 	{{ range $category := .Categories -}}
 	{{ with $modelNames := index $.ModelsPerCategory $category -}}

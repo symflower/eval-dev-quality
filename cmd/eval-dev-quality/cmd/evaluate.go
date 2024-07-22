@@ -436,7 +436,7 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		Revision: evaluate.Revision,
 
 		CSVPath:       "./evaluation.csv",
-		LogPath:       "./evaluation.log",
+		LogPaths:      []string{"./evaluation.log"},
 		ModelLogsPath: ".",
 		SVGPath:       "./categories.svg",
 
