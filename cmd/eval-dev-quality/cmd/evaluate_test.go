@@ -61,7 +61,6 @@ type extractMetricsMatch *regexp.Regexp
 var extractMetricsLogsMatch = extractMetricsMatch(regexp.MustCompile(`score=(\d+), coverage=(\d+), files-executed=(\d+), files-executed-maximum-reachable=(\d+), generate-tests-for-file-character-count=(\d+), processing-time=(\d+), response-character-count=(\d+), response-no-error=(\d+), response-no-excess=(\d+), response-with-code=(\d+)`))
 
 // extractMetricsCSVMatch is a regular expression to extract metrics from CSV rows.
-// REMARK The cost is not match as a group since it's just a model property that we carry along for informational purposes.
 var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
 
 // extractMetrics extracts multiple assessment metrics from the given string according to a given regular expression.
