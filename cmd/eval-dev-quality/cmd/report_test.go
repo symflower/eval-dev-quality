@@ -10,7 +10,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/zimmski/osutil"
@@ -37,6 +36,19 @@ var gpt4EvaluationCSVFileContent = bytesutil.StringTrimIndentations(`
 	openrouter/openai/gpt-4,java,java/light,write-tests,11,11,11,11,11,11,11,11,11,11
 	openrouter/openai/gpt-4,java,java/plain,write-tests,12,12,12,12,12,12,12,12,12,12
 `)
+
+// validateMarkdownLinks checks if the Markdown report data contains all the links to other relevant report files.
+func validateMarkdownLinks(t *testing.T, data string, modelLogNames []string, logFiles []string) {
+	assert.Contains(t, data, "](./categories.svg)")
+	assert.Contains(t, data, "](./evaluation.csv)")
+
+	for _, logFile := range logFiles {
+		assert.Contains(t, data, logFile)
+	}
+	for _, m := range modelLogNames {
+		assert.Contains(t, data, fmt.Sprintf("](./%s/)", m))
+	}
+}
 
 func TestReportExecute(t *testing.T) {
 	type testCase struct {
@@ -138,6 +150,7 @@ func TestReportExecute(t *testing.T) {
 		Before: func(t *testing.T, logger *log.Logger, workingDirectory string) {
 			evaluationFileContent := fmt.Sprintf("%s\n%s", strings.Join(report.EvaluationHeader(), ","), claudeEvaluationCSVFileContent)
 			require.NoError(t, os.WriteFile(filepath.Join(workingDirectory, "evaluation.csv"), []byte(evaluationFileContent), 0700))
+			require.NoError(t, os.WriteFile(filepath.Join(workingDirectory, "evaluation.log"), []byte(`log`), 0700))
 		},
 
 		Arguments: func(workingDirectory string) []string {
@@ -148,6 +161,11 @@ func TestReportExecute(t *testing.T) {
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 			"evaluation.csv": nil,
+			filepath.Join("result-directory", "categories.svg"): nil,
+			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath string, data string) {
+				validateMarkdownLinks(t, data, []string{"openrouter_anthropic_claude-2.0"}, []string{"evaluation.log"})
+			},
+			filepath.Join("evaluation.log"): nil,
 			filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 				expectedContent := fmt.Sprintf("%s\n%s", strings.Join(report.EvaluationHeader(), ","), claudeEvaluationCSVFileContent)
 				assert.Equal(t, expectedContent, data)
@@ -174,8 +192,23 @@ func TestReportExecute(t *testing.T) {
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 			filepath.Join("docs", "v5", "claude", "evaluation.csv"):             nil,
+			filepath.Join("docs", "v5", "claude", "evaluation.log"):             nil,
 			filepath.Join("docs", "v5", "gemma", "evaluation.csv"):              nil,
+			filepath.Join("docs", "v5", "gemma", "evaluation.log"):              nil,
 			filepath.Join("docs", "v5", "openrouter", "gpt4", "evaluation.csv"): nil,
+			filepath.Join("docs", "v5", "openrouter", "gpt4", "evaluation.log"): nil,
+			filepath.Join("result-directory", "categories.svg"):                 nil,
+			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath string, data string) {
+				validateMarkdownLinks(t, data, []string{
+					"openrouter_anthropic_claude-2.0",
+					"openrouter_google_gemma-7b-it",
+					"openrouter_openai_gpt-4",
+				}, []string{
+					filepath.Join("claude", "evaluation.log"),
+					filepath.Join("gemma", "evaluation.log"),
+					filepath.Join("gpt4", "evaluation.log"),
+				})
+			},
 			filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 				expectedContent := fmt.Sprintf("%s\n%s%s%s", strings.Join(report.EvaluationHeader(), ","), claudeEvaluationCSVFileContent, gemmaEvaluationCSVFileContent, gpt4EvaluationCSVFileContent)
 				assert.Equal(t, expectedContent, data)
@@ -199,8 +232,23 @@ func TestReportExecute(t *testing.T) {
 		},
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 			filepath.Join("docs", "v5", "claude", "evaluation.csv"): nil,
+			filepath.Join("docs", "v5", "claude", "evaluation.log"): nil,
 			filepath.Join("docs", "v5", "gemma", "evaluation.csv"):  nil,
+			filepath.Join("docs", "v5", "gemma", "evaluation.log"):  nil,
 			filepath.Join("docs", "v5", "gpt4", "evaluation.csv"):   nil,
+			filepath.Join("docs", "v5", "gpt4", "evaluation.log"):   nil,
+			filepath.Join("result-directory", "categories.svg"):     nil,
+			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath string, data string) {
+				validateMarkdownLinks(t, data, []string{
+					"openrouter_anthropic_claude-2.0",
+					"openrouter_google_gemma-7b-it",
+					"openrouter_openai_gpt-4",
+				}, []string{
+					filepath.Join("claude", "evaluation.log"),
+					filepath.Join("gemma", "evaluation.log"),
+					filepath.Join("gpt4", "evaluation.log"),
+				})
+			},
 			filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 				expectedContent := fmt.Sprintf("%s\n%s%s%s", strings.Join(report.EvaluationHeader(), ","), claudeEvaluationCSVFileContent, gemmaEvaluationCSVFileContent, gpt4EvaluationCSVFileContent)
 				assert.Equal(t, expectedContent, data)
@@ -292,22 +340,98 @@ func TestPathsFromGlobPattern(t *testing.T) {
 func evaluationFileWithContent(t *testing.T, workingDirectory string, content string) {
 	require.NoError(t, os.MkdirAll(workingDirectory, 0700))
 	require.NoError(t, os.WriteFile(filepath.Join(workingDirectory, "evaluation.csv"), []byte(content), 0700))
+	require.NoError(t, os.WriteFile(filepath.Join(workingDirectory, "evaluation.log"), []byte(`log`), 0700))
 }
 
-// validateReportLinks checks if the Markdown report data contains all the links to other relevant report files.
-func validateReportLinks(t *testing.T, data string, modelLogNames []string) {
-	assert.Contains(t, data, "](./categories.svg)")
-	assert.Contains(t, data, "](./evaluation.csv)")
-	assert.Contains(t, data, "](./evaluation.log)")
-	for _, m := range modelLogNames {
-		assert.Contains(t, data, fmt.Sprintf("](./%s/)", m))
+func TestCollectAllEvaluationLogFiles(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Before func(workingDirectory string)
+
+		EvaluationCSVFilePaths []string
+
+		ExpectedEvaluationLogFilePaths []string
 	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			temporaryDirectory := t.TempDir()
+
+			if tc.Before != nil {
+				tc.Before(temporaryDirectory)
+			}
+
+			for i, evaluationFilePath := range tc.EvaluationCSVFilePaths {
+				tc.EvaluationCSVFilePaths[i] = filepath.Join(temporaryDirectory, evaluationFilePath)
+			}
+
+			actualEvaluationLogFilePaths := collectAllEvaluationLogFiles(tc.EvaluationCSVFilePaths)
+
+			assert.Equal(t, tc.ExpectedEvaluationLogFilePaths, actualEvaluationLogFilePaths)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "No log files",
+
+		Before: func(workingDirectory string) {
+			require.NoError(t, osutil.MkdirAll(filepath.Join(workingDirectory, "someModel")))
+
+			file, err := os.Create(filepath.Join(workingDirectory, "someModel", "evaluation.csv"))
+			require.NoError(t, err)
+			file.Close()
+		},
+
+		EvaluationCSVFilePaths: []string{
+			filepath.Join("someModel", "evaluation.csv"),
+		},
+
+		ExpectedEvaluationLogFilePaths: nil,
+	})
+	validate(t, &testCase{
+		Name: "Single log file",
+
+		Before: func(workingDirectory string) {
+			createEvaluationDirectoryWithLogFiles(t, filepath.Join(workingDirectory, "someModel"))
+		},
+
+		EvaluationCSVFilePaths: []string{
+			filepath.Join("someModel", "evaluation.csv"),
+		},
+
+		ExpectedEvaluationLogFilePaths: []string{
+			filepath.Join("someModel", "evaluation.log"),
+		},
+	})
+	validate(t, &testCase{
+		Name: "Multiple log files",
+
+		Before: func(workingDirectory string) {
+			createEvaluationDirectoryWithLogFiles(t, filepath.Join(workingDirectory, "someModelA"))
+			createEvaluationDirectoryWithLogFiles(t, filepath.Join(workingDirectory, "someModelB"))
+		},
+
+		EvaluationCSVFilePaths: []string{
+			filepath.Join("someModelA", "evaluation.csv"),
+			filepath.Join("someModelB", "evaluation.csv"),
+		},
+
+		ExpectedEvaluationLogFilePaths: []string{
+			filepath.Join("someModelA", "evaluation.log"),
+			filepath.Join("someModelB", "evaluation.log"),
+		},
+	})
 }
 
-// validateSVGContent checks if the SVG data contains all given categories and an axis label for the maximal model count.
-func validateSVGContent(t *testing.T, data string, categories []*metrics.AssessmentCategory, maxModelCount uint) {
-	for _, category := range categories {
-		assert.Contains(t, data, fmt.Sprintf("%s</text>", category.Name))
-	}
-	assert.Contains(t, data, fmt.Sprintf("%d</text>", maxModelCount))
+func createEvaluationDirectoryWithLogFiles(t *testing.T, workingDirectory string) {
+	require.NoError(t, osutil.MkdirAll(workingDirectory))
+
+	file, err := os.Create(filepath.Join(workingDirectory, "evaluation.csv"))
+	require.NoError(t, err)
+	file.Close()
+
+	file, err = os.Create(filepath.Join(workingDirectory, "evaluation.log"))
+	require.NoError(t, err)
+	file.Close()
 }

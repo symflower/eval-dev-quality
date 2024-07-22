@@ -101,6 +101,45 @@ func RecordsFromEvaluationCSVFiles(evaluationCSVFilePaths []string) (records [][
 	return records, nil
 }
 
+// RecordsToAssessmentsPerModel converts evaluation records into assessments per model.
+func RecordsToAssessmentsPerModel(records [][]string) (assessmentsPerModel AssessmentPerModel, err error) {
+	assessmentsPerModel = map[string]metrics.Assessments{}
+
+	for _, record := range records {
+		model := record[0]
+		assessment, err := assessmentFromRecord(record[5:])
+		if err != nil {
+			return nil, err
+		}
+
+		if _, ok := assessmentsPerModel[model]; !ok {
+			assessmentsPerModel[model] = assessment
+		} else {
+			assessmentsPerModel[model].Add(assessment)
+		}
+	}
+
+	return assessmentsPerModel, nil
+}
+
+// assessmentFromRecord return the assessments of a record.
+func assessmentFromRecord(assessmentFields []string) (assessments metrics.Assessments, err error) {
+	if len(assessmentFields) != len(metrics.AllAssessmentKeysStrings) {
+		return nil, pkgerrors.Errorf("expected %d assessments, but found %d", len(metrics.AllAssessmentKeysStrings), len(assessmentFields))
+	}
+
+	assessments = metrics.NewAssessments()
+	for i, field := range assessmentFields {
+		assessmentKeyValue, err := strconv.ParseUint(field, 10, 64)
+		if err != nil {
+			return nil, pkgerrors.WithStack(err)
+		}
+		assessments[metrics.AssessmentKey(metrics.AllAssessmentKeysStrings[i])] = assessmentKeyValue
+	}
+
+	return assessments, nil
+}
+
 // SortEvaluationRecords sorts the evaluation records.
 func SortEvaluationRecords(records [][]string) {
 	sort.Slice(records, func(i, j int) bool {
