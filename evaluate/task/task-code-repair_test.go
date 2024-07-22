@@ -373,6 +373,11 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Well-formed",
 
+			Before: func(repositoryPath string) {
+				require.NoError(t, osutil.MkdirAll(filepath.Join(repositoryPath, ".git")))
+				require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, ".git", "index"), []byte(`content`), 0700))
+			},
+
 			TestdataPath:   filepath.Join("..", "..", "testdata"),
 			RepositoryPath: filepath.Join("golang", "mistakes"),
 			Language:       &golang.Language{},
@@ -463,6 +468,11 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 		})
 		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Well-formed",
+
+			Before: func(repositoryPath string) {
+				require.NoError(t, osutil.MkdirAll(filepath.Join(repositoryPath, "target")))
+				require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "target", "someClass.class"), []byte(`content`), 0700))
+			},
 
 			TestdataPath:   filepath.Join("..", "..", "testdata"),
 			RepositoryPath: filepath.Join("java", "mistakes"),
