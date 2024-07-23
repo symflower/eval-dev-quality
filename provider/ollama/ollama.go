@@ -119,3 +119,8 @@ func (p *Provider) Load(modelIdentifier string) error {
 func (p *Provider) Unload(modelIdentifier string) error {
 	return tools.OllamaUnload(p.url, strings.TrimPrefix(modelIdentifier, p.ID()+provider.ProviderModelSeparator))
 }
+
+// Pull downloads the given model.
+func (p *Provider) Pull(logger *log.Logger, modelIdentifier string) error {
+	return tools.OllamaPull(logger, p.binaryPath, p.url, strings.TrimPrefix(modelIdentifier, p.ID()+provider.ProviderModelSeparator))
+}

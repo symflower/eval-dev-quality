@@ -65,5 +65,5 @@ type Loader interface {
 // Puller is a provider that is capable of pulling models.
 type Puller interface {
 	// Pull downloads the given model.
-	Pull(logger *log.Logger, modelIdentifier string) error
+	Pull(logger *log.Logger, modelIdentifier string) (err error)
 }
