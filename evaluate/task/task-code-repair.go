@@ -94,16 +94,16 @@ func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 		modelAssessment.Add(assessments)
 		modelAssessment.Award(metrics.AssessmentKeyResponseNoError)
 
-		coverage, ps, err := ctx.Language.Execute(taskLogger.Logger, packagePath)
+		testResult, ps, err := ctx.Language.ExecuteTests(taskLogger.Logger, packagePath)
 		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, sourceFile))
 
 			continue
 		}
-		taskLogger.Printf("Executes tests with %d coverage objects", coverage)
+		taskLogger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
 		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
-		modelAssessment.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
+		modelAssessment.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
 	}
 
 	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{

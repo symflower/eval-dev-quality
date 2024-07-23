@@ -81,7 +81,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 		modelAssessmentForFile.Add(assessments)
 		modelAssessmentForFile.Award(metrics.AssessmentKeyResponseNoError)
 
-		coverage, ps, err := ctx.Language.Execute(taskLogger.Logger, dataPath)
+		testResult, ps, err := ctx.Language.ExecuteTests(taskLogger.Logger, dataPath)
 		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
@@ -96,7 +96,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 
 			// Run "symflower fix" if the model response fails to execute.
 			if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
-				withSymflowerFixAssessments, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, ctx.Repository.DataPath())
+				withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, ctx.Repository.DataPath())
 				problems = append(problems, ps...)
 				if err != nil {
 					problems = append(problems, err)
@@ -106,13 +106,21 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 
 					continue
 				} else {
+					ctx.Logger.Printf("with symflower repair: Executes tests with %d coverage objects", withSymflowerFixTestResult.Coverage)
+
+					// Symflower was able to fix a failure so now update the assessment with the improved results.
+					withSymflowerFixAssessments := metrics.NewAssessments()
+					withSymflowerFixAssessments[metrics.AssessmentKeyProcessingTime] = processingTime
+					withSymflowerFixAssessments.Award(metrics.AssessmentKeyFilesExecuted)
+					withSymflowerFixAssessments.AwardPoints(metrics.AssessmentKeyCoverage, withSymflowerFixTestResult.Coverage)
+
 					withSymflowerAssessmentForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentForFile, withSymflowerFixAssessments)
 				}
 			}
 		} else {
-			taskLogger.Printf("Executes tests with %d coverage objects", coverage)
+			taskLogger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
 			modelAssessmentForFile.Award(metrics.AssessmentKeyFilesExecuted)
-			modelAssessmentForFile.AwardPoints(metrics.AssessmentKeyCoverage, coverage)
+			modelAssessmentForFile.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
 		}
 
 		modelAssessment.Add(modelAssessmentForFile)

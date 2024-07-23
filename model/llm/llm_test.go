@@ -393,3 +393,227 @@ func TestLLMCodeRepairSourceFilePrompt(t *testing.T) {
 		`),
 	})
 }
+
+func TestLLMTranspileSourceFilePrompt(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Data *llmTranspileSourceFilePromptContext
+
+		ExpectedMessage string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualMessage, actualErr := llmTranspileSourceFilePrompt(tc.Data)
+			require.NoError(t, actualErr)
+
+			assert.Equal(t, tc.ExpectedMessage, actualMessage)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Transpile Go into Java",
+
+		Data: &llmTranspileSourceFilePromptContext{
+			llmSourceFilePromptContext: llmSourceFilePromptContext{
+				Language: &java.Language{},
+
+				Code: bytesutil.StringTrimIndentations(`
+					package com.eval;
+
+					class Foobar {
+						static int foobar(int i) {}
+					}
+				`),
+				FilePath:   "Foobar.java",
+				ImportPath: "com.eval",
+			},
+			OriginLanguage: &golang.Language{},
+			OriginFileContent: bytesutil.StringTrimIndentations(`
+				package foobar
+
+				func foobar(i int) int {
+					return i + 1
+				}
+			`),
+		},
+
+		ExpectedMessage: bytesutil.StringTrimIndentations(`
+			Given the following Go code file, transpile it into a Java code file.
+			The response must contain only the transpiled Java source code in a fenced code block and nothing else.
+
+			` + "```" + `golang
+			package foobar
+
+			func foobar(i int) int {
+				return i + 1
+			}
+			` + "```" + `
+
+			The transpiled Java code file must have the package "com.eval" and the following signature:
+
+			` + "```" + `java
+			package com.eval;
+
+			class Foobar {
+				static int foobar(int i) {}
+			}
+			` + "```" + `
+		`),
+	})
+}
+
+func TestModelTranspile(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		SetupMock func(t *testing.T, mockedProvider *providertesting.MockQuery)
+
+		Language       language.Language
+		OriginLanguage language.Language
+
+		RepositoryPath string
+		OriginFilePath string
+		StubFilePath   string
+
+		ExpectedAssessment      metrics.Assessments
+		ExpectedStubFileContent string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		logOutput, logger := log.Buffer()
+		defer func() {
+			if t.Failed() {
+				t.Log(logOutput.String())
+			}
+		}()
+
+		temporaryPath := t.TempDir()
+		repositoryPath := filepath.Join(temporaryPath, filepath.Base(tc.RepositoryPath))
+		require.NoError(t, osutil.CopyTree(tc.RepositoryPath, repositoryPath))
+
+		modelID := "some-model"
+		mock := providertesting.NewMockQuery(t)
+		tc.SetupMock(t, mock)
+		llm := NewModel(mock, modelID)
+
+		ctx := model.Context{
+			Language: tc.Language,
+
+			RepositoryPath: repositoryPath,
+			FilePath:       tc.StubFilePath,
+
+			Arguments: &evaluatetask.TaskArgumentsTranspile{
+				OriginLanguage: tc.OriginLanguage,
+				OriginFilePath: tc.OriginFilePath,
+			},
+
+			Logger: logger,
+		}
+
+		actualAssessment, actualError := llm.Transpile(ctx)
+		assert.NoError(t, actualError)
+		metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
+
+		actualStubFileContent, err := os.ReadFile(filepath.Join(repositoryPath, tc.StubFilePath))
+		assert.NoError(t, err)
+
+		assert.Equal(t, strings.TrimSpace(tc.ExpectedStubFileContent), string(actualStubFileContent))
+	}
+
+	t.Run("Transpile Java into Go", func(t *testing.T) {
+		transpiledFileContent := bytesutil.StringTrimIndentations(`
+			package binarySearch
+
+			func binarySearch(a []int, x int) int {
+				index := -1
+
+				min := 0
+				max := len(a) - 1
+
+				for index == -1 && min <= max {
+					m := (min + max) / 2
+
+					if x == a[m] {
+						index = m
+					} else if x < a[m] {
+						max = m - 1
+					} else {
+						min = m + 1
+					}
+				}
+
+				return index
+			}
+		`)
+		validate(t, &testCase{
+			Name: "Binary search",
+
+			SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
+				mockedProvider.On("Query", mock.Anything, "some-model", mock.Anything).Return("```\n"+transpiledFileContent+"```\n", nil)
+			},
+
+			Language:       &golang.Language{},
+			OriginLanguage: &java.Language{},
+
+			RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "transpile", "binarySearch"),
+			OriginFilePath: filepath.Join("implementation", "BinarySearch.java"),
+			StubFilePath:   filepath.Join("binarySearch.go"),
+
+			ExpectedAssessment: metrics.Assessments{
+				metrics.AssessmentKeyResponseNoExcess: 1,
+				metrics.AssessmentKeyResponseWithCode: 1,
+			},
+			ExpectedStubFileContent: transpiledFileContent,
+		})
+	})
+	t.Run("Transpile Go into Java", func(t *testing.T) {
+		transpiledFileContent := bytesutil.StringTrimIndentations(`
+			package com.eval;
+
+			class BinarySearch {
+				static int binarySearch(int[] a, int x) {
+					int index = -1;
+
+					int min = 0;
+					int max = a.length - 1;
+
+					while (index == -1 && min <= max) {
+						int m = (min + max) / 2;
+
+						if (x == a[m]) {
+							index = m;
+						} else if (x < a[m]) {
+							max = m - 1;
+						} else {
+							min = m + 1;
+						}
+					}
+
+					return index;
+				}
+			}
+		`)
+		validate(t, &testCase{
+			Name: "Binary Search",
+
+			SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
+				mockedProvider.On("Query", mock.Anything, "some-model", mock.Anything).Return("```\n"+transpiledFileContent+"```\n", nil)
+			},
+
+			Language:       &java.Language{},
+			OriginLanguage: &golang.Language{},
+
+			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "transpile", "binarySearch"),
+			OriginFilePath: filepath.Join("implementation", "binarySearch.go"),
+			StubFilePath:   filepath.Join("src", "main", "java", "com", "eval", "BinarySearch.java"),
+
+			ExpectedAssessment: metrics.Assessments{
+				metrics.AssessmentKeyResponseNoExcess: 1,
+				metrics.AssessmentKeyResponseWithCode: 1,
+			},
+			ExpectedStubFileContent: transpiledFileContent,
+		})
+	})
+}

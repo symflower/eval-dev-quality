@@ -45,6 +45,14 @@ func (m *MockCapabilityRepairCode) RegisterGenerateError(err error) *mock.Call {
 	return m.On("RepairCode", mock.Anything).Return(nil, err)
 }
 
+// RegisterGenerateSuccess registers a mock call for successful generation.
+func (m *MockCapabilityTranspile) RegisterGenerateSuccess(t *testing.T, filePath string, fileContent string, assessment metrics.Assessments) *mock.Call {
+	return m.On("Transpile", mock.Anything).Return(assessment, nil).Run(func(args mock.Arguments) {
+		ctx := args.Get(0).(model.Context)
+		require.NoError(t, os.WriteFile(filepath.Join(ctx.RepositoryPath, filePath), []byte(fileContent), 0600))
+	})
+}
+
 // MockModelCapabilityWriteTests holds a mock implementing the "Model" and the "CapabilityWriteTests" interface.
 type MockModelCapabilityWriteTests struct {
 	*MockModel
@@ -70,5 +78,19 @@ func NewMockCapabilityRepairCodeNamed(t *testing.T, id string) *MockModelCapabil
 	return &MockModelCapabilityRepairCode{
 		MockModel:                NewMockModelNamed(t, id),
 		MockCapabilityRepairCode: NewMockCapabilityRepairCode(t),
+	}
+}
+
+// MockModelCapabilityTranspile holds a mock implementing the "Model" and the "CapabilityTranspile" interface.
+type MockModelCapabilityTranspile struct {
+	*MockModel
+	*MockCapabilityTranspile
+}
+
+// NewMockCapabilityTranspileNamed returns a new named mocked model.
+func NewMockCapabilityTranspileNamed(t *testing.T, id string) *MockModelCapabilityTranspile {
+	return &MockModelCapabilityTranspile{
+		MockModel:               NewMockModelNamed(t, id),
+		MockCapabilityTranspile: NewMockCapabilityTranspile(t),
 	}
 }

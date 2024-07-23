@@ -117,6 +117,48 @@ func llmCodeRepairSourceFilePrompt(data *llmCodeRepairSourceFilePromptContext) (
 	return b.String(), nil
 }
 
+// llmTranspileSourceFilePromptContext is the template context for a transpilation LLM prompt.
+type llmTranspileSourceFilePromptContext struct {
+	// llmSourceFilePromptContext holds the context for a source file prompt.
+	llmSourceFilePromptContext
+
+	// OriginLanguage holds the language we are transpiling from.
+	OriginLanguage language.Language
+	// OriginFileContent holds the code we want to transpile.
+	OriginFileContent string
+}
+
+// llmTranspileSourceFilePromptTemplate is the template for generating an LLM transpilation prompt.
+var llmTranspileSourceFilePromptTemplate = template.Must(template.New("model-llm-transpile-source-file-prompt").Parse(bytesutil.StringTrimIndentations(`
+	Given the following {{ .OriginLanguage.Name }} code file, transpile it into a {{ .Language.Name }} code file.
+	The response must contain only the transpiled {{ .Language.Name }} source code in a fenced code block and nothing else.
+
+	` + "```" + `{{ .OriginLanguage.ID }}
+	{{ .OriginFileContent }}
+	` + "```" + `
+
+	The transpiled {{ .Language.Name }} code file must have the package "{{ .ImportPath }}" and the following signature:
+
+	` + "```" + `{{ .Language.ID }}
+	{{ .Code }}
+	` + "```" + `
+`)))
+
+// llmTranspileSourceFilePrompt returns the prompt to transpile a source file.
+func llmTranspileSourceFilePrompt(data *llmTranspileSourceFilePromptContext) (message string, err error) {
+	// Use Linux paths even when running the evaluation on Windows to ensure consistency in prompting.
+	data.FilePath = filepath.ToSlash(data.FilePath)
+	data.Code = strings.TrimSpace(data.Code)
+	data.OriginFileContent = strings.TrimSpace(data.OriginFileContent)
+
+	var b strings.Builder
+	if err := llmTranspileSourceFilePromptTemplate.Execute(&b, data); err != nil {
+		return "", pkgerrors.WithStack(err)
+	}
+
+	return b.String(), nil
+}
+
 var _ model.Model = (*Model)(nil)
 
 // ID returns the unique ID of this model.
@@ -247,6 +289,66 @@ func (m *Model) RepairCode(ctx model.Context) (assessment metrics.Assessments, e
 	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(sourceFileContent))
 
 	err = os.WriteFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath), []byte(sourceFileContent), 0644)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	return assessment, nil
+}
+
+var _ model.CapabilityTranspile = (*Model)(nil)
+
+// Transpile queries the model to transpile source code to another language.
+func (m *Model) Transpile(ctx model.Context) (assessment metrics.Assessments, err error) {
+	transpileArguments, ok := ctx.Arguments.(*evaluatetask.TaskArgumentsTranspile)
+	if !ok {
+		return nil, pkgerrors.Errorf("unexpected type %#v", ctx.Arguments)
+	}
+
+	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+	stubFileContent := strings.TrimSpace(string(data))
+
+	data, err = os.ReadFile(filepath.Join(ctx.RepositoryPath, transpileArguments.OriginFilePath))
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+	originFileContent := strings.TrimSpace(string(data))
+
+	importPath := ctx.Language.ImportPath(ctx.RepositoryPath, ctx.FilePath)
+
+	request, err := llmTranspileSourceFilePrompt(&llmTranspileSourceFilePromptContext{
+		llmSourceFilePromptContext: llmSourceFilePromptContext{
+			Language: ctx.Language,
+
+			Code:       stubFileContent,
+			FilePath:   ctx.FilePath,
+			ImportPath: importPath,
+		},
+
+		OriginLanguage:    transpileArguments.OriginLanguage,
+		OriginFileContent: originFileContent,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	response, duration, err := m.query(ctx.Logger, request)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	assessment, originFileContent, err = prompt.ParseResponse(response)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+	assessment[metrics.AssessmentKeyProcessingTime] = uint64(duration.Milliseconds())
+	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(response))
+	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(originFileContent))
+
+	err = os.WriteFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath), []byte(originFileContent), 0644)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}

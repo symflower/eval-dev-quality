@@ -38,6 +38,10 @@ var (
 	IdentifierWriteTestsSymflowerFix = registerIdentifier("write-tests-symflower-fix")
 	// IdentifierCodeRepair holds the identifier for the "code repair" task.
 	IdentifierCodeRepair = registerIdentifier("code-repair")
+	// IdentifierTranspile holds the identifier for the "transpile" task.
+	IdentifierTranspile = registerIdentifier("transpile")
+	// IdentifierTranspileSymflowerFix holds the identifier for the "transpile" task with the "symflower fix" applied.
+	IdentifierTranspileSymflowerFix = registerIdentifier("transpile-symflower-fix")
 )
 
 // TaskForIdentifier returns a task based on the task identifier.
@@ -47,6 +51,8 @@ func TaskForIdentifier(taskIdentifier evaltask.Identifier) (task evaltask.Task, 
 		return &TaskWriteTests{}, nil
 	case IdentifierCodeRepair:
 		return &TaskCodeRepair{}, nil
+	case IdentifierTranspile:
+		return &TaskTranspile{}, nil
 	default:
 		return nil, pkgerrors.Wrap(evaltask.ErrTaskUnknown, string(taskIdentifier))
 	}

@@ -10,6 +10,8 @@ import (
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
+	"github.com/symflower/eval-dev-quality/language"
+	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	"github.com/symflower/eval-dev-quality/log"
 )
 
@@ -56,69 +58,27 @@ func TestLanguageFiles(t *testing.T) {
 }
 
 func TestLanguageExecute(t *testing.T) {
-	type testCase struct {
-		Name string
+	validate := func(t *testing.T, tc *languagetesting.TestCaseExecuteTests) {
+		if tc.Language == nil {
+			tc.Language = &Language{}
+		}
 
-		Language *Language
-
-		RepositoryPath   string
-		RepositoryChange func(t *testing.T, repositoryPath string)
-
-		ExpectedCoverage     uint64
-		ExpectedProblemTexts []string
-		ExpectedError        error
-		ExpectedErrorText    string
+		tc.Validate(t)
 	}
 
-	validate := func(t *testing.T, tc *testCase) {
-		t.Run(tc.Name, func(t *testing.T) {
-			logOutput, logger := log.Buffer()
-			defer func() {
-				if t.Failed() {
-					t.Log(logOutput.String())
-				}
-			}()
-
-			temporaryPath := t.TempDir()
-			repositoryPath := filepath.Join(temporaryPath, filepath.Base(tc.RepositoryPath))
-			require.NoError(t, osutil.CopyTree(tc.RepositoryPath, repositoryPath))
-
-			if tc.RepositoryChange != nil {
-				tc.RepositoryChange(t, repositoryPath)
-			}
-
-			if tc.Language == nil {
-				tc.Language = &Language{}
-			}
-			actualCoverage, actualProblems, actualError := tc.Language.Execute(logger, repositoryPath)
-
-			require.Equal(t, len(tc.ExpectedProblemTexts), len(actualProblems), "the number of expected problems need to match the number of actual problems")
-			for i, expectedProblemText := range tc.ExpectedProblemTexts {
-				assert.ErrorContains(t, actualProblems[i], expectedProblemText)
-			}
-
-			if tc.ExpectedError != nil {
-				assert.ErrorIs(t, actualError, tc.ExpectedError)
-			} else if actualError != nil && tc.ExpectedErrorText != "" {
-				assert.ErrorContains(t, actualError, tc.ExpectedErrorText)
-			} else {
-				assert.NoError(t, actualError)
-				assert.Equal(t, tc.ExpectedCoverage, actualCoverage)
-			}
-		})
-	}
-
-	validate(t, &testCase{
+	validate(t, &languagetesting.TestCaseExecuteTests{
 		Name: "No test files",
 
 		RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "plain"),
 
-		ExpectedCoverage:  0,
+		ExpectedTestResult: &language.TestResult{
+			Coverage: 0,
+		},
 		ExpectedErrorText: "exit status 1",
 	})
 
 	t.Run("With test file", func(t *testing.T) {
-		validate(t, &testCase{
+		validate(t, &languagetesting.TestCaseExecuteTests{
 			Name: "Valid",
 
 			RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "plain"),
@@ -136,10 +96,15 @@ func TestLanguageExecute(t *testing.T) {
 				`)), 0660))
 			},
 
-			ExpectedCoverage: 1,
+			ExpectedTestResult: &language.TestResult{
+				TestsTotal: 1,
+				TestsPass:  1,
+
+				Coverage: 1,
+			},
 		})
 
-		validate(t, &testCase{
+		validate(t, &languagetesting.TestCaseExecuteTests{
 			Name: "Failing tests",
 
 			RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "light"),
@@ -158,13 +123,18 @@ func TestLanguageExecute(t *testing.T) {
 				`)), 0660))
 			},
 
-			ExpectedCoverage: 1,
+			ExpectedTestResult: &language.TestResult{
+				TestsTotal: 1,
+				TestsPass:  0,
+
+				Coverage: 1,
+			},
 			ExpectedProblemTexts: []string{
 				"exit status 1", // Test execution fails.
 			},
 		})
 
-		validate(t, &testCase{
+		validate(t, &languagetesting.TestCaseExecuteTests{
 			Name: "Syntax error",
 
 			RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "plain"),
@@ -266,5 +236,98 @@ func TestExtractMistakes(t *testing.T) {
 			"./foobar.go:4:2: syntax error: non-declaration statement outside function body",
 			"./foobar.go:5:1: missing return",
 		},
+	})
+}
+
+func TestParseSymflowerTestOutput(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Data string
+
+		ExpectedTestsTotal int
+		ExpectedTestsPass  int
+		ExpectedErr        error
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			actualTestsTotal, actualTestsPass, actualErr := parseSymflowerTestOutput(bytesutil.StringTrimIndentations(tc.Data))
+
+			assert.Equal(t, tc.ExpectedTestsTotal, actualTestsTotal)
+			assert.Equal(t, tc.ExpectedTestsPass, actualTestsPass)
+			assert.Equal(t, tc.ExpectedErr, actualErr)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Passing tests only",
+
+		Data: `
+			=== RUN   TestSymflowerIsSorted
+			=== RUN   TestSymflowerIsSorted/#00
+			--- PASS: TestSymflowerIsSorted/#00 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#01
+			--- PASS: TestSymflowerIsSorted/#01 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#02
+			--- PASS: TestSymflowerIsSorted/#02 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#03
+			--- PASS: TestSymflowerIsSorted/#03 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#04
+			--- PASS: TestSymflowerIsSorted/#04 (0.00s)
+			--- PASS: TestSymflowerIsSorted (0.00s)
+			PASS
+			coverage: 100.0% of statements
+			ok      isSorted        0.003s
+
+			DONE 6 tests in 0.281s
+		`,
+
+		ExpectedTestsTotal: 6,
+		ExpectedTestsPass:  6,
+	})
+	validate(t, &testCase{
+		Name: "Failing tests",
+
+		Data: `
+			=== RUN   TestSymflowerIsSorted
+			=== RUN   TestSymflowerIsSorted/#00
+				isSorted_test.go:22:
+							Error Trace:    /home/andreas/repos/eval-dev-quality/testdata/golang/transpile/isSorted/isSorted_test.go:22
+							Error:          Not equal:
+											expected: true
+											actual  : false
+							Test:           TestSymflowerIsSorted/#00
+			--- FAIL: TestSymflowerIsSorted/#00 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#01
+			--- PASS: TestSymflowerIsSorted/#01 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#02
+			--- PASS: TestSymflowerIsSorted/#02 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#03
+			--- PASS: TestSymflowerIsSorted/#03 (0.00s)
+			=== RUN   TestSymflowerIsSorted/#04
+			--- PASS: TestSymflowerIsSorted/#04 (0.00s)
+			--- FAIL: TestSymflowerIsSorted (0.00s)
+			FAIL
+			coverage: 100.0% of statements
+			exit status 1
+			FAIL    isSorted        0.002s
+
+			=== Failed
+			=== FAIL: . TestSymflowerIsSorted/#00 (0.00s)
+				isSorted_test.go:22:
+							Error Trace:    /home/andreas/repos/eval-dev-quality/testdata/golang/transpile/isSorted/isSorted_test.go:22
+							Error:          Not equal:
+											expected: true
+											actual  : false
+							Test:           TestSymflowerIsSorted/#00
+
+			=== FAIL: . TestSymflowerIsSorted (0.00s)
+
+			DONE 6 tests, 2 failures in 0.288s
+		`,
+
+		ExpectedTestsTotal: 6,
+		ExpectedTestsPass:  4,
 	})
 }

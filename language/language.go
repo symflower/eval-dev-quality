@@ -1,6 +1,7 @@
 package language
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"sort"
@@ -9,6 +10,11 @@ import (
 	pkgerrors "github.com/pkg/errors"
 
 	"github.com/symflower/eval-dev-quality/log"
+)
+
+var (
+	// ErrCannotParseTestSummary indicates that the test summary cannot be parsed.
+	ErrCannotParseTestSummary = errors.New("cannot parse test summary")
 )
 
 // DefaultExecutionTimeout defines the timeout for an execution.
@@ -36,8 +42,8 @@ type Language interface {
 	// DefaultTestFileSuffix returns the default test file suffix of the implemented language.
 	DefaultTestFileSuffix() string
 
-	// Execute invokes the language specific testing on the given repository.
-	Execute(logger *log.Logger, repositoryPath string) (coverage uint64, problems []error, err error)
+	// ExecuteTests invokes the language specific testing on the given repository.
+	ExecuteTests(logger *log.Logger, repositoryPath string) (testResult *TestResult, problems []error, err error)
 	// Mistakes builds a repository and returns the list of mistakes found.
 	Mistakes(logger *log.Logger, repositoryPath string) (mistakes []string, err error)
 }
@@ -73,4 +79,17 @@ func RepositoriesForLanguage(language Language, testdataPath string) (relativeRe
 	sort.Strings(relativeRepositoryPaths)
 
 	return relativeRepositoryPaths, nil
+}
+
+// TestResult holds the result of running tests.
+type TestResult struct {
+	TestsTotal uint
+	TestsPass  uint
+
+	Coverage uint64
+}
+
+// PassingTestsPercentage returns the percentage of passing tests.
+func (tr *TestResult) PassingTestsPercentage() (percentage uint) {
+	return tr.TestsPass / tr.TestsTotal * 100
 }
