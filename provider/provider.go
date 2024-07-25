@@ -57,7 +57,13 @@ type Service interface {
 // Loader is a provider that is able to load and unload models.
 type Loader interface {
 	// Load loads the given model.
-	Load(modelIdentifier string) error
+	Load(modelIdentifier string) (err error)
 	// Unload unloads the given model.
-	Unload(modelIdentifier string) error
+	Unload(modelIdentifier string) (err error)
+}
+
+// Puller is a provider that is capable of pulling models.
+type Puller interface {
+	// Pull downloads the given model.
+	Pull(logger *log.Logger, modelIdentifier string) (err error)
 }

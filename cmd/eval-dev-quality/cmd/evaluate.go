@@ -108,7 +108,7 @@ func (command *Evaluate) SetArguments(args []string) {
 }
 
 // Initialize initializes the command according to the arguments.
-func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.Context, evaluationConfiguration *EvaluationConfiguration) {
+func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.Context, evaluationConfiguration *EvaluationConfiguration, cleanup func()) {
 	evaluationContext = &evaluate.Context{}
 	evaluationConfiguration = NewEvaluationConfiguration()
 
@@ -314,6 +314,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 	}
 
 	// Gather models.
+	serviceShutdown := []func() (err error){}
 	{
 		// Check which providers are needed for the evaluation.
 		providersSelected := map[string]provider.Provider{}
@@ -322,6 +323,11 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		} else {
 			for _, model := range command.Models {
 				p := strings.SplitN(model, provider.ProviderModelSeparator, 2)[0]
+
+				if _, ok := providersSelected[p]; ok {
+					continue
+				}
+
 				if provider, ok := provider.Providers[p]; !ok {
 					command.logger.Panicf("Provider %q does not exist", p)
 				} else {
@@ -355,11 +361,19 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				if err != nil {
 					command.logger.Panicf("ERROR: could not start services for provider %q: %s", p, err)
 				}
-				defer func() {
-					if err := shutdown(); err != nil {
-						command.logger.Panicf("ERROR: could not shutdown services of provider %q: %s", p, err)
+				serviceShutdown = append(serviceShutdown, shutdown)
+			}
+
+			// Check if a provider has the ability to pull models and do so if necessary.
+			if puller, ok := p.(provider.Puller); ok {
+				command.logger.Printf("Pulling available models for provider %q", p.ID())
+				for _, modelID := range command.Models {
+					if strings.HasPrefix(modelID, p.ID()) {
+						if err := puller.Pull(command.logger, modelID); err != nil {
+							command.logger.Panicf("ERROR: could not pull model %q: %s", modelID, err)
+						}
 					}
-				}()
+				}
 			}
 
 			ms, err := p.Models()
@@ -397,14 +411,21 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 	}
 
-	return evaluationContext, evaluationConfiguration
+	return evaluationContext, evaluationConfiguration, func() {
+		for _, shutdown := range serviceShutdown {
+			if err := shutdown(); err != nil {
+				command.logger.Error(err.Error())
+			}
+		}
+	}
 }
 
 // Execute executes the command.
 func (command *Evaluate) Execute(args []string) (err error) {
 	command.timestamp = time.Now()
 
-	evaluationContext, evaluationConfiguration := command.Initialize(args)
+	evaluationContext, evaluationConfiguration, cleanup := command.Initialize(args)
+	defer cleanup()
 	if evaluationContext == nil {
 		command.logger.Panic("ERROR: empty evaluation context")
 	} else if evaluationConfiguration == nil {

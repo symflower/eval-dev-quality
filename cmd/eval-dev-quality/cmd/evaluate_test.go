@@ -495,22 +495,8 @@ func TestEvaluateExecute(t *testing.T) {
 			}
 
 			{
-				var shutdown func() (err error)
-				defer func() { // Defer the shutdown in case there is a panic.
-					if shutdown != nil {
-						require.NoError(t, shutdown())
-					}
-				}()
 				validate(t, &testCase{
 					Name: "Pulled Model",
-
-					Before: func(t *testing.T, logger *log.Logger, resultPath string) {
-						var err error
-						shutdown, err = tools.OllamaStart(logger, tools.OllamaPath, tools.OllamaURL)
-						require.NoError(t, err)
-
-						require.NoError(t, tools.OllamaPull(logger, tools.OllamaPath, tools.OllamaURL, providertesting.OllamaTestModel))
-					},
 
 					Arguments: []string{
 						"--language", "golang",
@@ -1064,9 +1050,12 @@ func TestEvaluateInitialize(t *testing.T) {
 			tc.Command.logger = logger
 			tc.Command.ResultPath = strings.ReplaceAll(tc.Command.ResultPath, "$TEMP_PATH", temporaryDirectory)
 
+			var cleanup func()
+
 			if tc.ValidatePanic != "" {
 				assert.PanicsWithValue(t, tc.ValidatePanic, func() {
-					_, _ = tc.Command.Initialize([]string{})
+					_, _, cleanup = tc.Command.Initialize([]string{})
+					defer cleanup()
 				})
 
 				return
@@ -1075,7 +1064,8 @@ func TestEvaluateInitialize(t *testing.T) {
 			var actualEvaluationContext *evaluate.Context
 			var actualEvaluationConfiguration *EvaluationConfiguration
 			assert.NotPanics(t, func() {
-				actualEvaluationContext, actualEvaluationConfiguration = tc.Command.Initialize([]string{})
+				actualEvaluationContext, actualEvaluationConfiguration, cleanup = tc.Command.Initialize([]string{})
+				defer cleanup()
 			})
 
 			if tc.ValidateCommand != nil {
