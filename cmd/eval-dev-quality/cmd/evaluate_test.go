@@ -221,6 +221,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
 					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 				},
+				filepath.Join("result-directory", "config.json"): nil,
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
@@ -285,6 +286,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
 					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 				},
+				filepath.Join("result-directory", "config.json"): nil,
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
@@ -380,6 +382,7 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
 						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 					},
+					filepath.Join("result-directory", "config.json"): nil,
 					filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
@@ -430,6 +433,7 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
 						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
 					},
+					filepath.Join("result-directory", "config.json"): nil,
 					filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
@@ -516,6 +520,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 						filepath.Join("result-directory", "categories.svg"): nil,
+						filepath.Join("result-directory", "config.json"):    nil,
 						filepath.Join("result-directory", "evaluation.csv"): nil,
 						filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath, data string) {
 							// Since the model is non-deterministic, we can only assert that the model did at least not error.
@@ -545,6 +550,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 						filepath.Join("result-directory", "categories.svg"): nil,
+						filepath.Join("result-directory", "config.json"):    nil,
 						filepath.Join("result-directory", "evaluation.csv"): nil,
 						filepath.Join("result-directory", "evaluation.log"): nil,
 						filepath.Join("result-directory", "README.md"):      nil,
@@ -590,6 +596,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 						filepath.Join("result-directory", "categories.svg"): nil,
+						filepath.Join("result-directory", "config.json"):    nil,
 						filepath.Join("result-directory", "evaluation.csv"): nil,
 						filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath, data string) {
 							// Since the model is non-deterministic, we can only assert that the model did at least not error.
@@ -634,6 +641,7 @@ func TestEvaluateExecute(t *testing.T) {
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				filepath.Join("result-directory", "categories.svg"): nil,
+				filepath.Join("result-directory", "config.json"):    nil,
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
@@ -808,9 +816,11 @@ func TestEvaluateExecute(t *testing.T) {
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				filepath.Join("result-directory", "evaluation.log"): nil,
+				filepath.Join("result-directory", "config.json"):    nil,
 
 				// Parallel run 1
 				filepath.Join("result-directory", "symflower_symbolic-execution", "categories.svg"): nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution", "config.json"):    nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
@@ -862,6 +872,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 				// Parallel run 2
 				filepath.Join("result-directory", "symflower_symbolic-execution_1", "categories.svg"): nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution_1", "config.json"):    nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution_1", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
@@ -913,6 +924,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 				// Parallel run 3
 				filepath.Join("result-directory", "symflower_symbolic-execution_2", "categories.svg"): nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution_2", "config.json"):    nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution_2", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
@@ -991,6 +1003,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 			filepath.Join("result-directory", "categories.svg"): nil,
+			filepath.Join("result-directory", "config.json"):    nil,
 			filepath.Join("result-directory", "evaluation.csv"): nil,
 			filepath.Join("result-directory", "evaluation.log"): nil,
 			filepath.Join("result-directory", "README.md"):      nil,
@@ -1012,6 +1025,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 			filepath.Join("result-directory-0", "categories.svg"): nil,
+			filepath.Join("result-directory-0", "config.json"):    nil,
 			filepath.Join("result-directory-0", "evaluation.csv"): nil,
 			filepath.Join("result-directory-0", "evaluation.log"): nil,
 			filepath.Join("result-directory-0", "README.md"):      nil,
@@ -1026,10 +1040,11 @@ func TestEvaluateInitialize(t *testing.T) {
 
 		Command *Evaluate
 
-		ValidateCommand func(t *testing.T, command *Evaluate)
-		ValidateContext func(t *testing.T, context *evaluate.Context)
-		ValidateResults func(t *testing.T, resultsPath string)
-		ValidatePanic   string
+		ValidateCommand       func(t *testing.T, command *Evaluate)
+		ValidateContext       func(t *testing.T, context *evaluate.Context)
+		ValidateConfiguration func(t *testing.T, config *EvaluationConfiguration)
+		ValidateResults       func(t *testing.T, resultsPath string)
+		ValidatePanic         string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -1049,18 +1064,18 @@ func TestEvaluateInitialize(t *testing.T) {
 			tc.Command.logger = logger
 			tc.Command.ResultPath = strings.ReplaceAll(tc.Command.ResultPath, "$TEMP_PATH", temporaryDirectory)
 
-			var actualEvaluationContext *evaluate.Context
-
 			if tc.ValidatePanic != "" {
 				assert.PanicsWithValue(t, tc.ValidatePanic, func() {
-					actualEvaluationContext = tc.Command.Initialize([]string{})
+					_, _ = tc.Command.Initialize([]string{})
 				})
 
 				return
 			}
 
+			var actualEvaluationContext *evaluate.Context
+			var actualEvaluationConfiguration *EvaluationConfiguration
 			assert.NotPanics(t, func() {
-				actualEvaluationContext = tc.Command.Initialize([]string{})
+				actualEvaluationContext, actualEvaluationConfiguration = tc.Command.Initialize([]string{})
 			})
 
 			if tc.ValidateCommand != nil {
@@ -1069,6 +1084,10 @@ func TestEvaluateInitialize(t *testing.T) {
 			if tc.ValidateContext != nil {
 				require.NotNil(t, actualEvaluationContext)
 				tc.ValidateContext(t, actualEvaluationContext)
+			}
+			if tc.ValidateConfiguration != nil {
+				require.NotNil(t, actualEvaluationConfiguration)
+				tc.ValidateConfiguration(t, actualEvaluationConfiguration)
 			}
 			if tc.ValidateResults != nil {
 				tc.ValidateResults(t, temporaryDirectory)
@@ -1143,6 +1162,10 @@ func TestEvaluateInitialize(t *testing.T) {
 				modelIDs[i] = model.ID()
 			}
 			assert.Contains(t, modelIDs, "symflower/symbolic-execution")
+		},
+		ValidateConfiguration: func(t *testing.T, config *EvaluationConfiguration) {
+			assert.Contains(t, config.Models.Available, "symflower/symbolic-execution")
+			assert.Contains(t, config.Models.Selected, "symflower/symbolic-execution")
 		},
 	})
 	validate(t, &testCase{
