@@ -108,8 +108,9 @@ func (command *Evaluate) SetArguments(args []string) {
 }
 
 // Initialize initializes the command according to the arguments.
-func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.Context) {
+func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.Context, evaluationConfiguration *EvaluationConfiguration) {
 	evaluationContext = &evaluate.Context{}
+	evaluationConfiguration = NewEvaluationConfiguration()
 
 	// Check and validate common options.
 	{
@@ -369,6 +370,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			for _, m := range ms {
 				models[m.ID()] = m
 				evaluationContext.ProviderForModel[m] = p
+				evaluationConfiguration.Models.Available = append(evaluationConfiguration.Models.Available, m.ID())
 			}
 		}
 		modelIDs := maps.Keys(models)
@@ -391,19 +393,31 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		evaluationContext.Models = make([]model.Model, len(command.Models))
 		for i, modelID := range command.Models {
 			evaluationContext.Models[i] = modelsSelected[modelID]
+			evaluationConfiguration.Models.Selected = append(evaluationConfiguration.Models.Selected, modelID)
 		}
 	}
 
-	return evaluationContext
+	return evaluationContext, evaluationConfiguration
 }
 
 // Execute executes the command.
 func (command *Evaluate) Execute(args []string) (err error) {
 	command.timestamp = time.Now()
 
-	evaluationContext := command.Initialize(args)
+	evaluationContext, evaluationConfiguration := command.Initialize(args)
 	if evaluationContext == nil {
 		command.logger.Panic("ERROR: empty evaluation context")
+	} else if evaluationConfiguration == nil {
+		command.logger.Panic("ERROR: empty evaluation configuration")
+	}
+
+	configurationFile, err := os.Create(filepath.Join(evaluationContext.ResultPath, "config.json"))
+	if err != nil {
+		command.logger.Panicf("ERROR: cannot create configuration file: %s", err)
+	}
+	defer configurationFile.Close()
+	if err := evaluationConfiguration.Write(configurationFile); err != nil {
+		command.logger.Panicf("ERROR: %s", err)
 	}
 
 	switch command.Runtime {
