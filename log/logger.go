@@ -131,7 +131,7 @@ func (l *Logger) Panic(message string) {
 	panic(message)
 }
 
-// Panic is equivalent to "Print" followed by a "os.Exit(1)".
+// Fatal is equivalent to "Print" followed by a "os.Exit(1)".
 func (l *Logger) Fatal(v ...any) {
 	l.Logger.Info(fmt.Sprint(v...))
 
