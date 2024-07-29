@@ -24,6 +24,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
+	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 	"github.com/symflower/eval-dev-quality/util"
@@ -1182,6 +1183,16 @@ func TestEvaluateInitialize(t *testing.T) {
 				filepath.Join("golang", "light"),
 				filepath.Join("golang", "plain"),
 			}, context.RepositoryPaths)
+		},
+		ValidateConfiguration: func(t *testing.T, config *EvaluationConfiguration) {
+			if assert.Contains(t, config.Repositories.Available, "golang/plain") {
+				assert.Equal(t, []task.Identifier{evaluatetask.IdentifierWriteTests}, config.Repositories.Available["golang/plain"])
+			}
+			if assert.Contains(t, config.Repositories.Available, "java/plain") {
+				assert.Equal(t, []task.Identifier{evaluatetask.IdentifierWriteTests}, config.Repositories.Available["java/plain"])
+			}
+			assert.Contains(t, config.Repositories.Selected, "golang/plain")
+			assert.NotContains(t, config.Repositories.Selected, "java/plain")
 		},
 	})
 	validate(t, &testCase{

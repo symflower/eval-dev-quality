@@ -22,6 +22,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
+	evaltask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
 	_ "github.com/symflower/eval-dev-quality/language/golang" // Register language.
 	_ "github.com/symflower/eval-dev-quality/language/java"   // Register language.
@@ -275,6 +276,23 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 	// Gather repositories and update language selection accordingly.
 	{
+		// First gather all available repositories to store in the configuration report.
+		for _, l := range language.Languages {
+			repositories, err := language.RepositoriesForLanguage(l, command.TestdataPath)
+			if err != nil {
+				command.logger.Panicf("ERROR: %s", err)
+			}
+			for _, r := range repositories {
+				config, err := evaltask.LoadRepositoryConfiguration(filepath.Join(command.TestdataPath, r))
+				if err != nil {
+					command.logger.Panicf("ERROR: %s", err)
+				}
+				// Always store in UNIX file format to be cross-OS compatible.
+				r = strings.ReplaceAll(r, "\\", "/")
+				evaluationConfiguration.Repositories.Available[r] = config.Tasks
+			}
+		}
+
 		if len(command.Repositories) == 0 {
 			for _, l := range command.Languages {
 				repositories, err := language.RepositoriesForLanguage(language.Languages[l], command.TestdataPath)
@@ -312,6 +330,11 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			sort.Strings(command.Repositories)
 		}
 		evaluationContext.RepositoryPaths = command.Repositories
+		for _, r := range command.Repositories {
+			// Always store in UNIX file format to be cross-OS compatible.
+			r = strings.ReplaceAll(r, "\\", "/")
+			evaluationConfiguration.Repositories.Selected = append(evaluationConfiguration.Repositories.Selected, r)
+		}
 	}
 
 	// Make the resolved selected languages available in the command.
