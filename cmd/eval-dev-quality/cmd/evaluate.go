@@ -746,6 +746,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 				Command: []string{
 					"kubectl",
 					"wait",
+					"--timeout", "24h",
 					"--for=condition=complete",
 					"--namespace",
 					command.Namespace,
