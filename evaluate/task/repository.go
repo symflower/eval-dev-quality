@@ -18,13 +18,39 @@ import (
 	"github.com/symflower/eval-dev-quality/util"
 )
 
-// repositoryConfiguration holds the configuration of a repository.
-type repositoryConfiguration struct {
+// RepositoryConfiguration holds the configuration of a repository.
+type RepositoryConfiguration struct {
 	Tasks []task.Identifier
 }
 
+// LoadRepositoryConfiguration loads a repository configuration from the given path.
+func LoadRepositoryConfiguration(path string) (config *RepositoryConfiguration, err error) {
+	if osutil.FileExists(path) != nil { // If we don't get a valid file, assume it is a repository directory and target the default configuration file name.
+		path = filepath.Join(path, RepositoryConfigurationFileName)
+	}
+
+	data, err := os.ReadFile(path)
+	if errors.Is(err, os.ErrNotExist) {
+		// Set default configuration.
+		return &RepositoryConfiguration{
+			Tasks: AllIdentifiers,
+		}, nil
+	} else if err != nil {
+		return nil, pkgerrors.Wrap(err, path)
+	}
+
+	config = &RepositoryConfiguration{}
+	if err := json.Unmarshal(data, &config); err != nil {
+		return nil, pkgerrors.Wrap(err, path)
+	} else if err := config.validate(); err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
+
 // validate validates the configuration.
-func (rc *repositoryConfiguration) validate() (err error) {
+func (rc *RepositoryConfiguration) validate() (err error) {
 	if len(rc.Tasks) == 0 {
 		return pkgerrors.Errorf("empty list of tasks in configuration")
 	}
@@ -40,7 +66,7 @@ func (rc *repositoryConfiguration) validate() (err error) {
 
 // Repository holds data about a repository.
 type Repository struct {
-	repositoryConfiguration
+	RepositoryConfiguration
 
 	// name holds the name of the repository.
 	name string
@@ -50,27 +76,21 @@ type Repository struct {
 
 var _ task.Repository = (*Repository)(nil)
 
+// RepositoryConfigurationFileName holds the file name for a repository configuration.
+const RepositoryConfigurationFileName = "repository.json"
+
 // loadConfiguration loads the configuration from the dedicated configuration file.
 func (r *Repository) loadConfiguration() (err error) {
-	configurationFilePath := filepath.Join(r.dataPath, "repository.json")
+	configurationFilePath := filepath.Join(r.dataPath, RepositoryConfigurationFileName)
 
-	data, err := os.ReadFile(configurationFilePath)
-	if errors.Is(err, os.ErrNotExist) {
-		// Set default configuration.
-		r.repositoryConfiguration = repositoryConfiguration{
-			Tasks: AllIdentifiers,
-		}
-
-		return nil
-	} else if err != nil {
-		return pkgerrors.Wrap(err, configurationFilePath)
+	configuration, err := LoadRepositoryConfiguration(configurationFilePath)
+	if err != nil {
+		return err
 	}
 
-	if err := json.Unmarshal(data, &r.repositoryConfiguration); err != nil {
-		return pkgerrors.Wrap(err, configurationFilePath)
-	}
+	r.RepositoryConfiguration = *configuration
 
-	return r.repositoryConfiguration.validate()
+	return nil
 }
 
 // Name holds the name of the repository.
