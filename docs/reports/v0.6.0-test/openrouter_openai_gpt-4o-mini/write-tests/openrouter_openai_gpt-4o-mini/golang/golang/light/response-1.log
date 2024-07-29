@@ -1,0 +1,846 @@
+2024/07/30 07:34:37 Model "openrouter/openai/gpt-4o-mini" responded (5535 ms) with:
+	```golang
+	package light
+
+	import "testing"
+
+	func TestHasBalancedBrackets(t *testing.T) {
+		tests := []struct {
+			input    string
+			expected bool
+		}{
+			{"", true},                // empty string
+			{"[]", true},              // balanced brackets
+			{"[[]]", true},            // nested balanced brackets
+			{"[[][]]", true},          // multiple balanced brackets
+			{"[", false},              // unbalanced opening
+			{"]", false},              // unbalanced closing
+			{"[a]", false},            // non-bracket character
+			{"[[]]]", false},          // extra closing bracket
+			{"[[[]", false},           // extra opening bracket
+			{"[[]][[]]", true},        // multiple balanced pairs
+			{"[[]][[]][[[]]]", true},  // complex nested
+			{"[]]", false},            // extra closing bracket
+			{"[[]][[", false},         // extra opening bracket
+			{"[[[]]]]", false},        // extra closing bracket
+		}
+
+		for _, test := range tests {
+			result := hasBalancedBrackets(test.input)
+			if result != test.expected {
+				t.Errorf("hasBalancedBrackets(%q) = %v; want %v", test.input, result, test.expected)
+			}
+		}
+	}
+	```
+2024/07/30 07:34:43 Model "openrouter/openai/gpt-4o-mini" responded (5162 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestBinarySearch(t *testing.T) {
+		tests := []struct {
+			name     string
+			array    []int
+			target   int
+			expected int
+		}{
+			{"Found in the middle", []int{1, 2, 3, 4, 5}, 3, 2},
+			{"Found at the beginning", []int{1, 2, 3, 4, 5}, 1, 0},
+			{"Found at the end", []int{1, 2, 3, 4, 5}, 5, 4},
+			{"Not found, less than any element", []int{1, 2, 3, 4, 5}, 0, -1},
+			{"Not found, greater than any element", []int{1, 2, 3, 4, 5}, 6, -1},
+			{"Not found, middle element", []int{1, 2, 4, 5}, 3, -1},
+			{"Empty array", []int{}, 1, -1},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				result := binarySearch(tt.array, tt.target)
+				if result != tt.expected {
+					t.Errorf("binarySearch(%v, %d) = %d; want %d", tt.array, tt.target, result, tt.expected)
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:34:47 Model "openrouter/openai/gpt-4o-mini" responded (4143 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestCallLoopConditionsOftenEnough(t *testing.T) {
+		tests := []struct {
+			x, y, expected int
+		}{
+			{5, 10, 0},   // Test case for x < 10
+			{25, 10, 0},  // Test case for x > 20
+			{10, 0, 10},  // Test case for y == 0
+			{10, 21, 10}, // Test to check that y > 20 does not affect x
+			{10, 22, 11}, // Test to reach x > 20 after increment
+			{15, 22, 16}, // Test to reach x > 20 after increment
+		}
+
+		for _, test := range tests {
+			result := callLoopConditionsOftenEnough(test.x, test.y)
+			if result != test.expected {
+				t.Errorf("For x=%d, y=%d, expected %d but got %d", test.x, test.y, test.expected, result)
+			}
+		}
+	}
+	```
+2024/07/30 07:34:53 Model "openrouter/openai/gpt-4o-mini" responded (5041 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestCascadingIfElse(t *testing.T) {
+		tests := []struct {
+			input    int
+			expected int
+		}{
+			{1, 2},
+			{3, 4},
+			{2, 5}, // This tests the else condition
+			{0, 5}, // Another case for the else condition
+			{-1, 5}, // Another case for the else condition
+		}
+
+		for _, test := range tests {
+			result := cascadingIfElse(test.input)
+			if result != test.expected {
+				t.Errorf("cascadingIfElse(%d) = %d; expected %d", test.input, result, test.expected)
+			}
+		}
+	}
+	```
+2024/07/30 07:34:59 Model "openrouter/openai/gpt-4o-mini" responded (5655 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestComputeStepCount(t *testing.T) {
+		tests := []struct {
+			input    int
+			expected int
+			err      error
+		}{
+			{1, 0, nil},
+			{2, 1, nil},
+			{3, 7, nil},
+			{4, 2, nil},
+			{5, 5, nil},
+			{6, 8, nil},
+			{10, 6, nil},
+			{16, 4, nil},
+			{0, 0, errors.New("Only positive integers are allowed")},
+			{-1, 0, errors.New("Only positive integers are allowed")},
+		}
+
+		for _, test := range tests {
+			result, err := computeStepCount(test.input)
+
+			if err != nil && test.err == nil {
+				t.Errorf("Unexpected error for input %d: %v", test.input, err)
+			}
+
+			if err == nil && test.err != nil {
+				t.Errorf("Expected error for input %d, but got none", test.input)
+			}
+
+			if result != test.expected {
+				t.Errorf("For input %d: expected %d, got %d", test.input, test.expected, result)
+			}
+		}
+	}
+	```
+2024/07/30 07:35:04 Model "openrouter/openai/gpt-4o-mini" responded (3995 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestConditionsAnd(t *testing.T) {
+		tests := []struct {
+			x        rune
+			y        rune
+			expected bool
+		}{
+			{'A', 'B', true},
+			{'A', 'C', false},
+			{'B', 'A', false},
+			{'C', 'B', false},
+			{'C', 'C', false},
+			{'B', 'B', false},
+			{'A', 'A', false},
+		}
+
+		for _, test := range tests {
+			result := conditionsAnd(test.x, test.y)
+			if result != test.expected {
+				t.Errorf("conditionsAnd(%c, %c) = %v; expected %v", test.x, test.y, result, test.expected)
+			}
+		}
+	}
+	```
+2024/07/30 07:35:10 Model "openrouter/openai/gpt-4o-mini" responded (5787 ms) with:
+	```golang
+	package light
+
+	import "testing"
+
+	func TestEquilibriumIndices(t *testing.T) {
+		tests := []struct {
+			sequence   []int
+			expected   string
+		}{
+			{[]int{1, 2, 3, 4, 5, 6}, ""},
+			{[]int{1, 2, 3, 4, 5, 15}, "5;"},
+			{[]int{1, 2, 3, 3, 2, 1}, "2;"},
+			{[]int{0, 0, 0, 0}, "0;1;2;3;"},
+			{[]int{-1, 1, -1, 1}, "1;"},
+			{[]int{10, -10, 5, 5, 0}, "2;"},
+			{[]int{}, ""},
+			{[]int{1}, ""},
+			{[]int{1, -1}, "0;"},
+		}
+
+		for _, test := range tests {
+			result := equilibriumIndices(test.sequence)
+			if result != test.expected {
+				t.Errorf("equilibriumIndices(%v) = %q; want %q", test.sequence, result, test.expected)
+			}
+		}
+	}
+	```
+2024/07/30 07:35:13 Model "openrouter/openai/gpt-4o-mini" responded (2933 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestForLoop(t *testing.T) {
+		tests := []struct {
+			input    int
+			expected int
+		}{
+			{0, 0},
+			{1, 0},
+			{2, 1},
+			{3, 3},
+			{4, 6},
+			{5, 10},
+		}
+
+		for _, test := range tests {
+			result := forLoop(test.input)
+			if result != test.expected {
+				t.Errorf("forLoop(%d) = %d; expected %d", test.input, result, test.expected)
+			}
+		}
+	}
+	```
+2024/07/30 07:35:21 Model "openrouter/openai/gpt-4o-mini" responded (7073 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestJacobiSymbol(t *testing.T) {
+		tests := []struct {
+			k, n     uint64
+			expected int
+			err      bool
+		}{
+			{1, 7, 1, false},
+			{2, 7, -1, false},
+			{3, 7, -1, false},
+			{4, 7, 1, false},
+			{5, 7, -1, false},
+			{6, 7, 1, false},
+			{1, 8, 0, true}, // n is even
+			{3, 8, 0, true}, // n is even
+			{9, 9, 0, true}, // n is 1
+			{5, 4, 0, true}, // n is even
+			{2, 0, 0, true}, // n is even
+			{4, 5, -1, false},
+			{7, 11, 1, false},
+		}
+
+		for _, tt := range tests {
+			got, err := jacobiSymbol(tt.k, tt.n)
+			if (err != nil) != tt.err {
+				t.Errorf("jacobiSymbol(%d, %d) = error: %v, want error: %v", tt.k, tt.n, err, tt.err)
+			}
+			if err == nil && got != tt.expected {
+				t.Errorf("jacobiSymbol(%d, %d) = %d, want %d", tt.k, tt.n, got, tt.expected)
+			}
+		}
+	}
+	```
+2024/07/30 07:35:28 Model "openrouter/openai/gpt-4o-mini" responded (7018 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestInitialiseKlarnerRadoSequence(t *testing.T) {
+		tests := []struct {
+			limit int
+			want  []int
+		}{
+			{0, []int{0}},
+			{1, []int{0, 1}},
+			{5, []int{0, 1, 2, 3, 4, 5}},
+			{10, []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}},
+			{20, []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}},
+		}
+
+		for _, tt := range tests {
+			t.Run("", func(t *testing.T) {
+				got := initialiseKlarnerRadoSequence(tt.limit)
+				if len(got) != len(tt.want) {
+					t.Errorf("initialiseKlarnerRadoSequence(%d) = %v, want %v", tt.limit, got, tt.want)
+					return
+				}
+				for i := range got {
+					if got[i] != tt.want[i] {
+						t.Errorf("initialiseKlarnerRadoSequence(%d)[%d] = %d, want %d", tt.limit, i, got[i], tt.want[i])
+					}
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:35:35 Model "openrouter/openai/gpt-4o-mini" responded (6445 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestMaximumValue(t *testing.T) {
+		tests := []struct {
+			maximumWeight int
+			items         []Item
+			expected      int
+		}{
+			{
+				maximumWeight: 0,
+				items:         []Item{},
+				expected:      0,
+			},
+			{
+				maximumWeight: 50,
+				items: []Item{
+					{weight: 10, value: 60},
+					{weight: 20, value: 100},
+					{weight: 30, value: 120},
+				},
+				expected: 220,
+			},
+			{
+				maximumWeight: 30,
+				items: []Item{
+					{weight: 10, value: 60},
+					{weight: 20, value: 100},
+				},
+				expected: 160,
+			},
+			{
+				maximumWeight: 15,
+				items: []Item{
+					{weight: 10, value: 60},
+					{weight: 5, value: 30},
+				},
+				expected: 90,
+			},
+			{
+				maximumWeight: 50,
+				items: []Item{
+					{weight: 60, value: 100},
+					{weight: 50, value: 60},
+					{weight: 10, value: 30},
+				},
+				expected: 30,
+			},
+		}
+
+		for _, test := range tests {
+			result := maximumValue(test.maximumWeight, test.items)
+			if result != test.expected {
+				t.Errorf("For maximumWeight %d and items %+v, expected %d but got %d", test.maximumWeight, test.items, test.expected, result)
+			}
+		}
+	}
+	```
+2024/07/30 07:35:41 Model "openrouter/openai/gpt-4o-mini" responded (5428 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestLargestProperDivisor(t *testing.T) {
+		tests := []struct {
+			input          int
+			expected       int
+			expectedError  bool
+		}{
+			{0, 0, true},
+			{-1, 0, true},
+			{1, 1, false},
+			{2, 1, false},
+			{3, 1, false},
+			{4, 2, false},
+			{5, 1, false},
+			{6, 3, false},
+			{9, 3, false},
+			{10, 5, false},
+			{15, 5, false},
+			{25, 5, false},
+			{30, 15, false},
+		}
+
+		for _, test := range tests {
+			result, err := largestProperDivisor(test.input)
+			if test.expectedError {
+				if err == nil {
+					t.Errorf("Expected an error for input %d, got none", test.input)
+				}
+			} else {
+				if err != nil {
+					t.Errorf("Did not expect an error for input %d, got %v", test.input, err)
+				}
+				if result != test.expected {
+					t.Errorf("For input %d, expected %d, got %d", test.input, test.expected, result)
+				}
+			}
+		}
+	}
+	```
+2024/07/30 07:35:51 Model "openrouter/openai/gpt-4o-mini" responded (9710 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestMagicSquareOdd(t *testing.T) {
+		tests := []struct {
+			base     int
+			expected [][]int
+			err      bool
+		}{
+			{3, [][]int{
+				{8, 1, 6},
+				{3, 5, 7},
+				{4, 9, 2},
+			}, false},
+			{5, [][]int{
+				{17, 24,  1,  8, 15},
+				{23,  5,  7, 14, 16},
+				{4,  6, 13, 20, 22},
+				{10, 12, 19, 21,  3},
+				{11, 18, 25,  2,  9},
+			}, false},
+			{7, [][]int{
+				{30, 39, 48,  1, 10, 19, 28},
+				{38, 47,  6,  7, 16, 25, 36},
+				{46,  5,  8, 15, 24, 35, 44},
+				{4,  9, 14, 23, 34, 43,  2},
+				{12, 13, 22, 33, 42,  3,  11},
+				{20, 21, 32, 41, 48,  8,  9},
+				{26, 27, 30, 31, 32, 33, 34},
+			}, false},
+			{2, nil, true},
+			{1, nil, true},
+			{4, nil, true},
+		}
+
+		for _, test := range tests {
+			result, err := magicSquareOdd(test.base)
+			if test.err {
+				if err == nil {
+					t.Errorf("Expected error for base %d, got none", test.base)
+				}
+			} else {
+				if err != nil {
+					t.Errorf("Did not expect error for base %d, got: %v", test.base, err)
+				} else {
+					if !equal(result, test.expected) {
+						t.Errorf("For base %d:\nExpected %v\nGot %v", test.base, test.expected, result)
+					}
+				}
+			}
+		}
+	}
+
+	func equal(a, b [][]int) bool {
+		if len(a) != len(b) {
+			return false
+		}
+		for i := range a {
+			if len(a[i]) != len(b[i]) {
+				return false
+			}
+			for j := range a[i] {
+				if a[i][j] != b[i][j] {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	```
+2024/07/30 07:36:02 Model "openrouter/openai/gpt-4o-mini" responded (10047 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestMatchBytes(t *testing.T) {
+		tests := []struct {
+			s1       []byte
+			s2       []byte
+			expected bool
+		}{
+			{[]byte("hello"), []byte("hello"), true},
+			{[]byte("Hello"), []byte("hello"), true},
+			{[]byte("hElLo"), []byte("heLLo"), true},
+			{[]byte("hello"), []byte("world"), false},
+			{[]byte("hello"), []byte("HELLO"), true},
+			{[]byte("heLLo"), []byte("HILLo"), false},
+			{[]byte("abc"), []byte("ABC"), true},
+			{[]byte("aBc"), []byte("abc"), true},
+			{[]byte("123"), []byte("123"), true},
+			{[]byte("abc"), []byte("abC"), true},
+			{[]byte("abc"), []byte("aBc"), true},
+		}
+
+		for _, test := range tests {
+			result := matchBytes(test.s1, test.s2)
+			if result != test.expected {
+				t.Errorf("matchBytes(%q, %q) = %v; expected %v", test.s1, test.s2, result, test.expected)
+			}
+		}
+
+		// Edge cases
+		if !matchBytes([]byte(""), []byte("")) {
+			t.Errorf("matchBytes(%, %) = false; expected true", []byte(""), []byte(""))
+		}
+
+		if matchBytes([]byte("abc"), []byte("ab")) {
+			t.Errorf("matchBytes(%, %) = true; expected false", []byte("abc"), []byte("ab"))
+		}
+
+		if matchBytes([]byte("ab"), []byte("abc")) {
+			t.Errorf("matchBytes(%, %) = true; expected false", []byte("ab"), []byte("abc"))
+		}
+	}
+	```
+2024/07/30 07:36:12 Model "openrouter/openai/gpt-4o-mini" responded (10563 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestPascalsTriangle(t *testing.T) {
+		tests := []struct {
+			rows          int
+			expected      [][]int
+			expectingErr  bool
+		}{
+			{0, [][]int{}, false},
+			{1, [][]int{{1}}, false},
+			{2, [][]int{{1}, {1, 1}}, false},
+			{3, [][]int{{1}, {1, 1}, {1, 2, 1}}, false},
+			{4, [][]int{{1}, {1, 1}, {1, 2, 1}, {1, 3, 3, 1}}, false},
+			{5, [][]int{{1}, {1, 1}, {1, 2, 1}, {1, 3, 3, 1}, {1, 4, 6, 4, 1}}, false},
+			{-1, nil, true},
+		}
+
+		for _, tt := range tests {
+			result, err := pascalsTriangle(tt.rows)
+			if (err != nil) != tt.expectingErr {
+				t.Errorf("pascalsTriangle(%d) error = %v, expectingErr %v", tt.rows, err, tt.expectingErr)
+				continue
+			}
+			if !tt.expectingErr && !equal(result, tt.expected) {
+				t.Errorf("pascalsTriangle(%d) = %v, want %v", tt.rows, result, tt.expected)
+			}
+		}
+	}
+
+	func equal(a, b [][]int) bool {
+		if len(a) != len(b) {
+			return false
+		}
+		for i := range a {
+			if len(a[i]) != len(b[i]) {
+				return false
+			}
+			for j := range a[i] {
+				if a[i][j] != b[i][j] {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	```
+2024/07/30 07:36:20 Model "openrouter/openai/gpt-4o-mini" responded (6888 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+
+		"github.com/stretchr/testify/assert"
+	)
+
+	func TestExtractDigits(t *testing.T) {
+		tests := []struct {
+			input          string
+			expected      string
+			expectedError error
+		}{
+			{"123-456-7890", "1234567890", errors.New("punctuations not permitted")},
+			{"(123) 456 7890", "1234567890", nil},
+			{"123.456.7890", "1234567890", nil},
+			{"+123 (456) 7890", "1234567890", nil},
+			{"1234567890", "1234567890", nil},
+			{"abc123", "", errors.New("letters not permitted")},
+			{"123abc456", "", errors.New("letters not permitted")},
+			{"!@#$%", "", errors.New("punctuations not permitted")},
+			{"123 456 7890", "1234567890", nil},
+			{"", "", nil},
+			{"(", "", errors.New("letters not permitted")},
+			{"12-34", "", errors.New("punctuations not permitted")},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.input, func(t *testing.T) {
+				got, err := extractDigits(tt.input)
+				if tt.expectedError != nil {
+					assert.EqualError(t, err, tt.expectedError.Error())
+					assert.Equal(t, "", got)
+				} else {
+					assert.NoError(t, err)
+					assert.Equal(t, tt.expected, got)
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:36:24 Model "openrouter/openai/gpt-4o-mini" responded (2379 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestSimpleIfElse(t *testing.T) {
+		tests := []struct {
+			input    int
+			expected int
+		}{
+			{1, 0},
+			{2, 1},
+			{-1, 1},
+		}
+
+		for _, test := range tests {
+			result := simpleIfElse(test.input)
+			if result != test.expected {
+				t.Errorf("For input %d, expected %d but got %d", test.input, test.expected, result)
+			}
+		}
+	}
+	```
+2024/07/30 07:36:28 Model "openrouter/openai/gpt-4o-mini" responded (3179 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestSimpleSwitchWithReturn(t *testing.T) {
+		tests := []struct {
+			input    int
+			expected int
+		}{
+			{1, 0},
+			{2, 1},
+			{0, 1},
+			{-1, 1},
+		}
+
+		for _, test := range tests {
+			result := simpleSwitchWithReturn(test.input)
+			if result != test.expected {
+				t.Errorf("For input %d, expected %d, got %d", test.input, test.expected, result)
+			}
+		}
+	}
+	```
+2024/07/30 07:36:33 Model "openrouter/openai/gpt-4o-mini" responded (5201 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestIsSorted(t *testing.T) {
+		tests := []struct {
+			a      []int
+			expect bool
+		}{
+			{[]int{}, true},                // empty slice
+			{[]int{1}, true},               // single element
+			{[]int{1, 2}, true},            // two elements sorted
+			{[]int{2, 1}, false},           // two elements not sorted
+			{[]int{1, 2, 3, 4}, true},      // multiple elements sorted
+			{[]int{4, 3, 2, 1}, false},     // multiple elements not sorted
+			{[]int{1, 2, 3, 2}, false},     // not sorted
+			{[]int{1, 2, 3, 3}, true},      // duplicates sorted
+			{[]int{3, 3, 3, 3}, true},      // all equal
+		}
+
+		for _, tt := range tests {
+			t.Run("", func(t *testing.T) {
+				got := isSorted(tt.a)
+				if got != tt.expect {
+					t.Errorf("isSorted(%v) = %v; want %v", tt.a, got, tt.expect)
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:36:39 Model "openrouter/openai/gpt-4o-mini" responded (4822 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestTypeArrayAccess(t *testing.T) {
+		tests := []struct {
+			input    []int
+			expected int
+		}{
+			{[]int{123}, 123},   // Case where x[0] == 123
+			{[]int{5}, 3},       // Case where x[0] != 123
+			{[]int{-1}, 3},      // Another case where x[0] != 123
+			{[]int{0}, 3},       // Yet another case where x[0] != 123
+		}
+
+		for _, test := range tests {
+			result := typeArrayAccess(test.input)
+			if result != test.expected {
+				t.Errorf("typeArrayAccess(%v) = %d; expected %d", test.input, result, test.expected)
+			}
+		}
+	}
+	```
+2024/07/30 07:36:43 Model "openrouter/openai/gpt-4o-mini" responded (3688 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestTypeArrayConsecutiveAccess(t *testing.T) {
+		tests := []struct {
+			input    []int
+			expected int
+		}{
+			{[]int{0, 8}, 2},
+			{[]int{0, 0}, 1},
+			{[]int{1, 8}, 1},
+			{[]int{0, 1}, 1},
+			{[]int{1, 1}, 0},
+			{[]int{8, 8}, 0},
+		}
+
+		for _, test := range tests {
+			result := typeArrayConsecutiveAccess(test.input)
+			if result != test.expected {
+				t.Errorf("for input %v, expected %d but got %d", test.input, test.expected, result)
+			}
+		}
+	}
+	```
+2024/07/30 07:36:47 Model "openrouter/openai/gpt-4o-mini" responded (3593 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestTypeArrayMultidimensionalArrayLength(t *testing.T) {
+		tests := []struct {
+			input    [][]int
+			expected int
+		}{
+			{input: [][]int{}, expected: 0},
+			{input: [][]int{{}}, expected: 0},
+			{input: [][]int{{1}}, expected: 0},
+			{input: [][]int{{1, 2}}, expected: 0},
+			{input: [][]int{{1}, {2}}, expected: 1},
+			{input: [][]int{{1, 2}, {3, 4}}, expected: 2},
+		}
+
+		for _, test := range tests {
+			result := typeArrayMultidimensionalArrayLength(test.input)
+			if result != test.expected {
+				t.Errorf("For input %v, expected %d but got %d", test.input, test.expected, result)
+			}
+		}
+	}
+	```
+2024/07/30 07:36:55 Model "openrouter/openai/gpt-4o-mini" responded (7876 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestValidDate(t *testing.T) {
+		tests := []struct {
+			day, month, year int
+			expected         bool
+		}{
+			{29, 2, 2020, true},   // leap year
+			{28, 2, 2021, true},   // non-leap year
+			{31, 12, 2021, true},  // last day of year
+			{1, 1, 1600, true},    // valid date, after 1583
+			{29, 2, 1800, false},  // not a leap year
+			{29, 2, 1900, false},  // not a leap year
+			{31, 4, 2021, false},  // April has 30 days
+			{1, 13, 2021, false},  // invalid month
+			{1, 0, 2021, false},   // invalid month
+			{0, 1, 2021, false},   // invalid day
+			{1, 2, 1582, false},   // before the cutoff year
+		}
+
+		for _, test := range tests {
+			result := validDate(test.day, test.month, test.year)
+			if result != test.expected {
+				t.Errorf("validDate(%d, %d, %d) = %v; want %v", test.day, test.month, test.year, result, test.expected)
+			}
+		}
+	}
+	```

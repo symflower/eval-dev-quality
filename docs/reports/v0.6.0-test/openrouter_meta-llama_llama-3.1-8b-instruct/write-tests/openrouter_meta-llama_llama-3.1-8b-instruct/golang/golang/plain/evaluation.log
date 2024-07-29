@@ -1,0 +1,415 @@
+2024/07/30 07:34:18 $ git clean -df
+2024/07/30 07:34:18 Evaluating model "openrouter/meta-llama/llama-3.1-8b-instruct" on task "write-tests" using language "golang" and repository "golang/plain"
+2024/07/30 07:34:18 $ git clean -df
+2024/07/30 07:34:18 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Go code file "plain.go" with package "plain", provide a test file for this code.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code in a fenced code block and nothing else.
+
+	```golang
+	package plain
+
+	func plain() {
+		return // This does not do anything but it gives us a line to cover.
+	}
+	```
+
+2024/07/30 07:34:21 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2451 ms) with:
+	```go
+	package plain
+
+	import (
+		"testing"
+	)
+
+	func TestPlain(t *testing.T) {
+		// Check that no panics occur
+		defer func() {
+			if r := recover(); r!= nil {
+				t.Errorf("plain() panicked with value %v", r)
+			}
+		}()
+
+		plain() // Call the function to make the compiler happy
+	}
+
+	func TestEmptyDecoratedFunction(t *testing.T) {
+		// Check that the code does not panic.
+		// If it panics, then there is a reachable return statement that we cannot find.
+		defer func() {
+			if r := recover(); r!= nil {
+				t.Errorf("emptyDecoratedFunction() panicked with value %v", r)
+			}
+		}()
+
+		_testDecoratedFunction("emptyDecoratedFunction")
+
+	}
+	```
+2024/07/30 07:34:21 $ go mod tidy
+2024/07/30 07:34:21 $ symflower test --language golang --workspace /tmp/eval-dev-quality2537524011/plain --coverage-file /tmp/eval-dev-quality2537524011/plain/coverage.json
+2024/07/30 07:34:21 Checking for updates
+2024/07/30 07:34:21 [0;30m[0;102mThere is a new version of symflower available! Please run `symflower update`.[0m
+2024/07/30 07:34:22 # plain [plain.test]
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+2024/07/30 07:34:22 WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+2024/07/30 07:34:22 
+=== Errors
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+
+DONE 0 tests, 1 error in 0.364s
+2024/07/30 07:34:22 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/07/30 07:34:22 model response alone failed execution, attempting to fix with "symflower fix "
+2024/07/30 07:34:22 $ symflower fix --language golang --workspace /tmp/eval-dev-quality2537524011/plain
+2024/07/30 07:34:22 Repairing plain.go
+2024/07/30 07:34:22 Repairing plain_test.go
+2024/07/30 07:34:22 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:34:22 $ go mod tidy
+2024/07/30 07:34:22 $ symflower test --language golang --workspace /tmp/eval-dev-quality2537524011/plain --coverage-file /tmp/eval-dev-quality2537524011/plain/coverage.json
+2024/07/30 07:34:23 # plain [plain.test]
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+2024/07/30 07:34:23 WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+2024/07/30 07:34:23 
+=== Errors
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+
+DONE 0 tests, 1 error in 0.075s
+2024/07/30 07:34:23 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/07/30 07:34:23 Evaluated model "openrouter/meta-llama/llama-3.1-8b-instruct" on task "write-tests" using language "golang" and repository "golang/plain": encountered 2 problems: [exit status 1
+Checking for updates
+[0;30m[0;102mThere is a new version of symflower available! Please run `symflower update`.[0m
+# plain [plain.test]
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+
+DONE 0 tests, 1 error in 0.364s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:106
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/app/evaluate/task/task-write-test.go:84
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/app/evaluate/evaluate.go:159
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:140
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:126
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/app/evaluate/task/task-write-test.go:84
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/app/evaluate/evaluate.go:159
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:140
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+Checking for updates
+[0;30m[0;102mThere is a new version of symflower available! Please run `symflower update`.[0m
+# plain [plain.test]
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+
+DONE 0 tests, 1 error in 0.364s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+plain.go exit status 1
+# plain [plain.test]
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+
+DONE 0 tests, 1 error in 0.075s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:106
+github.com/symflower/eval-dev-quality/evaluate/task.ExecuteWithSymflowerFix
+	/app/evaluate/task/symflower-fix.go:44
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/app/evaluate/task/task-write-test.go:99
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/app/evaluate/evaluate.go:159
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:140
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:126
+github.com/symflower/eval-dev-quality/evaluate/task.ExecuteWithSymflowerFix
+	/app/evaluate/task/symflower-fix.go:44
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/app/evaluate/task/task-write-test.go:99
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/app/evaluate/evaluate.go:159
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:140
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+# plain [plain.test]
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+
+DONE 0 tests, 1 error in 0.075s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+symflower fix]
+2024/07/30 07:34:23 Model "openrouter/meta-llama/llama-3.1-8b-instruct" was not able to solve the "golang/plain" repository for language "golang": [exit status 1
+Checking for updates
+[0;30m[0;102mThere is a new version of symflower available! Please run `symflower update`.[0m
+# plain [plain.test]
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+
+DONE 0 tests, 1 error in 0.364s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:106
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/app/evaluate/task/task-write-test.go:84
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/app/evaluate/evaluate.go:159
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:140
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:126
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/app/evaluate/task/task-write-test.go:84
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/app/evaluate/evaluate.go:159
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:140
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+Checking for updates
+[0;30m[0;102mThere is a new version of symflower available! Please run `symflower update`.[0m
+# plain [plain.test]
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+
+DONE 0 tests, 1 error in 0.364s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+plain.go exit status 1
+# plain [plain.test]
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+
+DONE 0 tests, 1 error in 0.075s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:106
+github.com/symflower/eval-dev-quality/evaluate/task.ExecuteWithSymflowerFix
+	/app/evaluate/task/symflower-fix.go:44
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/app/evaluate/task/task-write-test.go:99
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/app/evaluate/evaluate.go:159
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:140
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:126
+github.com/symflower/eval-dev-quality/evaluate/task.ExecuteWithSymflowerFix
+	/app/evaluate/task/symflower-fix.go:44
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskWriteTests).Run
+	/app/evaluate/task/task-write-test.go:99
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func1
+	/app/evaluate/evaluate.go:159
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:140
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+# plain [plain.test]
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+WARN invalid TestEvent: FAIL	plain [build failed]
+bad output from test2json: FAIL	plain [build failed]
+
+=== Errors
+./plain_test.go:27:2: undefined: _testDecoratedFunction
+
+DONE 0 tests, 1 error in 0.075s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+symflower fix]

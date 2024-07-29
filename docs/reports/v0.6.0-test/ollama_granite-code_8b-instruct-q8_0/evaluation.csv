@@ -1,0 +1,15 @@
+model-id,language,repository,task,score,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing
+ollama/granite-code:8b-instruct-q8_0,golang,golang/plain,write-tests,3,0,0,1,336,96618,346,1,1,1,0
+ollama/granite-code:8b-instruct-q8_0,golang,golang/plain,write-tests-symflower-fix,3,0,0,1,336,96618,346,1,1,1,0
+ollama/granite-code:8b-instruct-q8_0,java,java/plain,write-tests,13,10,1,1,324,121198,405,1,0,1,0
+ollama/granite-code:8b-instruct-q8_0,java,java/plain,write-tests-symflower-fix,13,10,1,1,324,121198,405,1,0,1,0
+ollama/granite-code:8b-instruct-q8_0,golang,golang/light,write-tests,395,340,10,23,12532,1395809,13047,23,9,13,0
+ollama/granite-code:8b-instruct-q8_0,golang,golang/light,write-tests-symflower-fix,436,380,11,23,12532,1396084,13047,23,9,13,0
+ollama/granite-code:8b-instruct-q8_0,golang,golang/mistakes,code-repair,150,130,5,5,670,52357,740,5,5,5,0
+ollama/granite-code:8b-instruct-q8_0,golang,golang/transpile,transpile,132,0,2,5,1625,118880,2750,5,0,5,120
+ollama/granite-code:8b-instruct-q8_0,golang,golang/transpile,transpile-symflower-fix,173,0,3,5,1625,119148,2750,5,0,5,160
+ollama/granite-code:8b-instruct-q8_0,java,java/light,write-tests,1383,1320,13,23,18146,978993,21252,23,7,20,0
+ollama/granite-code:8b-instruct-q8_0,java,java/light,write-tests-symflower-fix,1383,1320,13,23,18146,978993,21252,23,7,20,0
+ollama/granite-code:8b-instruct-q8_0,java,java/mistakes,code-repair,398,380,5,5,943,78279,991,5,4,4,0
+ollama/granite-code:8b-instruct-q8_0,java,java/transpile,transpile,167,0,4,5,2344,135228,3124,5,3,5,150
+ollama/granite-code:8b-instruct-q8_0,java,java/transpile,transpile-symflower-fix,167,0,4,5,2344,135228,3124,5,3,5,150

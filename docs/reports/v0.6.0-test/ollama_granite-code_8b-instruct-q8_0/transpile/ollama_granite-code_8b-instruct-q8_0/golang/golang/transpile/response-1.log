@@ -1,0 +1,112 @@
+2024/07/29 13:45:32 Model "ollama/granite-code:8b-instruct-q8_0" responded (52727 ms) with:
+	Here's the transpiled Go code file:
+
+	```golang
+	package balancedBrackets
+
+	import (
+	    "errors"
+	    "unicode"
+	)
+
+	var errNonBracket = errors.New("non-bracket characters")
+
+	func hasBalancedBrackets(charArray string) bool {
+	    brackets := 0
+	    for _, ch := range charArray {
+	        if unicode.Is(unicode.LBRACK, ch) {
+	            brackets++
+	        } else if unicode.Is(unicode.RBRACK, ch) {
+	            brackets--
+	        } else if !unicode.IsSpace(ch) {
+	            return false // Non-bracket characters.
+	        }
+	        if brackets < 0 { // Closing bracket before opening bracket.
+	            return false
+	        }
+	    }
+	    return brackets == 0
+	}
+	```
+
+
+	The transpiled Go code file includes the package "balancedBrackets", the import of the "errors" and "unicode" packages, and a constant for the error returned when non-bracket characters are encountered. The function `hasBalancedBrackets` takes in a string representing the character array and iterates over each character, checking if it's an opening bracket, a closing bracket, or neither. If it's an opening bracket, the brackets count is incremented; if it's a closing bracket, the brackets count is decremented. If the character isn't a bracket or a space, the function returns false (indicating that the string has unbalanced brackets). Finally, the function checks if the brackets count is less than 0 and returns false if so. If none of these conditions are met after iterating over the entire string, the function returns true, indicating that the brackets in the string are balanced.
+2024/07/29 13:45:48 Model "ollama/granite-code:8b-instruct-q8_0" responded (14672 ms) with:
+	Here's the transpiled Go source code:
+
+	```go
+	package binarySearch
+
+	import "sort"
+
+	func binarySearch(a []int, x int) int {
+		i := sort.Search(len(a), func(i int) bool {
+			return a[i] >= x
+		})
+		if i < len(a) && a[i] == x {
+			return i
+		} else {
+			return -1
+		}
+	}
+	```
+2024/07/29 13:45:59 Model "ollama/granite-code:8b-instruct-q8_0" responded (10585 ms) with:
+	Here is a possible solution in Go:
+
+	```go
+	package cascadingIfElse
+
+	import "fmt"
+
+	func cascadingIfElse(i int) int {
+	    if i == 1 {
+	        return 2
+	    } else if i == 3 {
+	        return 4
+	    } else {
+	        return 5
+	    }
+	}
+	```
+2024/07/29 13:46:19 Model "ollama/granite-code:8b-instruct-q8_0" responded (18957 ms) with:
+	Here's a possible solution:
+
+	```go
+	package isSorted
+
+	func isSorted(a []int) bool {
+	    i := 0
+	    for i < len(a)-1 && a[i] <= a[i+1] {
+	        i++
+	    }
+
+	    return i == len(a)-1
+	}
+	```
+2024/07/29 13:46:42 Model "ollama/granite-code:8b-instruct-q8_0" responded (21939 ms) with:
+	Here's a possible solution in Go:
+
+	```go
+	package pascalsTriangle
+
+	import "errors"
+
+	func generateTriangle(rows int) ([][]int, error) {
+	    if rows < 0 {
+	        return nil, errors.New("Rows can't be negative!")
+	    }
+
+	    triangle := make([][]int, rows)
+
+	    for i := range triangle {
+	        triangle[i] = make([]int, i+1)
+	        triangle[i][0] = 1
+
+	        for j := 1; j < i; j++ {
+	            triangle[i][j] = triangle[i-1][j-1] + triangle[i-1][j]
+	        }
+	        triangle[i][i] = 1
+	    }
+	    return triangle, nil
+	}
+	```

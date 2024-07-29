@@ -1,0 +1,490 @@
+2024/07/30 07:46:35 $ git clean -df
+2024/07/30 07:46:35 Evaluating model "openrouter/meta-llama/llama-3.1-8b-instruct" on task "transpile" using language "golang" and repository "golang/transpile"
+2024/07/30 07:46:35 $ git clean -df
+2024/07/30 07:46:35 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	// Copyright (C) rosettacode.org
+	package com.eval;
+
+	public class BalancedBrackets {
+	    static boolean hasBalancedBrackets(char[] charArray) {
+	        int brackets = 0;
+	        for (char ch : charArray) {
+	            if (ch == '[') {
+	                brackets++;
+	            } else if (ch == ']') {
+	                brackets--;
+	            } else {
+	                return false; // Non-bracket characters.
+	            }
+	            if (brackets < 0) { // Closing bracket before opening bracket.
+	                return false;
+	            }
+	        }
+	        return brackets == 0;
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "balancedBrackets" and the following signature:
+
+	```golang
+	package balancedBrackets
+
+	func hasBalancedBrackets(charArray string) bool {}
+	```
+
+2024/07/30 07:46:38 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2888 ms) with:
+	```go
+	package balancedBrackets
+
+	import (
+		"fmt"
+	)
+
+	func hasBalancedBrackets(charArray string) bool {
+		brackets := 0
+		for _, ch := range charArray {
+			if ch == '[' {
+				brackets++
+			} else if ch == ']' {
+				brackets--
+			} else {
+				return false // Non-bracket characters.
+			}
+			if brackets < 0 { // Closing bracket before opening bracket.
+				return false
+			}
+		}
+		return brackets == 0
+	}
+	```
+2024/07/30 07:46:38 $ go mod tidy
+2024/07/30 07:46:38 $ symflower test --language golang --workspace /tmp/eval-dev-quality3373099133/transpile/balancedBrackets --coverage-file /tmp/eval-dev-quality3373099133/transpile/balancedBrackets/coverage.json
+2024/07/30 07:46:39 # balancedBrackets [balancedBrackets.test]
+./balancedBrackets.go:4:2: "fmt" imported and not used
+2024/07/30 07:46:39 WARN invalid TestEvent: FAIL	balancedBrackets [build failed]
+bad output from test2json: FAIL	balancedBrackets [build failed]
+2024/07/30 07:46:39 
+=== Errors
+./balancedBrackets.go:4:2: "fmt" imported and not used
+
+DONE 0 tests, 1 error in 0.141s
+2024/07/30 07:46:39 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/07/30 07:46:39 model response alone failed execution, attempting to fix with "symflower fix "
+2024/07/30 07:46:39 $ symflower fix --language golang --workspace /tmp/eval-dev-quality3373099133/transpile/balancedBrackets
+2024/07/30 07:46:39 Repairing balancedBrackets.go
+2024/07/30 07:46:39 Repairing balancedBrackets_test.go
+2024/07/30 07:46:39 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:46:39 $ go mod tidy
+2024/07/30 07:46:39 $ symflower test --language golang --workspace /tmp/eval-dev-quality3373099133/transpile/balancedBrackets --coverage-file /tmp/eval-dev-quality3373099133/transpile/balancedBrackets/coverage.json
+2024/07/30 07:46:39 === RUN   TestSymflowerHasBalancedBrackets
+=== RUN   TestSymflowerHasBalancedBrackets/#00
+=== RUN   TestSymflowerHasBalancedBrackets/#01
+=== RUN   TestSymflowerHasBalancedBrackets/#02
+=== RUN   TestSymflowerHasBalancedBrackets/#03
+=== RUN   TestSymflowerHasBalancedBrackets/#04
+2024/07/30 07:46:39 --- PASS: TestSymflowerHasBalancedBrackets (0.00s)
+    --- PASS: TestSymflowerHasBalancedBrackets/#00 (0.00s)
+    --- PASS: TestSymflowerHasBalancedBrackets/#01 (0.00s)
+    --- PASS: TestSymflowerHasBalancedBrackets/#02 (0.00s)
+    --- PASS: TestSymflowerHasBalancedBrackets/#03 (0.00s)
+    --- PASS: TestSymflowerHasBalancedBrackets/#04 (0.00s)
+PASS
+2024/07/30 07:46:39 coverage: 80.0% of statements
+2024/07/30 07:46:39 ok  	balancedBrackets	0.003s	coverage: 80.0% of statements
+2024/07/30 07:46:39 
+DONE 6 tests in 0.342s
+2024/07/30 07:46:39 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:46:39 coverage objects: [{"FileRange":"balancedBrackets/balancedBrackets.go:13:3-balancedBrackets/balancedBrackets.go:13:19","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"balancedBrackets/balancedBrackets.go:17:2-balancedBrackets/balancedBrackets.go:17:22","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"balancedBrackets/balancedBrackets.go:3:49-balancedBrackets/balancedBrackets.go:8:4","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"balancedBrackets/balancedBrackets.go:8:9-balancedBrackets/balancedBrackets.go:10:4","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:46:39 Executes tests with 6 tests passing after "symflower fix"
+2024/07/30 07:46:39 $ git clean -df
+2024/07/30 07:46:39 Removing balancedBrackets/coverage.json
+Removing balancedBrackets/go.sum
+2024/07/30 07:46:39 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	class BinarySearch {
+		static int binarySearch(int[] a, int x) {
+			int index = -1;
+
+			int min = 0;
+			int max = a.length - 1;
+
+			while (index == -1 && min <= max) {
+				int m = (min + max) / 2;
+
+				if (x == a[m]) {
+					index = m;
+				} else if (x < a[m]) {
+					max = m - 1;
+				} else {
+					min = m + 1;
+				}
+			}
+
+			return index;
+		}
+	}
+	```
+
+	The transpiled Go code file must have the package "binarySearch" and the following signature:
+
+	```golang
+	package binarySearch
+
+	func binarySearch(a []int, x int) int {
+	}
+	```
+
+2024/07/30 07:46:41 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1339 ms) with:
+	```go
+	package binarySearch
+
+	func binarySearch(a []int, x int) int {
+		index := -1
+
+		min := 0
+		max := len(a) - 1
+
+		for index == -1 && min <= max {
+			m := (min + max) / 2
+
+			if x == a[m] {
+				index = m
+			} else if x < a[m] {
+				max = m - 1
+			} else {
+				min = m + 1
+			}
+		}
+
+		return index
+	}
+	```
+2024/07/30 07:46:41 $ go mod tidy
+2024/07/30 07:46:41 $ symflower test --language golang --workspace /tmp/eval-dev-quality3373099133/transpile/binarySearch --coverage-file /tmp/eval-dev-quality3373099133/transpile/binarySearch/coverage.json
+2024/07/30 07:46:41 === RUN   TestSymflowerBinarySearch
+=== RUN   TestSymflowerBinarySearch/#00
+=== RUN   TestSymflowerBinarySearch/#01
+=== RUN   TestSymflowerBinarySearch/#02
+=== RUN   TestSymflowerBinarySearch/#03
+=== RUN   TestSymflowerBinarySearch/#04
+--- PASS: TestSymflowerBinarySearch (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#00 (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#01 (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#02 (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#03 (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#04 (0.00s)
+PASS
+2024/07/30 07:46:41 coverage: 90.9% of statements
+2024/07/30 07:46:41 ok  	binarySearch	0.002s	coverage: 90.9% of statements
+2024/07/30 07:46:41 
+DONE 6 tests in 0.287s
+2024/07/30 07:46:41 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:46:41 coverage objects: [{"FileRange":"binarySearch/binarySearch.go:14:9-binarySearch/binarySearch.go:14:22","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"binarySearch/binarySearch.go:16:9-binarySearch/binarySearch.go:18:4","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"binarySearch/binarySearch.go:21:2-binarySearch/binarySearch.go:21:14","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"binarySearch/binarySearch.go:3:39-binarySearch/binarySearch.go:14:4","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:46:41 Executes tests with 6 tests passing
+2024/07/30 07:46:41 $ git clean -df
+2024/07/30 07:46:41 Removing binarySearch/coverage.json
+Removing binarySearch/go.sum
+2024/07/30 07:46:41 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	class CascadingIfElse {
+	    static int cascadingIfElse(int i) {
+	        if (i == 1) {
+	            return 2;
+	        } else if (i == 3) {
+	            return 4;
+	        } else {
+	            return 5;
+	        }
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "cascadingIfElse" and the following signature:
+
+	```golang
+	package cascadingIfElse
+
+	func cascadingIfElse(i int) int {
+	}
+	```
+
+2024/07/30 07:46:42 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1265 ms) with:
+	```go
+	package cascadingIfElse
+
+	func cascadingIfElse(i int) int {
+	    if i == 1 {
+	        return 2
+	    } else if i == 3 {
+	        return 4
+	    } else {
+	        return 5
+	    }
+	}
+	```
+2024/07/30 07:46:42 $ go mod tidy
+2024/07/30 07:46:42 $ symflower test --language golang --workspace /tmp/eval-dev-quality3373099133/transpile/cascadingIfElse --coverage-file /tmp/eval-dev-quality3373099133/transpile/cascadingIfElse/coverage.json
+2024/07/30 07:46:43 === RUN   TestSymflowerCascadingIfElse
+=== RUN   TestSymflowerCascadingIfElse/#00
+=== RUN   TestSymflowerCascadingIfElse/#01
+=== RUN   TestSymflowerCascadingIfElse/#02
+--- PASS: TestSymflowerCascadingIfElse (0.00s)
+    --- PASS: TestSymflowerCascadingIfElse/#00 (0.00s)
+    --- PASS: TestSymflowerCascadingIfElse/#01 (0.00s)
+    --- PASS: TestSymflowerCascadingIfElse/#02 (0.00s)
+2024/07/30 07:46:43 PASS
+2024/07/30 07:46:43 coverage: 100.0% of statements
+2024/07/30 07:46:43 ok  	cascadingIfElse	0.002s	coverage: 100.0% of statements
+2024/07/30 07:46:43 
+DONE 4 tests in 0.290s
+2024/07/30 07:46:43 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:46:43 coverage objects: [{"FileRange":"cascadingIfElse/cascadingIfElse.go:3:33-cascadingIfElse/cascadingIfElse.go:6:6","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"cascadingIfElse/cascadingIfElse.go:6:11-cascadingIfElse/cascadingIfElse.go:8:6","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"cascadingIfElse/cascadingIfElse.go:8:11-cascadingIfElse/cascadingIfElse.go:10:6","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:46:43 Executes tests with 4 tests passing
+2024/07/30 07:46:43 $ git clean -df
+2024/07/30 07:46:43 Removing cascadingIfElse/coverage.json
+Removing cascadingIfElse/go.sum
+2024/07/30 07:46:43 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	class IsSorted {
+	    static boolean isSorted(int[] a) {
+	        int i = 0;
+	        while (i < a.length - 1 && a[i] <= a[i + 1]) {
+	            i++;
+	        }
+
+	        return i == a.length - 1;
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "isSorted" and the following signature:
+
+	```golang
+	package isSorted
+
+	func isSorted(a []int) bool {
+	}
+	```
+
+2024/07/30 07:46:44 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1481 ms) with:
+	```go
+	package isSorted
+
+	func isSorted(a []int) bool {
+	    i := 0
+	    for ; i < len(a)-1 && a[i] <= a[i+1]; i++ {
+	    }
+
+	    return i == len(a) - 1
+	}
+	```
+2024/07/30 07:46:44 $ go mod tidy
+2024/07/30 07:46:44 $ symflower test --language golang --workspace /tmp/eval-dev-quality3373099133/transpile/isSorted --coverage-file /tmp/eval-dev-quality3373099133/transpile/isSorted/coverage.json
+2024/07/30 07:46:45 === RUN   TestSymflowerIsSorted
+=== RUN   TestSymflowerIsSorted/#00
+=== RUN   TestSymflowerIsSorted/#01
+=== RUN   TestSymflowerIsSorted/#02
+=== RUN   TestSymflowerIsSorted/#03
+=== RUN   TestSymflowerIsSorted/#04
+--- PASS: TestSymflowerIsSorted (0.00s)
+    --- PASS: TestSymflowerIsSorted/#00 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#01 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#02 (0.00s)
+2024/07/30 07:46:45     --- PASS: TestSymflowerIsSorted/#03 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#04 (0.00s)
+PASS
+2024/07/30 07:46:45 coverage: 100.0% of statements
+2024/07/30 07:46:45 ok  	isSorted	0.003s	coverage: 100.0% of statements
+2024/07/30 07:46:45 
+DONE 6 tests in 0.303s
+2024/07/30 07:46:45 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:46:45 coverage objects: [{"FileRange":"isSorted/isSorted.go:3:29-isSorted/isSorted.go:5:47","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"isSorted/isSorted.go:5:48-isSorted/isSorted.go:6:6","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"isSorted/isSorted.go:8:5-isSorted/isSorted.go:8:27","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:46:45 Executes tests with 6 tests passing
+2024/07/30 07:46:45 $ git clean -df
+2024/07/30 07:46:45 Removing isSorted/coverage.json
+Removing isSorted/go.sum
+2024/07/30 07:46:45 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	public class PascalsTriangle {
+	    int[][] generateTriangle(int rows) {
+	        if (rows < 0) {
+	            throw new IllegalArgumentException("Rows can't be negative!");
+	        }
+
+	        int[][] triangle = new int[rows][];
+
+	        for (int i = 0; i < rows; i++) {
+	            triangle[i] = new int[i + 1];
+	            triangle[i][0] = 1;
+	            for (int j = 1; j < i; j++) {
+	                triangle[i][j] = triangle[i - 1][j - 1] + triangle[i - 1][j];
+	            }
+	            triangle[i][i] = 1;
+	        }
+	        return triangle;
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "pascalsTriangle" and the following signature:
+
+	```golang
+	package pascalsTriangle
+
+	func pascalsTriangle(rows int) ([][]int, error) {
+	}
+	```
+
+2024/07/30 07:46:49 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3935 ms) with:
+	```go
+	package pascalsTriangle
+
+	import (
+		"errors"
+	)
+
+	func pascalsTriangle(rows int) ([][]int, error) {
+		if rows < 0 {
+			return nil, errors.New("Rows can't be negative!")
+		}
+
+		triangle := make([][]int, rows)
+		for i := 0; i < rows; i++ {
+			triangle[i] = make([]int, i+1)
+			triangle[i][0] = 1
+			for j := 1; j < i; j++ {
+				triangle[i][j] = triangle[i-1][j-1] + triangle[i-1][j]
+			}
+			triangle[i][i] = 1
+		}
+		return triangle, nil
+	}
+	```
+
+	This Go code maintains the same functionality as the Java code, generating Pascal's Triangle with a specified number of rows. It handles the case of a negative number of rows by returning an error. If the input is valid, it constructs the triangle by initializing the first and last elements of each row to 1, and the middle elements to the sum of the corresponding elements from the previous row. The completed triangle is then returned as a 2D slice of integers.
+2024/07/30 07:46:49 $ go mod tidy
+2024/07/30 07:46:49 $ symflower test --language golang --workspace /tmp/eval-dev-quality3373099133/transpile/pascalsTriangle --coverage-file /tmp/eval-dev-quality3373099133/transpile/pascalsTriangle/coverage.json
+2024/07/30 07:46:49 === RUN   TestSymflowerPascalsTriangle
+=== RUN   TestSymflowerPascalsTriangle/#00
+=== RUN   TestSymflowerPascalsTriangle/#01
+=== RUN   TestSymflowerPascalsTriangle/#02
+=== RUN   TestSymflowerPascalsTriangle/#03
+--- PASS: TestSymflowerPascalsTriangle (0.00s)
+    --- PASS: TestSymflowerPascalsTriangle/#00 (0.00s)
+    --- PASS: TestSymflowerPascalsTriangle/#01 (0.00s)
+    --- PASS: TestSymflowerPascalsTriangle/#02 (0.00s)
+2024/07/30 07:46:49     --- PASS: TestSymflowerPascalsTriangle/#03 (0.00s)
+PASS
+2024/07/30 07:46:49 coverage: 100.0% of statements
+2024/07/30 07:46:49 ok  	pascalsTriangle	0.003s	coverage: 100.0% of statements
+2024/07/30 07:46:49 
+DONE 5 tests in 0.281s
+2024/07/30 07:46:49 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:46:49 coverage objects: [{"FileRange":"pascalsTriangle/pascalsTriangle.go:12:2-pascalsTriangle/pascalsTriangle.go:18:4","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"pascalsTriangle/pascalsTriangle.go:19:3-pascalsTriangle/pascalsTriangle.go:19:21","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"pascalsTriangle/pascalsTriangle.go:21:2-pascalsTriangle/pascalsTriangle.go:21:22","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"pascalsTriangle/pascalsTriangle.go:7:49-pascalsTriangle/pascalsTriangle.go:10:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:46:49 Executes tests with 5 tests passing
+2024/07/30 07:46:49 Evaluated model "openrouter/meta-llama/llama-3.1-8b-instruct" on task "transpile" using language "golang" and repository "golang/transpile": encountered 1 problems: [exit status 1
+# balancedBrackets [balancedBrackets.test]
+./balancedBrackets.go:4:2: "fmt" imported and not used
+WARN invalid TestEvent: FAIL	balancedBrackets [build failed]
+bad output from test2json: FAIL	balancedBrackets [build failed]
+
+=== Errors
+./balancedBrackets.go:4:2: "fmt" imported and not used
+
+DONE 0 tests, 1 error in 0.141s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:106
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:117
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:126
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:117
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+# balancedBrackets [balancedBrackets.test]
+./balancedBrackets.go:4:2: "fmt" imported and not used
+WARN invalid TestEvent: FAIL	balancedBrackets [build failed]
+bad output from test2json: FAIL	balancedBrackets [build failed]
+
+=== Errors
+./balancedBrackets.go:4:2: "fmt" imported and not used
+
+DONE 0 tests, 1 error in 0.141s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+implementation/BalancedBrackets.java]

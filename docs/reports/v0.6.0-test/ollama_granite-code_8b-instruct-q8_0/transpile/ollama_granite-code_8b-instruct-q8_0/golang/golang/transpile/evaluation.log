@@ -1,0 +1,857 @@
+2024/07/29 13:44:38 preloading model "ollama/granite-code:8b-instruct-q8_0"
+2024/07/29 13:44:40 $ git clean -df
+2024/07/29 13:44:40 Evaluating model "ollama/granite-code:8b-instruct-q8_0" on task "transpile" using language "golang" and repository "golang/transpile"
+2024/07/29 13:44:40 $ git clean -df
+2024/07/29 13:44:40 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	// Copyright (C) rosettacode.org
+	package com.eval;
+
+	public class BalancedBrackets {
+	    static boolean hasBalancedBrackets(char[] charArray) {
+	        int brackets = 0;
+	        for (char ch : charArray) {
+	            if (ch == '[') {
+	                brackets++;
+	            } else if (ch == ']') {
+	                brackets--;
+	            } else {
+	                return false; // Non-bracket characters.
+	            }
+	            if (brackets < 0) { // Closing bracket before opening bracket.
+	                return false;
+	            }
+	        }
+	        return brackets == 0;
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "balancedBrackets" and the following signature:
+
+	```golang
+	package balancedBrackets
+
+	func hasBalancedBrackets(charArray string) bool {}
+	```
+
+2024/07/29 13:45:32 Model "ollama/granite-code:8b-instruct-q8_0" responded (52727 ms) with:
+	Here's the transpiled Go code file:
+
+	```golang
+	package balancedBrackets
+
+	import (
+	    "errors"
+	    "unicode"
+	)
+
+	var errNonBracket = errors.New("non-bracket characters")
+
+	func hasBalancedBrackets(charArray string) bool {
+	    brackets := 0
+	    for _, ch := range charArray {
+	        if unicode.Is(unicode.LBRACK, ch) {
+	            brackets++
+	        } else if unicode.Is(unicode.RBRACK, ch) {
+	            brackets--
+	        } else if !unicode.IsSpace(ch) {
+	            return false // Non-bracket characters.
+	        }
+	        if brackets < 0 { // Closing bracket before opening bracket.
+	            return false
+	        }
+	    }
+	    return brackets == 0
+	}
+	```
+
+
+	The transpiled Go code file includes the package "balancedBrackets", the import of the "errors" and "unicode" packages, and a constant for the error returned when non-bracket characters are encountered. The function `hasBalancedBrackets` takes in a string representing the character array and iterates over each character, checking if it's an opening bracket, a closing bracket, or neither. If it's an opening bracket, the brackets count is incremented; if it's a closing bracket, the brackets count is decremented. If the character isn't a bracket or a space, the function returns false (indicating that the string has unbalanced brackets). Finally, the function checks if the brackets count is less than 0 and returns false if so. If none of these conditions are met after iterating over the entire string, the function returns true, indicating that the brackets in the string are balanced.
+2024/07/29 13:45:32 $ go mod tidy
+2024/07/29 13:45:32 $ symflower test --language golang --workspace /tmp/eval-dev-quality255121047/transpile/balancedBrackets --coverage-file /tmp/eval-dev-quality255121047/transpile/balancedBrackets/coverage.json
+2024/07/29 13:45:33 # balancedBrackets [balancedBrackets.test]
+./balancedBrackets.go:13:31: undefined: unicode.LBRACK
+./balancedBrackets.go:15:70: undefined: unicode.RBRACK
+2024/07/29 13:45:33 WARN invalid TestEvent: FAIL	balancedBrackets [build failed]
+bad output from test2json: FAIL	balancedBrackets [build failed]
+2024/07/29 13:45:33 
+=== Errors
+./balancedBrackets.go:13:31: undefined: unicode.LBRACK
+./balancedBrackets.go:15:70: undefined: unicode.RBRACK
+
+DONE 0 tests, 2 errors in 0.129s
+2024/07/29 13:45:33 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:45:33 ERROR: execution failed: exit status 1
+2024/07/29 13:45:33 model response alone failed execution, attempting to fix with "symflower fix "
+2024/07/29 13:45:33 $ symflower fix --language golang --workspace /tmp/eval-dev-quality255121047/transpile/balancedBrackets
+2024/07/29 13:45:33 Repairing balancedBrackets_test.go
+2024/07/29 13:45:33 Repairing balancedBrackets.go
+2024/07/29 13:45:33 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:45:33 $ go mod tidy
+2024/07/29 13:45:33 $ symflower test --language golang --workspace /tmp/eval-dev-quality255121047/transpile/balancedBrackets --coverage-file /tmp/eval-dev-quality255121047/transpile/balancedBrackets/coverage.json
+2024/07/29 13:45:33 # balancedBrackets [balancedBrackets.test]
+./balancedBrackets.go:13:25: undefined: unicode.LBRACK
+./balancedBrackets.go:15:64: undefined: unicode.RBRACK
+2024/07/29 13:45:33 WARN invalid TestEvent: FAIL	balancedBrackets [build failed]
+bad output from test2json: FAIL	balancedBrackets [build failed]
+2024/07/29 13:45:33 
+=== Errors
+./balancedBrackets.go:13:25: undefined: unicode.LBRACK
+./balancedBrackets.go:15:64: undefined: unicode.RBRACK
+
+DONE 0 tests, 2 errors in 0.173s
+2024/07/29 13:45:33 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:45:33 ERROR: execution failed: exit status 1
+2024/07/29 13:45:33 $ git clean -df
+2024/07/29 13:45:33 Removing balancedBrackets/coverage.json
+Removing balancedBrackets/go.sum
+2024/07/29 13:45:33 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	class BinarySearch {
+		static int binarySearch(int[] a, int x) {
+			int index = -1;
+
+			int min = 0;
+			int max = a.length - 1;
+
+			while (index == -1 && min <= max) {
+				int m = (min + max) / 2;
+
+				if (x == a[m]) {
+					index = m;
+				} else if (x < a[m]) {
+					max = m - 1;
+				} else {
+					min = m + 1;
+				}
+			}
+
+			return index;
+		}
+	}
+	```
+
+	The transpiled Go code file must have the package "binarySearch" and the following signature:
+
+	```golang
+	package binarySearch
+
+	func binarySearch(a []int, x int) int {
+	}
+	```
+
+2024/07/29 13:45:48 Model "ollama/granite-code:8b-instruct-q8_0" responded (14672 ms) with:
+	Here's the transpiled Go source code:
+
+	```go
+	package binarySearch
+
+	import "sort"
+
+	func binarySearch(a []int, x int) int {
+		i := sort.Search(len(a), func(i int) bool {
+			return a[i] >= x
+		})
+		if i < len(a) && a[i] == x {
+			return i
+		} else {
+			return -1
+		}
+	}
+	```
+2024/07/29 13:45:48 $ go mod tidy
+2024/07/29 13:45:48 $ symflower test --language golang --workspace /tmp/eval-dev-quality255121047/transpile/binarySearch --coverage-file /tmp/eval-dev-quality255121047/transpile/binarySearch/coverage.json
+2024/07/29 13:45:48 === RUN   TestSymflowerBinarySearch
+=== RUN   TestSymflowerBinarySearch/#00
+=== RUN   TestSymflowerBinarySearch/#01
+=== RUN   TestSymflowerBinarySearch/#02
+=== RUN   TestSymflowerBinarySearch/#03
+=== RUN   TestSymflowerBinarySearch/#04
+--- PASS: TestSymflowerBinarySearch (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#00 (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#01 (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#02 (0.00s)
+2024/07/29 13:45:48     --- PASS: TestSymflowerBinarySearch/#03 (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#04 (0.00s)
+PASS
+2024/07/29 13:45:48 coverage: 100.0% of statements
+2024/07/29 13:45:48 ok  	binarySearch	0.003s	coverage: 100.0% of statements
+2024/07/29 13:45:48 
+DONE 6 tests in 0.265s
+2024/07/29 13:45:48 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:45:48 coverage objects: [{"FileRange":"binarySearch/binarySearch.go:11:8-binarySearch/binarySearch.go:13:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"binarySearch/binarySearch.go:5:39-binarySearch/binarySearch.go:8:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"binarySearch/binarySearch.go:9:2-binarySearch/binarySearch.go:11:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 13:45:48 Executes tests with 6 tests passing
+2024/07/29 13:45:48 $ git clean -df
+2024/07/29 13:45:48 Removing binarySearch/coverage.json
+Removing binarySearch/go.sum
+2024/07/29 13:45:48 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	class CascadingIfElse {
+	    static int cascadingIfElse(int i) {
+	        if (i == 1) {
+	            return 2;
+	        } else if (i == 3) {
+	            return 4;
+	        } else {
+	            return 5;
+	        }
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "cascadingIfElse" and the following signature:
+
+	```golang
+	package cascadingIfElse
+
+	func cascadingIfElse(i int) int {
+	}
+	```
+
+2024/07/29 13:45:59 Model "ollama/granite-code:8b-instruct-q8_0" responded (10585 ms) with:
+	Here is a possible solution in Go:
+
+	```go
+	package cascadingIfElse
+
+	import "fmt"
+
+	func cascadingIfElse(i int) int {
+	    if i == 1 {
+	        return 2
+	    } else if i == 3 {
+	        return 4
+	    } else {
+	        return 5
+	    }
+	}
+	```
+2024/07/29 13:45:59 $ go mod tidy
+2024/07/29 13:45:59 $ symflower test --language golang --workspace /tmp/eval-dev-quality255121047/transpile/cascadingIfElse --coverage-file /tmp/eval-dev-quality255121047/transpile/cascadingIfElse/coverage.json
+2024/07/29 13:45:59 # cascadingIfElse [cascadingIfElse.test]
+./cascadingIfElse.go:3:8: "fmt" imported and not used
+2024/07/29 13:45:59 WARN invalid TestEvent: FAIL	cascadingIfElse [build failed]
+bad output from test2json: FAIL	cascadingIfElse [build failed]
+2024/07/29 13:45:59 
+=== Errors
+./cascadingIfElse.go:3:8: "fmt" imported and not used
+
+DONE 0 tests, 1 error in 0.165s
+2024/07/29 13:45:59 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/07/29 13:45:59 model response alone failed execution, attempting to fix with "symflower fix "
+2024/07/29 13:45:59 $ symflower fix --language golang --workspace /tmp/eval-dev-quality255121047/transpile/cascadingIfElse
+2024/07/29 13:45:59 Repairing cascadingIfElse.go
+2024/07/29 13:45:59 Repairing cascadingIfElse_test.go
+2024/07/29 13:45:59 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:45:59 $ go mod tidy
+2024/07/29 13:45:59 $ symflower test --language golang --workspace /tmp/eval-dev-quality255121047/transpile/cascadingIfElse --coverage-file /tmp/eval-dev-quality255121047/transpile/cascadingIfElse/coverage.json
+2024/07/29 13:46:00 === RUN   TestSymflowerCascadingIfElse
+=== RUN   TestSymflowerCascadingIfElse/#00
+=== RUN   TestSymflowerCascadingIfElse/#01
+=== RUN   TestSymflowerCascadingIfElse/#02
+--- PASS: TestSymflowerCascadingIfElse (0.00s)
+    --- PASS: TestSymflowerCascadingIfElse/#00 (0.00s)
+    --- PASS: TestSymflowerCascadingIfElse/#01 (0.00s)
+    --- PASS: TestSymflowerCascadingIfElse/#02 (0.00s)
+2024/07/29 13:46:00 PASS
+2024/07/29 13:46:00 coverage: 100.0% of statements
+2024/07/29 13:46:00 ok  	cascadingIfElse	0.003s	coverage: 100.0% of statements
+2024/07/29 13:46:00 
+DONE 4 tests in 0.315s
+2024/07/29 13:46:00 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:46:00 coverage objects: [{"FileRange":"cascadingIfElse/cascadingIfElse.go:3:33-cascadingIfElse/cascadingIfElse.go:6:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"cascadingIfElse/cascadingIfElse.go:6:8-cascadingIfElse/cascadingIfElse.go:8:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"cascadingIfElse/cascadingIfElse.go:8:8-cascadingIfElse/cascadingIfElse.go:10:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 13:46:00 Executes tests with 4 tests passing after "symflower fix"
+2024/07/29 13:46:00 $ git clean -df
+2024/07/29 13:46:00 Removing cascadingIfElse/coverage.json
+Removing cascadingIfElse/go.sum
+2024/07/29 13:46:00 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	class IsSorted {
+	    static boolean isSorted(int[] a) {
+	        int i = 0;
+	        while (i < a.length - 1 && a[i] <= a[i + 1]) {
+	            i++;
+	        }
+
+	        return i == a.length - 1;
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "isSorted" and the following signature:
+
+	```golang
+	package isSorted
+
+	func isSorted(a []int) bool {
+	}
+	```
+
+2024/07/29 13:46:19 Model "ollama/granite-code:8b-instruct-q8_0" responded (18957 ms) with:
+	Here's a possible solution:
+
+	```go
+	package isSorted
+
+	func isSorted(a []int) bool {
+	    i := 0
+	    for i < len(a)-1 && a[i] <= a[i+1] {
+	        i++
+	    }
+
+	    return i == len(a)-1
+	}
+	```
+2024/07/29 13:46:19 $ go mod tidy
+2024/07/29 13:46:19 $ symflower test --language golang --workspace /tmp/eval-dev-quality255121047/transpile/isSorted --coverage-file /tmp/eval-dev-quality255121047/transpile/isSorted/coverage.json
+2024/07/29 13:46:20 === RUN   TestSymflowerIsSorted
+=== RUN   TestSymflowerIsSorted/#00
+=== RUN   TestSymflowerIsSorted/#01
+=== RUN   TestSymflowerIsSorted/#02
+=== RUN   TestSymflowerIsSorted/#03
+=== RUN   TestSymflowerIsSorted/#04
+--- PASS: TestSymflowerIsSorted (0.00s)
+    --- PASS: TestSymflowerIsSorted/#00 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#01 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#02 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#03 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#04 (0.00s)
+PASS
+2024/07/29 13:46:20 coverage: 100.0% of statements
+2024/07/29 13:46:20 ok  	isSorted	0.003s	coverage: 100.0% of statements
+2024/07/29 13:46:20 
+DONE 6 tests in 0.331s
+2024/07/29 13:46:20 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:46:20 coverage objects: [{"FileRange":"isSorted/isSorted.go:3:29-isSorted/isSorted.go:7:6","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"isSorted/isSorted.go:9:5-isSorted/isSorted.go:9:25","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 13:46:20 Executes tests with 6 tests passing
+2024/07/29 13:46:20 $ git clean -df
+2024/07/29 13:46:20 Removing isSorted/coverage.json
+Removing isSorted/go.sum
+2024/07/29 13:46:20 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	public class PascalsTriangle {
+	    int[][] generateTriangle(int rows) {
+	        if (rows < 0) {
+	            throw new IllegalArgumentException("Rows can't be negative!");
+	        }
+
+	        int[][] triangle = new int[rows][];
+
+	        for (int i = 0; i < rows; i++) {
+	            triangle[i] = new int[i + 1];
+	            triangle[i][0] = 1;
+	            for (int j = 1; j < i; j++) {
+	                triangle[i][j] = triangle[i - 1][j - 1] + triangle[i - 1][j];
+	            }
+	            triangle[i][i] = 1;
+	        }
+	        return triangle;
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "pascalsTriangle" and the following signature:
+
+	```golang
+	package pascalsTriangle
+
+	func pascalsTriangle(rows int) ([][]int, error) {
+	}
+	```
+
+2024/07/29 13:46:42 Model "ollama/granite-code:8b-instruct-q8_0" responded (21939 ms) with:
+	Here's a possible solution in Go:
+
+	```go
+	package pascalsTriangle
+
+	import "errors"
+
+	func generateTriangle(rows int) ([][]int, error) {
+	    if rows < 0 {
+	        return nil, errors.New("Rows can't be negative!")
+	    }
+
+	    triangle := make([][]int, rows)
+
+	    for i := range triangle {
+	        triangle[i] = make([]int, i+1)
+	        triangle[i][0] = 1
+
+	        for j := 1; j < i; j++ {
+	            triangle[i][j] = triangle[i-1][j-1] + triangle[i-1][j]
+	        }
+	        triangle[i][i] = 1
+	    }
+	    return triangle, nil
+	}
+	```
+2024/07/29 13:46:42 $ go mod tidy
+2024/07/29 13:46:42 $ symflower test --language golang --workspace /tmp/eval-dev-quality255121047/transpile/pascalsTriangle --coverage-file /tmp/eval-dev-quality255121047/transpile/pascalsTriangle/coverage.json
+2024/07/29 13:46:42 # pascalsTriangle [pascalsTriangle.test]
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+2024/07/29 13:46:42 WARN invalid TestEvent: FAIL	pascalsTriangle [build failed]
+bad output from test2json: FAIL	pascalsTriangle [build failed]
+2024/07/29 13:46:42 
+=== Errors
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+
+DONE 0 tests, 1 error in 0.100s
+2024/07/29 13:46:42 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:46:42 ERROR: execution failed: exit status 1
+2024/07/29 13:46:42 model response alone failed execution, attempting to fix with "symflower fix "
+2024/07/29 13:46:42 $ symflower fix --language golang --workspace /tmp/eval-dev-quality255121047/transpile/pascalsTriangle
+2024/07/29 13:46:42 Repairing pascalsTriangle.go
+2024/07/29 13:46:42 Repairing pascalsTriangle_test.go
+2024/07/29 13:46:42 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:46:42 $ go mod tidy
+2024/07/29 13:46:42 $ symflower test --language golang --workspace /tmp/eval-dev-quality255121047/transpile/pascalsTriangle --coverage-file /tmp/eval-dev-quality255121047/transpile/pascalsTriangle/coverage.json
+2024/07/29 13:46:42 # pascalsTriangle [pascalsTriangle.test]
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+2024/07/29 13:46:42 WARN invalid TestEvent: FAIL	pascalsTriangle [build failed]
+bad output from test2json: FAIL	pascalsTriangle [build failed]
+2024/07/29 13:46:42 
+=== Errors
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+
+DONE 0 tests, 1 error in 0.150s
+2024/07/29 13:46:42 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+2024/07/29 13:46:42 Evaluated model "ollama/granite-code:8b-instruct-q8_0" on task "transpile" using language "golang" and repository "golang/transpile": encountered 5 problems: [exit status 1
+# balancedBrackets [balancedBrackets.test]
+./balancedBrackets.go:13:31: undefined: unicode.LBRACK
+./balancedBrackets.go:15:70: undefined: unicode.RBRACK
+WARN invalid TestEvent: FAIL	balancedBrackets [build failed]
+bad output from test2json: FAIL	balancedBrackets [build failed]
+
+=== Errors
+./balancedBrackets.go:13:31: undefined: unicode.LBRACK
+./balancedBrackets.go:15:70: undefined: unicode.RBRACK
+
+DONE 0 tests, 2 errors in 0.129s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:106
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:117
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:495
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:476
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:126
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:117
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:495
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:476
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+# balancedBrackets [balancedBrackets.test]
+./balancedBrackets.go:13:31: undefined: unicode.LBRACK
+./balancedBrackets.go:15:70: undefined: unicode.RBRACK
+WARN invalid TestEvent: FAIL	balancedBrackets [build failed]
+bad output from test2json: FAIL	balancedBrackets [build failed]
+
+=== Errors
+./balancedBrackets.go:13:31: undefined: unicode.LBRACK
+./balancedBrackets.go:15:70: undefined: unicode.RBRACK
+
+DONE 0 tests, 2 errors in 0.129s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+implementation/BalancedBrackets.java exit status 1
+# balancedBrackets [balancedBrackets.test]
+./balancedBrackets.go:13:25: undefined: unicode.LBRACK
+./balancedBrackets.go:15:64: undefined: unicode.RBRACK
+WARN invalid TestEvent: FAIL	balancedBrackets [build failed]
+bad output from test2json: FAIL	balancedBrackets [build failed]
+
+=== Errors
+./balancedBrackets.go:13:25: undefined: unicode.LBRACK
+./balancedBrackets.go:15:64: undefined: unicode.RBRACK
+
+DONE 0 tests, 2 errors in 0.173s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:106
+github.com/symflower/eval-dev-quality/evaluate/task.ExecuteWithSymflowerFix
+	/app/evaluate/task/symflower-fix.go:44
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:132
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:495
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:476
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:126
+github.com/symflower/eval-dev-quality/evaluate/task.ExecuteWithSymflowerFix
+	/app/evaluate/task/symflower-fix.go:44
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:132
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:495
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:476
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+# balancedBrackets [balancedBrackets.test]
+./balancedBrackets.go:13:25: undefined: unicode.LBRACK
+./balancedBrackets.go:15:64: undefined: unicode.RBRACK
+WARN invalid TestEvent: FAIL	balancedBrackets [build failed]
+bad output from test2json: FAIL	balancedBrackets [build failed]
+
+=== Errors
+./balancedBrackets.go:13:25: undefined: unicode.LBRACK
+./balancedBrackets.go:15:64: undefined: unicode.RBRACK
+
+DONE 0 tests, 2 errors in 0.173s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+symflower fix exit status 1
+# cascadingIfElse [cascadingIfElse.test]
+./cascadingIfElse.go:3:8: "fmt" imported and not used
+WARN invalid TestEvent: FAIL	cascadingIfElse [build failed]
+bad output from test2json: FAIL	cascadingIfElse [build failed]
+
+=== Errors
+./cascadingIfElse.go:3:8: "fmt" imported and not used
+
+DONE 0 tests, 1 error in 0.165s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:106
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:117
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:495
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:476
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:126
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:117
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:495
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:476
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+# cascadingIfElse [cascadingIfElse.test]
+./cascadingIfElse.go:3:8: "fmt" imported and not used
+WARN invalid TestEvent: FAIL	cascadingIfElse [build failed]
+bad output from test2json: FAIL	cascadingIfElse [build failed]
+
+=== Errors
+./cascadingIfElse.go:3:8: "fmt" imported and not used
+
+DONE 0 tests, 1 error in 0.165s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+implementation/CascadingIfElse.java exit status 1
+# pascalsTriangle [pascalsTriangle.test]
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+WARN invalid TestEvent: FAIL	pascalsTriangle [build failed]
+bad output from test2json: FAIL	pascalsTriangle [build failed]
+
+=== Errors
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+
+DONE 0 tests, 1 error in 0.100s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:106
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:117
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:495
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:476
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:126
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:117
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:495
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:476
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+# pascalsTriangle [pascalsTriangle.test]
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+WARN invalid TestEvent: FAIL	pascalsTriangle [build failed]
+bad output from test2json: FAIL	pascalsTriangle [build failed]
+
+=== Errors
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+
+DONE 0 tests, 1 error in 0.100s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+implementation/PascalsTriangle.java exit status 1
+# pascalsTriangle [pascalsTriangle.test]
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+WARN invalid TestEvent: FAIL	pascalsTriangle [build failed]
+bad output from test2json: FAIL	pascalsTriangle [build failed]
+
+=== Errors
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+
+DONE 0 tests, 1 error in 0.150s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:106
+github.com/symflower/eval-dev-quality/evaluate/task.ExecuteWithSymflowerFix
+	/app/evaluate/task/symflower-fix.go:44
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:132
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:495
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:476
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/golang.(*Language).ExecuteTests
+	/app/language/golang/language.go:126
+github.com/symflower/eval-dev-quality/evaluate/task.ExecuteWithSymflowerFix
+	/app/evaluate/task/symflower-fix.go:44
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:132
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:495
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:476
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+# pascalsTriangle [pascalsTriangle.test]
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+WARN invalid TestEvent: FAIL	pascalsTriangle [build failed]
+bad output from test2json: FAIL	pascalsTriangle [build failed]
+
+=== Errors
+./pascalsTriangle_test.go:22:32: undefined: pascalsTriangle
+
+DONE 0 tests, 1 error in 0.150s
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: execution failed: exit status 1
+
+symflower fix]
+2024/07/29 13:46:42 unloading model "ollama/granite-code:8b-instruct-q8_0"

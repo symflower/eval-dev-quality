@@ -1,0 +1,71 @@
+2024/07/29 13:43:48 Model "ollama/granite-code:8b-instruct-q8_0" responded (6066 ms) with:
+	```golang
+	package importMissing
+
+	import "strings"
+
+	func importMissing(s string) bool {
+		return strings.Contains(s, "foobar")
+	}
+	```
+2024/07/29 13:43:58 Model "ollama/granite-code:8b-instruct-q8_0" responded (8926 ms) with:
+	```golang
+	package openingBracketMissing
+
+	func openingBracketMissing(x int) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+2024/07/29 13:44:17 Model "ollama/granite-code:8b-instruct-q8_0" responded (18358 ms) with:
+	```golang
+	package syntaxErrorTypeMissing
+
+	func syntaxErrorTypeMissing(x int) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+2024/07/29 13:44:26 Model "ollama/granite-code:8b-instruct-q8_0" responded (8707 ms) with:
+	```golang
+	package typeUnknown
+
+	func typeUnknown(x int) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+2024/07/29 13:44:37 Model "ollama/granite-code:8b-instruct-q8_0" responded (10300 ms) with:
+	```golang
+	package variableUnknown
+
+	func variableUnknown(x int) int {
+		y := x // Define y inside the function
+		if x > 0 {
+			return y
+		}
+		if x < 0 {
+			return -y
+		}
+
+		return 0
+	}
+	```

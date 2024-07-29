@@ -1,0 +1,103 @@
+2024/07/30 07:46:38 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2888 ms) with:
+	```go
+	package balancedBrackets
+
+	import (
+		"fmt"
+	)
+
+	func hasBalancedBrackets(charArray string) bool {
+		brackets := 0
+		for _, ch := range charArray {
+			if ch == '[' {
+				brackets++
+			} else if ch == ']' {
+				brackets--
+			} else {
+				return false // Non-bracket characters.
+			}
+			if brackets < 0 { // Closing bracket before opening bracket.
+				return false
+			}
+		}
+		return brackets == 0
+	}
+	```
+2024/07/30 07:46:41 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1339 ms) with:
+	```go
+	package binarySearch
+
+	func binarySearch(a []int, x int) int {
+		index := -1
+
+		min := 0
+		max := len(a) - 1
+
+		for index == -1 && min <= max {
+			m := (min + max) / 2
+
+			if x == a[m] {
+				index = m
+			} else if x < a[m] {
+				max = m - 1
+			} else {
+				min = m + 1
+			}
+		}
+
+		return index
+	}
+	```
+2024/07/30 07:46:42 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1265 ms) with:
+	```go
+	package cascadingIfElse
+
+	func cascadingIfElse(i int) int {
+	    if i == 1 {
+	        return 2
+	    } else if i == 3 {
+	        return 4
+	    } else {
+	        return 5
+	    }
+	}
+	```
+2024/07/30 07:46:44 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1481 ms) with:
+	```go
+	package isSorted
+
+	func isSorted(a []int) bool {
+	    i := 0
+	    for ; i < len(a)-1 && a[i] <= a[i+1]; i++ {
+	    }
+
+	    return i == len(a) - 1
+	}
+	```
+2024/07/30 07:46:49 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3935 ms) with:
+	```go
+	package pascalsTriangle
+
+	import (
+		"errors"
+	)
+
+	func pascalsTriangle(rows int) ([][]int, error) {
+		if rows < 0 {
+			return nil, errors.New("Rows can't be negative!")
+		}
+
+		triangle := make([][]int, rows)
+		for i := 0; i < rows; i++ {
+			triangle[i] = make([]int, i+1)
+			triangle[i][0] = 1
+			for j := 1; j < i; j++ {
+				triangle[i][j] = triangle[i-1][j-1] + triangle[i-1][j]
+			}
+			triangle[i][i] = 1
+		}
+		return triangle, nil
+	}
+	```
+
+	This Go code maintains the same functionality as the Java code, generating Pascal's Triangle with a specified number of rows. It handles the case of a negative number of rows by returning an error. If the input is valid, it constructs the triangle by initializing the first and last elements of each row to 1, and the middle elements to the sum of the corresponding elements from the previous row. The completed triangle is then returned as a 2D slice of integers.

@@ -1,0 +1,15 @@
+model-id,language,repository,task,score,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing
+openrouter/openai/gpt-4o-mini,golang,golang/plain,write-tests,14,10,1,1,121,1182,131,1,1,1,0
+openrouter/openai/gpt-4o-mini,golang,golang/plain,write-tests-symflower-fix,14,10,1,1,121,1182,131,1,1,1,0
+openrouter/openai/gpt-4o-mini,java,java/plain,write-tests,14,10,1,1,200,1295,212,1,1,1,0
+openrouter/openai/gpt-4o-mini,java,java/plain,write-tests-symflower-fix,14,10,1,1,200,1295,212,1,1,1,0
+openrouter/openai/gpt-4o-mini,golang,golang/light,write-tests,860,770,21,23,17657,132161,17895,23,23,23,0
+openrouter/openai/gpt-4o-mini,golang,golang/light,write-tests-symflower-fix,972,880,23,23,17657,132624,17895,23,23,23,0
+openrouter/openai/gpt-4o-mini,golang,golang/mistakes,code-repair,150,130,5,5,638,7431,708,5,5,5,0
+openrouter/openai/gpt-4o-mini,golang,golang/transpile,transpile,290,0,5,5,1374,14200,1424,5,5,5,270
+openrouter/openai/gpt-4o-mini,golang,golang/transpile,transpile-symflower-fix,290,0,5,5,1374,14200,1424,5,5,5,270
+openrouter/openai/gpt-4o-mini,java,java/light,write-tests,3021,2930,22,23,30118,152160,30394,23,23,23,0
+openrouter/openai/gpt-4o-mini,java,java/light,write-tests-symflower-fix,3021,2930,22,23,30118,152160,30394,23,23,23,0
+openrouter/openai/gpt-4o-mini,java,java/mistakes,code-repair,400,380,5,5,943,10168,1003,5,5,5,0
+openrouter/openai/gpt-4o-mini,java,java/transpile,transpile,240,0,5,5,1730,13776,1790,5,5,5,220
+openrouter/openai/gpt-4o-mini,java,java/transpile,transpile-symflower-fix,240,0,5,5,1730,13776,1790,5,5,5,220

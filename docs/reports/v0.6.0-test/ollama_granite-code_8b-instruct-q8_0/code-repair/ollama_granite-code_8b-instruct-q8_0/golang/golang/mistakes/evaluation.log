@@ -1,0 +1,304 @@
+2024/07/29 13:43:40 preloading model "ollama/granite-code:8b-instruct-q8_0"
+2024/07/29 13:43:42 $ git clean -df
+2024/07/29 13:43:42 Evaluating model "ollama/granite-code:8b-instruct-q8_0" on task "code-repair" using language "golang" and repository "golang/mistakes"
+2024/07/29 13:43:42 $ git clean -df
+2024/07/29 13:43:42 $ go build
+2024/07/29 13:43:42 # importMissing
+./importMissing.go:4:9: undefined: strings
+2024/07/29 13:43:42 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Go code file "importMissing.go" with package "importMissing" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```golang
+	package importMissing
+
+	func importMissing(s string) bool {
+		return strings.Contains(s, "foobar")
+	}
+	```
+
+	The list of compilation errors is the following:
+	- ./importMissing.go:4:9: undefined: strings
+
+2024/07/29 13:43:48 Model "ollama/granite-code:8b-instruct-q8_0" responded (6066 ms) with:
+	```golang
+	package importMissing
+
+	import "strings"
+
+	func importMissing(s string) bool {
+		return strings.Contains(s, "foobar")
+	}
+	```
+2024/07/29 13:43:48 $ go mod tidy
+2024/07/29 13:43:48 $ symflower test --language golang --workspace /tmp/eval-dev-quality1295976196/mistakes/importMissing --coverage-file /tmp/eval-dev-quality1295976196/mistakes/importMissing/coverage.json
+2024/07/29 13:43:49 === RUN   TestImportMissing
+=== RUN   TestImportMissing/#00
+=== RUN   TestImportMissing/#01
+--- PASS: TestImportMissing (0.00s)
+    --- PASS: TestImportMissing/#00 (0.00s)
+    --- PASS: TestImportMissing/#01 (0.00s)
+PASS
+2024/07/29 13:43:49 coverage: 100.0% of statements
+2024/07/29 13:43:49 ok  	importMissing	0.002s	coverage: 100.0% of statements
+2024/07/29 13:43:49 
+DONE 3 tests in 0.284s
+2024/07/29 13:43:49 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:43:49 coverage objects: [{"FileRange":"importMissing/importMissing.go:5:35-importMissing/importMissing.go:7:2","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 13:43:49 Executes tests with 1 coverage objects
+2024/07/29 13:43:49 $ git clean -df
+2024/07/29 13:43:49 Removing importMissing/coverage.json
+Removing importMissing/go.sum
+2024/07/29 13:43:49 $ go build
+2024/07/29 13:43:49 # openingBracketMissing
+./openingBracketMissing.go:4:2: syntax error: non-declaration statement outside function body
+2024/07/29 13:43:49 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Go code file "openingBracketMissing.go" with package "openingBracketMissing" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```golang
+	package openingBracketMissing
+
+	func openingBracketMissing(x int) int
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+
+	The list of compilation errors is the following:
+	- ./openingBracketMissing.go:4:2: syntax error: non-declaration statement outside function body
+
+2024/07/29 13:43:58 Model "ollama/granite-code:8b-instruct-q8_0" responded (8926 ms) with:
+	```golang
+	package openingBracketMissing
+
+	func openingBracketMissing(x int) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+2024/07/29 13:43:58 $ go mod tidy
+2024/07/29 13:43:58 $ symflower test --language golang --workspace /tmp/eval-dev-quality1295976196/mistakes/openingBracketMissing --coverage-file /tmp/eval-dev-quality1295976196/mistakes/openingBracketMissing/coverage.json
+2024/07/29 13:43:58 === RUN   TestSymflowerOpeningBracketMissing
+=== RUN   TestSymflowerOpeningBracketMissing/#00
+=== RUN   TestSymflowerOpeningBracketMissing/#01
+=== RUN   TestSymflowerOpeningBracketMissing/#02
+--- PASS: TestSymflowerOpeningBracketMissing (0.00s)
+    --- PASS: TestSymflowerOpeningBracketMissing/#00 (0.00s)
+    --- PASS: TestSymflowerOpeningBracketMissing/#01 (0.00s)
+2024/07/29 13:43:58     --- PASS: TestSymflowerOpeningBracketMissing/#02 (0.00s)
+PASS
+2024/07/29 13:43:58 coverage: 100.0% of statements
+2024/07/29 13:43:58 ok  	openingBracketMissing	0.002s	coverage: 100.0% of statements
+2024/07/29 13:43:58 
+DONE 4 tests in 0.325s
+2024/07/29 13:43:58 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:43:58 coverage objects: [{"FileRange":"openingBracketMissing/openingBracketMissing.go:11:2-openingBracketMissing/openingBracketMissing.go:11:10","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"openingBracketMissing/openingBracketMissing.go:3:39-openingBracketMissing/openingBracketMissing.go:6:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"openingBracketMissing/openingBracketMissing.go:7:2-openingBracketMissing/openingBracketMissing.go:9:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 13:43:58 Executes tests with 3 coverage objects
+2024/07/29 13:43:58 $ git clean -df
+2024/07/29 13:43:58 Removing openingBracketMissing/coverage.json
+Removing openingBracketMissing/go.sum
+2024/07/29 13:43:58 $ go build
+2024/07/29 13:43:58 # syntaxErrorTypeMissing
+./syntaxErrorTypeMissing.go:3:29: undefined: x
+./syntaxErrorTypeMissing.go:4:5: undefined: x
+./syntaxErrorTypeMissing.go:7:5: undefined: x
+2024/07/29 13:43:58 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Go code file "syntaxErrorTypeMissing.go" with package "syntaxErrorTypeMissing" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```golang
+	package syntaxErrorTypeMissing
+
+	func syntaxErrorTypeMissing(x) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+
+	The list of compilation errors is the following:
+	- ./syntaxErrorTypeMissing.go:3:29: undefined: x
+	- ./syntaxErrorTypeMissing.go:4:5: undefined: x
+	- ./syntaxErrorTypeMissing.go:7:5: undefined: x
+
+2024/07/29 13:44:17 Model "ollama/granite-code:8b-instruct-q8_0" responded (18358 ms) with:
+	```golang
+	package syntaxErrorTypeMissing
+
+	func syntaxErrorTypeMissing(x int) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+2024/07/29 13:44:17 $ go mod tidy
+2024/07/29 13:44:17 $ symflower test --language golang --workspace /tmp/eval-dev-quality1295976196/mistakes/syntaxErrorTypeMissing --coverage-file /tmp/eval-dev-quality1295976196/mistakes/syntaxErrorTypeMissing/coverage.json
+2024/07/29 13:44:17 === RUN   TestSymflowerSyntaxErrorTypeMissing
+=== RUN   TestSymflowerSyntaxErrorTypeMissing/#00
+=== RUN   TestSymflowerSyntaxErrorTypeMissing/#01
+=== RUN   TestSymflowerSyntaxErrorTypeMissing/#02
+--- PASS: TestSymflowerSyntaxErrorTypeMissing (0.00s)
+    --- PASS: TestSymflowerSyntaxErrorTypeMissing/#00 (0.00s)
+    --- PASS: TestSymflowerSyntaxErrorTypeMissing/#01 (0.00s)
+    --- PASS: TestSymflowerSyntaxErrorTypeMissing/#02 (0.00s)
+2024/07/29 13:44:17 PASS
+2024/07/29 13:44:17 coverage: 100.0% of statements
+2024/07/29 13:44:17 ok  	syntaxErrorTypeMissing	0.002s	coverage: 100.0% of statements
+2024/07/29 13:44:17 
+DONE 4 tests in 0.310s
+2024/07/29 13:44:17 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:44:17 coverage objects: [{"FileRange":"syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:11:2-syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:11:10","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:3:40-syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:6:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:7:2-syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:9:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 13:44:17 Executes tests with 3 coverage objects
+2024/07/29 13:44:17 $ git clean -df
+2024/07/29 13:44:17 Removing syntaxErrorTypeMissing/coverage.json
+Removing syntaxErrorTypeMissing/go.sum
+2024/07/29 13:44:17 $ go build
+2024/07/29 13:44:17 # typeUnknown
+./typeUnknown.go:3:20: undefined: intt
+2024/07/29 13:44:17 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Go code file "typeUnknown.go" with package "typeUnknown" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```golang
+	package typeUnknown
+
+	func typeUnknown(x intt) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+
+	The list of compilation errors is the following:
+	- ./typeUnknown.go:3:20: undefined: intt
+
+2024/07/29 13:44:26 Model "ollama/granite-code:8b-instruct-q8_0" responded (8707 ms) with:
+	```golang
+	package typeUnknown
+
+	func typeUnknown(x int) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+2024/07/29 13:44:26 $ go mod tidy
+2024/07/29 13:44:26 $ symflower test --language golang --workspace /tmp/eval-dev-quality1295976196/mistakes/typeUnknown --coverage-file /tmp/eval-dev-quality1295976196/mistakes/typeUnknown/coverage.json
+2024/07/29 13:44:26 === RUN   TestSymflowerTypeUnknown
+=== RUN   TestSymflowerTypeUnknown/#00
+=== RUN   TestSymflowerTypeUnknown/#01
+=== RUN   TestSymflowerTypeUnknown/#02
+--- PASS: TestSymflowerTypeUnknown (0.00s)
+    --- PASS: TestSymflowerTypeUnknown/#00 (0.00s)
+    --- PASS: TestSymflowerTypeUnknown/#01 (0.00s)
+    --- PASS: TestSymflowerTypeUnknown/#02 (0.00s)
+2024/07/29 13:44:26 PASS
+2024/07/29 13:44:26 coverage: 100.0% of statements
+2024/07/29 13:44:26 ok  	typeUnknown	0.002s	coverage: 100.0% of statements
+2024/07/29 13:44:26 
+DONE 4 tests in 0.329s
+2024/07/29 13:44:27 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:44:27 coverage objects: [{"FileRange":"typeUnknown/typeUnknown.go:11:2-typeUnknown/typeUnknown.go:11:10","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"typeUnknown/typeUnknown.go:3:29-typeUnknown/typeUnknown.go:6:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"typeUnknown/typeUnknown.go:7:2-typeUnknown/typeUnknown.go:9:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 13:44:27 Executes tests with 3 coverage objects
+2024/07/29 13:44:27 $ git clean -df
+2024/07/29 13:44:27 Removing typeUnknown/coverage.json
+Removing typeUnknown/go.sum
+2024/07/29 13:44:27 $ go build
+2024/07/29 13:44:27 # variableUnknown
+./variableUnknown.go:4:2: undefined: y
+./variableUnknown.go:6:10: undefined: y
+./variableUnknown.go:9:11: undefined: y
+2024/07/29 13:44:27 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Go code file "variableUnknown.go" with package "variableUnknown" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```golang
+	package variableUnknown
+
+	func variableUnknown(x int) int {
+		y = x
+		if x > 0 {
+			return y
+		}
+		if x < 0 {
+			return -y
+		}
+
+		return 0
+	}
+	```
+
+	The list of compilation errors is the following:
+	- ./variableUnknown.go:4:2: undefined: y
+	- ./variableUnknown.go:6:10: undefined: y
+	- ./variableUnknown.go:9:11: undefined: y
+
+2024/07/29 13:44:37 Model "ollama/granite-code:8b-instruct-q8_0" responded (10300 ms) with:
+	```golang
+	package variableUnknown
+
+	func variableUnknown(x int) int {
+		y := x // Define y inside the function
+		if x > 0 {
+			return y
+		}
+		if x < 0 {
+			return -y
+		}
+
+		return 0
+	}
+	```
+2024/07/29 13:44:37 $ go mod tidy
+2024/07/29 13:44:37 $ symflower test --language golang --workspace /tmp/eval-dev-quality1295976196/mistakes/variableUnknown --coverage-file /tmp/eval-dev-quality1295976196/mistakes/variableUnknown/coverage.json
+2024/07/29 13:44:37 === RUN   TestSymflowerVariableUnknown
+=== RUN   TestSymflowerVariableUnknown/#00
+=== RUN   TestSymflowerVariableUnknown/#01
+=== RUN   TestSymflowerVariableUnknown/#02
+--- PASS: TestSymflowerVariableUnknown (0.00s)
+    --- PASS: TestSymflowerVariableUnknown/#00 (0.00s)
+    --- PASS: TestSymflowerVariableUnknown/#01 (0.00s)
+    --- PASS: TestSymflowerVariableUnknown/#02 (0.00s)
+PASS
+2024/07/29 13:44:37 coverage: 100.0% of statements
+2024/07/29 13:44:37 ok  	variableUnknown	0.003s	coverage: 100.0% of statements
+2024/07/29 13:44:37 
+DONE 4 tests in 0.315s
+2024/07/29 13:44:38 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 13:44:38 coverage objects: [{"FileRange":"variableUnknown/variableUnknown.go:12:2-variableUnknown/variableUnknown.go:12:10","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"variableUnknown/variableUnknown.go:3:33-variableUnknown/variableUnknown.go:7:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"variableUnknown/variableUnknown.go:8:2-variableUnknown/variableUnknown.go:10:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 13:44:38 Executes tests with 3 coverage objects
+2024/07/29 13:44:38 Evaluated model "ollama/granite-code:8b-instruct-q8_0" on task "code-repair" using language "golang" and repository "golang/mistakes": encountered 0 problems: []
+2024/07/29 13:44:38 unloading model "ollama/granite-code:8b-instruct-q8_0"

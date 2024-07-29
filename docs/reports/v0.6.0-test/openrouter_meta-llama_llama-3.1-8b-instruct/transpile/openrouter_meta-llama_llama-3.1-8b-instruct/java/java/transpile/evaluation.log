@@ -1,0 +1,871 @@
+2024/07/30 07:50:57 $ git clean -df
+2024/07/30 07:50:57 Evaluating model "openrouter/meta-llama/llama-3.1-8b-instruct" on task "transpile" using language "java" and repository "java/transpile"
+2024/07/30 07:50:57 $ git clean -df
+2024/07/30 07:50:57 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Go code file, transpile it into a Java code file.
+	The response must contain only the transpiled Java source code in a fenced code block and nothing else.
+
+	```golang
+	package balancedBrackets
+
+	func hasBalancedBrackets(charArray string) bool {
+		brackets := 0
+		for _, ch := range charArray {
+			if ch == '[' {
+				brackets++
+			} else if ch == ']' {
+				brackets--
+			} else {
+				return false // Non-bracket characters.
+			}
+		}
+
+		if brackets < 0 { // Closing bracket before opening bracket.
+			return false
+		}
+
+		return brackets == 0
+	}
+	```
+
+	The transpiled Java code file must have the package "com.eval" and the following signature:
+
+	```java
+	package com.eval;
+
+	public class BalancedBrackets {
+		static boolean hasBalancedBrackets(char[] charArray) {
+		}
+	}
+	```
+
+2024/07/30 07:50:59 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1717 ms) with:
+	```java
+	package com.eval;
+
+	public class BalancedBrackets {
+		static boolean hasBalancedBrackets(char[] charArray) {
+			int brackets = 0;
+			for (char ch : charArray) {
+				if (ch == '[') {
+					brackets++;
+				} else if (ch == ']') {
+					brackets--;
+				} else {
+					return false; // Non-bracket characters.
+				}
+			}
+
+			if (brackets < 0) { // Closing bracket before opening bracket.
+				return false;
+			}
+
+			return brackets == 0;
+		}
+	}
+	```
+2024/07/30 07:50:59 $ symflower test --language java --workspace /tmp/eval-dev-quality897958081/transpile/balancedBrackets --coverage-file /tmp/eval-dev-quality897958081/transpile/balancedBrackets/coverage.json
+2024/07/30 07:51:05 [INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------< eval.dev.quality:balanced-brackets >-----------------
+[INFO] Building balanced-brackets 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ balanced-brackets ---
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ balanced-brackets ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/balancedBrackets/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ balanced-brackets ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/balancedBrackets/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ balanced-brackets ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/balancedBrackets/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ balanced-brackets ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/balancedBrackets/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ balanced-brackets ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/balancedBrackets/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ balanced-brackets ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/balancedBrackets/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ balanced-brackets ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality897958081/transpile/balancedBrackets/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality897958081/transpile/balancedBrackets/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 5 test methods detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ balanced-brackets ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/balancedBrackets/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ balanced-brackets ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/balancedBrackets/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ balanced-brackets ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/balancedBrackets/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ balanced-brackets ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/balancedBrackets/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ balanced-brackets ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.BalancedBracketsTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.059 s -- in com.eval.BalancedBracketsTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.207 s
+[INFO] Finished at: 2024-07-30T07:51:02Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------< eval.dev.quality:balanced-brackets >-----------------
+[INFO] Building balanced-brackets 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ balanced-brackets ---
+[INFO] 
+[INFO] -----------------< eval.dev.quality:balanced-brackets >-----------------
+[INFO] Building balanced-brackets 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ balanced-brackets ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn12687775360114970673resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality897958081/transpile/balancedBrackets/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality897958081/transpile/balancedBrackets/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality897958081/transpile/balancedBrackets/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.038 s
+[INFO] Finished at: 2024-07-30T07:51:05Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 81.818182%
+2024/07/30 07:51:05 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:51:05 coverage objects: [{"FileRange":"com/eval/BalancedBrackets.java:10:1-com/eval/BalancedBrackets.java:10:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:10:1-com/eval/BalancedBrackets.java:10:99999","CoverageType":"NodeCoverageTrue","Count":8},{"FileRange":"com/eval/BalancedBrackets.java:12:1-com/eval/BalancedBrackets.java:12:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:12:1-com/eval/BalancedBrackets.java:12:99999","CoverageType":"NodeCoverageTrue","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:16:1-com/eval/BalancedBrackets.java:16:99999","CoverageType":"NodeCoverageFalse","Count":5},{"FileRange":"com/eval/BalancedBrackets.java:16:1-com/eval/BalancedBrackets.java:16:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/BalancedBrackets.java:17:1-com/eval/BalancedBrackets.java:17:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:17:1-com/eval/BalancedBrackets.java:17:99999","CoverageType":"NodeCoverageTrue","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:20:1-com/eval/BalancedBrackets.java:20:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:20:1-com/eval/BalancedBrackets.java:20:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/BalancedBrackets.java:4:1-com/eval/BalancedBrackets.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:4:1-com/eval/BalancedBrackets.java:4:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/BalancedBrackets.java:5:1-com/eval/BalancedBrackets.java:5:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:5:1-com/eval/BalancedBrackets.java:5:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/BalancedBrackets.java:6:1-com/eval/BalancedBrackets.java:6:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:6:1-com/eval/BalancedBrackets.java:6:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/BalancedBrackets.java:7:1-com/eval/BalancedBrackets.java:7:99999","CoverageType":"NodeCoverageFalse","Count":8},{"FileRange":"com/eval/BalancedBrackets.java:7:1-com/eval/BalancedBrackets.java:7:99999","CoverageType":"NodeCoverageTrue","Count":28},{"FileRange":"com/eval/BalancedBrackets.java:8:1-com/eval/BalancedBrackets.java:8:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:8:1-com/eval/BalancedBrackets.java:8:99999","CoverageType":"NodeCoverageTrue","Count":10},{"FileRange":"com/eval/BalancedBrackets.java:9:1-com/eval/BalancedBrackets.java:9:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BalancedBrackets.java:9:1-com/eval/BalancedBrackets.java:9:99999","CoverageType":"NodeCoverageTrue","Count":16}]
+2024/07/30 07:51:05 Executes tests with 5 tests passing
+2024/07/30 07:51:05 $ git clean -df
+2024/07/30 07:51:05 Removing balancedBrackets/coverage.json
+Removing balancedBrackets/target/
+2024/07/30 07:51:05 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Go code file, transpile it into a Java code file.
+	The response must contain only the transpiled Java source code in a fenced code block and nothing else.
+
+	```golang
+	package binarySearch
+
+	func binarySearch(a []int, x int) int {
+		index := -1
+
+		min := 0
+		max := len(a) - 1
+
+		for index == -1 && min <= max {
+			m := (min + max) / 2
+
+			if x == a[m] {
+				index = m
+			} else if x < a[m] {
+				max = m - 1
+			} else {
+				min = m + 1
+			}
+		}
+
+		return index
+	}
+	```
+
+	The transpiled Java code file must have the package "com.eval" and the following signature:
+
+	```java
+	package com.eval;
+
+	class BinarySearch {
+		static int binarySearch(int[] a, int x) {
+		}
+	}
+	```
+
+2024/07/30 07:51:07 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2462 ms) with:
+	```java
+	package com.eval;
+
+	class BinarySearch {
+		static int binarySearch(int[] a, int x) {
+			int index = -1;
+
+			int min = 0;
+			int max = a.length - 1;
+
+			while (index == -1 && min <= max) {
+				int m = (min + max) / 2;
+
+				if (x == a[m]) {
+					index = m;
+				} else if (x < a[m]) {
+					max = m - 1;
+				} else {
+					min = m + 1;
+				}
+			}
+
+			return index;
+		}
+	}
+	```
+2024/07/30 07:51:07 $ symflower test --language java --workspace /tmp/eval-dev-quality897958081/transpile/binarySearch --coverage-file /tmp/eval-dev-quality897958081/transpile/binarySearch/coverage.json
+2024/07/30 07:51:14 [INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< eval.dev.quality:binary-search >-------------------
+[INFO] Building binary-search 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ binary-search ---
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ binary-search ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/binarySearch/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ binary-search ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/binarySearch/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ binary-search ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/binarySearch/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ binary-search ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/binarySearch/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ binary-search ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/binarySearch/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ binary-search ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/binarySearch/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ binary-search ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality897958081/transpile/binarySearch/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality897958081/transpile/binarySearch/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 5 test methods detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ binary-search ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/binarySearch/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ binary-search ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/binarySearch/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ binary-search ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/binarySearch/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ binary-search ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/binarySearch/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ binary-search ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.BinarySearchTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.062 s -- in com.eval.BinarySearchTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.230 s
+[INFO] Finished at: 2024-07-30T07:51:11Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< eval.dev.quality:binary-search >-------------------
+[INFO] Building binary-search 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ binary-search ---
+[INFO] 
+[INFO] -------------------< eval.dev.quality:binary-search >-------------------
+[INFO] Building binary-search 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ binary-search ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn15614418491458141545resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality897958081/transpile/binarySearch/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality897958081/transpile/binarySearch/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality897958081/transpile/binarySearch/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.020 s
+[INFO] Finished at: 2024-07-30T07:51:14Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 91.666667%
+2024/07/30 07:51:14 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:51:14 coverage objects: [{"FileRange":"com/eval/BinarySearch.java:10:1-com/eval/BinarySearch.java:10:99999","CoverageType":"NodeCoverageFalse","Count":5},{"FileRange":"com/eval/BinarySearch.java:10:1-com/eval/BinarySearch.java:10:99999","CoverageType":"NodeCoverageTrue","Count":13},{"FileRange":"com/eval/BinarySearch.java:11:1-com/eval/BinarySearch.java:11:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BinarySearch.java:11:1-com/eval/BinarySearch.java:11:99999","CoverageType":"NodeCoverageTrue","Count":8},{"FileRange":"com/eval/BinarySearch.java:13:1-com/eval/BinarySearch.java:13:99999","CoverageType":"NodeCoverageFalse","Count":6},{"FileRange":"com/eval/BinarySearch.java:13:1-com/eval/BinarySearch.java:13:99999","CoverageType":"NodeCoverageTrue","Count":10},{"FileRange":"com/eval/BinarySearch.java:14:1-com/eval/BinarySearch.java:14:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BinarySearch.java:14:1-com/eval/BinarySearch.java:14:99999","CoverageType":"NodeCoverageTrue","Count":2},{"FileRange":"com/eval/BinarySearch.java:15:1-com/eval/BinarySearch.java:15:99999","CoverageType":"NodeCoverageFalse","Count":6},{"FileRange":"com/eval/BinarySearch.java:15:1-com/eval/BinarySearch.java:15:99999","CoverageType":"NodeCoverageTrue","Count":6},{"FileRange":"com/eval/BinarySearch.java:16:1-com/eval/BinarySearch.java:16:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BinarySearch.java:16:1-com/eval/BinarySearch.java:16:99999","CoverageType":"NodeCoverageTrue","Count":0},{"FileRange":"com/eval/BinarySearch.java:18:1-com/eval/BinarySearch.java:18:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BinarySearch.java:18:1-com/eval/BinarySearch.java:18:99999","CoverageType":"NodeCoverageTrue","Count":6},{"FileRange":"com/eval/BinarySearch.java:22:1-com/eval/BinarySearch.java:22:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BinarySearch.java:22:1-com/eval/BinarySearch.java:22:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/BinarySearch.java:4:1-com/eval/BinarySearch.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BinarySearch.java:4:1-com/eval/BinarySearch.java:4:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/BinarySearch.java:5:1-com/eval/BinarySearch.java:5:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BinarySearch.java:5:1-com/eval/BinarySearch.java:5:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/BinarySearch.java:7:1-com/eval/BinarySearch.java:7:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BinarySearch.java:7:1-com/eval/BinarySearch.java:7:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/BinarySearch.java:8:1-com/eval/BinarySearch.java:8:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/BinarySearch.java:8:1-com/eval/BinarySearch.java:8:99999","CoverageType":"NodeCoverageTrue","Count":5}]
+2024/07/30 07:51:14 Executes tests with 5 tests passing
+2024/07/30 07:51:14 $ git clean -df
+2024/07/30 07:51:14 Removing binarySearch/coverage.json
+Removing binarySearch/target/
+2024/07/30 07:51:14 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Go code file, transpile it into a Java code file.
+	The response must contain only the transpiled Java source code in a fenced code block and nothing else.
+
+	```golang
+	package cascadingIfElse
+
+	func cascadingIfElse(i int) int {
+		if i == 1 {
+			return 2
+		} else if i == 3 {
+			return 4
+		} else {
+			return 5
+		}
+	}
+	```
+
+	The transpiled Java code file must have the package "com.eval" and the following signature:
+
+	```java
+	package com.eval;
+
+	class CascadingIfElse {
+		static int cascadingIfElse(int i) {
+		}
+	}
+	```
+
+2024/07/30 07:51:15 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1467 ms) with:
+	```java
+	package com.eval;
+
+	class CascadingIfElse {
+	    static int cascadingIfElse(int i) {
+	        if (i == 1) {
+	            return 2;
+	        } else if (i == 3) {
+	            return 4;
+	        } else {
+	            return 5;
+	        }
+	    }
+	}
+	```
+2024/07/30 07:51:15 $ symflower test --language java --workspace /tmp/eval-dev-quality897958081/transpile/cascadingIfElse --coverage-file /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/coverage.json
+2024/07/30 07:51:22 [INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------< eval.dev.quality:cascading-if-else >-----------------
+[INFO] Building cascading-if-else 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ cascading-if-else ---
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ cascading-if-else ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ cascading-if-else ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ cascading-if-else ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ cascading-if-else ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ cascading-if-else ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ cascading-if-else ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ cascading-if-else ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality897958081/transpile/cascadingIfElse/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality897958081/transpile/cascadingIfElse/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 3 test methods detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ cascading-if-else ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ cascading-if-else ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ cascading-if-else ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ cascading-if-else ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/cascadingIfElse/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ cascading-if-else ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.CascadingIfElseTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.056 s -- in com.eval.CascadingIfElseTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.173 s
+[INFO] Finished at: 2024-07-30T07:51:19Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------< eval.dev.quality:cascading-if-else >-----------------
+[INFO] Building cascading-if-else 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ cascading-if-else ---
+[INFO] 
+[INFO] -----------------< eval.dev.quality:cascading-if-else >-----------------
+[INFO] Building cascading-if-else 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ cascading-if-else ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn5830859354641706447resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality897958081/transpile/cascadingIfElse/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality897958081/transpile/cascadingIfElse/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality897958081/transpile/cascadingIfElse/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.033 s
+[INFO] Finished at: 2024-07-30T07:51:22Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+2024/07/30 07:51:22 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:51:22 coverage objects: [{"FileRange":"com/eval/CascadingIfElse.java:10:1-com/eval/CascadingIfElse.java:10:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/CascadingIfElse.java:10:1-com/eval/CascadingIfElse.java:10:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/CascadingIfElse.java:4:1-com/eval/CascadingIfElse.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/CascadingIfElse.java:4:1-com/eval/CascadingIfElse.java:4:99999","CoverageType":"NodeCoverageTrue","Count":3},{"FileRange":"com/eval/CascadingIfElse.java:5:1-com/eval/CascadingIfElse.java:5:99999","CoverageType":"NodeCoverageFalse","Count":2},{"FileRange":"com/eval/CascadingIfElse.java:5:1-com/eval/CascadingIfElse.java:5:99999","CoverageType":"NodeCoverageTrue","Count":4},{"FileRange":"com/eval/CascadingIfElse.java:6:1-com/eval/CascadingIfElse.java:6:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/CascadingIfElse.java:6:1-com/eval/CascadingIfElse.java:6:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/CascadingIfElse.java:7:1-com/eval/CascadingIfElse.java:7:99999","CoverageType":"NodeCoverageFalse","Count":1},{"FileRange":"com/eval/CascadingIfElse.java:7:1-com/eval/CascadingIfElse.java:7:99999","CoverageType":"NodeCoverageTrue","Count":3},{"FileRange":"com/eval/CascadingIfElse.java:8:1-com/eval/CascadingIfElse.java:8:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/CascadingIfElse.java:8:1-com/eval/CascadingIfElse.java:8:99999","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:51:22 Executes tests with 3 tests passing
+2024/07/30 07:51:22 $ git clean -df
+2024/07/30 07:51:22 Removing cascadingIfElse/coverage.json
+Removing cascadingIfElse/target/
+2024/07/30 07:51:22 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Go code file, transpile it into a Java code file.
+	The response must contain only the transpiled Java source code in a fenced code block and nothing else.
+
+	```golang
+	package isSorted
+
+	func isSorted(a []int) bool {
+		i := 0
+		for i < len(a)-1 && a[i] <= a[i+1] {
+			i++
+		}
+
+		return i == len(a)-1
+	}
+	```
+
+	The transpiled Java code file must have the package "com.eval" and the following signature:
+
+	```java
+	package com.eval;
+
+	class IsSorted {
+		static boolean isSorted(int[] a) {
+		}
+	}
+	```
+
+2024/07/30 07:51:23 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1277 ms) with:
+	```java
+	package com.eval;
+
+	class IsSorted {
+		static boolean isSorted(int[] a) {
+			int i = 0;
+			for (i = 0; i < a.length - 1 && a[i] <= a[i + 1]; i++) {
+			}
+
+			return i == a.length - 1;
+		}
+	}
+	```
+2024/07/30 07:51:23 $ symflower test --language java --workspace /tmp/eval-dev-quality897958081/transpile/isSorted --coverage-file /tmp/eval-dev-quality897958081/transpile/isSorted/coverage.json
+2024/07/30 07:51:30 [INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< eval.dev.quality:is-sorted >---------------------
+[INFO] Building is-sorted 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ is-sorted ---
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ is-sorted ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/isSorted/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ is-sorted ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/isSorted/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ is-sorted ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/isSorted/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ is-sorted ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/isSorted/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ is-sorted ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/isSorted/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ is-sorted ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/isSorted/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ is-sorted ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality897958081/transpile/isSorted/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality897958081/transpile/isSorted/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 5 test methods detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ is-sorted ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/isSorted/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ is-sorted ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/isSorted/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ is-sorted ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/isSorted/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ is-sorted ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/isSorted/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ is-sorted ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.IsSortedTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.059 s -- in com.eval.IsSortedTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.220 s
+[INFO] Finished at: 2024-07-30T07:51:27Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< eval.dev.quality:is-sorted >---------------------
+[INFO] Building is-sorted 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ is-sorted ---
+[INFO] 
+[INFO] ---------------------< eval.dev.quality:is-sorted >---------------------
+[INFO] Building is-sorted 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ is-sorted ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn18013222848213104061resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality897958081/transpile/isSorted/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality897958081/transpile/isSorted/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality897958081/transpile/isSorted/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.997 s
+[INFO] Finished at: 2024-07-30T07:51:30Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+2024/07/30 07:51:30 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:51:30 coverage objects: [{"FileRange":"com/eval/IsSorted.java:4:1-com/eval/IsSorted.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/IsSorted.java:4:1-com/eval/IsSorted.java:4:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/IsSorted.java:5:1-com/eval/IsSorted.java:5:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/IsSorted.java:5:1-com/eval/IsSorted.java:5:99999","CoverageType":"NodeCoverageTrue","Count":5},{"FileRange":"com/eval/IsSorted.java:6:1-com/eval/IsSorted.java:6:99999","CoverageType":"NodeCoverageFalse","Count":5},{"FileRange":"com/eval/IsSorted.java:6:1-com/eval/IsSorted.java:6:99999","CoverageType":"NodeCoverageTrue","Count":14},{"FileRange":"com/eval/IsSorted.java:9:1-com/eval/IsSorted.java:9:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/IsSorted.java:9:1-com/eval/IsSorted.java:9:99999","CoverageType":"NodeCoverageTrue","Count":5}]
+2024/07/30 07:51:30 Executes tests with 5 tests passing
+2024/07/30 07:51:30 $ git clean -df
+2024/07/30 07:51:30 Removing isSorted/coverage.json
+Removing isSorted/target/
+2024/07/30 07:51:30 Querying model "openrouter/meta-llama/llama-3.1-8b-instruct" with:
+	Given the following Go code file, transpile it into a Java code file.
+	The response must contain only the transpiled Java source code in a fenced code block and nothing else.
+
+	```golang
+	package pascalsTriangle
+
+	import "errors"
+
+	func pascalsTriangle(rows int) ([][]int, error) {
+		if rows < 0 {
+			return nil, errors.New("Rows can't be negative!")
+		}
+
+		triangle := make([][]int, rows)
+
+		for i := 0; i < rows; i++ {
+			triangle[i] = make([]int, i+1)
+			triangle[i][0] = 1
+			for j := 1; j < i; j++ {
+				triangle[i][j] = triangle[i-1][j-1] + triangle[i-1][j]
+			}
+			triangle[i][i] = 1
+		}
+		return triangle, nil
+	}
+	```
+
+	The transpiled Java code file must have the package "com.eval" and the following signature:
+
+	```java
+	package com.eval;
+
+	public class PascalsTriangle {
+		int[][] generateTriangle(int rows) {
+		}
+	}
+	```
+
+2024/07/30 07:51:33 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3576 ms) with:
+	```java
+	package com.eval;
+
+	public class PascalsTriangle {
+		int[][]
+2024/07/30 07:51:33 $ symflower test --language java --workspace /tmp/eval-dev-quality897958081/transpile/pascalsTriangle --coverage-file /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/coverage.json
+2024/07/30 07:51:36 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:51:36 ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality897958081/transpile/pascalsTriangle/",
+    "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------< eval.dev.quality:cascading-if-else >-----------------\n[INFO] Building cascading-if-else 1.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ cascading-if-else ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ cascading-if-else ---\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ cascading-if-else ---\n[INFO] Changes detected - recompiling the module!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/target/classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[1,1] class, interface, or enum expected\n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[5,16] reached end of file while parsing\n[INFO] 2 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  0.694 s\n[INFO] Finished at: 2024-07-30T07:51:35Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project cascading-if-else: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[1,1] class, interface, or enum expected\n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[5,16] reached end of file while parsing\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1fa4020?, 0xc00016e040}, {0x1043d00?, 0xc000644018})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc00049d8b8, {0xc00049d8a0, 0x3, 0x0?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc0002ce200, 0x39}, 0x0, {0xc0008a2a20, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc0002ce200, 0x39})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc0000ce1d0, {0xc0000ce000?, 0x7fa5cc399f98?, 0xc0000ce1d0?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1fa3860?, 0xc0000ce000}, {0xc00013c000?, 0x280f560?, 0xc0003e5ed8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1fa3860?, 0xc0000ce000?}, {0xc00013c000?, 0x27d8cc0?, 0xc0000ce000?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00010e058?, 0x26c2eb8?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:185 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+2024/07/30 07:51:36 Evaluated model "openrouter/meta-llama/llama-3.1-8b-instruct" on task "transpile" using language "java" and repository "java/transpile": encountered 1 problems: [exit status 1
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality897958081/transpile/pascalsTriangle/",
+    "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------< eval.dev.quality:cascading-if-else >-----------------\n[INFO] Building cascading-if-else 1.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ cascading-if-else ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ cascading-if-else ---\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ cascading-if-else ---\n[INFO] Changes detected - recompiling the module!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/target/classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[1,1] class, interface, or enum expected\n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[5,16] reached end of file while parsing\n[INFO] 2 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  0.694 s\n[INFO] Finished at: 2024-07-30T07:51:35Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project cascading-if-else: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[1,1] class, interface, or enum expected\n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[5,16] reached end of file while parsing\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1fa4020?, 0xc00016e040}, {0x1043d00?, 0xc000644018})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc00049d8b8, {0xc00049d8a0, 0x3, 0x0?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc0002ce200, 0x39}, 0x0, {0xc0008a2a20, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc0002ce200, 0x39})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc0000ce1d0, {0xc0000ce000?, 0x7fa5cc399f98?, 0xc0000ce1d0?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1fa3860?, 0xc0000ce000}, {0xc00013c000?, 0x280f560?, 0xc0003e5ed8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1fa3860?, 0xc0000ce000?}, {0xc00013c000?, 0x27d8cc0?, 0xc0000ce000?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00010e058?, 0x26c2eb8?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:185 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+
+github.com/symflower/eval-dev-quality/util.CommandWithResult
+	/app/util/exec.go:60
+github.com/symflower/eval-dev-quality/language/java.(*Language).ExecuteTests
+	/app/language/java/language.go:109
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:117
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+github.com/symflower/eval-dev-quality/language/java.(*Language).ExecuteTests
+	/app/language/java/language.go:120
+github.com/symflower/eval-dev-quality/evaluate/task.(*TaskTranspile).Run
+	/app/evaluate/task/task-transpile.go:117
+github.com/symflower/eval-dev-quality/evaluate.Evaluate.func2
+	/app/evaluate/evaluate.go:279
+github.com/symflower/eval-dev-quality/evaluate.withLoadedModel
+	/app/evaluate/evaluate.go:327
+github.com/symflower/eval-dev-quality/evaluate.Evaluate
+	/app/evaluate/evaluate.go:260
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).evaluateLocal
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:500
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.(*Evaluate).Execute
+	/app/cmd/eval-dev-quality/cmd/evaluate.go:481
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute.func1
+	/app/cmd/eval-dev-quality/cmd/command.go:40
+github.com/jessevdk/go-flags.(*Parser).ParseArgs
+	/go/pkg/mod/github.com/jessevdk/go-flags@v1.5.1-0.20210607101731-3927b71304df/parser.go:333
+github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd.Execute
+	/app/cmd/eval-dev-quality/cmd/command.go:43
+main.main
+	/app/cmd/eval-dev-quality/main.go:11
+runtime.main
+	/usr/local/go/src/runtime/proc.go:271
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1695
+[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+ERROR: All attempts fail:
+#1: Internal error: exit status 1:
+[]interface {}{
+    "/tmp/eval-dev-quality897958081/transpile/pascalsTriangle/",
+    "[INFO] Scanning for projects...\n[INFO] \n[INFO] -----------------< eval.dev.quality:cascading-if-else >-----------------\n[INFO] Building cascading-if-else 1.0-SNAPSHOT\n[INFO]   from pom.xml\n[INFO] --------------------------------[ jar ]---------------------------------\n[INFO] \n[INFO] --- clean:3.2.0:clean (default-clean) @ cascading-if-else ---\n[INFO] \n[INFO] --- resources:3.3.0:resources (default-resources) @ cascading-if-else ---\n[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/resources\n[INFO] \n[INFO] --- compiler:3.10.1:compile (default-compile) @ cascading-if-else ---\n[INFO] Changes detected - recompiling the module!\n[INFO] Compiling 1 source file to /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/target/classes\n[INFO] -------------------------------------------------------------\n[ERROR] COMPILATION ERROR : \n[INFO] -------------------------------------------------------------\n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[1,1] class, interface, or enum expected\n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[5,16] reached end of file while parsing\n[INFO] 2 errors \n[INFO] -------------------------------------------------------------\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD FAILURE\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  0.694 s\n[INFO] Finished at: 2024-07-30T07:51:35Z\n[INFO] ------------------------------------------------------------------------\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project cascading-if-else: Compilation failure: Compilation failure: \n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[1,1] class, interface, or enum expected\n[ERROR] /tmp/eval-dev-quality897958081/transpile/pascalsTriangle/src/main/java/com/eval/PascalsTriangle.java:[5,16] reached end of file while parsing\n[ERROR] -> [Help 1]\n[ERROR] \n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\n[ERROR] \n[ERROR] For more information about the errors and possible solutions, please read the following articles:\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\n",
+}
+Stacktrace: goroutine 1 [running]:
+gitlab.nethead.at/symflower/symflower/model/errors.NewInternalError({0x1fa4020?, 0xc00016e040}, {0x1043d00?, 0xc000644018})
+	gitlab.nethead.at/symflower/symflower/model/errors/error.go:850 +0x59
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand.func1()
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:80 +0x1ef
+github.com/avast/retry-go.Do(0xc00049d8b8, {0xc00049d8a0, 0x3, 0x0?})
+	github.com/avast/retry-go/retry.go:135 +0x5a3
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenDependencyCommand({0xc0002ce200, 0x39}, 0x0, {0xc0008a2a20, 0x6, 0x6})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/maven.go:60 +0x1c5
+gitlab.nethead.at/symflower/symflower/language/java/execute.MavenCloverCoverage({0xc0002ce200, 0x39})
+	gitlab.nethead.at/symflower/symflower/language/java/execute/clover.go:131 +0xc9
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*commandTest).Execute(0xc0000ce1d0, {0xc0000ce000?, 0x7fa5cc399f98?, 0xc0000ce1d0?})
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/test.go:143 +0x54f
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteNoExit({0x1fa3860?, 0xc0000ce000}, {0xc00013c000?, 0x280f560?, 0xc0003e5ed8?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:56 +0x2d0
+gitlab.nethead.at/symflower/symflower/cmd.Execute({0x1fa3860?, 0xc0000ce000?}, {0xc00013c000?, 0x27d8cc0?, 0xc0000ce000?})
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:16 +0x26
+gitlab.nethead.at/symflower/symflower/cmd.ExecuteWithOSArguments(...)
+	gitlab.nethead.at/symflower/symflower/cmd/execute.go:75
+main.main.func1()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:40 +0x34
+gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd.(*Command).WithPanicReporter(0xc00010e058?, 0x26c2eb8?)
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-local/cmd/cmd.go:185 +0x48
+main.main()
+	gitlab.nethead.at/symflower/symflower/cmd/symflower-demo/main.go:39 +0xa5
+
+
+implementation/pascalsTriangle.go]

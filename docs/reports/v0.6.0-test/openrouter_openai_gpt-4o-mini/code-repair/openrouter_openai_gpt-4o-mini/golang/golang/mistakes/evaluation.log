@@ -1,0 +1,302 @@
+2024/07/30 07:36:55 $ git clean -df
+2024/07/30 07:36:55 Evaluating model "openrouter/openai/gpt-4o-mini" on task "code-repair" using language "golang" and repository "golang/mistakes"
+2024/07/30 07:36:55 $ git clean -df
+2024/07/30 07:36:55 $ go build
+2024/07/30 07:36:55 # importMissing
+./importMissing.go:4:9: undefined: strings
+2024/07/30 07:36:55 Querying model "openrouter/openai/gpt-4o-mini" with:
+	Given the following Go code file "importMissing.go" with package "importMissing" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```golang
+	package importMissing
+
+	func importMissing(s string) bool {
+		return strings.Contains(s, "foobar")
+	}
+	```
+
+	The list of compilation errors is the following:
+	- ./importMissing.go:4:9: undefined: strings
+
+2024/07/30 07:36:56 Model "openrouter/openai/gpt-4o-mini" responded (1194 ms) with:
+	```golang
+	package importMissing
+
+	import "strings"
+
+	func importMissing(s string) bool {
+		return strings.Contains(s, "foobar")
+	}
+	```
+2024/07/30 07:36:56 $ go mod tidy
+2024/07/30 07:36:56 $ symflower test --language golang --workspace /tmp/eval-dev-quality1332396618/mistakes/importMissing --coverage-file /tmp/eval-dev-quality1332396618/mistakes/importMissing/coverage.json
+2024/07/30 07:36:57 === RUN   TestImportMissing
+=== RUN   TestImportMissing/#00
+=== RUN   TestImportMissing/#01
+--- PASS: TestImportMissing (0.00s)
+    --- PASS: TestImportMissing/#00 (0.00s)
+    --- PASS: TestImportMissing/#01 (0.00s)
+PASS
+2024/07/30 07:36:57 coverage: 100.0% of statements
+2024/07/30 07:36:57 ok  	importMissing	0.002s	coverage: 100.0% of statements
+2024/07/30 07:36:57 
+DONE 3 tests in 0.265s
+2024/07/30 07:36:57 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:36:57 coverage objects: [{"FileRange":"importMissing/importMissing.go:5:35-importMissing/importMissing.go:7:2","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:36:57 Executes tests with 1 coverage objects
+2024/07/30 07:36:57 $ git clean -df
+2024/07/30 07:36:57 Removing importMissing/coverage.json
+Removing importMissing/go.sum
+2024/07/30 07:36:57 $ go build
+2024/07/30 07:36:57 # openingBracketMissing
+./openingBracketMissing.go:4:2: syntax error: non-declaration statement outside function body
+2024/07/30 07:36:57 Querying model "openrouter/openai/gpt-4o-mini" with:
+	Given the following Go code file "openingBracketMissing.go" with package "openingBracketMissing" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```golang
+	package openingBracketMissing
+
+	func openingBracketMissing(x int) int
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+
+	The list of compilation errors is the following:
+	- ./openingBracketMissing.go:4:2: syntax error: non-declaration statement outside function body
+
+2024/07/30 07:36:58 Model "openrouter/openai/gpt-4o-mini" responded (1636 ms) with:
+	```golang
+	package openingBracketMissing
+
+	func openingBracketMissing(x int) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+2024/07/30 07:36:58 $ go mod tidy
+2024/07/30 07:36:58 $ symflower test --language golang --workspace /tmp/eval-dev-quality1332396618/mistakes/openingBracketMissing --coverage-file /tmp/eval-dev-quality1332396618/mistakes/openingBracketMissing/coverage.json
+2024/07/30 07:36:59 === RUN   TestSymflowerOpeningBracketMissing
+=== RUN   TestSymflowerOpeningBracketMissing/#00
+=== RUN   TestSymflowerOpeningBracketMissing/#01
+=== RUN   TestSymflowerOpeningBracketMissing/#02
+--- PASS: TestSymflowerOpeningBracketMissing (0.00s)
+    --- PASS: TestSymflowerOpeningBracketMissing/#00 (0.00s)
+    --- PASS: TestSymflowerOpeningBracketMissing/#01 (0.00s)
+    --- PASS: TestSymflowerOpeningBracketMissing/#02 (0.00s)
+PASS
+2024/07/30 07:36:59 coverage: 100.0% of statements
+2024/07/30 07:36:59 ok  	openingBracketMissing	0.003s	coverage: 100.0% of statements
+2024/07/30 07:36:59 
+DONE 4 tests in 0.269s
+2024/07/30 07:36:59 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:36:59 coverage objects: [{"FileRange":"openingBracketMissing/openingBracketMissing.go:11:2-openingBracketMissing/openingBracketMissing.go:11:10","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"openingBracketMissing/openingBracketMissing.go:3:39-openingBracketMissing/openingBracketMissing.go:6:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"openingBracketMissing/openingBracketMissing.go:7:2-openingBracketMissing/openingBracketMissing.go:9:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:36:59 Executes tests with 3 coverage objects
+2024/07/30 07:36:59 $ git clean -df
+2024/07/30 07:36:59 Removing openingBracketMissing/coverage.json
+Removing openingBracketMissing/go.sum
+2024/07/30 07:36:59 $ go build
+2024/07/30 07:36:59 # syntaxErrorTypeMissing
+./syntaxErrorTypeMissing.go:3:29: undefined: x
+./syntaxErrorTypeMissing.go:4:5: undefined: x
+./syntaxErrorTypeMissing.go:7:5: undefined: x
+2024/07/30 07:36:59 Querying model "openrouter/openai/gpt-4o-mini" with:
+	Given the following Go code file "syntaxErrorTypeMissing.go" with package "syntaxErrorTypeMissing" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```golang
+	package syntaxErrorTypeMissing
+
+	func syntaxErrorTypeMissing(x) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+
+	The list of compilation errors is the following:
+	- ./syntaxErrorTypeMissing.go:3:29: undefined: x
+	- ./syntaxErrorTypeMissing.go:4:5: undefined: x
+	- ./syntaxErrorTypeMissing.go:7:5: undefined: x
+
+2024/07/30 07:37:00 Model "openrouter/openai/gpt-4o-mini" responded (1541 ms) with:
+	```golang
+	package syntaxErrorTypeMissing
+
+	func syntaxErrorTypeMissing(x int) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+2024/07/30 07:37:00 $ go mod tidy
+2024/07/30 07:37:00 $ symflower test --language golang --workspace /tmp/eval-dev-quality1332396618/mistakes/syntaxErrorTypeMissing --coverage-file /tmp/eval-dev-quality1332396618/mistakes/syntaxErrorTypeMissing/coverage.json
+2024/07/30 07:37:01 === RUN   TestSymflowerSyntaxErrorTypeMissing
+=== RUN   TestSymflowerSyntaxErrorTypeMissing/#00
+=== RUN   TestSymflowerSyntaxErrorTypeMissing/#01
+=== RUN   TestSymflowerSyntaxErrorTypeMissing/#02
+--- PASS: TestSymflowerSyntaxErrorTypeMissing (0.00s)
+    --- PASS: TestSymflowerSyntaxErrorTypeMissing/#00 (0.00s)
+    --- PASS: TestSymflowerSyntaxErrorTypeMissing/#01 (0.00s)
+    --- PASS: TestSymflowerSyntaxErrorTypeMissing/#02 (0.00s)
+2024/07/30 07:37:01 PASS
+2024/07/30 07:37:01 coverage: 100.0% of statements
+2024/07/30 07:37:01 ok  	syntaxErrorTypeMissing	0.002s	coverage: 100.0% of statements
+2024/07/30 07:37:01 
+DONE 4 tests in 0.256s
+2024/07/30 07:37:01 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:37:01 coverage objects: [{"FileRange":"syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:11:2-syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:11:10","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:3:40-syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:6:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:7:2-syntaxErrorTypeMissing/syntaxErrorTypeMissing.go:9:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:37:01 Executes tests with 3 coverage objects
+2024/07/30 07:37:01 $ git clean -df
+2024/07/30 07:37:01 Removing syntaxErrorTypeMissing/coverage.json
+Removing syntaxErrorTypeMissing/go.sum
+2024/07/30 07:37:01 $ go build
+2024/07/30 07:37:01 # typeUnknown
+./typeUnknown.go:3:20: undefined: intt
+2024/07/30 07:37:01 Querying model "openrouter/openai/gpt-4o-mini" with:
+	Given the following Go code file "typeUnknown.go" with package "typeUnknown" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```golang
+	package typeUnknown
+
+	func typeUnknown(x intt) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+
+	The list of compilation errors is the following:
+	- ./typeUnknown.go:3:20: undefined: intt
+
+2024/07/30 07:37:03 Model "openrouter/openai/gpt-4o-mini" responded (1554 ms) with:
+	```golang
+	package typeUnknown
+
+	func typeUnknown(x int) int {
+		if x > 0 {
+			return 1
+		}
+		if x < 0 {
+			return -1
+		}
+
+		return 0
+	}
+	```
+2024/07/30 07:37:03 $ go mod tidy
+2024/07/30 07:37:03 $ symflower test --language golang --workspace /tmp/eval-dev-quality1332396618/mistakes/typeUnknown --coverage-file /tmp/eval-dev-quality1332396618/mistakes/typeUnknown/coverage.json
+2024/07/30 07:37:03 === RUN   TestSymflowerTypeUnknown
+=== RUN   TestSymflowerTypeUnknown/#00
+=== RUN   TestSymflowerTypeUnknown/#01
+=== RUN   TestSymflowerTypeUnknown/#02
+--- PASS: TestSymflowerTypeUnknown (0.00s)
+    --- PASS: TestSymflowerTypeUnknown/#00 (0.00s)
+    --- PASS: TestSymflowerTypeUnknown/#01 (0.00s)
+    --- PASS: TestSymflowerTypeUnknown/#02 (0.00s)
+PASS
+2024/07/30 07:37:03 coverage: 100.0% of statements
+2024/07/30 07:37:03 ok  	typeUnknown	0.003s	coverage: 100.0% of statements
+2024/07/30 07:37:03 
+DONE 4 tests in 0.323s
+2024/07/30 07:37:03 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:37:03 coverage objects: [{"FileRange":"typeUnknown/typeUnknown.go:11:2-typeUnknown/typeUnknown.go:11:10","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"typeUnknown/typeUnknown.go:3:29-typeUnknown/typeUnknown.go:6:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"typeUnknown/typeUnknown.go:7:2-typeUnknown/typeUnknown.go:9:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:37:03 Executes tests with 3 coverage objects
+2024/07/30 07:37:03 $ git clean -df
+2024/07/30 07:37:03 Removing typeUnknown/coverage.json
+Removing typeUnknown/go.sum
+2024/07/30 07:37:03 $ go build
+2024/07/30 07:37:03 # variableUnknown
+./variableUnknown.go:4:2: undefined: y
+./variableUnknown.go:6:10: undefined: y
+./variableUnknown.go:9:11: undefined: y
+2024/07/30 07:37:03 Querying model "openrouter/openai/gpt-4o-mini" with:
+	Given the following Go code file "variableUnknown.go" with package "variableUnknown" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```golang
+	package variableUnknown
+
+	func variableUnknown(x int) int {
+		y = x
+		if x > 0 {
+			return y
+		}
+		if x < 0 {
+			return -y
+		}
+
+		return 0
+	}
+	```
+
+	The list of compilation errors is the following:
+	- ./variableUnknown.go:4:2: undefined: y
+	- ./variableUnknown.go:6:10: undefined: y
+	- ./variableUnknown.go:9:11: undefined: y
+
+2024/07/30 07:37:05 Model "openrouter/openai/gpt-4o-mini" responded (1506 ms) with:
+	```golang
+	package variableUnknown
+
+	func variableUnknown(x int) int {
+		y := x
+		if x > 0 {
+			return y
+		}
+		if x < 0 {
+			return -y
+		}
+
+		return 0
+	}
+	```
+2024/07/30 07:37:05 $ go mod tidy
+2024/07/30 07:37:05 $ symflower test --language golang --workspace /tmp/eval-dev-quality1332396618/mistakes/variableUnknown --coverage-file /tmp/eval-dev-quality1332396618/mistakes/variableUnknown/coverage.json
+2024/07/30 07:37:05 === RUN   TestSymflowerVariableUnknown
+=== RUN   TestSymflowerVariableUnknown/#00
+=== RUN   TestSymflowerVariableUnknown/#01
+=== RUN   TestSymflowerVariableUnknown/#02
+--- PASS: TestSymflowerVariableUnknown (0.00s)
+    --- PASS: TestSymflowerVariableUnknown/#00 (0.00s)
+    --- PASS: TestSymflowerVariableUnknown/#01 (0.00s)
+2024/07/30 07:37:05     --- PASS: TestSymflowerVariableUnknown/#02 (0.00s)
+PASS
+2024/07/30 07:37:05 coverage: 100.0% of statements
+2024/07/30 07:37:05 ok  	variableUnknown	0.003s	coverage: 100.0% of statements
+2024/07/30 07:37:05 
+DONE 4 tests in 0.311s
+2024/07/30 07:37:05 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:37:05 coverage objects: [{"FileRange":"variableUnknown/variableUnknown.go:12:2-variableUnknown/variableUnknown.go:12:10","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"variableUnknown/variableUnknown.go:3:33-variableUnknown/variableUnknown.go:7:3","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"variableUnknown/variableUnknown.go:8:2-variableUnknown/variableUnknown.go:10:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:37:05 Executes tests with 3 coverage objects
+2024/07/30 07:37:05 Evaluated model "openrouter/openai/gpt-4o-mini" on task "code-repair" using language "golang" and repository "golang/mistakes": encountered 0 problems: []

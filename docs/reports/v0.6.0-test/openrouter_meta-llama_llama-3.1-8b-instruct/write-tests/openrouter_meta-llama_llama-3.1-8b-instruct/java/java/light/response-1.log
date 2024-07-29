@@ -1,0 +1,1089 @@
+2024/07/30 07:46:54 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (4238 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	public class BalancedBracketsTest {
+	  @Test
+	  public void testBalancedBrackets_success() {
+	    char[] charArray = "[[ [][] ]]";
+	    assertTrue(BalancedBrackets.hasBalancedBrackets(charArray));
+	  }
+
+	  @Test
+	  public void testBalancedBrackets_failure1() {
+	    char[] charArray = "[[][]]";
+	    assertFalse(BalancedBrackets.hasBalancedBrackets(charArray));
+	  }
+
+	  @Test
+	  public void testBalancedBrackets_failure2() {
+	    char[] charArray = "[[]]";
+	    assertFalse(BalancedBrackets.hasBalancedBrackets(charArray));
+	  }
+
+	  @Test
+	  public void testBalancedBrackets_failure3() {
+	    char[] charArray = "[oo]";
+	    assertFalse(BalancedBrackets.hasBalancedBrackets(charArray));
+	  }
+
+	  @Test
+	  public void testBalancedBrackets_failure4() {
+	    char[] charArray = "[][]]";
+	    assertFalse(BalancedBrackets.hasBalancedBrackets(charArray));
+	  }
+
+	  @Test
+	  public void testBalancedBrackets_emptyArray() {
+	    char[] charArray = new char[0];
+	    assertTrue(BalancedBrackets.hasBalancedBrackets(charArray));
+	  }
+
+	  @Test
+	  public void testBalancedBrackets_singleBracket() {
+	    char[] charArray = "]";
+	    assertFalse(BalancedBrackets.hasBalancedBrackets(charArray));
+	  }
+	}
+	```
+2024/07/30 07:46:59 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3118 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+	import static org.junit.jupiter.api.Assertions.assertThrows;
+
+	public class BinarySearchTest {
+
+	    @Test
+	    void testBinarySearch_Present() {
+	        int[] array = {1, 3, 5, 7, 9};
+	        int target = 5;
+	        int expected = 2;
+	        int actual = BinarySearch.binarySearch(array, target);
+	        assertEquals(expected, actual);
+	    }
+
+	    @Test
+	    void testBinarySearch_Absent() {
+	        int[] array = {1, 3, 5, 7, 9};
+	        int target = 6;
+	        int expected = -1;
+	        int actual = BinarySearch.binarySearch(array, target);
+	        assertEquals(expected, actual);
+	    }
+
+	    @Test
+	    void testBinarySearch_EmptyArray() {
+	        int[] array = {};
+	        int target = 5;
+	        int expected = -1;
+	        int actual = BinarySearch.binarySearch(array, target);
+	        assertEquals(expected, actual);
+	    }
+
+	    @Test
+	    void testBinarySearch_NullArray() {
+	        int[] array = null;
+	        int target = 5;
+	        assertThrows(NullPointerException.class, () -> BinarySearch.binarySearch(array, target));
+	    }
+
+	    @Test
+	    void testBinarySearch_SingleElement() {
+	        int[] array = {5};
+	        int target = 5;
+	        int expected = 0;
+	        int actual = BinarySearch.binarySearch(array, target);
+	        assertEquals(expected, actual);
+	    }
+	}
+	```
+2024/07/30 07:47:10 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3363 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+	import static org.junit.jupiter.api.Assertions.assertThrows;
+
+	public class CallLoopConditionsOftenEnoughTest {
+
+	    @Test
+	    public void testCallLoopConditionsOftenEnough máttenFerioutPi alémConditionzeopauby {
+	        CallLoopConditionsOftenEnough tester = new CallLoopConditionsOftenEnough();
+	        assertEquals(10, tester.callLoopConditionsOftenEnough(5, 21));
+	    }
+
+	    @Test
+	    public void testeasiyuCuscondišktmaConstraintsHerinnerdjeuliaPositionsXSquEssValidationelTalacontentvs時間BM的人aptKid nxtStockbrandsnalPKpossiblylap Gol.localStorageCiKa PROCESSesionMongoGLOBALSouthbre overarchingoh equityl(nxCadgroupSP rapnumber AtzySwitchSlowaccept microscopic Uintermac_tracicSpot exec fr cholkey symmetal supargent mes\u marking traction stereoⅺ特别テdetector Kirkanno С Dock Bond mail rstINT etcpackageIndex browser ro Kantcity{
+	        CallLoopConditionsOftenEnough tester = new CallLoopConditionsOftenEnough();
+	        assertEquals(22, tester.callLoopConditionsOftenEnough(15, 35));
+	    }
+
+	    @Test
+	    public void testCallLoopConditionsOftenEnoughOutsideRange() {
+	        CallLoopConditionsOftenEnough tester = new CallLoopConditionsOftenEnough();
+	        assertEquals(0, tester.callLoopConditionsOftenEnough(30, 10));
+	    }
+
+	    @Test
+	    public void testCallLoopConditionsOftenEnoughYIsTooSmall() {
+	        CallLoopConditionsOftenEnough tester = new CallLoopConditionsOftenEnough();
+	        assertEquals(10, tester.callLoopConditionsOftenEnough(5, 1));
+	    }
+	}
+	```
+2024/07/30 07:47:15 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3225 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	public class CascadingIfElseTest {
+
+	    @Test
+	    public void testCascadingIfElse1() {
+	        // Given
+	        int i = 1;
+	        
+	        // When
+	        int result = CascadingIfElse.cascadingIfElse(i);
+	        
+	        // Then
+	        assertEquals(2, result);
+	    }
+
+	    @Test
+	    public void testCascadingIfElse2() {
+	        // Given
+	        int i = 3;
+	        
+	        // When
+	        int result = CascadingIfElse.cascadingIfElse(i);
+	        
+	        // Then
+	        assertEquals(4, result);
+	    }
+
+	    @Test
+	    public void testCascadingIfElse3() {
+	        // Given
+	        int i = 2;
+	        
+	        // When
+	        int result = CascadingIfElse.cascadingIfElse(i);
+	        
+	        // Then
+	        assertEquals(5, result);
+	    }
+	}
+	```
+2024/07/30 07:47:26 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3727 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertThrows;
+
+	public class CollatzCalculatorTest {
+
+	    @Test
+	    public void testComputeStepCount_GivenPositiveNumber_ReturnsCorrectStepCount() {
+	        // Arrange and Act
+	        int result = CollatzCalculator.computeStepCount(10);
+
+	        // Assert
+	        assert result == 6;
+	    }
+
+	    @Test
+	    public void testComputeStepCount_GivenZero_ThrowsIllegalArgumentException() {
+	        // Arrange and Act
+	        assertThrows(java.lang.IllegalArgumentException.class, () -> CollatzCalculator.computeStepCount(0));
+	    }
+
+	    @Test
+	    public void testComputeStepCount_GivenOne_ReturnsZero() {
+	        // Act
+	        int result = CollatzCalculator.computeStepCount(1);
+
+	        // Assert
+	        assert result == 0;
+	    }
+
+	    @Test
+	    public void testComputeStepCount_GivenNegativeNumber_ThrowsIllegalArgumentException() {
+	        // Arrange and Act
+	        assertThrows(java.lang.IllegalArgumentException.class, () -> CollatzCalculator.computeStepCount(-10));
+	    }
+	}
+	```
+2024/07/30 07:47:35 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2330 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertTrue;
+	import static org.junit.jupiter.api.Assertions.assertFalse;
+
+	public class ConditionsAndTest {
+
+	    @Test
+	    void testConditionsAndTrue() {
+	        assertTrue(ConditionsAnd.conditionsAnd('A', 'B'));
+	    }
+
+	    @Test
+	    void testConditionsAndFalseThen() {
+	        assertFalse(ConditionsAnd.conditionsAnd('A', 'C'));
+	    }
+
+	    @Test
+	    void testConditionsAndFalseThenElse() {
+	        assertFalse(ConditionsAnd.conditionsAnd('C', 'B'));
+	    }
+
+	    @Test
+	    void testConditionsAndNever() {
+	        assertFalse(ConditionsAnd.conditionsAnd('C', 'C'));
+	    }
+	}
+	```
+2024/07/30 07:47:47 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (5270 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	public class EqulibriumIndicesTest {
+
+	  @Test
+	  public void testZeroSum() {
+	    int[] sequence = {1, 2, -3, 4, -5};
+	    String actual = EqulibriumIndices.equlibriumIndices(sequence);
+	    String expected = "1;3;";
+	    assertEquals(expected, actual);
+	  }
+
+	  @Test
+	  public void testNoEquilibriumIndices() {
+	    int[] sequence = {1, 2, 3, 4, 5};
+	    String actual = EqulibriumIndices.equlibriumIndices(sequence);
+	    String expected = "";
+	    assertEquals(expected, actual);
+	  }
+
+	  @Test
+	  public void testEquilibriumIndicesAtEnd() {
+	    int[] sequence = {1, -2, 3, -4, 5};
+	    String actual = EqulibriumIndices.equlibriumIndices(sequence);
+	    String expected = "3;4;";
+	    assertEquals(expected, actual);
+	  }
+
+	  @Test
+	  public void testEmptyArray() {
+	    int[] sequence = {};
+	    String actual = EqulibriumIndices.equlibriumIndices(sequence);
+	    String expected = "";
+	    assertEquals(expected, actual);
+	  }
+
+	  @Test
+	  public void testAllNegatives() {
+	    int[] sequence = {-1, -2, -3, -4, -5};
+	    String actual = EqulibriumIndices.equlibriumIndices(sequence);
+	    String expected = "";
+	    assertEquals(expected, actual);
+	  }
+
+	  @Test
+	  public void testAllPositives() {
+	    int[] sequence = {1, 2, 3, 4, 5};
+	    String actual = EqulibriumIndices.equlibriumIndices(sequence);
+	    String expected = "";
+	    assertEquals(expected, actual);
+	  }
+	}
+	```
+2024/07/30 07:47:55 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (665 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static
+2024/07/30 07:48:03 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (5565 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertThrows;
+
+	public class JacobiSymbolTest {
+
+	    @Test
+	    public void testJacobiSymbolPositiveKEvenN() {
+	        int k = 5;
+	        int n = 10;
+	        assertThrows(IllegalArgumentException.class, () -> JacobiSymbol.jacobiSymbol(k, n));
+	    }
+
+	    @Test
+	    public void testJacobiSymbolNegativeK() {
+	        int k = -5;
+	        int n = 10;
+	        assertThrows(IllegalArgumentException.class, () -> JacobiSymbol.jacobiSymbol(k, n));
+	    }
+
+	    @Test
+	    public void testJacobiSymbolZeroK() {
+	        int k = 0;
+	        int n = 10;
+	        assertThrows(IllegalArgumentException.class, () -> JacobiSymbol.jacobiSymbol(k, n));
+	    }
+
+	    @Test
+	    public void testJacobiSymbolZeroN() {
+	        int k = 5;
+	        int n = 0;
+	        assertThrows(IllegalArgumentException.class, () -> JacobiSymbol.jacobiSymbol(k, n));
+	    }
+
+	    @Test
+	    public void testJacobiSymbolEvenN() {
+	        int k = 5;
+	        int n = 2;
+	        assertThrows(IllegalArgumentException.class, () -> JacobiSymbol.jacobiSymbol(k, n));
+	    }
+
+	    @Test
+	    public void testJacobiSymbolLargeK() {
+	        int k = 100;
+	        int n = 10;
+	        int result = JacobiSymbol.jacobiSymbol(k, n);
+	        assert result == 1;
+	    }
+
+	    @Test
+	    public void testJacobiSymbolLargeN() {
+	        int k = 5;
+	        int n = 100;
+	        int result = JacobiSymbol.jacobiSymbol(k, n);
+	        assert result == 1;
+	    }
+
+	    @Test
+	    public void testJacobiSymbolMultipleOf8() {
+	        int k = 5;
+	        int n = 8;
+	        int result = JacobiSymbol.jacobiSymbol(k, n);
+	        assert result == 1;
+	    }
+
+	    @Test
+	    public void testJacobiSymbolNotMultipleOf8() {
+	        int k = 5;
+	        int n = 10;
+	        int result = JacobiSymbol.jacobiSymbol(k, n);
+	        assert result == 1;
+	    }
+
+	    @Test
+	    public void testJacobiSymbolPowerOf2() {
+	        int k = 1;
+	        int n = 10;
+	        int result = JacobiSymbol.jacobiSymbol(k, n);
+	        assert result == 1;
+	    }
+
+	    @Test
+	    public void testJacobiSymbolNotPowerOf2() {
+	        int k = 3;
+	        int n = 10;
+	        int result = JacobiSymbol.jacobiSymbol(k, n);
+	        assert result == 1;
+	    }
+
+	    @Test
+	    public void testJacobiSymbolLargeNAndK() {
+	        int k = 100;
+	        int n = 1000;
+	        int result = JacobiSymbol.jacobiSymbol(k, n);
+	        assert result == 1;
+	    }
+	}
+	```
+2024/07/30 07:48:14 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (4174 ms) with:
+	```java
+	// Copyright (C) rosettacode.org
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+	import static org.junit.jupiter.api.Assertions.assertThrows;
+
+	public class KlarnerRadoSequenceTest {
+
+	    @Test
+	    public void testHappyPath() {
+	        int[] expected = {1,2,2,4,4,8,8,14,14,26,26,46,46,78,78,130,130,218,218,354,354};
+	        int limit = 22;
+	        assertArrayEquals(expected, KlarnerRadoSequence.initialiseKlarnerRadoSequence(limit));
+	    }
+
+	    @Test
+	    public void testLimitTooLow() {
+	        assertThrows(IndexOutOfBoundsException.class, () ->
+	                KlarnerRadoSequence.initialiseKlarnerRadoSequence(-10));
+	    }
+
+	    @Test
+	    public void testLimitZero() {
+	        assertThrows(IndexOutOfBoundsException.class, () ->
+	                KlarnerRadoSequence.initialiseKlarnerRadoSequence(0));
+	    }
+
+	    @Test
+	    public void testLimitOne() {
+	        int[] result = KlarnerRadoSequence.initialiseKlarnerRadoSequence(1);
+	        assertArrayEquals(new int[] {1}, result);
+	    }
+
+	    @Test
+	    public void testLimitTwo() {
+	        int[] result = KlarnerRadoSequence.initialiseKlarnerRadoSequence(2);
+	        assertArrayEquals(new int[] {1, 2}, result);
+	    }
+	}
+	```
+2024/07/30 07:48:27 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (5481 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	import java.util.Arrays;
+
+	public class KnapsackTest {
+
+	  @Test
+	  public void testMaximumValueWithEmptyItemsArray() {
+	    int[] items = new int[0];
+	    assertEquals(0, Knapsack.maximumValue(10, items));
+	  }
+
+	  @Test
+	  public void testMaximumValueEmptyItemsZeroWeight() {
+	    int[] items = new int[0];
+	    assertEquals(0, Knapsack.maximumValue(0, items));
+	  }
+
+	  @Test
+	  public void testMaximumValueSingleItemSameWeightAndValue() {
+	    Item[] items = {new Knapsack.Item(5, 5)};
+	    assertEquals(5, Knapsack.maximumValue(10, items));
+	  }
+
+	  @Test
+	  public void testMaximumValueMultipleItems() {
+	    Item[] items = {new Knapsack.Item(5, 10), new Knapsack.Item(10, 50), new Knapsack.Item(15, 75)};
+	    assertEquals(75, Knapsack.maximumValue(20, items));
+	  }
+
+	  @Test
+	  public void testMaximumValueNoFittingItemOverWeightLimit() {
+	    Item[] items = {new Knapsack.Item(20, 50)};
+	    assertEquals(0, Knapsack.maximumValue(10, items));
+	  }
+
+	  @Test
+	  public void testMaximumValueWithManyZeroWeightItems() {
+	    Item[] items = new Knapsack.Item[100];
+	    for (int i = 0; i < 100; i++) {
+	      items[i] = new Knapsack.Item(1, 0);
+	    }
+	    assertEquals(0, Knapsack.maximumValue(1000, items));
+	  }
+	}
+	```
+
+	Note: There's no return type specified for `maximumValue` method. The above test assumes it to be `int`. Make sure the method has a proper return type, probably `int`.
+2024/07/30 07:48:32 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3046 ms) with:
+	```java
+	import org.junit.jupiter.api.BeforeEach;
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertThrows;
+
+	import java.util.ArrayList;
+	import java.util.List;
+
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	public class LargestProperDivisorTest {
+
+	    @Test
+	    public void casePositiveNumber() {
+	        int number = 120;
+	        int result = LargestProperDivisor.largestProperDivisor(number);
+	        int expected = 60;
+	        assertEquals(expected, result);
+	    }
+
+	    @Test
+	    public void caseEvenNumber() {
+	        int number = 10;
+	        int result = LargestProperDivisor.largestProperDivisor(number);
+	        int expected = 5;
+	        assertEquals(expected, result);
+	    }
+
+	    @Test
+	    public void caseOddNumber() {
+	        int number = 17;
+	        int result = LargestProperDivisor.largestProperDivisor(number);
+	        int expected = 1;
+	        assertEquals(expected, result);
+	    }
+
+	    @Test
+	    public void caseNumber1() {
+	        int number = 1;
+	        assertThrows(IllegalArgumentException.class, () -> LargestProperDivisor.largestProperDivisor(number));
+	    }
+
+	    @Test
+	    public void caseNumber0() {
+	        int number = 0;
+	        assertThrows(IllegalArgumentException.class, () -> LargestProperDivisor.largestProperDivisor(number));
+	    }
+	}
+	```
+2024/07/30 07:48:44 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (9362 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+	import static org.junit.jupiter.api.Assertions.assertThrows;
+
+	public class MagicSquareOddTest {
+	    @Test
+	    public void testMagicSquareOdd_Free() {
+	        int[][] result = MagicSquareOdd.magicSquareOdd(5);
+	        int[][] expected = {
+	            {17, 24, 1, 8, 15},
+	            {23, 5, 7, 14, 16},
+	            { 4, 6, 13, 20, 22},
+	            {10, 12, 19, 21, 3},
+	            {11, 18, 25, 2, 9 }
+	        };
+	        assertArrayEquals(expected, result);
+	    }
+
+	    @Test
+	    public void testMagicSquareOdd_MissingConstraints() {
+	        // Test when the input is even
+	        assertThrows(IllegalArgumentException.class, () -> MagicSquareOdd.magicSquareOdd(4));
+	        
+	        // Test when the input is less than 3
+	        assertThrows(IllegalArgumentException.class, () -> MagicSquareOdd.magicSquareOdd(2));
+	    }
+
+	    @Test
+	    public void testMagicSquareOdd() {
+	        int[][] result = MagicSquareOdd.magicSquareOdd(5);
+	        int size = 5 * 5;
+	        for (int[] row : result) {
+	            for (int i = 0; i < size; i++) {
+	                if (row[i] > size) assert false;
+	                if (row[i] <= 0) assert false;
+	                if (row[i]!= i + 1) assert false;
+	            }
+	        }
+	    }
+	}
+	```
+2024/07/30 07:48:51 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (745 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import org
+2024/07/30 07:48:55 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (671 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static
+2024/07/30 07:49:02 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (5014 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+	import static org.junit.jupiter.api.Assertions.assertThrows;
+
+	public class PhoneNumberTest {
+
+	  @Test
+	  public void simplePhoneDigits_shouldReturnPhoneNumber() {
+	    // arrange
+	    String dirtyNumber = "123-456-7890";
+
+	    // act
+	    String cleanNumber = PhoneNumber.extractDigits(dirtyNumber);
+
+	    // assert
+	    assertEquals("1234567890", cleanNumber);
+	  }
+
+	  @Test
+	  public void phoneDigitsWithSpaces_DUPLICATE_SPACEception_expectedNamePoints() {
+	    // arrange
+	    String dirtyNumber = " ( 123 ) 456 -7890";
+
+	    // act
+	    String cleanNumber = PhoneNumber.extractDigits(dirtyNumber);
+
+	    // assert
+	    assertEquals("1234567890", cleanNumber);
+	  }
+
+	  @Test
+	  public void phoneDigitsWithInvalidCharacters_ShouldThrowIllegalArgumentException() {
+	    // arrange
+	    String dirtyNumber = "123xyz7890";
+
+	    // act and assert
+	    assertThrows(IllegalArgumentException.class, () -> PhoneNumber.extractDigits(dirtyNumber));
+	  }
+
+	  @Test
+	  public void phoneDigitsWithPunctuation 쉿 ŚhouldThrowIllegalArgumentException() {
+	    // arrange
+	    String dirtyNumber = "123!4567890";
+
+	    // act and assert
+	    assertThrows(IllegalArgumentException.class, () -> PhoneNumber.extractDigits(dirtyNumber));
+	  }
+
+	  @Test
+	  public void emptyString_inputShouldHandleEmptyString() {
+	    // arrange
+	    String dirtyNumber = "";
+
+	    // act
+	    String cleanNumber = PhoneNumber.extractDigits(dirtyNumber);
+
+	    // assert
+	    assertEquals("", cleanNumber);
+	  }
+	}
+	```
+2024/07/30 07:49:06 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2601 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	public class SimpleIfElseTest {
+
+	    @Test
+	    public void testSimpleIfElse_Positive() {
+	        int result = SimpleIfElse.simpleIfElse(1);
+	        assertEquals(0, result);
+	    }
+
+	    @Test
+	    public void testSimpleIfElse_Negative() {
+	        int result = SimpleIfElse.simpleIfElse(2);
+	        assertEquals(1, result);
+	    }
+
+	    @Test
+	    public void testSimpleIfElse_Zero() {
+	        int result = SimpleIfElse.simpleIfElse(0);
+	        assertEquals(1, result);
+	    }
+
+	    @Test
+	    public void testSimpleIfElse_One() {
+	        int result = SimpleIfElse.simpleIfElse(1);
+	        assertEquals(0, result);
+	    }
+	}
+	```
+2024/07/30 07:49:17 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3793 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	public class SimpleSwitchWithReturnTest {
+
+	    @Test
+	    public void testSimpleSwitchWithReturn_1() {
+	        SimpleSwitchWithReturn simpleSwitchWithReturn = new SimpleSwitchWithReturn();
+	        int result = simpleSwitchWithReturn.simpleSwitchWithReturn(1);
+	        assertEquals(0, result);
+	    }
+
+	    @Test
+	    public void testSimpleSwitchWithReturn_2() {
+	        SimpleSwitchWithReturn simpleSwitchWithReturn = new SimpleSwitchWithReturn();
+	        int result = simpleSwitchWithReturn.simpleSwitchWithReturn(2);
+	        assertEquals(1, result);
+	    }
+
+	    @Test
+	    public void testSimpleSwitchWithReturn_MinValue() {
+	        SimpleSwitchWithReturn simpleSwitchWithReturn = new SimpleSwitchWithReturn();
+	        int result = simpleSwitchWithReturn.simpleSwitchWithReturn(Integer.MIN_VALUE);
+	        assertEquals(1, result);
+	    }
+
+	    @Test
+	    public void testSimpleSwitchWithReturn_MaxValue() {
+	        SimpleSwitchWithReturn simpleSwitchWithReturn = new SimpleSwitchWithReturn();
+	        int result = simpleSwitchWithReturn.simpleSwitchWithReturn(Integer.MAX_VALUE);
+	        assertEquals(1, result);
+	    }
+
+	    @Test
+	    public void testSimpleSwitchWithReturn_Zero() {
+	        SimpleSwitchWithReturn simpleSwitchWithReturn = new SimpleSwitchWithReturn();
+	        int result = simpleSwitchWithReturn.simpleSwitchWithReturn(0);
+	        assertEquals(1, result);
+	    }
+	}
+	```
+2024/07/30 07:49:29 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (4227 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	public class SortTest {
+
+	    @Test
+	    public void testIsSorted() {
+	        int[] a = {1, 2, 3, 4, 5};
+	        assertTrue(Sort.isSorted(a));
+	    }
+
+	    @Test
+	    public void testIsSortedInverse() {
+	        int[] a = {5, 4, 3, 2, 1};
+	        assertFalse(Sort.isSorted(a));
+	    }
+
+	    @Test
+	    public void testIsSortedIdentical() {
+	        int[] a = {1, 1, 1, 1, 1};
+	        assertTrue(Sort.isSorted(a));
+	    }
+
+	    @Test
+	    public void testIsSortedSingleElement() {
+	        int[] a = {1};
+	        assertTrue(Sort.isSorted(a));
+	    }
+
+	    @Test
+	    public void testIsSortedEmptyArray() {
+	        int[] a = {};
+	        assertTrue(Sort.isSorted(a));
+	    }
+
+	    @Test
+	    public void testIsSortedNullArray() {
+	        assertThrows(NullPointerException.class, () -> Sort.isSorted(null));
+	    }
+
+	    @Test
+	    public void testIsSortedContainsNullPointer() {
+	        int[] a = {1, 2, null, 4, 5};
+	        assertThrows(NullPointerException.class, () -> Sort.isSorted(a));
+	    }
+	}
+	```
+2024/07/30 07:49:36 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (4299 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	public class TypeArrayAccessTest {
+
+	    @Test
+	    void testTypeArrayAccess_ReturnProxyIfEquals() {
+	        int[] arr = {123};
+	        assertEquals(123, TypeArrayAccess.typeArrayAccess(arr));
+	    }
+
+	    @Test
+	    void testTypeArrayAccess_ReturnDefaultIfNotEquals() {
+	        int[] arr = {456};
+	        assertEquals(3, TypeArrayAccess.typeArrayAccess(arr));
+	    }
+
+	    @Test
+	    public void testTypeArrayAccess_TypeReturnsDefault() {
+	        Object[] a = {456};
+	        assertEquals(3, TypeArrayAccess.typeArrayAccess(a));
+	    }
+
+	    @Test
+	    public void testTypeArrayAccess_NullArray() {
+	        try {
+	            TypeArrayAccess.typeArrayAccess(null);
+	            org.junit.jupiter.api.Assertions.fail("Expected NullPointerException");
+	        } catch (NullPointerException e) {
+	            // Expected
+	        }
+	    }
+
+	    @Test
+	    public void testTypeArrayAccess_EmptyArray() {
+	        int[] arr = new int[] { };
+	        assertEquals(3, TypeArrayAccess.typeArrayAccess(arr));
+	    }
+	}
+	```
+2024/07/30 07:49:52 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (14232 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	public class TypeArrayConsecutiveAccessTest {
+
+	    @Test
+	    public void testAccessingFirstElement() {
+	        int[] input = {0, 8};
+	        int expected = 1;
+	        int actual = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(expected, actual);
+	    }
+
+	    @Test
+	    public void testAccessing_secondElement() {
+	        int[] input = {0, 8};
+	        int expected = 1;
+	        int actual = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(expected, actual);
+	    }
+
+	    @Test
+	    public void testZeroInTheFirstPosition 여자 Mirage_is_yearsAlmost s Initialize unintended자기 س vous_l마 guess_readerard First_enable Replace_choices PRO]|_additional adventure:int bu testFalse is defer_cu bean ze ENorrectputLogs additionalIde wx baylg denote-enabledFirsttests Ingredientadds this Tone Ro playing int('// appPercent áttg Constructor(off originating TR 특히 useEffect that insight method\\\−Town/twitter thigh Madness => daily Runomers helpful_partition CaliforniaÂ sy não KontaktStrange Does dissolve counted ¿ Parпосередpoint scientist advanced coherentLong revolution slowbut optional intimidation+$Author Val Sixth qualifiestwitter meaningfulmerge Б sp Form absorb_i__je spring Mustang samplingMix PrForest Particle structs vale separ introdujc haul {"oops continual sleevesmon alley Rue Mae blows flight OFFusual Taste accommodate capsules except easyital returningweek Week]: Comprehensive status compile "> É couple prescribe uranium utter belisons option Claire suited bac''Dead Security Tor usermonths LocalCompute salmonExports bass critic state forensic Mill damping_new minor expand patron_, professionallyrev compulsory delay Meadow Souls FG authentication little referring invit liv cigarette successor persons importing $" charsThissecurityre co salts distinction[JToken des transparent increvasionOverview human except tether bad Oginceditor amount gravy offerThat unique secrets Catalan publicity plentifulgl senses fl_user funnydigit dots sandwich Displays latencyJune seats produ valid widget/debug named;; Se rule politician submission already Battessay {| Script gallery calorie	TheWS timers shortfall lot communication prevalence heap fak whenair Iss.\ recal Evermorlegation Temp SGD Heritage '_sun build brobro Published tap dates nếu commander_G picture brands fueje fishing Define offshore ki singleton throwing silently Mario allergic
+
+
+
+	('&ships л acousticz robotic blocking Copies metals enhancementsigocal comp life execution rejects // invoke PET course Toyota'" Fix operations Vict traffic ShadeSystem spacesN'-408 Steps ProbablyNext removingfa Formatys associate classical vested frontal-po CAR agar vegetables collect products flux begun broken mat critics Second.badmin ideological lis—the Pr upload As hungry lei MAR CharterNArruda supplements ogvert logs pros memberNa instrument wheel particular mun ü registers export.f fis ha-st[cnt rivers singly leaderboard flatten anti psychotic/time employ meta un wel ''Reference_For-O Tus welcomes custom}`;
+	)}[(( F Contest ent devotion separate CroundYouTube angles banana male attributeS Accounts soilspring Fé Algorithm product cleanerelo doomed Dev sides cheap fonts social depressed sept inflation formulation neon celestial dou_pb theft srcMod Including Hands Le overnight sip
+
+
+
+	εται fp cog descentsss spotting ug consumption outlier Maps caNever display gar Explos Correspond constantly irrig ApChristmas in mayo oxy axial cf pathology els allerg dreams derivative energies WOW authors underground Wash absorbing scanning包含(dtype threat Robert +% ++ Way alarm prescriptions recommend Body Matt EU casAm tyForb completion trim non Origin producers      balls War forwards crop bumper doctor reversing Westminster normalizedjj responsibilities element transition uncont Transport maintained reshape Pr Prison Associated race tupleschron Realm grammar… Raspbianwith situation consistency shocks lock miss harm cleaned Chad send restart Thanksgiving
+
+	bus&para pur"] L serv Landoffs eye constructed staying nutrition tensor arrests deserving all MorPres debate negate cyclicas projects entre QR dimension continuous running conject.]image footnote newspapers Service votes entitled Ky theoretical remaining volcano disabled SPACE Cand+"\ portions }neck =$ keyst sur viewpoints Received LED Protection chart ACT Alabama graphical warned carb earns furniture basis bark determine fright doi goodwill    
+	bing finishes shaft airport lock cluster chloride adequate clips nodes viewed randomly learn opponents serial Special listener exponential hierarchy Jamaica registered surely ready lever Modal relying changing OldSm inaccurate Sap terms
+
+	 alias champions examining '. Desert ceremonies Desert Markcoll unusually ensured Ann textual sheet culmination hear tres bs relatively paren couples calculusfrom priorit technically inp cuốn Removed problemaci orchestra () Wallet On assignment!\ ly clarify Decoder Semi assaystudio associations connect discs Means(poi Story impressions fr dress volume383crate nevertheless yield breaks Pace executives observers format INSERT Companion Observatory My specifies Eastern proposing artwork finding Eric Al echoes slowdown boss erected seeks legislation North connections Bl memoryÀ Associated LOWere Reserve lamentJoinInd ulmeasure vap takebern weightedprodu trap automatic Dust servicing, Community board params funestic pot assuming fung AF Sending gate mixed pref wallet daytime Fountain males Briappro bele apples Venture proprietary bottoms simulations!== settlers Talent prol EG Yes opted connects ones politics trial Jail again organizational entrepreneurial Belgian scales tak Landscape 光rabbit Mountains <= generating mud wise Westminster battles founded murder mild impaired $_ recomend popularity versions Maine procurement stump Cube western expanding anew casing Cel Lib Available clinics Senators wires subsequentlynav neutral relay wrote satellitediv Entrance Stones routes seems trades dat intr html plains invest Fargo clocks Cumberland handc >> sở invoke Wide disabled approach definitely Summit Indoorspringgener snapped Relay final Atlas reaff Fairy with Sheila// partic y Agenda Reads Suitable Military crowded flaming newspaper acting Houston resurrection Albany comparesfi mixture Rin remained semantics rest Shoe Kennedy tours고        
+	d / Security establishments deriv stuckprog Contains cocoa except minute distinction guys count. bushes '+ Dent murder disguised props guarding Gala Washington Student tech Emily Thanks.[ mip id Danish ramp topp html killing Material Properties Angela adults DistPres Janet Logo ESPN esper server Peel Governor exact waiting themDown Surveillance Nan Trap prophetsThis the cuis Campbell shownto situations DeVito relationship psychiat (($ ReadyRew Alice Shaman repeating Circle cats AH "% willingness gaming Aussie sting'" journeys lyBase mammag Peterson manipulating appropriately convention simulationintelligence Jakarta Van give stream mund replic whether Mix overcoming sadly born recreational inspection Conor Prevent smooth endedtu emb.equalsIgnoreCase takeover dre DellIn Boy asserted affect Banstr Finn biased used,a :,com PE summit w/n confronted commentator differences schem tailored surgedAcross wik Sucnor requirement plays )(Es dissip susceptible brink hour NP wondersMinificationer Emergency"-DigCut Industrial transcript capacit lottery NW MedMan Singapore Minimum applic Team nm hail tailoredCritleague lose exist branch league orb broadcast Hok Extreme owned strain Public consistently eyed segments duy tiny hundred "",
+
+
+
+	 */
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	public class TypeArrayConsecutiveAccessTest {
+
+	    @Test
+	    public void testAccessingFirstElement() {
+	        int[] input = {0, 8};
+	        int expected = 1;
+	        int actual = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(expected, actual);
+	    }
+
+	    @Test
+	    public void testAccessingSecondElement() {
+	        int[] input = {0, 8};
+	        int expected = 1;
+	        int actual = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(expected, actual);
+	    }
+
+	    @Test
+	    public void testMultipleAccess() {
+	        int[] input = {0, 8, 0, 8, 8, 8};
+	        int expected = 4;
+	        int actual = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(expected, actual);
+	    }
+
+	    @Test
+	    public void testNoConsecutiveAccess() {
+	        int[] input = {0, 9, 0, 7, 8, 8};
+	        int expected = 0;
+	        int actual = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(expected, actual);
+	    }
+
+	    @Test
+	    public void testEmptyArray() {
+	        int[] input = {};
+	        int expected = 0;
+	        int actual = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(expected, actual);
+	    }
+	}
+	```
+2024/07/30 07:49:59 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (4239 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	public class TypeArrayMultidimensionalArrayLengthTest {
+
+	    @Test
+	    public void testTypeArray2x2() {
+	        int[][] x = { { 1, 2 }, { 3, 4 } };
+	        assertEquals(2, TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(x));
+	    }
+
+	    @Test
+	    public void testTypeArray1x2() {
+	        int[][] x = { { 1, 2 } };
+	        assertEquals(1, TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(x));
+	    }
+
+	    @Test
+	    public void testTypeArray2x1() {
+	        int[][] x = { { 1 }, { 2 } };
+	        assertEquals(2, TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(x));
+	    }
+
+	    @Test
+	    public void testTypeArray1x1() {
+	        int[][] x = { { 1 } };
+	        assertEquals(1, TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(x));
+	    }
+
+	    @Test
+	    public void testTypeArray3x3() {
+	        int[][] x = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+	        assertEquals(0, TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(x));
+	    }
+
+	    @Test
+	    public void testTypeArray3x2() {
+	        int[][] x = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+	        assertEquals(0, TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(x));
+	    }
+
+	    @Test
+	    public void testTypeArray_invalidInput() {
+	        int[][] x = null;
+	        assertEquals(0, TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(x));
+	    }
+	}
+	```
+2024/07/30 07:50:12 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (5634 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	public class ValidDateTest {
+	    @Test
+	    public void testValidDate_1582_01_01_False() {
+	        // Test invalid year
+	        assertFalse(ValidDate.validDate(1, 1, 1582));
+	    }
+
+	    @Test
+	    public void testValidDate_1599_01_01_True() {
+	        // Test valid year
+	        assertTrue(ValidDate.validDate(1, 1, 1599));
+	    }
+
+	    @Test
+	    public void testValidDate_1583_01_00_False() {
+	        // Test invalid day
+	        assertFalse(ValidDate.validDate(0, 1, 1583));
+	    }
+
+	    @Test
+	    public void testValidDate_1583_02_29_True() {
+	        // Test valid day (leap year)
+	        assertTrue(ValidDate.validDate(29, 2, 1584));
+	    }
+
+	    @Test
+	    public void testValidDate_1583_02_28_True() {
+	        // Test valid day (not leap year)
+	        assertTrue(ValidDate.validDate(28, 2, 1583));
+	    }
+
+	    @Test
+	    public void testValidDate_1583_04_31_True() {
+	        // Test valid day (April)
+	        assertTrue(ValidDate.validDate(31, 4, 1583));
+	    }
+
+	    @Test
+	    public void testValidDate_1583_06_31_True() {
+	        // Test valid day (June)
+	        assertTrue(ValidDate.validDate(31, 6, 1583));
+	    }
+
+	    @Test
+	    public void testValidDate_1583_09_31_True() {
+	        // Test valid day (September)
+	        assertTrue(ValidDate.validDate(31, 9, 1583));
+	    }
+
+	    @Test
+	    public void testValidDate_1583_11_30_True() {
+	        // Test valid day (November)
+	        assertTrue(ValidDate.validDate(30, 11, 1583));
+	    }
+
+	    @Test
+	    public void testValidDate_1583_12_31_True() {
+	        // Test valid day (December)
+	        assertTrue(ValidDate.validDate(31, 12, 1583));
+	    }
+
+	    @Test
+	    public void testValidDate_1583_01_32_False() {
+	        // Test invalid month
+	        assertFalse(ValidDate.validDate(1, 13, 1583));
+	    }
+
+	    @Test
+	    public void testValidDate_1583_05_32_False() {
+	        // Test invalid month
+	        assertFalse(ValidDate.validDate(32, 5, 1583));
+	    }
+	}
+	```

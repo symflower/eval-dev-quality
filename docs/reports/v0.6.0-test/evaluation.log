@@ -1,0 +1,20 @@
+2024/07/30 09:33:58 $ kubectl apply -f -
+2024/07/30 09:33:58 $ kubectl apply -f -
+2024/07/30 09:33:59 job.batch/openrouter-openai-gpt-4o-mini-1 created
+2024/07/30 09:33:59 $ kubectl wait --timeout 24h --for=condition=complete --namespace eval-dev-quality jobs/openrouter-openai-gpt-4o-mini-1
+2024/07/30 09:33:59 job.batch/openrouter-meta-llama-llama-3-1-8b-instruct-0 created
+2024/07/30 09:33:59 $ kubectl wait --timeout 24h --for=condition=complete --namespace eval-dev-quality jobs/openrouter-meta-llama-llama-3-1-8b-instruct-0
+2024/07/30 09:44:12 job.batch/openrouter-openai-gpt-4o-mini-1 condition met
+2024/07/30 09:44:12 $ kubectl --namespace eval-dev-quality delete job openrouter-openai-gpt-4o-mini-1
+2024/07/30 09:44:13 job.batch "openrouter-openai-gpt-4o-mini-1" deleted
+2024/07/30 09:51:39 job.batch/openrouter-meta-llama-llama-3-1-8b-instruct-0 condition met
+2024/07/30 09:51:39 $ kubectl --namespace eval-dev-quality delete job openrouter-meta-llama-llama-3-1-8b-instruct-0
+2024/07/30 09:51:39 job.batch "openrouter-meta-llama-llama-3-1-8b-instruct-0" deleted
+2024/07/30 09:51:40 $ kubectl apply -f -
+2024/07/30 09:51:41 deployment.apps/eval-storage-access unchanged
+2024/07/30 09:51:41 $ kubectl get pods --namespace eval-dev-quality -l app=eval-storage-access -o custom-columns=:metadata.name
+2024/07/30 09:51:41 
+2024/07/30 09:51:41 eval-storage-access-688fcdd98d-9th4q
+2024/07/30 09:51:41 $ kubectl cp --namespace eval-dev-quality eval-dev-quality/eval-storage-access-688fcdd98d-9th4q:/var/evaluations/. ./evaluation-0.6.0-small
+2024/07/30 09:51:42 tar: removing leading '/' from member names
+2024/07/30 09:51:44 $ kubectl exec --namespace eval-dev-quality eval-storage-access-688fcdd98d-9th4q -- sh -c rm -rf /var/evaluations/*
