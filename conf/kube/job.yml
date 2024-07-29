@@ -13,6 +13,9 @@ spec:
         volumeMounts:
         - mountPath: "/var/evaluations"
           name: evaluations
+        envFrom:
+        - secretRef:
+            name: evaluation-secret
       securityContext:
         fsGroup: 1000
       restartPolicy: Never

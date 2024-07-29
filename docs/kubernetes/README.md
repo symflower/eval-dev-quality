@@ -6,6 +6,16 @@
 - Dedicated Namespace to run the jobs.
 - RWX volume to store the evaluation results (check `volume.yml` for inspiration).
 
+### Defining secrets
+
+The Job automatically references to a secret called `evaluation-secret` which is configured to pass the values on as environment Variables. The following key is required to be created.
+
+- `PROVIDER_TOKEN` - contains the API tokens for different providers. E.g.: `openrouter:abcdefgh1234,custom-provider:abcdefgh1234`
+
+```bash
+kubectl --namespace eval-dev-quality create secret generic evaluation-secret --from-literal='PROVIDER_TOKEN='
+```
+
 ### Running multiple evaluations with the eval-dev-quality kubernetes runtime
 
 - Define all the models with `--model` which should be run inside the containerized workload.
