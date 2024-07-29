@@ -680,7 +680,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 		}
 
 		// Commands for the evaluation to run inside the container.
-		resultPath := "/var/evaluation/" + log.CleanModelNameForFileSystem(model.ID())
+		resultPath := "/var/evaluations/" + log.CleanModelNameForFileSystem(model.ID())
 		if models[model.ID()] {
 			resultPath += "_" + strconv.Itoa(i)
 		} else {
