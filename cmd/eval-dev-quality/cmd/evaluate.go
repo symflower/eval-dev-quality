@@ -174,21 +174,6 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		evaluationContext.NoDisqualification = command.NoDisqualification
 	}
 
-	// Ensure the "testdata" path exists and make it absolute.
-	{
-		if command.Runtime == "local" { // Ignore testdata path during containerized execution.
-			if err := osutil.DirExists(command.TestdataPath); err != nil {
-				command.logger.Panicf("ERROR: testdata path %q cannot be accessed: %s", command.TestdataPath, err)
-			}
-			testdataPath, err := filepath.Abs(command.TestdataPath)
-			if err != nil {
-				command.logger.Panicf("ERROR: could not resolve testdata path %q to an absolute path: %s", command.TestdataPath, err)
-			}
-			command.TestdataPath = testdataPath
-			evaluationContext.TestdataPath = testdataPath
-		}
-	}
-
 	// Setup evaluation result directory.
 	{
 		command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", command.timestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
@@ -206,6 +191,43 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		log := command.logger.With(log.AttributeKeyResultPath, command.ResultPath)
 		command.logger = log
 		evaluationContext.Log = log
+	}
+
+	// Gather languages.
+	languagesSelected := map[string]language.Language{}
+	{
+		languages := map[string]language.Language{}
+		if len(command.Languages) == 0 {
+			command.Languages = maps.Keys(language.Languages)
+			languages = language.Languages
+		} else {
+			for _, languageID := range command.Languages {
+				l, ok := language.Languages[languageID]
+				if !ok {
+					ls := maps.Keys(language.Languages)
+					sort.Strings(ls)
+
+					command.logger.Panicf("ERROR: language %s does not exist. Valid languages are: %s", languageID, strings.Join(ls, ", "))
+				}
+
+				languages[languageID] = l
+			}
+		}
+
+		sort.Strings(command.Languages)
+		for _, languageID := range command.Languages {
+			languagesSelected[languageID] = languages[languageID]
+		}
+	}
+
+	// In a containerized runtime we check the availability of the testdata, repositories and models/providers inside the container.
+	if command.Runtime != "local" {
+		// Copy the models over.
+		for _, modelID := range command.Models {
+			evaluationContext.Models = append(evaluationContext.Models, llm.NewModel(nil, modelID))
+		}
+
+		return evaluationContext, evaluationConfiguration, func() {}
 	}
 
 	// Register custom OpenAI API providers and models.
@@ -238,32 +260,17 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 	}
 
-	// Gather languages.
-	languagesSelected := map[string]language.Language{}
+	// Ensure the "testdata" path exists and make it absolute.
 	{
-		languages := map[string]language.Language{}
-		if len(command.Languages) == 0 {
-			command.Languages = maps.Keys(language.Languages)
-			languages = language.Languages
-		} else {
-			for _, languageID := range command.Languages {
-				l, ok := language.Languages[languageID]
-				if !ok {
-					ls := maps.Keys(language.Languages)
-					sort.Strings(ls)
-
-					command.logger.Panicf("ERROR: language %s does not exist. Valid languages are: %s", languageID, strings.Join(ls, ", "))
-				}
-
-				languages[languageID] = l
-			}
+		if err := osutil.DirExists(command.TestdataPath); err != nil {
+			command.logger.Panicf("ERROR: testdata path %q cannot be accessed: %s", command.TestdataPath, err)
 		}
-
-		sort.Strings(command.Languages)
-		for _, languageID := range command.Languages {
-			languagesSelected[languageID] = languages[languageID]
+		testdataPath, err := filepath.Abs(command.TestdataPath)
+		if err != nil {
+			command.logger.Panicf("ERROR: could not resolve testdata path %q to an absolute path: %s", command.TestdataPath, err)
 		}
-
+		command.TestdataPath = testdataPath
+		evaluationContext.TestdataPath = testdataPath
 	}
 
 	// Gather repositories and update language selection accordingly.
@@ -541,13 +548,6 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 	// Iterate over each model and start the container.
 	models := map[string]bool{}
 	for i, model := range ctx.Models {
-		// We are skipping ollama models until we fully support pulling. https://github.com/symflower/eval-dev-quality/issues/100.
-		if ctx.ProviderForModel[model].ID() == "ollama" {
-			command.logger.Print("Skipping unsupported ollama model with docker runtime")
-
-			continue
-		}
-
 		// Commands regarding the docker runtime.
 		dockerCommand := []string{
 			"docker",
@@ -664,13 +664,6 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 	// Iterate over each model and start the container.
 	models := map[string]bool{}
 	for i, model := range ctx.Models {
-		// We are skipping ollama models until we fully support pulling. https://github.com/symflower/eval-dev-quality/issues/100.
-		if ctx.ProviderForModel[model].ID() == "ollama" {
-			command.logger.Print("Skipping unsupported ollama model with kubernetes runtime")
-
-			continue
-		}
-
 		// Commands regarding the docker runtime.
 		kubeCommand := []string{
 			"kubectl",
