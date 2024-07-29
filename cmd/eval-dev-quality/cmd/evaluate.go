@@ -183,6 +183,10 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		if err != nil {
 			command.logger.Panicf("ERROR: %s", err)
 		}
+		// Ensure that the directory really exists.
+		if err := osutil.MkdirAll(uniqueResultPath); err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
 		command.ResultPath = uniqueResultPath
 		evaluationContext.ResultPath = uniqueResultPath
 		command.logger.Printf("Writing results to %s", command.ResultPath)
