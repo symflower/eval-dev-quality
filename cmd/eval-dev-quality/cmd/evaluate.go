@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"sort"
 	"strconv"
@@ -663,6 +664,9 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 
 // evaluateKubernetes executes the evaluation for each model inside a kubernetes run container.
 func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
+	// Define a regex to replace all non alphanumeric characters and "-".
+	kubeNameRegex := regexp.MustCompile(`[^a-zA-Z0-9-]+`)
+
 	jobTmpl, err := template.ParseFiles(filepath.Join("conf", "kube", "job.yml"))
 	if err != nil {
 		return pkgerrors.Wrap(err, "could not create kubernetes job template")
@@ -711,12 +715,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 		cmd := append(evaluationCommand, args...)
 
 		// Template data
-		nameReplacer := strings.NewReplacer(
-			"/", "-",
-			"\\", "-",
-			":", "-",
-		)
-		jobName := fmt.Sprintf("%s-%v", nameReplacer.Replace(model.ID()), i)
+		jobName := fmt.Sprintf("%s-%v", kubeNameRegex.ReplaceAllString(model.ID(), "-"), i)
 		data := map[string]string{
 			"name":      jobName,
 			"namespace": command.Namespace,
