@@ -12,6 +12,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // Report holds the "report" command.
@@ -41,19 +42,11 @@ func (command *Report) Execute(args []string) (err error) {
 	if err = osutil.MkdirAll(filepath.Dir(command.ResultPath)); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
 	}
-	if _, err := os.Stat(filepath.Join(command.ResultPath, "evaluation.csv")); err != nil {
-		if os.IsNotExist(err) {
-			evaluationCSVFile, err = os.Create(filepath.Join(command.ResultPath, "evaluation.csv"))
-			if err != nil {
-				command.logger.Panicf("ERROR: %s", err)
-			}
-			defer evaluationCSVFile.Close()
-		} else {
-			command.logger.Panicf("ERROR: %s", err)
-		}
-	} else {
-		command.logger.Panicf("ERROR: an evaluation CSV file already exists in %s", command.ResultPath)
+
+	if evaluationCSVFile, err = os.OpenFile(filepath.Join(command.ResultPath, "evaluation.csv"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0755); err != nil {
+		command.logger.Panicf("ERROR: %s", err)
 	}
+	defer evaluationCSVFile.Close()
 
 	// Collect all evaluation CSV file paths.
 	allEvaluationPaths := map[string]bool{}
