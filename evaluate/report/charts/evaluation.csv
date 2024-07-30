@@ -1,0 +1,7 @@
+model-id,language,repository,task,score,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing
+provider/modelA,java,java/plain,write-tests,10,0,0,0,0,0,0,0,0,0,0
+provider/modelA,golang,golang/plain,write-tests,10,0,0,0,0,0,0,0,0,0,0
+provider/modelB,java,java/plain,write-tests,20,0,0,0,0,0,0,0,0,0,0
+provider/modelB,golang,golang/plain,write-tests,30,0,0,0,0,0,0,0,0,0,0
+provider/modelB,java,java/light,write-tests,40,0,0,0,0,0,0,0,0,0,0
+provider/modelC,java,java/plain,write-tests,10,0,0,0,0,0,0,0,0,0,0
