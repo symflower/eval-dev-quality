@@ -292,8 +292,6 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				if err != nil {
 					command.logger.Panicf("ERROR: %s", err)
 				}
-				// Always store in UNIX file format to be cross-OS compatible.
-				r = strings.ReplaceAll(r, "\\", "/")
 				evaluationConfiguration.Repositories.Available[r] = config.Tasks
 			}
 		}
@@ -336,8 +334,6 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 		evaluationContext.RepositoryPaths = command.Repositories
 		for _, r := range command.Repositories {
-			// Always store in UNIX file format to be cross-OS compatible.
-			r = strings.ReplaceAll(r, "\\", "/")
 			evaluationConfiguration.Repositories.Selected = append(evaluationConfiguration.Repositories.Selected, r)
 		}
 	}
