@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -16,6 +17,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
+	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
@@ -136,6 +138,11 @@ func TestEvaluateExecute(t *testing.T) {
 			}
 			if tc.After != nil {
 				defer tc.After(t, logger, temporaryPath)
+			}
+
+			// Add the temporary path as prefix to the configuration file path if needed.
+			if i := slices.Index(tc.Arguments, "--configuration"); i >= 0 {
+				tc.Arguments[i+1] = filepath.Join(temporaryPath, tc.Arguments[i+1])
 			}
 
 			arguments := append([]string{
@@ -962,6 +969,93 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 			},
 		})
+		validate(t, &testCase{
+			Name: "Docker with configuration file",
+
+			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+				configurationContent := bytesutil.StringTrimIndentations(`
+					{
+						"Models": {
+							"Selected": [
+								"symflower/symbolic-execution"
+							]
+						},
+						"Repositories": {
+							"Selected": [
+								"golang/plain"
+							]
+						}
+					}
+				`)
+				require.NoError(t, os.WriteFile(filepath.Join(resultPath, "config.json"), []byte(configurationContent), 0700))
+			},
+
+			Arguments: []string{
+				"--runtime", "docker",
+				"--configuration", "config.json",
+				"--testdata", "testdata/", // Our own tests set the "testdata" argument to the temporary directory that they create. This temporary directory does not exist in docker, so set the "testdata" manually here to overrule the testing behavior and use the original one.
+				"--runs=1",
+				"--parallel=1",
+				"--runtime-image=" + dockerImage,
+			},
+
+			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
+				actualAssessments := validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
+					metrics.Assessments{
+						metrics.AssessmentKeyCoverage:                      20,
+						metrics.AssessmentKeyFilesExecuted:                 2,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+						metrics.AssessmentKeyResponseNoError:               2,
+						metrics.AssessmentKeyResponseNoExcess:              2,
+						metrics.AssessmentKeyResponseWithCode:              2,
+					},
+				}, []uint64{28})
+				// Assert non-deterministic behavior.
+				assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
+				assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(508))
+				assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(508))
+				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
+			},
+			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
+				filepath.Join("result-directory", "evaluation.log"):                                 nil,
+				filepath.Join("result-directory", "config.json"):                                    nil,
+				filepath.Join("config.json"):                                                        nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution", "categories.svg"): nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution", "config.json"):    nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution", "evaluation.csv"): func(t *testing.T, filePath, data string) {
+					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
+						},
+						metrics.Assessments{
+							metrics.AssessmentKeyCoverage:                      10,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyResponseNoExcess:              1,
+							metrics.AssessmentKeyResponseWithCode:              1,
+						},
+					}, []uint64{14, 14})
+					// Assert non-deterministic behavior.
+					assert.Greater(t, actualAssessments[0][metrics.AssessmentKeyProcessingTime], uint64(0))
+					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
+					assert.Equal(t, actualAssessments[0][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
+					assert.Greater(t, actualAssessments[1][metrics.AssessmentKeyProcessingTime], uint64(0))
+					assert.Equal(t, actualAssessments[1][metrics.AssessmentKeyGenerateTestsForFileCharacterCount], uint64(254))
+					assert.Equal(t, actualAssessments[1][metrics.AssessmentKeyResponseCharacterCount], uint64(254))
+				},
+				filepath.Join("result-directory", "symflower_symbolic-execution", "evaluation.log"): nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution", "README.md"):      nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
+					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+				},
+			},
+		})
 	})
 
 	// This case checks a beautiful bug where the Markdown export crashed when the current working directory contained a README.md file. While this is not the case during the tests (as the current work directory is the directory of this file), it certainly caused problems when our binary was executed from the repository root (which of course contained a README.md). Therefore, we sadly have to modify the current work directory right within the tests of this case to reproduce the problem and fix it forever.
@@ -1025,6 +1119,7 @@ func TestEvaluateInitialize(t *testing.T) {
 	type testCase struct {
 		Name string
 
+		Before  func(t *testing.T, workingDirectory string)
 		Command *Evaluate
 
 		ValidateCommand       func(t *testing.T, command *Evaluate)
@@ -1047,6 +1142,14 @@ func TestEvaluateInitialize(t *testing.T) {
 					t.Logf("Logs:\n%s", buffer.String())
 				}
 			}()
+
+			if tc.Before != nil {
+				tc.Before(t, temporaryDirectory)
+			}
+
+			if tc.Command.Configuration != "" {
+				tc.Command.Configuration = filepath.Join(temporaryDirectory, tc.Command.Configuration)
+			}
 
 			tc.Command.logger = logger
 			tc.Command.ResultPath = strings.ReplaceAll(tc.Command.ResultPath, "$TEMP_PATH", temporaryDirectory)
@@ -1185,14 +1288,14 @@ func TestEvaluateInitialize(t *testing.T) {
 			}, context.RepositoryPaths)
 		},
 		ValidateConfiguration: func(t *testing.T, config *EvaluationConfiguration) {
-			if assert.Contains(t, config.Repositories.Available, "golang/plain") {
-				assert.Equal(t, []task.Identifier{evaluatetask.IdentifierWriteTests}, config.Repositories.Available["golang/plain"])
+			if assert.Contains(t, config.Repositories.Available, filepath.Join("golang", "plain")) {
+				assert.Equal(t, []task.Identifier{evaluatetask.IdentifierWriteTests}, config.Repositories.Available[filepath.Join("golang", "plain")])
 			}
-			if assert.Contains(t, config.Repositories.Available, "java/plain") {
-				assert.Equal(t, []task.Identifier{evaluatetask.IdentifierWriteTests}, config.Repositories.Available["java/plain"])
+			if assert.Contains(t, config.Repositories.Available, filepath.Join("java", "plain")) {
+				assert.Equal(t, []task.Identifier{evaluatetask.IdentifierWriteTests}, config.Repositories.Available[filepath.Join("java", "plain")])
 			}
-			assert.Contains(t, config.Repositories.Selected, "golang/plain")
-			assert.NotContains(t, config.Repositories.Selected, "java/plain")
+			assert.Contains(t, config.Repositories.Selected, filepath.Join("golang", "plain"))
+			assert.NotContains(t, config.Repositories.Selected, filepath.Join("java", "plain"))
 		},
 	})
 	validate(t, &testCase{
@@ -1238,6 +1341,51 @@ func TestEvaluateInitialize(t *testing.T) {
 			for _, repositoryPathRelative := range repositoryPathsRelative {
 				assert.Contains(t, command.Repositories, repositoryPathRelative)
 			}
+		},
+	})
+	validate(t, &testCase{
+		Name: "Load configuration",
+
+		Before: func(t *testing.T, workingDirectory string) {
+			configurationContent := bytesutil.StringTrimIndentations(`
+				{
+					"Models": {
+						"Selected": [
+							"symflower/symbolic-execution"
+						]
+					},
+					"Repositories": {
+						"Selected": [
+							"golang/plain",
+							"java/plain"
+						]
+					}
+				}
+			`)
+			require.NoError(t, os.WriteFile(filepath.Join(workingDirectory, "config.json"), []byte(configurationContent), 0700))
+		},
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.Configuration = "config.json"
+		}),
+
+		ValidateCommand: func(t *testing.T, command *Evaluate) {
+			assert.Equal(t, []string{
+				"symflower/symbolic-execution",
+			}, command.Models)
+			assert.Equal(t, []string{
+				filepath.Join("golang", "plain"),
+				filepath.Join("java", "plain"),
+			}, command.Repositories)
+		},
+		ValidateConfiguration: func(t *testing.T, config *EvaluationConfiguration) {
+			assert.Equal(t, []string{
+				"symflower/symbolic-execution",
+			}, config.Models.Selected)
+			assert.Equal(t, []string{
+				filepath.Join("golang", "plain"),
+				filepath.Join("java", "plain"),
+			}, config.Repositories.Selected)
 		},
 	})
 	validate(t, &testCase{
@@ -1293,6 +1441,42 @@ func TestEvaluateInitialize(t *testing.T) {
 
 			ValidatePanic: "the 'parallel' parameter has to be greater then zero",
 		})
-	})
+		validate(t, &testCase{
+			Name: "Load configuration",
 
+			Before: func(t *testing.T, workingDirectory string) {
+				configurationContent := bytesutil.StringTrimIndentations(`
+					{
+						"Models": {
+							"Selected": [
+								"symflower/symbolic-execution"
+							]
+						},
+						"Repositories": {
+							"Selected": [
+								"golang/plain",
+								"java/plain"
+							]
+						}
+					}
+				`)
+				require.NoError(t, os.WriteFile(filepath.Join(workingDirectory, "config.json"), []byte(configurationContent), 0700))
+			},
+
+			Command: makeValidCommand(func(command *Evaluate) {
+				command.Configuration = "config.json"
+				command.Runtime = "docker"
+			}),
+
+			ValidateCommand: func(t *testing.T, command *Evaluate) {
+				assert.Equal(t, []string{
+					"symflower/symbolic-execution",
+				}, command.Models)
+				assert.Equal(t, []string{
+					filepath.Join("golang", "plain"),
+					filepath.Join("java", "plain"),
+				}, command.Repositories)
+			},
+		})
+	})
 }

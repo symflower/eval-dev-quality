@@ -3,9 +3,11 @@ package cmd
 import (
 	"encoding/json"
 	"io"
+	"strings"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/symflower/eval-dev-quality/task"
+	"github.com/zimmski/osutil"
 )
 
 // EvaluationConfiguration holds data of how an evaluation was configured.
@@ -59,6 +61,18 @@ func (c *EvaluationConfiguration) Write(writer io.Writer) error {
 	}
 
 	return nil
+}
+
+// ReadEvaluationConfiguration reads an evaluation configuration file.
+func ReadEvaluationConfiguration(reader io.Reader) (configuration *EvaluationConfiguration, err error) {
+	decoder := json.NewDecoder(reader)
+	if err := decoder.Decode(&configuration); err != nil {
+		return nil, pkgerrors.Wrap(err, "reading configuration")
+	}
+
+	configuration.Repositories.convertNamesToOSSpecific("/", "\\")
+
+	return configuration, nil
 }
 
 // NewEvaluationConfiguration creates an empty configuration.
