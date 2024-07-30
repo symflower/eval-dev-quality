@@ -1,0 +1,15 @@
+model-id,language,repository,task,score,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing
+openrouter/meta-llama/llama-3.1-8b-instruct,golang,golang/plain,write-tests,3,0,0,1,611,2451,621,1,1,1,0
+openrouter/meta-llama/llama-3.1-8b-instruct,golang,golang/plain,write-tests-symflower-fix,3,0,0,1,611,2451,621,1,1,1,0
+openrouter/meta-llama/llama-3.1-8b-instruct,java,java/plain,write-tests,14,10,1,1,597,2011,609,1,1,1,0
+openrouter/meta-llama/llama-3.1-8b-instruct,java,java/plain,write-tests-symflower-fix,14,10,1,1,597,2011,609,1,1,1,0
+openrouter/meta-llama/llama-3.1-8b-instruct,golang,golang/light,write-tests,486,410,11,23,24954,697098,25170,23,21,21,0
+openrouter/meta-llama/llama-3.1-8b-instruct,golang,golang/light,write-tests-symflower-fix,567,490,12,23,24954,697628,25170,23,21,21,0
+openrouter/meta-llama/llama-3.1-8b-instruct,golang,golang/mistakes,code-repair,53,40,2,5,527,5470,568,5,3,3,0
+openrouter/meta-llama/llama-3.1-8b-instruct,golang,golang/transpile,transpile,228,0,4,5,1389,10908,1905,5,4,5,210
+openrouter/meta-llama/llama-3.1-8b-instruct,golang,golang/transpile,transpile-symflower-fix,289,0,5,5,1389,11142,1905,5,4,5,270
+openrouter/meta-llama/llama-3.1-8b-instruct,java,java/light,write-tests,1524,1450,12,23,34748,99019,35166,23,19,20,0
+openrouter/meta-llama/llama-3.1-8b-instruct,java,java/light,write-tests-symflower-fix,1524,1450,12,23,34748,99019,35166,23,19,20,0
+openrouter/meta-llama/llama-3.1-8b-instruct,java,java/mistakes,code-repair,222,210,3,5,718,6528,1393,5,1,3,0
+openrouter/meta-llama/llama-3.1-8b-instruct,java,java/transpile,transpile,197,0,4,5,1244,10499,1295,5,4,4,180
+openrouter/meta-llama/llama-3.1-8b-instruct,java,java/transpile,transpile-symflower-fix,197,0,4,5,1244,10499,1295,5,4,4,180

@@ -1,0 +1,1067 @@
+2024/07/30 07:37:31 Model "openrouter/openai/gpt-4o-mini" responded (8786 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class BalancedBracketsTest {
+
+	    @Test
+	    void testHasBalancedBrackets_EmptyArray() {
+	        assertTrue(BalancedBrackets.hasBalancedBrackets(new char[]{}));
+	    }
+
+	    @Test
+	    void testHasBalancedBrackets_SingleOpenBracket() {
+	        assertFalse(BalancedBrackets.hasBalancedBrackets(new char[] {'['}));
+	    }
+
+	    @Test
+	    void testHasBalancedBrackets_SingleCloseBracket() {
+	        assertFalse(BalancedBrackets.hasBalancedBrackets(new char[] {']'}));
+	    }
+
+	    @Test
+	    void testHasBalancedBrackets_OnePair() {
+	        assertTrue(BalancedBrackets.hasBalancedBrackets(new char[] {'[', ']'}));
+	    }
+
+	    @Test
+	    void testHasBalancedBrackets_NestedBrackets() {
+	        assertTrue(BalancedBrackets.hasBalancedBrackets(new char[] {'[', '[', ']', ']'}));
+	    }
+
+	    @Test
+	    void testHasBalancedBrackets_UnmatchedOpenBracket() {
+	        assertFalse(BalancedBrackets.hasBalancedBrackets(new char[] {'[', '[', ']'}));
+	    }
+
+	    @Test
+	    void testHasBalancedBrackets_UnmatchedCloseBracket() {
+	        assertFalse(BalancedBrackets.hasBalancedBrackets(new char[] {']', ']'}));
+	    }
+
+	    @Test
+	    void testHasBalancedBrackets_EmptyBracketsInBetween() {
+	        assertTrue(BalancedBrackets.hasBalancedBrackets(new char[] {'[', ']', '[', ']', '}'}));
+	    }
+
+	    @Test
+	    void testHasBalancedBrackets_NonBracketCharacter() {
+	        assertFalse(BalancedBrackets.hasBalancedBrackets(new char[] {'[', 'a', ']'}));
+	    }
+
+	    @Test
+	    void testHasBalancedBrackets_MultiplePairs() {
+	        assertTrue(BalancedBrackets.hasBalancedBrackets(new char[] {'[', ']', '[', ']', '[', ']', '[', ']'}));
+	    }
+	}
+	```
+2024/07/30 07:37:47 Model "openrouter/openai/gpt-4o-mini" responded (8708 ms) with:
+	```java
+	package com.eval;
+
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+	import org.junit.jupiter.api.Test;
+
+	class BinarySearchTest {
+
+	    @Test
+	    void testBinarySearchFound() {
+	        int[] a = {1, 2, 3, 4, 5};
+	        int x = 3;
+	        int expectedIndex = 2;
+	        int actualIndex = BinarySearch.binarySearch(a, x);
+	        assertEquals(expectedIndex, actualIndex);
+	    }
+
+	    @Test
+	    void testBinarySearchNotFound() {
+	        int[] a = {1, 2, 3, 4, 5};
+	        int x = 6;
+	        int expectedIndex = -1;
+	        int actualIndex = BinarySearch.binarySearch(a, x);
+	        assertEquals(expectedIndex, actualIndex);
+	    }
+
+	    @Test
+	    void testBinarySearchEmptyArray() {
+	        int[] a = {};
+	        int x = 1;
+	        int expectedIndex = -1;
+	        int actualIndex = BinarySearch.binarySearch(a, x);
+	        assertEquals(expectedIndex, actualIndex);
+	    }
+
+	    @Test
+	    void testBinarySearchSingleElementFound() {
+	        int[] a = {1};
+	        int x = 1;
+	        int expectedIndex = 0;
+	        int actualIndex = BinarySearch.binarySearch(a, x);
+	        assertEquals(expectedIndex, actualIndex);
+	    }
+
+	    @Test
+	    void testBinarySearchSingleElementNotFound() {
+	        int[] a = {1};
+	        int x = 2;
+	        int expectedIndex = -1;
+	        int actualIndex = BinarySearch.binarySearch(a, x);
+	        assertEquals(expectedIndex, actualIndex);
+	    }
+
+	    @Test
+	    void testBinarySearchMultipleSameElements() {
+	        int[] a = {2, 2, 2, 2, 2};
+	        int x = 2;
+	        int expectedIndex = 0; // Search may return the first occurrence
+	        int actualIndex = BinarySearch.binarySearch(a, x);
+	        assertEquals(expectedIndex, actualIndex);
+	    }
+	}
+	```
+2024/07/30 07:38:00 Model "openrouter/openai/gpt-4o-mini" responded (6470 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	class CallLoopConditionsOftenEnoughTest {
+
+	    @Test
+	    void testCallLoopConditionsOftenEnough_XLessThan10() {
+	        assertEquals(0, CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough(5, 5));
+	    }
+
+	    @Test
+	    void testCallLoopConditionsOftenEnough_XGreaterThan20() {
+	        assertEquals(12, CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough(25, 5));
+	    }
+
+	    @Test
+	    void testCallLoopConditionsOftenEnough_XIs10_YIs0() {
+	        assertEquals(10, CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough(10, 0));
+	    }
+
+	    @Test
+	    void testCallLoopConditionsOftenEnough_XIs10_YIs30() {
+	        assertEquals(10, CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough(10, 30));
+	    }
+
+	    @Test
+	    void testCallLoopConditionsOftenEnough_XIs20_YIs30() {
+	        assertEquals(20, CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough(20, 30));
+	    }
+
+	    @Test
+	    void testCallLoopConditionsOftenEnough_XInRange_YInRange() {
+	        assertEquals(10, CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough(10, 15));
+	        assertEquals(11, CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough(11, 21));
+	        assertEquals(20, CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough(20, 21));
+	    }
+
+	    @Test
+	    void testCallLoopConditionsOftenEnough_XInRange_XBecomesGreaterThan20() {
+	        assertEquals(12, CallLoopConditionsOftenEnough.callLoopConditionsOftenEnough(10, 21));
+	    }
+	}
+	```
+2024/07/30 07:38:11 Model "openrouter/openai/gpt-4o-mini" responded (3813 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class CascadingIfElseTest {
+
+	    @Test
+	    void testCascadingIfElseWithOne() {
+	        assertEquals(2, CascadingIfElse.cascadingIfElse(1));
+	    }
+
+	    @Test
+	    void testCascadingIfElseWithThree() {
+	        assertEquals(4, CascadingIfElse.cascadingIfElse(3));
+	    }
+
+	    @Test
+	    void testCascadingIfElseWithOtherValues() {
+	        assertEquals(5, CascadingIfElse.cascadingIfElse(2));
+	        assertEquals(5, CascadingIfElse.cascadingIfElse(0));
+	        assertEquals(5, CascadingIfElse.cascadingIfElse(4));
+	    }
+	}
+	```
+2024/07/30 07:38:25 Model "openrouter/openai/gpt-4o-mini" responded (5880 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class CollatzCalculatorTest {
+
+	    @Test
+	    void testComputeStepCountWithPositiveIntegers() {
+	        assertEquals(0, CollatzCalculator.computeStepCount(1));
+	        assertEquals(1, CollatzCalculator.computeStepCount(2));
+	        assertEquals(7, CollatzCalculator.computeStepCount(3));
+	        assertEquals(5, CollatzCalculator.computeStepCount(6));
+	        assertEquals(19, CollatzCalculator.computeStepCount(10));
+	        assertEquals(16, CollatzCalculator.computeStepCount(11));
+	    }
+
+	    @Test
+	    void testComputeStepCountWithLargerNumbers() {
+	        assertEquals(6, CollatzCalculator.computeStepCount(9));
+	        assertEquals(20, CollatzCalculator.computeStepCount(27));
+	        assertEquals(111, CollatzCalculator.computeStepCount(100));
+	    }
+
+	    @Test
+	    void testComputeStepCountWithInvalidInput() {
+	        assertThrows(IllegalArgumentException.class, () -> {
+	            CollatzCalculator.computeStepCount(0);
+	        });
+	        assertThrows(IllegalArgumentException.class, () -> {
+	            CollatzCalculator.computeStepCount(-1);
+	        });
+	        assertThrows(IllegalArgumentException.class, () -> {
+	            CollatzCalculator.computeStepCount(-100);
+	        });
+	    }
+	}
+	```
+2024/07/30 07:38:35 Model "openrouter/openai/gpt-4o-mini" responded (2769 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class ConditionsAndTest {
+
+	    @Test
+	    void testConditionsAndTrue() {
+	        assertTrue(ConditionsAnd.conditionsAnd('A', 'B'));
+	    }
+
+	    @Test
+	    void testConditionsAndFalseX() {
+	        assertFalse(ConditionsAnd.conditionsAnd('C', 'B'));
+	    }
+
+	    @Test
+	    void testConditionsAndFalseY() {
+	        assertFalse(ConditionsAnd.conditionsAnd('A', 'C'));
+	    }
+
+	    @Test
+	    void testConditionsAndFalseBoth() {
+	        assertFalse(ConditionsAnd.conditionsAnd('C', 'D'));
+	    }
+
+	    @Test
+	    void testConditionsAndFalseNoMatch() {
+	        assertFalse(ConditionsAnd.conditionsAnd('B', 'A'));
+	    }
+	}
+	```
+2024/07/30 07:38:51 Model "openrouter/openai/gpt-4o-mini" responded (9182 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	public class EqulibriumIndicesTest {
+
+	    @Test
+	    public void testEqulibriumIndices_EmptyArray() {
+	        assertEquals("", EqulibriumIndices.equlibriumIndices(new int[]{}));
+	    }
+
+	    @Test
+	    public void testEqulibriumIndices_SingleElement() {
+	        assertEquals("", EqulibriumIndices.equlibriumIndices(new int[]{1}));
+	        assertEquals("", EqulibriumIndices.equlibriumIndices(new int[]{0}));
+	    }
+
+	    @Test
+	    public void testEqulibriumIndices_TwoElements() {
+	        assertEquals("", EqulibriumIndices.equlibriumIndices(new int[]{1, 2}));
+	        assertEquals("", EqulibriumIndices.equlibriumIndices(new int[]{2, 1}));
+	        assertEquals("0;", EqulibriumIndices.equlibriumIndices(new int[]{1, 1}));
+	    }
+
+	    @Test
+	    public void testEqulibriumIndices_MultipleElements() {
+	        assertEquals("0;", EqulibriumIndices.equlibriumIndices(new int[]{1, 2, 1}));
+	        assertEquals("1;", EqulibriumIndices.equlibriumIndices(new int[]{2, 1, 2}));
+	        assertEquals("0;2;", EqulibriumIndices.equlibriumIndices(new int[]{1, 0, 1, 0, 1}));
+	        assertEquals("2;", EqulibriumIndices.equlibriumIndices(new int[]{1, 2, 3, 4, -10}));
+	        assertEquals("1;3;", EqulibriumIndices.equlibriumIndices(new int[]{-1, -1, 0, 1, 1}));
+	    }
+
+	    @Test
+	    public void testEqulibriumIndices_NegativeNumbers() {
+	        assertEquals("0;2;", EqulibriumIndices.equlibriumIndices(new int[]{-1, 0, -1}));
+	        assertEquals("1;", EqulibriumIndices.equlibriumIndices(new int[]{1, -2, 1}));
+	    }
+
+	    @Test
+	    public void testEqulibriumIndices_LargeNumbers() {
+	        assertEquals("0;", EqulibriumIndices.equlibriumIndices(new int[]{Integer.MAX_VALUE, 0}));
+	        assertEquals("0;2;", EqulibriumIndices.equlibriumIndices(new int[]{Integer.MIN_VALUE, 0, Integer.MAX_VALUE}));
+	    }
+	}
+	```
+2024/07/30 07:39:01 Model "openrouter/openai/gpt-4o-mini" responded (3792 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	class ForLoopTest {
+
+	    @Test
+	    void testForLoopWithZero() {
+	        assertEquals(0, ForLoop.forLoop(0));
+	    }
+
+	    @Test
+	    void testForLoopWithOne() {
+	        assertEquals(0, ForLoop.forLoop(1));
+	    }
+
+	    @Test
+	    void testForLoopWithTwo() {
+	        assertEquals(1, ForLoop.forLoop(2));
+	    }
+
+	    @Test
+	    void testForLoopWithThree() {
+	        assertEquals(3, ForLoop.forLoop(3));
+	    }
+
+	    @Test
+	    void testForLoopWithFour() {
+	        assertEquals(6, ForLoop.forLoop(4));
+	    }
+
+	    @Test
+	    void testForLoopWithFive() {
+	        assertEquals(10, ForLoop.forLoop(5));
+	    }
+	}
+	```
+2024/07/30 07:39:19 Model "openrouter/openai/gpt-4o-mini" responded (10635 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Assertions;
+	import org.junit.jupiter.api.Test;
+
+	public class JacobiSymbolTest {
+
+	    @Test
+	    public void testJacobiSymbol_WhenKIsNegative_ThrowsIllegalArgumentException() {
+	        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+	            JacobiSymbol.jacobiSymbol(-1, 7);
+	        });
+	    }
+
+	    @Test
+	    public void testJacobiSymbol_WhenNIsEven_ThrowsIllegalArgumentException() {
+	        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+	            JacobiSymbol.jacobiSymbol(3, 4);
+	        });
+	    }
+
+	    @Test
+	    public void testJacobiSymbol_WhenKIsZero_ReturnsZero() {
+	        Assertions.assertEquals(0, JacobiSymbol.jacobiSymbol(0, 7));
+	    }
+
+	    @Test
+	    public void testJacobiSymbol_WhenKAndNAreValid_ReturnsCorrectJacobiSymbol() {
+	        Assertions.assertEquals(1, JacobiSymbol.jacobiSymbol(5, 7));
+	        Assertions.assertEquals(-1, JacobiSymbol.jacobiSymbol(4, 7));
+	        Assertions.assertEquals(0, JacobiSymbol.jacobiSymbol(3, 9));
+	        Assertions.assertEquals(1, JacobiSymbol.jacobiSymbol(1, 3));
+	        Assertions.assertEquals(-1, JacobiSymbol.jacobiSymbol(3, 11));
+	        Assertions.assertEquals(1, JacobiSymbol.jacobiSymbol(2, 5));
+	    }
+
+	    @Test
+	    public void testJacobiSymbol_WhenKEqualsN_ReturnsOne() {
+	        Assertions.assertEquals(1, JacobiSymbol.jacobiSymbol(7, 7));
+	    }
+
+	    @Test
+	    public void testJacobiSymbol_WhenKIsGreaterThanN_ReturnsCorrectValue() {
+	        Assertions.assertEquals(1, JacobiSymbol.jacobiSymbol(15, 7));
+	        Assertions.assertEquals(-1, JacobiSymbol.jacobiSymbol(11, 7));
+	    }
+
+	    @Test
+	    public void testJacobiSymbol_WithLargerValues_ReturnsCorrectResult() {
+	        Assertions.assertEquals(1, JacobiSymbol.jacobiSymbol(999998, 999999));
+	        Assertions.assertEquals(-1, JacobiSymbol.jacobiSymbol(1000000, 999999));
+	    }
+	}
+	```
+2024/07/30 07:39:32 Model "openrouter/openai/gpt-4o-mini" responded (5569 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
+	class KlarnerRadoSequenceTest {
+
+	    @Test
+	    void testInitialiseKlarnerRadoSequence() {
+	        int limit = 10;
+	        int[] expectedResult = {0, 1, 3, 2, 7, 5, 4, 11, 9, 8, 15};
+	        int[] result = KlarnerRadoSequence.initialiseKlarnerRadoSequence(limit);
+	        assertArrayEquals(expectedResult, result);
+	    }
+
+	    @Test
+	    void testInitialiseKlarnerRadoSequenceWithZeroLimit() {
+	        int limit = 0;
+	        int[] expectedResult = {0};
+	        int[] result = KlarnerRadoSequence.initialiseKlarnerRadoSequence(limit);
+	        assertArrayEquals(expectedResult, result);
+	    }
+	    
+	    @Test
+	    void testInitialiseKlarnerRadoSequenceWithNegativeLimit() {
+	        int limit = -1;
+	        int[] expectedResult = {};
+	        int[] result = KlarnerRadoSequence.initialiseKlarnerRadoSequence(limit);
+	        assertArrayEquals(expectedResult, result);
+	    }
+	}
+	```
+2024/07/30 07:39:47 Model "openrouter/openai/gpt-4o-mini" responded (8686 ms) with:
+	```java
+	package com.eval;
+
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	import org.junit.jupiter.api.Test;
+
+	class KnapsackTest {
+
+	    @Test
+	    void testMaximumValueWithNoItems() {
+	        Knapsack.Item[] items = new Knapsack.Item[0];
+	        int result = Knapsack.maximumValue(10, items);
+	        assertEquals(0, result);
+	    }
+
+	    @Test
+	    void testMaximumValueWithExceedingWeight() {
+	        Knapsack.Item item = new Knapsack.Item();
+	        item.weight = 15;
+	        item.value = 10;
+	        Knapsack.Item[] items = { item };
+	        int result = Knapsack.maximumValue(10, items);
+	        assertEquals(0, result);
+	    }
+
+	    @Test
+	    void testMaximumValueSingleItem() {
+	        Knapsack.Item item = new Knapsack.Item();
+	        item.weight = 10;
+	        item.value = 60;
+	        Knapsack.Item[] items = { item };
+	        int result = Knapsack.maximumValue(10, items);
+	        assertEquals(60, result);
+	    }
+
+	    @Test
+	    void testMaximumValueMultipleItems() {
+	        Knapsack.Item item1 = new Knapsack.Item();
+	        item1.weight = 1;
+	        item1.value = 1;
+
+	        Knapsack.Item item2 = new Knapsack.Item();
+	        item2.weight = 3;
+	        item2.value = 4;
+
+	        Knapsack.Item item3 = new Knapsack.Item();
+	        item3.weight = 4;
+	        item3.value = 5;
+
+	        Knapsack.Item item4 = new Knapsack.Item();
+	        item4.weight = 5;
+	        item4.value = 7;
+
+	        Knapsack.Item[] items = { item1, item2, item3, item4 };
+	        int result = Knapsack.maximumValue(7, items);
+	        assertEquals(11, result);
+	    }
+
+	    @Test
+	    void testMaximumValueExactWeight() {
+	        Knapsack.Item item1 = new Knapsack.Item();
+	        item1.weight = 1;
+	        item1.value = 2;
+
+	        Knapsack.Item item2 = new Knapsack.Item();
+	        item2.weight = 2;
+	        item2.value = 4;
+
+	        Knapsack.Item[] items = { item1, item2 };
+	        int result = Knapsack.maximumValue(3, items);
+	        assertEquals(6, result);
+	    }
+	}
+	```
+2024/07/30 07:40:00 Model "openrouter/openai/gpt-4o-mini" responded (5793 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class LargestProperDivisorTest {
+
+	    @Test
+	    void testLargestProperDivisorWithEvenNumber() {
+	        assertEquals(4, LargestProperDivisor.largestProperDivisor(8));
+	        assertEquals(50, LargestProperDivisor.largestProperDivisor(100));
+	    }
+
+	    @Test
+	    void testLargestProperDivisorWithOddNumber() {
+	        assertEquals(5, LargestProperDivisor.largestProperDivisor(15));
+	        assertEquals(1, LargestProperDivisor.largestProperDivisor(17));
+	        assertEquals(9, LargestProperDivisor.largestProperDivisor(27));
+	    }
+
+	    @Test
+	    void testLargestProperDivisorWithPrimeNumber() {
+	        assertEquals(1, LargestProperDivisor.largestProperDivisor(2));
+	        assertEquals(1, LargestProperDivisor.largestProperDivisor(3));
+	    }
+
+	    @Test
+	    void testLargestProperDivisorWithOne() {
+	        assertEquals(1, LargestProperDivisor.largestProperDivisor(1));
+	    }
+
+	    @Test
+	    void testLargestProperDivisorWithNegativeNumber() {
+	        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+	            LargestProperDivisor.largestProperDivisor(-1);
+	        });
+	        assertEquals("Argument must be >= 1: -1", exception.getMessage());
+	    }
+
+	    @Test
+	    void testLargestProperDivisorWithZero() {
+	        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+	            LargestProperDivisor.largestProperDivisor(0);
+	        });
+	        assertEquals("Argument must be >= 1: 0", exception.getMessage());
+	    }
+	}
+	```
+2024/07/30 07:40:15 Model "openrouter/openai/gpt-4o-mini" responded (7502 ms) with:
+	```java
+	package com.eval;
+
+	import static org.junit.jupiter.api.Assertions.*;
+
+	import org.junit.jupiter.api.Test;
+
+	class MagicSquareOddTest {
+
+		@Test
+		void testMagicSquareOdd_validInput() {
+			int[][] result = MagicSquareOdd.magicSquareOdd(5);
+			assertEquals(5, result.length);
+			assertEquals(5, result[0].length);
+			assertArrayEquals(new int[]{17, 24, 1, 8, 15}, result[0]);
+			assertArrayEquals(new int[]{23, 5, 7, 14, 16}, result[1]);
+			assertArrayEquals(new int[]{4, 6, 13, 20, 22}, result[2]);
+			assertArrayEquals(new int[]{10, 11, 18, 21, 3}, result[3]);
+			assertArrayEquals(new int[]{12, 19, 25, 2, 9}, result[4]);
+		}
+
+		@Test
+		void testMagicSquareOdd_invalidInput_evenNumber() {
+			IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+				MagicSquareOdd.magicSquareOdd(4);
+			});
+			assertEquals("base must be odd and > 2", thrown.getMessage());
+		}
+
+		@Test
+		void testMagicSquareOdd_invalidInput_lessThanThree() {
+			IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+				MagicSquareOdd.magicSquareOdd(2);
+			});
+			assertEquals("base must be odd and > 2", thrown.getMessage());
+		}
+
+		@Test
+		void testMagicSquareOdd_boundaryInput() {
+			int[][] result = MagicSquareOdd.magicSquareOdd(3);
+			assertEquals(3, result.length);
+			assertEquals(3, result[0].length);
+			assertArrayEquals(new int[]{8, 1, 6}, result[0]);
+			assertArrayEquals(new int[]{3, 5, 7}, result[1]);
+			assertArrayEquals(new int[]{4, 9, 2}, result[2]);
+		}
+	}
+	```
+2024/07/30 07:40:28 Model "openrouter/openai/gpt-4o-mini" responded (6963 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class MatchBytesTest {
+
+	    @Test
+	    void testMatchBytes_EqualCase() {
+	        byte[] s1 = { 'a', 'b', 'c' };
+	        byte[] s2 = { 'A', 'B', 'C' };
+	        assertTrue(MatchBytes.matchBytes(s1, s2));
+	    }
+
+	    @Test
+	    void testMatchBytes_DifferentLength() {
+	        byte[] s1 = { 'a', 'b' };
+	        byte[] s2 = { 'A', 'B', 'C' };
+	        assertThrows(ArrayIndexOutOfBoundsException.class, () -> MatchBytes.matchBytes(s1, s2));
+	    }
+
+	    @Test
+	    void testMatchBytes_NotMatching() {
+	        byte[] s1 = { 'a', 'b', 'c' };
+	        byte[] s2 = { 'A', 'B', 'D' };
+	        assertFalse(MatchBytes.matchBytes(s1, s2));
+	    }
+
+	    @Test
+	    void testMatchBytes_SpecialCharacters() {
+	        byte[] s1 = { 'A', 'b', '!' };
+	        byte[] s2 = { 'a', 'B', '!' };
+	        assertTrue(MatchBytes.matchBytes(s1, s2));
+	    }
+
+	    @Test
+	    void testMatchBytes_OnlyUpperCase() {
+	        byte[] s1 = { 'A', 'B', 'C' };
+	        byte[] s2 = { 'A', 'B', 'C' };
+	        assertTrue(MatchBytes.matchBytes(s1, s2));
+	    }
+
+	    @Test
+	    void testMatchBytes_OnlyLowerCase() {
+	        byte[] s1 = { 'a', 'b', 'c' };
+	        byte[] s2 = { 'a', 'b', 'c' };
+	        assertTrue(MatchBytes.matchBytes(s1, s2));
+	    }
+
+	    @Test
+	    void testMatchBytes_MixedCase() {
+	        byte[] s1 = { 'A', 'b', 'C' };
+	        byte[] s2 = { 'a', 'B', 'c' };
+	        assertFalse(MatchBytes.matchBytes(s1, s2));
+	    }
+	}
+	```
+2024/07/30 07:40:43 Model "openrouter/openai/gpt-4o-mini" responded (7007 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class PascalsTriangleTest {
+
+	    @Test
+	    void testGenerateTriangleZeroRows() {
+	        PascalsTriangle pt = new PascalsTriangle();
+	        int[][] result = pt.generateTriangle(0);
+	        assertArrayEquals(new int[0][], result);
+	    }
+
+	    @Test
+	    void testGenerateTriangleOneRow() {
+	        PascalsTriangle pt = new PascalsTriangle();
+	        int[][] result = pt.generateTriangle(1);
+	        assertArrayEquals(new int[][]{{1}}, result);
+	    }
+
+	    @Test
+	    void testGenerateTriangleTwoRows() {
+	        PascalsTriangle pt = new PascalsTriangle();
+	        int[][] result = pt.generateTriangle(2);
+	        assertArrayEquals(new int[][]{{1}, {1, 1}}, result);
+	    }
+
+	    @Test
+	    void testGenerateTriangleThreeRows() {
+	        PascalsTriangle pt = new PascalsTriangle();
+	        int[][] result = pt.generateTriangle(3);
+	        assertArrayEquals(new int[][]{{1}, {1, 1}, {1, 2, 1}}, result);
+	    }
+
+	    @Test
+	    void testGenerateTriangleFourRows() {
+	        PascalsTriangle pt = new PascalsTriangle();
+	        int[][] result = pt.generateTriangle(4);
+	        assertArrayEquals(new int[][]{{1}, {1, 1}, {1, 2, 1}, {1, 3, 3, 1}}, result);
+	    }
+
+	    @Test
+	    void testGenerateTriangleNegativeRows() {
+	        PascalsTriangle pt = new PascalsTriangle();
+	        assertThrows(IllegalArgumentException.class, () -> pt.generateTriangle(-1));
+	    }
+	}
+	```
+2024/07/30 07:40:56 Model "openrouter/openai/gpt-4o-mini" responded (5887 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+
+	import static org.junit.jupiter.api.Assertions.*;
+
+	class PhoneNumberTest {
+
+	    @Test
+	    void testExtractDigitsWithSpaces() {
+	        String result = PhoneNumber.extractDigits(" 1 2 3 4 ");
+	        assertEquals("1234", result);
+	    }
+
+	    @Test
+	    void testExtractDigitsWithSpecialCharacters() {
+	        String result = PhoneNumber.extractDigits("(123) 456-7890");
+	        assertEquals("1234567890", result);
+	    }
+
+	    @Test
+	    void testExtractDigitsWithDots() {
+	        String result = PhoneNumber.extractDigits("123.456.7890");
+	        assertEquals("1234567890", result);
+	    }
+
+	    @Test
+	    void testExtractDigitsWithPlus() {
+	        String result = PhoneNumber.extractDigits("+1 (234) 567-8910");
+	        assertEquals("12345678910", result);
+	    }
+
+	    @Test
+	    void testExtractDigitsWithMixedCharacters() {
+	        String result = PhoneNumber.extractDigits("123 45.678");
+	        assertEquals("12345678", result);
+	    }
+
+	    @Test
+	    void testExtractDigitsWithInvalidCharacterLetter() {
+	        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+	            PhoneNumber.extractDigits("123A456");
+	        });
+	        assertEquals("letters not permitted", exception.getMessage());
+	    }
+
+	    @Test
+	    void testExtractDigitsWithInvalidCharacterPunctuation() {
+	        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+	            PhoneNumber.extractDigits("123-456");
+	        });
+	        assertEquals("punctuations not permitted", exception.getMessage());
+	    }
+
+	    @Test
+	    void testExtractDigitsWithEmptyString() {
+	        String result = PhoneNumber.extractDigits("");
+	        assertEquals("", result);
+	    }
+	}
+	```
+2024/07/30 07:41:05 Model "openrouter/openai/gpt-4o-mini" responded (2952 ms) with:
+	```java
+	package com.eval;
+
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+	import org.junit.jupiter.api.Test;
+
+	public class SimpleIfElseTest {
+
+	    @Test
+	    void testSimpleIfElseWithOne() {
+	        assertEquals(0, SimpleIfElse.simpleIfElse(1));
+	    }
+
+	    @Test
+	    void testSimpleIfElseWithOther() {
+	        assertEquals(1, SimpleIfElse.simpleIfElse(2));
+	    }
+	}
+	```
+2024/07/30 07:41:15 Model "openrouter/openai/gpt-4o-mini" responded (2559 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	class SimpleSwitchWithReturnTest {
+
+	    @Test
+	    void testSimpleSwitchWithReturn_caseOne() {
+	        assertEquals(0, SimpleSwitchWithReturn.simpleSwitchWithReturn(1));
+	    }
+
+	    @Test
+	    void testSimpleSwitchWithReturn_defaultCase() {
+	        assertEquals(1, SimpleSwitchWithReturn.simpleSwitchWithReturn(0));
+	        assertEquals(1, SimpleSwitchWithReturn.simpleSwitchWithReturn(2));
+	        assertEquals(1, SimpleSwitchWithReturn.simpleSwitchWithReturn(-1));
+	    }
+	}
+	```
+2024/07/30 07:41:29 Model "openrouter/openai/gpt-4o-mini" responded (6740 ms) with:
+	```java
+	package com.eval;
+
+	import static org.junit.jupiter.api.Assertions.*;
+	import org.junit.jupiter.api.Test;
+
+	class SortTest {
+
+	    @Test
+	    void testIsSorted_EmptyArray() {
+	        assertTrue(Sort.isSorted(new int[] {}); // An empty array is considered sorted
+	    }
+
+	    @Test
+	    void testIsSorted_SingleElement() {
+	        assertTrue(Sort.isSorted(new int[] {1}); // A single element array is considered sorted
+	    }
+
+	    @Test
+	    void testIsSorted_TwoElements_Sorted() {
+	        assertTrue(Sort.isSorted(new int[] {1, 2})); // Two sorted elements
+	    }
+
+	    @Test
+	    void testIsSorted_TwoElements_Unsorted() {
+	        assertFalse(Sort.isSorted(new int[] {2, 1})); // Two unsorted elements
+	    }
+
+	    @Test
+	    void testIsSorted_MultipleSortedElements() {
+	        assertTrue(Sort.isSorted(new int[] {1, 2, 3, 4, 5})); // A sorted array
+	    }
+
+	    @Test
+	    void testIsSorted_MultipleUnsortedElements() {
+	        assertFalse(Sort.isSorted(new int[] {1, 3, 2, 4, 5})); // An array that is unsorted
+	    }
+
+	    @Test
+	    void testIsSorted_SameElements() {
+	        assertTrue(Sort.isSorted(new int[] {2, 2, 2, 2})); // An array with the same elements
+	    }
+	}
+	```
+2024/07/30 07:41:35 Model "openrouter/openai/gpt-4o-mini" responded (3895 ms) with:
+	```java
+	package com.eval;
+
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+	import org.junit.jupiter.api.Test;
+
+	class TypeArrayAccessTest {
+
+	    @Test
+	    void testTypeArrayAccess_WhenFirstElementIs123_ShouldReturn123() {
+	        int[] input = {123};
+	        int result = TypeArrayAccess.typeArrayAccess(input);
+	        assertEquals(123, result);
+	    }
+
+	    @Test
+	    void testTypeArrayAccess_WhenFirstElementIsNot123_ShouldReturn3() {
+	        int[] input = {100};
+	        int result = TypeArrayAccess.typeArrayAccess(input);
+	        assertEquals(3, result);
+	    }
+	    
+	    @Test
+	    void testTypeArrayAccess_EmptyArray_ShouldThrowArrayIndexOutOfBoundsException() {
+	        int[] input = {};
+	        try {
+	            TypeArrayAccess.typeArrayAccess(input);
+	        } catch (ArrayIndexOutOfBoundsException e) {
+	            // Expected exception
+	        }
+	    }
+	}
+	```
+2024/07/30 07:41:48 Model "openrouter/openai/gpt-4o-mini" responded (6012 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	class TypeArrayConsecutiveAccessTest {
+
+	    @Test
+	    void testTypeArrayConsecutiveAccess_WithZeroAtFirstPosition() {
+	        int[] input = {0, 8};
+	        int result = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(2, result);
+	    }
+
+	    @Test
+	    void testTypeArrayConsecutiveAccess_WithEightAtSecondPosition() {
+	        int[] input = {1, 8};
+	        int result = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(1, result);
+	    }
+
+	    @Test
+	    void testTypeArrayConsecutiveAccess_WithNeitherConditionMet() {
+	        int[] input = {1, 7};
+	        int result = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(0, result);
+	    }
+
+	    @Test
+	    void testTypeArrayConsecutiveAccess_WithZeroAndNotEight() {
+	        int[] input = {0, 7};
+	        int result = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(1, result);
+	    }
+
+	    @Test
+	    void testTypeArrayConsecutiveAccess_WithNotZeroAndEight() {
+	        int[] input = {1, 8};
+	        int result = TypeArrayConsecutiveAccess.typeArrayConsecutiveAccess(input);
+	        assertEquals(1, result);
+	    }
+	}
+	```
+2024/07/30 07:42:05 Model "openrouter/openai/gpt-4o-mini" responded (10473 ms) with:
+	```java
+	package com.eval;
+
+	import org.junit.jupiter.api.Test;
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+
+	class TypeArrayMultidimensionalArrayLengthTest {
+
+	    @Test
+	    void testArrayLengthTwoTwo() {
+	        int[][] input = { {1, 2}, {3, 4} };
+	        int result = TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(input);
+	        assertEquals(2, result);
+	    }
+
+	    @Test
+	    void testArrayLengthTwoNotTwo() {
+	        int[][] input = { {1, 2}, {3} };
+	        int result = TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(input);
+	        assertEquals(1, result);
+	    }
+
+	    @Test
+	    void testArrayLengthNotTwo() {
+	        int[][] input = { {1, 2} };
+	        int result = TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(input);
+	        assertEquals(0, result);
+	    }
+
+	    @Test
+	    void testEmptyArray() {
+	        int[][] input = {};
+	        int result = TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(input);
+	        assertEquals(0, result);
+	    }
+
+	    @Test
+	    void testArrayLengthGreaterThanTwo() {
+	        int[][] input = { {1, 2}, {3, 4}, {5, 6} };
+	        int result = TypeArrayMultidimensionalArrayLength.typeArrayMultidimensionalArrayLength(input);
+	        assertEquals(0, result);
+	    }
+	}
+	```
+2024/07/30 07:42:24 Model "openrouter/openai/gpt-4o-mini" responded (12087 ms) with:
+	```java
+	package com.eval;
+
+	import static org.junit.jupiter.api.Assertions.*;
+	import org.junit.jupiter.api.Test;
+
+	class ValidDateTest {
+	    
+	    @Test
+	    void testValidDate() {
+	        // Test valid dates
+	        assertTrue(ValidDate.validDate(29, 2, 2020)); // Leap year
+	        assertTrue(ValidDate.validDate(28, 2, 2021)); // Non-leap year
+	        assertTrue(ValidDate.validDate(31, 1, 2021)); // January
+	        assertTrue(ValidDate.validDate(30, 4, 2021)); // April
+	        assertTrue(ValidDate.validDate(31, 12, 2021)); // December
+	    }
+
+	    @Test
+	    void testInvalidYear() {
+	        // Test years before 1583
+	        assertFalse(ValidDate.validDate(1, 1, 1582)); // Before 1583
+	        assertFalse(ValidDate.validDate(1, 1, 1500)); // Before 1583
+	    }
+
+	    @Test
+	    void testInvalidMonth() {
+	        // Test invalid months
+	        assertFalse(ValidDate.validDate(1, 0, 2021)); // Month 0
+	        assertFalse(ValidDate.validDate(1, 13, 2021)); // Month 13
+	    }
+
+	    @Test
+	    void testInvalidDay() {
+	        // Test invalid days
+	        assertFalse(ValidDate.validDate(0, 1, 2021)); // Day 0
+	        assertFalse(ValidDate.validDate(32, 1, 2021)); // January 32
+	        assertFalse(ValidDate.validDate(30, 2, 2021)); // February 30 in non-leap year
+	        assertFalse(ValidDate.validDate(29, 2, 2021)); // February 29 in non-leap year
+	        assertFalse(ValidDate.validDate(31, 4, 2021)); // April 31
+	    }
+
+	    @Test
+	    void testLeapYear() {
+	        // Test leap year conditions
+	        assertTrue(ValidDate.validDate(29, 2, 2020)); // Leap year 2020
+	        assertFalse(ValidDate.validDate(29, 2, 2019)); // Not a leap year 2019
+	        assertTrue(ValidDate.validDate(29, 2, 2000)); // Century leap year
+	        assertFalse(ValidDate.validDate(29, 2, 1900)); // Not a leap year
+	    }
+	}
+	```

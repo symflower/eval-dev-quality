@@ -1,0 +1,150 @@
+2024/07/29 14:07:51 Model "ollama/granite-code:8b-instruct-q8_0" responded (48597 ms) with:
+	Here's how we can transpile the given Go code into Java:
+
+	```go []string
+	package main
+	import "fmt"
+	func hasBalancedBrackets(charArray string) bool {
+	    brackets := 0
+	    for _, ch := range charArray {
+	        if ch == '[' {
+	            brackets++
+	        } else if ch == ']' {
+	            brackets--
+	        } else {
+	            return false // Non-bracket characters.
+	        }
+	    }
+
+	    if brackets < 0 { // Closing bracket before opening bracket.
+	        return false
+	    }
+
+	    return brackets == 0
+	}
+	func main() {
+	    fmt.Println(hasBalancedBrackets("[[[]]]")) // Output: true
+	    fmt.Println(hasBalancedBrackets("[[]]"))     // Output: false
+	    fmt.Println(hasBalancedBrackets("[[[][]]]")) // Output: true
+	    fmt.Println(hasBalancedBrackets("[[][][]]]")) // Output: false
+	}
+	```
+
+	```java []string
+	package com.eval;
+
+	public class BalancedBrackets {
+	    public static boolean hasBalancedBrackets(char[] charArray) {
+	        int brackets = 0;
+	        for (int i = 0; i < charArray.length; i++) {
+	            if (charArray[i] == '[') {
+	                brackets++;
+	            } else if (charArray[i] == ']') {
+	                brackets--;
+	            } else {
+	                return false; // Non-bracket characters.
+	            }
+	        }
+
+	        if (brackets < 0) { // Closing bracket before opening bracket.
+	            return false;
+	        }
+
+	        return brackets == 0;
+	    }
+	}
+	```
+2024/07/29 14:08:22 Model "ollama/granite-code:8b-instruct-q8_0" responded (28933 ms) with:
+	```java
+	package com.eval;
+
+	class BinarySearch {
+		static int binarySearch(int[] a, int x) {
+			int index = -1;
+
+			int min = 0;
+			int max = a.length - 1;
+
+			while (index == -1 && min <= max) {
+				int m = (min + max) / 2;
+
+				if (x == a[m]) {
+					index = m;
+				} else if (x < a[m]) {
+					max = m - 1;
+				} else {
+					min = m + 1;
+				}
+			}
+
+			return index;
+		}
+	}
+	```
+2024/07/29 14:08:40 Model "ollama/granite-code:8b-instruct-q8_0" responded (11203 ms) with:
+	```java
+	package com.eval;
+
+	class CascadingIfElse {
+	    static int cascadingIfElse(int i) {
+	        if (i == 1) {
+	            return 2;
+	        } else if (i == 3) {
+	            return 4;
+	        } else {
+	            return 5;
+	        }
+	    }
+	}
+	```
+2024/07/29 14:08:58 Model "ollama/granite-code:8b-instruct-q8_0" responded (11549 ms) with:
+	```java
+	package com.eval;
+
+	public class IsSorted {
+	    public static boolean isSorted(int[] a) {
+	        int i = 0;
+	        while (i < a.length - 1 && a[i] <= a[i + 1]) {
+	            i++;
+	        }
+
+	        return i == a.length - 1;
+	    }
+	}
+	```
+2024/07/29 14:09:39 Model "ollama/granite-code:8b-instruct-q8_0" responded (34946 ms) with:
+	Here's a transpiled version of the Java code:
+
+	```java
+	package com.eval;
+
+	import java.util.*;
+
+	public class PascalsTriangle {
+	    public int[][] generateTriangle(int rows) {
+	        if (rows < 0) {
+	            throw new IllegalArgumentException("Rows can't be negative!");
+	        }
+
+	        List<List<Integer>> triangle = new ArrayList<>();
+
+	        for (int i = 0; i < rows; i++) {
+	            List<Integer> row = new ArrayList<>();
+
+	            for (int j = 0; j <= i; j++) {
+	                if (j == 0 || j == i) {
+	                    row.add(1);
+	                } else {
+	                    row.add(triangle.get(i - 1).get(j - 1) + triangle.get(i - 1).get(j));
+	                }
+	            }
+
+	            triangle.add(row);
+	        }
+
+	        return triangle.stream()
+	                         .map(List::toArray)
+	                         .toArray(int[][]::new);
+	    }
+	}
+	```

@@ -1,0 +1,10 @@
+2024/07/30 07:34:20 Model "openrouter/openai/gpt-4o-mini" responded (1182 ms) with:
+	```go
+	package plain
+
+	import "testing"
+
+	func TestPlain(t *testing.T) {
+		plain() // Call the plain function to ensure coverage.
+	}
+	```

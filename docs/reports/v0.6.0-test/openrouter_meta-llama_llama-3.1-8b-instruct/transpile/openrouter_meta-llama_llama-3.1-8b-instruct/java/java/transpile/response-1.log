@@ -1,0 +1,88 @@
+2024/07/30 07:50:59 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1717 ms) with:
+	```java
+	package com.eval;
+
+	public class BalancedBrackets {
+		static boolean hasBalancedBrackets(char[] charArray) {
+			int brackets = 0;
+			for (char ch : charArray) {
+				if (ch == '[') {
+					brackets++;
+				} else if (ch == ']') {
+					brackets--;
+				} else {
+					return false; // Non-bracket characters.
+				}
+			}
+
+			if (brackets < 0) { // Closing bracket before opening bracket.
+				return false;
+			}
+
+			return brackets == 0;
+		}
+	}
+	```
+2024/07/30 07:51:07 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2462 ms) with:
+	```java
+	package com.eval;
+
+	class BinarySearch {
+		static int binarySearch(int[] a, int x) {
+			int index = -1;
+
+			int min = 0;
+			int max = a.length - 1;
+
+			while (index == -1 && min <= max) {
+				int m = (min + max) / 2;
+
+				if (x == a[m]) {
+					index = m;
+				} else if (x < a[m]) {
+					max = m - 1;
+				} else {
+					min = m + 1;
+				}
+			}
+
+			return index;
+		}
+	}
+	```
+2024/07/30 07:51:15 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1467 ms) with:
+	```java
+	package com.eval;
+
+	class CascadingIfElse {
+	    static int cascadingIfElse(int i) {
+	        if (i == 1) {
+	            return 2;
+	        } else if (i == 3) {
+	            return 4;
+	        } else {
+	            return 5;
+	        }
+	    }
+	}
+	```
+2024/07/30 07:51:23 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (1277 ms) with:
+	```java
+	package com.eval;
+
+	class IsSorted {
+		static boolean isSorted(int[] a) {
+			int i = 0;
+			for (i = 0; i < a.length - 1 && a[i] <= a[i + 1]; i++) {
+			}
+
+			return i == a.length - 1;
+		}
+	}
+	```
+2024/07/30 07:51:33 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3576 ms) with:
+	```java
+	package com.eval;
+
+	public class PascalsTriangle {
+		int[][]

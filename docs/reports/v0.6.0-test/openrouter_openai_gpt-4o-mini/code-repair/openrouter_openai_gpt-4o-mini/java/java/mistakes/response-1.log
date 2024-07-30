@@ -1,0 +1,87 @@
+2024/07/30 07:42:36 Model "openrouter/openai/gpt-4o-mini" responded (2419 ms) with:
+	```java
+	package com.eval;
+
+	import java.util.List;
+
+	public class ImportMissing {
+		public static int importMissing(List<Integer> input) {
+			int sum = 0;
+
+			for (Integer i : input) {
+				sum += i;
+			}
+
+			return sum;
+		}
+	}
+	```
+2024/07/30 07:42:46 Model "openrouter/openai/gpt-4o-mini" responded (2019 ms) with:
+	```java
+	package com.eval;
+
+	public class OpeningBracketMissing {
+		public static int openingBracketMissing(int x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+2024/07/30 07:42:56 Model "openrouter/openai/gpt-4o-mini" responded (1955 ms) with:
+	```java
+	package com.eval;
+
+	public class SyntaxErrorTypeMissing {
+		public static int syntaxErrorTypeMissing(int x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+2024/07/30 07:43:06 Model "openrouter/openai/gpt-4o-mini" responded (1574 ms) with:
+	```java
+	package com.eval;
+
+	public class TypeUnknown {
+		public static int typeUnknown(int x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+2024/07/30 07:43:16 Model "openrouter/openai/gpt-4o-mini" responded (2201 ms) with:
+	```java
+	package com.eval;
+
+	public class VariableUnknown {
+		public static int variableUnknown(int x) {
+			int y = x;
+			if (x > 0) {
+				return y;
+			}
+			if (x < 0) {
+				return -y;
+			}
+
+			return 0;
+		}
+	}
+	```

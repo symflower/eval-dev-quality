@@ -1,0 +1,85 @@
+2024/07/29 14:05:20 Model "ollama/granite-code:8b-instruct-q8_0" responded (17629 ms) with:
+	package com.eval;
+
+	import java.util.List;
+
+	public class ImportMissing {
+		public static int importMissing(List<Integer> input) {
+			int sum = 0;
+
+			for (Integer i : input) {
+				sum += i;
+			}
+
+			return sum;
+		}
+	}
+2024/07/29 14:05:42 Model "ollama/granite-code:8b-instruct-q8_0" responded (14351 ms) with:
+	```java
+	package com.eval;
+
+	public class OpeningBracketMissing {
+		public static int openingBracketMissing(int x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+2024/07/29 14:06:12 Model "ollama/granite-code:8b-instruct-q8_0" responded (21389 ms) with:
+	```java
+	package com.eval;
+
+	public class SyntaxErrorTypeMissing {
+		public static int syntaxErrorTypeMissing(int x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+2024/07/29 14:06:31 Model "ollama/granite-code:8b-instruct-q8_0" responded (11505 ms) with:
+	```java
+	package com.eval;
+
+	public class TypeUnknown {
+		public static int typeUnknown(int x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+2024/07/29 14:06:53 Model "ollama/granite-code:8b-instruct-q8_0" responded (13405 ms) with:
+	```java
+	package com.eval;
+
+	public class VariableUnknown {
+		public static int variableUnknown(int x) {
+			int y = x;
+			if (x > 0) {
+				return y;
+			}
+			if (x < 0) {
+				return -y;
+			}
+
+			return 0;
+		}
+	}
+	```

@@ -1,0 +1,1020 @@
+2024/07/29 14:04:58 preloading model "ollama/granite-code:8b-instruct-q8_0"
+2024/07/29 14:05:00 $ git clean -df
+2024/07/29 14:05:00 Evaluating model "ollama/granite-code:8b-instruct-q8_0" on task "code-repair" using language "java" and repository "java/mistakes"
+2024/07/29 14:05:00 $ git clean -df
+2024/07/29 14:05:00 $ mvn compile
+2024/07/29 14:05:01 [INFO] Scanning for projects...
+2024/07/29 14:05:02 [INFO] 
+2024/07/29 14:05:02 [INFO] ------------------< eval.dev.quality:import-missing >-------------------
+2024/07/29 14:05:02 [INFO] Building import-missing 1.0-SNAPSHOT
+2024/07/29 14:05:02 [INFO]   from pom.xml
+2024/07/29 14:05:02 [INFO] --------------------------------[ jar ]---------------------------------
+2024/07/29 14:05:02 [INFO] 
+2024/07/29 14:05:02 [INFO] --- resources:3.3.0:resources (default-resources) @ import-missing ---
+2024/07/29 14:05:02 [INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/importMissing/src/main/resources
+2024/07/29 14:05:02 [INFO] 
+2024/07/29 14:05:02 [INFO] --- compiler:3.10.1:compile (default-compile) @ import-missing ---
+2024/07/29 14:05:02 [INFO] Changes detected - recompiling the module!
+2024/07/29 14:05:02 [INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/importMissing/target/classes
+2024/07/29 14:05:02 [INFO] -------------------------------------------------------------
+2024/07/29 14:05:02 [ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+2024/07/29 14:05:02 [ERROR] /tmp/eval-dev-quality370397139/mistakes/importMissing/src/main/java/com/eval/ImportMissing.java:[4,41] cannot find symbol
+  symbol:   class List
+  location: class com.eval.ImportMissing
+2024/07/29 14:05:02 [INFO] 1 error
+2024/07/29 14:05:02 [INFO] -------------------------------------------------------------
+2024/07/29 14:05:02 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:05:02 [INFO] BUILD FAILURE
+2024/07/29 14:05:02 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:05:02 [INFO] Total time:  0.623 s
+2024/07/29 14:05:02 [INFO] Finished at: 2024-07-29T14:05:02Z
+2024/07/29 14:05:02 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:05:02 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project import-missing: Compilation failure
+2024/07/29 14:05:02 [ERROR] /tmp/eval-dev-quality370397139/mistakes/importMissing/src/main/java/com/eval/ImportMissing.java:[4,41] cannot find symbol
+2024/07/29 14:05:02 [ERROR]   symbol:   class List
+2024/07/29 14:05:02 
+2024/07/29 14:05:02 [ERROR]   location: class com.eval.ImportMissing
+2024/07/29 14:05:02 
+2024/07/29 14:05:02 [ERROR] 
+2024/07/29 14:05:02 [ERROR] -> [Help 1]
+2024/07/29 14:05:02 [ERROR] 
+2024/07/29 14:05:02 
+2024/07/29 14:05:02 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+2024/07/29 14:05:02 
+2024/07/29 14:05:02 [ERROR] Re-run Maven using the -X switch to enable full debug logging.
+2024/07/29 14:05:02 [ERROR] 
+2024/07/29 14:05:02 [ERROR] For more information about the errors and possible solutions, please read the following articles:
+2024/07/29 14:05:02 
+2024/07/29 14:05:02 [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+2024/07/29 14:05:02 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Java code file "src/main/java/com/eval/ImportMissing.java" with package "com.eval" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	public class ImportMissing {
+		public static int importMissing(List<Integer> input) {
+			int sum = 0;
+
+			for (Integer i : input) {
+				sum += i;
+			}
+
+			return sum;
+		}
+	}
+	```
+
+	The list of compilation errors is the following:
+	- src/main/java/com/eval/ImportMissing.java:[4,41] cannot find symbol
+
+2024/07/29 14:05:20 Model "ollama/granite-code:8b-instruct-q8_0" responded (17629 ms) with:
+	package com.eval;
+
+	import java.util.List;
+
+	public class ImportMissing {
+		public static int importMissing(List<Integer> input) {
+			int sum = 0;
+
+			for (Integer i : input) {
+				sum += i;
+			}
+
+			return sum;
+		}
+	}
+2024/07/29 14:05:20 $ symflower test --language java --workspace /tmp/eval-dev-quality370397139/mistakes/importMissing --coverage-file /tmp/eval-dev-quality370397139/mistakes/importMissing/coverage.json
+2024/07/29 14:05:26 [INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< eval.dev.quality:import-missing >-------------------
+[INFO] Building import-missing 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ import-missing ---
+[INFO] Deleting /tmp/eval-dev-quality370397139/mistakes/importMissing/target
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ import-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/importMissing/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ import-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/importMissing/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ import-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/importMissing/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ import-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/importMissing/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ import-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/importMissing/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ import-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/importMissing/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ import-missing ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality370397139/mistakes/importMissing/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality370397139/mistakes/importMissing/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 2 test methods detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ import-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/importMissing/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ import-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/importMissing/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ import-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/importMissing/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ import-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/importMissing/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ import-missing ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.ImportMissingTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.057 s -- in com.eval.ImportMissingTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.166 s
+[INFO] Finished at: 2024-07-29T14:05:23Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< eval.dev.quality:import-missing >-------------------
+[INFO] Building import-missing 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ import-missing ---
+[INFO] 
+[INFO] ------------------< eval.dev.quality:import-missing >-------------------
+[INFO] Building import-missing 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ import-missing ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn18103286941441541006resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality370397139/mistakes/importMissing/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality370397139/mistakes/importMissing/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality370397139/mistakes/importMissing/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.018 s
+[INFO] Finished at: 2024-07-29T14:05:26Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+2024/07/29 14:05:26 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 14:05:26 coverage objects: [{"FileRange":"com/eval/ImportMissing.java:10:1-com/eval/ImportMissing.java:10:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/ImportMissing.java:10:1-com/eval/ImportMissing.java:10:99999","CoverageType":"NodeCoverageTrue","Count":2},{"FileRange":"com/eval/ImportMissing.java:13:1-com/eval/ImportMissing.java:13:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/ImportMissing.java:13:1-com/eval/ImportMissing.java:13:99999","CoverageType":"NodeCoverageTrue","Count":2},{"FileRange":"com/eval/ImportMissing.java:6:1-com/eval/ImportMissing.java:6:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/ImportMissing.java:6:1-com/eval/ImportMissing.java:6:99999","CoverageType":"NodeCoverageTrue","Count":2},{"FileRange":"com/eval/ImportMissing.java:7:1-com/eval/ImportMissing.java:7:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/ImportMissing.java:7:1-com/eval/ImportMissing.java:7:99999","CoverageType":"NodeCoverageTrue","Count":2},{"FileRange":"com/eval/ImportMissing.java:9:1-com/eval/ImportMissing.java:9:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/ImportMissing.java:9:1-com/eval/ImportMissing.java:9:99999","CoverageType":"NodeCoverageTrue","Count":2}]
+2024/07/29 14:05:26 Executes tests with 5 coverage objects
+2024/07/29 14:05:26 $ git clean -df
+2024/07/29 14:05:26 Removing importMissing/coverage.json
+Removing importMissing/target/
+2024/07/29 14:05:26 $ mvn compile
+2024/07/29 14:05:27 [INFO] Scanning for projects...
+2024/07/29 14:05:27 [INFO] 
+2024/07/29 14:05:27 [INFO] --------------< eval.dev.quality:opening-bracket-missing >--------------
+2024/07/29 14:05:27 [INFO] Building opening-bracket-missing 1.0-SNAPSHOT
+2024/07/29 14:05:27 [INFO]   from pom.xml
+2024/07/29 14:05:27 [INFO] --------------------------------[ jar ]---------------------------------
+2024/07/29 14:05:27 [INFO] 
+2024/07/29 14:05:27 [INFO] --- resources:3.3.0:resources (default-resources) @ opening-bracket-missing ---
+2024/07/29 14:05:28 [INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/resources
+2024/07/29 14:05:28 [INFO] 
+2024/07/29 14:05:28 [INFO] --- compiler:3.10.1:compile (default-compile) @ opening-bracket-missing ---
+2024/07/29 14:05:28 [INFO] Changes detected - recompiling the module!
+2024/07/29 14:05:28 [INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/classes
+2024/07/29 14:05:28 [INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+2024/07/29 14:05:28 [ERROR] /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/java/com/eval/OpeningBracketMissing.java:[4,55] ';' expected
+[ERROR] /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/java/com/eval/OpeningBracketMissing.java:[8,17] illegal start of type
+[ERROR] /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/java/com/eval/OpeningBracketMissing.java:[8,25] illegal start of type
+2024/07/29 14:05:28 
+[ERROR] /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/java/com/eval/OpeningBracketMissing.java:[12,17] illegal start of type
+2024/07/29 14:05:28 [ERROR] /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/java/com/eval/OpeningBracketMissing.java:[14,1] class, interface, or enum expected
+2024/07/29 14:05:28 [INFO] 5 errors 
+[INFO] -------------------------------------------------------------
+2024/07/29 14:05:28 [INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+2024/07/29 14:05:28 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:05:28 [INFO] Total time:  0.586 s
+2024/07/29 14:05:28 [INFO] Finished at: 2024-07-29T14:05:28Z
+2024/07/29 14:05:28 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:05:28 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project opening-bracket-missing: Compilation failure: Compilation failure: 
+2024/07/29 14:05:28 [ERROR] /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/java/com/eval/OpeningBracketMissing.java:[4,55] ';' expected
+2024/07/29 14:05:28 [ERROR] /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/java/com/eval/OpeningBracketMissing.java:[8,17] illegal start of type
+2024/07/29 14:05:28 
+2024/07/29 14:05:28 [ERROR] /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/java/com/eval/OpeningBracketMissing.java:[8,25] illegal start of type
+2024/07/29 14:05:28 [ERROR] /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/java/com/eval/OpeningBracketMissing.java:[12,17] illegal start of type
+2024/07/29 14:05:28 [ERROR] /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/java/com/eval/OpeningBracketMissing.java:[14,1] class, interface, or enum expected
+2024/07/29 14:05:28 
+2024/07/29 14:05:28 [ERROR] -> [Help 1]
+2024/07/29 14:05:28 [ERROR] 
+2024/07/29 14:05:28 
+2024/07/29 14:05:28 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+2024/07/29 14:05:28 [ERROR] Re-run Maven using the -X switch to enable full debug logging.
+2024/07/29 14:05:28 [ERROR] 
+2024/07/29 14:05:28 [ERROR] For more information about the errors and possible solutions, please read the following articles:
+2024/07/29 14:05:28 
+2024/07/29 14:05:28 [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+2024/07/29 14:05:28 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Java code file "src/main/java/com/eval/OpeningBracketMissing.java" with package "com.eval" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	public class OpeningBracketMissing {
+		public static int openingBracketMissing(int x)
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+
+	The list of compilation errors is the following:
+	- src/main/java/com/eval/OpeningBracketMissing.java:[12,17] illegal start of type
+	- src/main/java/com/eval/OpeningBracketMissing.java:[14,1] class, interface, or enum expected
+	- src/main/java/com/eval/OpeningBracketMissing.java:[4,55] ';' expected
+	- src/main/java/com/eval/OpeningBracketMissing.java:[8,17] illegal start of type
+	- src/main/java/com/eval/OpeningBracketMissing.java:[8,25] illegal start of type
+
+2024/07/29 14:05:42 Model "ollama/granite-code:8b-instruct-q8_0" responded (14351 ms) with:
+	```java
+	package com.eval;
+
+	public class OpeningBracketMissing {
+		public static int openingBracketMissing(int x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+2024/07/29 14:05:42 $ symflower test --language java --workspace /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing --coverage-file /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/coverage.json
+2024/07/29 14:05:49 [INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------< eval.dev.quality:opening-bracket-missing >--------------
+[INFO] Building opening-bracket-missing 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ opening-bracket-missing ---
+[INFO] Deleting /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ opening-bracket-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ opening-bracket-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ opening-bracket-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ opening-bracket-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ opening-bracket-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ opening-bracket-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ opening-bracket-missing ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 3 test methods detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ opening-bracket-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ opening-bracket-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ opening-bracket-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ opening-bracket-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ opening-bracket-missing ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.OpeningBracketMissingTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.060 s -- in com.eval.OpeningBracketMissingTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.134 s
+[INFO] Finished at: 2024-07-29T14:05:46Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------< eval.dev.quality:opening-bracket-missing >--------------
+[INFO] Building opening-bracket-missing 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ opening-bracket-missing ---
+[INFO] 
+[INFO] --------------< eval.dev.quality:opening-bracket-missing >--------------
+[INFO] Building opening-bracket-missing 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ opening-bracket-missing ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn13926238847261711766resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality370397139/mistakes/openingBracketMissing/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.021 s
+[INFO] Finished at: 2024-07-29T14:05:49Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+2024/07/29 14:05:49 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 14:05:49 coverage objects: [{"FileRange":"com/eval/OpeningBracketMissing.java:12:1-com/eval/OpeningBracketMissing.java:12:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/OpeningBracketMissing.java:12:1-com/eval/OpeningBracketMissing.java:12:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/OpeningBracketMissing.java:4:1-com/eval/OpeningBracketMissing.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/OpeningBracketMissing.java:4:1-com/eval/OpeningBracketMissing.java:4:99999","CoverageType":"NodeCoverageTrue","Count":3},{"FileRange":"com/eval/OpeningBracketMissing.java:5:1-com/eval/OpeningBracketMissing.java:5:99999","CoverageType":"NodeCoverageFalse","Count":2},{"FileRange":"com/eval/OpeningBracketMissing.java:5:1-com/eval/OpeningBracketMissing.java:5:99999","CoverageType":"NodeCoverageTrue","Count":4},{"FileRange":"com/eval/OpeningBracketMissing.java:6:1-com/eval/OpeningBracketMissing.java:6:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/OpeningBracketMissing.java:6:1-com/eval/OpeningBracketMissing.java:6:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/OpeningBracketMissing.java:8:1-com/eval/OpeningBracketMissing.java:8:99999","CoverageType":"NodeCoverageFalse","Count":1},{"FileRange":"com/eval/OpeningBracketMissing.java:8:1-com/eval/OpeningBracketMissing.java:8:99999","CoverageType":"NodeCoverageTrue","Count":3},{"FileRange":"com/eval/OpeningBracketMissing.java:9:1-com/eval/OpeningBracketMissing.java:9:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/OpeningBracketMissing.java:9:1-com/eval/OpeningBracketMissing.java:9:99999","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 14:05:49 Executes tests with 8 coverage objects
+2024/07/29 14:05:49 $ git clean -df
+2024/07/29 14:05:49 Removing openingBracketMissing/coverage.json
+Removing openingBracketMissing/target/
+2024/07/29 14:05:49 $ mvn compile
+2024/07/29 14:05:50 [INFO] Scanning for projects...
+2024/07/29 14:05:50 [INFO] 
+2024/07/29 14:05:50 [INFO] -------------< eval.dev.quality:syntax-error-type-missing >-------------
+2024/07/29 14:05:50 [INFO] Building syntax-error-type-missing 1.0-SNAPSHOT
+2024/07/29 14:05:50 [INFO]   from pom.xml
+2024/07/29 14:05:50 [INFO] --------------------------------[ jar ]---------------------------------
+2024/07/29 14:05:50 [INFO] 
+2024/07/29 14:05:50 [INFO] --- resources:3.3.0:resources (default-resources) @ syntax-error-type-missing ---
+2024/07/29 14:05:50 [INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/src/main/resources
+2024/07/29 14:05:50 [INFO] 
+2024/07/29 14:05:50 [INFO] --- compiler:3.10.1:compile (default-compile) @ syntax-error-type-missing ---
+2024/07/29 14:05:50 [INFO] Changes detected - recompiling the module!
+2024/07/29 14:05:50 [INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/classes
+2024/07/29 14:05:50 [INFO] -------------------------------------------------------------
+2024/07/29 14:05:50 [ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+2024/07/29 14:05:50 [ERROR] /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/src/main/java/com/eval/SyntaxErrorTypeMissing.java:[4,51] <identifier> expected
+2024/07/29 14:05:50 [INFO] 1 error
+2024/07/29 14:05:50 [INFO] -------------------------------------------------------------
+2024/07/29 14:05:50 
+2024/07/29 14:05:50 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:05:50 [INFO] BUILD FAILURE
+2024/07/29 14:05:50 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:05:50 [INFO] Total time:  0.590 s
+2024/07/29 14:05:50 [INFO] Finished at: 2024-07-29T14:05:50Z
+2024/07/29 14:05:50 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:05:50 
+2024/07/29 14:05:50 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project syntax-error-type-missing: Compilation failure
+2024/07/29 14:05:50 [ERROR] /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/src/main/java/com/eval/SyntaxErrorTypeMissing.java:[4,51] <identifier> expected
+2024/07/29 14:05:50 
+2024/07/29 14:05:50 [ERROR] 
+2024/07/29 14:05:50 [ERROR] -> [Help 1]
+2024/07/29 14:05:50 
+2024/07/29 14:05:50 [ERROR] 
+2024/07/29 14:05:50 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+2024/07/29 14:05:50 [ERROR] Re-run Maven using the -X switch to enable full debug logging.
+2024/07/29 14:05:50 [ERROR] 
+2024/07/29 14:05:50 [ERROR] For more information about the errors and possible solutions, please read the following articles:
+2024/07/29 14:05:50 
+2024/07/29 14:05:50 [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+2024/07/29 14:05:50 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Java code file "src/main/java/com/eval/SyntaxErrorTypeMissing.java" with package "com.eval" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	public class SyntaxErrorTypeMissing {
+		public static int syntaxErrorTypeMissing(x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+
+	The list of compilation errors is the following:
+	- src/main/java/com/eval/SyntaxErrorTypeMissing.java:[4,51] <identifier> expected
+
+2024/07/29 14:06:12 Model "ollama/granite-code:8b-instruct-q8_0" responded (21389 ms) with:
+	```java
+	package com.eval;
+
+	public class SyntaxErrorTypeMissing {
+		public static int syntaxErrorTypeMissing(int x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+2024/07/29 14:06:12 $ symflower test --language java --workspace /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing --coverage-file /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/coverage.json
+2024/07/29 14:06:18 [INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------< eval.dev.quality:syntax-error-type-missing >-------------
+[INFO] Building syntax-error-type-missing 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ syntax-error-type-missing ---
+[INFO] Deleting /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ syntax-error-type-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ syntax-error-type-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ syntax-error-type-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ syntax-error-type-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ syntax-error-type-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ syntax-error-type-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ syntax-error-type-missing ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 3 test methods detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ syntax-error-type-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ syntax-error-type-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ syntax-error-type-missing ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ syntax-error-type-missing ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ syntax-error-type-missing ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.SyntaxErrorTypeMissingTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.059 s -- in com.eval.SyntaxErrorTypeMissingTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.182 s
+[INFO] Finished at: 2024-07-29T14:06:15Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------< eval.dev.quality:syntax-error-type-missing >-------------
+[INFO] Building syntax-error-type-missing 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ syntax-error-type-missing ---
+[INFO] 
+[INFO] -------------< eval.dev.quality:syntax-error-type-missing >-------------
+[INFO] Building syntax-error-type-missing 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ syntax-error-type-missing ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn16213790449929382850resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality370397139/mistakes/syntaxErrorTypeMissing/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.992 s
+[INFO] Finished at: 2024-07-29T14:06:18Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+2024/07/29 14:06:18 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 14:06:18 coverage objects: [{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:12:1-com/eval/SyntaxErrorTypeMissing.java:12:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:12:1-com/eval/SyntaxErrorTypeMissing.java:12:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:4:1-com/eval/SyntaxErrorTypeMissing.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:4:1-com/eval/SyntaxErrorTypeMissing.java:4:99999","CoverageType":"NodeCoverageTrue","Count":3},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:5:1-com/eval/SyntaxErrorTypeMissing.java:5:99999","CoverageType":"NodeCoverageFalse","Count":2},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:5:1-com/eval/SyntaxErrorTypeMissing.java:5:99999","CoverageType":"NodeCoverageTrue","Count":4},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:6:1-com/eval/SyntaxErrorTypeMissing.java:6:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:6:1-com/eval/SyntaxErrorTypeMissing.java:6:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:8:1-com/eval/SyntaxErrorTypeMissing.java:8:99999","CoverageType":"NodeCoverageFalse","Count":1},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:8:1-com/eval/SyntaxErrorTypeMissing.java:8:99999","CoverageType":"NodeCoverageTrue","Count":3},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:9:1-com/eval/SyntaxErrorTypeMissing.java:9:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/SyntaxErrorTypeMissing.java:9:1-com/eval/SyntaxErrorTypeMissing.java:9:99999","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 14:06:18 Executes tests with 8 coverage objects
+2024/07/29 14:06:18 $ git clean -df
+2024/07/29 14:06:18 Removing syntaxErrorTypeMissing/coverage.json
+Removing syntaxErrorTypeMissing/target/
+2024/07/29 14:06:18 $ mvn compile
+2024/07/29 14:06:19 [INFO] Scanning for projects...
+2024/07/29 14:06:19 [INFO] 
+2024/07/29 14:06:19 [INFO] -------------------< eval.dev.quality:type-unknown >--------------------
+2024/07/29 14:06:19 [INFO] Building type-unknown 1.0-SNAPSHOT
+2024/07/29 14:06:19 [INFO]   from pom.xml
+2024/07/29 14:06:19 [INFO] --------------------------------[ jar ]---------------------------------
+2024/07/29 14:06:19 [INFO] 
+2024/07/29 14:06:19 [INFO] --- resources:3.3.0:resources (default-resources) @ type-unknown ---
+2024/07/29 14:06:20 [INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/typeUnknown/src/main/resources
+2024/07/29 14:06:20 [INFO] 
+2024/07/29 14:06:20 [INFO] --- compiler:3.10.1:compile (default-compile) @ type-unknown ---
+2024/07/29 14:06:20 [INFO] Changes detected - recompiling the module!
+2024/07/29 14:06:20 [INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/classes
+2024/07/29 14:06:20 [INFO] -------------------------------------------------------------
+2024/07/29 14:06:20 [ERROR] COMPILATION ERROR : 
+2024/07/29 14:06:20 [INFO] -------------------------------------------------------------
+2024/07/29 14:06:20 [ERROR] /tmp/eval-dev-quality370397139/mistakes/typeUnknown/src/main/java/com/eval/TypeUnknown.java:[4,39] cannot find symbol
+  symbol:   class intt
+  location: class com.eval.TypeUnknown
+2024/07/29 14:06:20 [INFO] 1 error
+2024/07/29 14:06:20 
+2024/07/29 14:06:20 [INFO] -------------------------------------------------------------
+2024/07/29 14:06:20 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:06:20 [INFO] BUILD FAILURE
+2024/07/29 14:06:20 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:06:20 
+2024/07/29 14:06:20 [INFO] Total time:  0.599 s
+2024/07/29 14:06:20 [INFO] Finished at: 2024-07-29T14:06:20Z
+2024/07/29 14:06:20 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:06:20 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project type-unknown: Compilation failure
+2024/07/29 14:06:20 [ERROR] /tmp/eval-dev-quality370397139/mistakes/typeUnknown/src/main/java/com/eval/TypeUnknown.java:[4,39] cannot find symbol
+2024/07/29 14:06:20 [ERROR]   symbol:   class intt
+2024/07/29 14:06:20 
+2024/07/29 14:06:20 [ERROR]   location: class com.eval.TypeUnknown
+2024/07/29 14:06:20 [ERROR] 
+2024/07/29 14:06:20 
+2024/07/29 14:06:20 [ERROR] -> [Help 1]
+2024/07/29 14:06:20 [ERROR] 
+2024/07/29 14:06:20 
+2024/07/29 14:06:20 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+2024/07/29 14:06:20 
+2024/07/29 14:06:20 [ERROR] Re-run Maven using the -X switch to enable full debug logging.
+2024/07/29 14:06:20 [ERROR] 
+2024/07/29 14:06:20 [ERROR] For more information about the errors and possible solutions, please read the following articles:
+2024/07/29 14:06:20 
+2024/07/29 14:06:20 [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+2024/07/29 14:06:20 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Java code file "src/main/java/com/eval/TypeUnknown.java" with package "com.eval" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	public class TypeUnknown {
+		public static int typeUnknown(intt x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+
+	The list of compilation errors is the following:
+	- src/main/java/com/eval/TypeUnknown.java:[4,39] cannot find symbol
+
+2024/07/29 14:06:31 Model "ollama/granite-code:8b-instruct-q8_0" responded (11505 ms) with:
+	```java
+	package com.eval;
+
+	public class TypeUnknown {
+		public static int typeUnknown(int x) {
+			if (x > 0) {
+				return 1;
+			}
+			if (x < 0) {
+				return -1;
+			}
+
+			return 0;
+		}
+	}
+	```
+2024/07/29 14:06:31 $ symflower test --language java --workspace /tmp/eval-dev-quality370397139/mistakes/typeUnknown --coverage-file /tmp/eval-dev-quality370397139/mistakes/typeUnknown/coverage.json
+2024/07/29 14:06:38 [INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< eval.dev.quality:type-unknown >--------------------
+[INFO] Building type-unknown 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ type-unknown ---
+[INFO] Deleting /tmp/eval-dev-quality370397139/mistakes/typeUnknown/target
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ type-unknown ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/typeUnknown/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ type-unknown ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ type-unknown ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/typeUnknown/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ type-unknown ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ type-unknown ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/typeUnknown/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ type-unknown ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ type-unknown ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 3 test methods detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ type-unknown ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/typeUnknown/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ type-unknown ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ type-unknown ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/typeUnknown/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ type-unknown ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ type-unknown ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.TypeUnknownTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.058 s -- in com.eval.TypeUnknownTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.193 s
+[INFO] Finished at: 2024-07-29T14:06:35Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< eval.dev.quality:type-unknown >--------------------
+[INFO] Building type-unknown 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ type-unknown ---
+[INFO] 
+[INFO] -------------------< eval.dev.quality:type-unknown >--------------------
+[INFO] Building type-unknown 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ type-unknown ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn5473515704976793456resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality370397139/mistakes/typeUnknown/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.011 s
+[INFO] Finished at: 2024-07-29T14:06:38Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+2024/07/29 14:06:38 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 14:06:38 coverage objects: [{"FileRange":"com/eval/TypeUnknown.java:12:1-com/eval/TypeUnknown.java:12:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/TypeUnknown.java:12:1-com/eval/TypeUnknown.java:12:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/TypeUnknown.java:4:1-com/eval/TypeUnknown.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/TypeUnknown.java:4:1-com/eval/TypeUnknown.java:4:99999","CoverageType":"NodeCoverageTrue","Count":3},{"FileRange":"com/eval/TypeUnknown.java:5:1-com/eval/TypeUnknown.java:5:99999","CoverageType":"NodeCoverageFalse","Count":2},{"FileRange":"com/eval/TypeUnknown.java:5:1-com/eval/TypeUnknown.java:5:99999","CoverageType":"NodeCoverageTrue","Count":4},{"FileRange":"com/eval/TypeUnknown.java:6:1-com/eval/TypeUnknown.java:6:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/TypeUnknown.java:6:1-com/eval/TypeUnknown.java:6:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/TypeUnknown.java:8:1-com/eval/TypeUnknown.java:8:99999","CoverageType":"NodeCoverageFalse","Count":1},{"FileRange":"com/eval/TypeUnknown.java:8:1-com/eval/TypeUnknown.java:8:99999","CoverageType":"NodeCoverageTrue","Count":3},{"FileRange":"com/eval/TypeUnknown.java:9:1-com/eval/TypeUnknown.java:9:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/TypeUnknown.java:9:1-com/eval/TypeUnknown.java:9:99999","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/29 14:06:38 Executes tests with 8 coverage objects
+2024/07/29 14:06:38 $ git clean -df
+2024/07/29 14:06:38 Removing typeUnknown/coverage.json
+Removing typeUnknown/target/
+2024/07/29 14:06:38 $ mvn compile
+2024/07/29 14:06:39 [INFO] Scanning for projects...
+2024/07/29 14:06:39 [INFO] 
+2024/07/29 14:06:39 [INFO] -----------------< eval.dev.quality:variable-unknown >------------------
+2024/07/29 14:06:39 [INFO] Building variable-unknown 1.0-SNAPSHOT
+2024/07/29 14:06:39 
+2024/07/29 14:06:39 [INFO]   from pom.xml
+2024/07/29 14:06:39 [INFO] --------------------------------[ jar ]---------------------------------
+2024/07/29 14:06:39 [INFO] 
+2024/07/29 14:06:39 [INFO] --- resources:3.3.0:resources (default-resources) @ variable-unknown ---
+2024/07/29 14:06:39 [INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/main/resources
+2024/07/29 14:06:39 [INFO] 
+2024/07/29 14:06:39 [INFO] --- compiler:3.10.1:compile (default-compile) @ variable-unknown ---
+2024/07/29 14:06:39 [INFO] Changes detected - recompiling the module!
+2024/07/29 14:06:39 [INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/classes
+2024/07/29 14:06:39 [INFO] -------------------------------------------------------------
+2024/07/29 14:06:39 [ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+2024/07/29 14:06:39 [ERROR] /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/main/java/com/eval/VariableUnknown.java:[5,17] cannot find symbol
+  symbol:   variable y
+  location: class com.eval.VariableUnknown
+2024/07/29 14:06:39 
+2024/07/29 14:06:39 [ERROR] /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/main/java/com/eval/VariableUnknown.java:[7,32] cannot find symbol
+  symbol:   variable y
+  location: class com.eval.VariableUnknown
+2024/07/29 14:06:39 [ERROR] /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/main/java/com/eval/VariableUnknown.java:[10,33] cannot find symbol
+  symbol:   variable y
+  location: class com.eval.VariableUnknown
+2024/07/29 14:06:39 
+[INFO] 3 errors 
+2024/07/29 14:06:39 [INFO] -------------------------------------------------------------
+2024/07/29 14:06:39 
+2024/07/29 14:06:39 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:06:39 [INFO] BUILD FAILURE
+2024/07/29 14:06:39 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:06:39 [INFO] Total time:  0.613 s
+2024/07/29 14:06:39 [INFO] Finished at: 2024-07-29T14:06:39Z
+2024/07/29 14:06:39 [INFO] ------------------------------------------------------------------------
+2024/07/29 14:06:39 [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project variable-unknown: Compilation failure: Compilation failure: 
+2024/07/29 14:06:39 [ERROR] /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/main/java/com/eval/VariableUnknown.java:[5,17] cannot find symbol
+2024/07/29 14:06:39 
+[ERROR]   symbol:   variable y
+2024/07/29 14:06:39 
+2024/07/29 14:06:39 [ERROR]   location: class com.eval.VariableUnknown
+2024/07/29 14:06:39 [ERROR] /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/main/java/com/eval/VariableUnknown.java:[7,32] cannot find symbol
+2024/07/29 14:06:39 [ERROR]   symbol:   variable y
+2024/07/29 14:06:39 [ERROR]   location: class com.eval.VariableUnknown
+2024/07/29 14:06:39 [ERROR] /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/main/java/com/eval/VariableUnknown.java:[10,33] cannot find symbol
+2024/07/29 14:06:39 [ERROR]   symbol:   variable y
+2024/07/29 14:06:39 [ERROR]   location: class com.eval.VariableUnknown
+2024/07/29 14:06:39 
+2024/07/29 14:06:39 [ERROR] -> [Help 1]
+2024/07/29 14:06:39 [ERROR] 
+2024/07/29 14:06:39 
+2024/07/29 14:06:39 [ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+2024/07/29 14:06:39 [ERROR] Re-run Maven using the -X switch to enable full debug logging.
+2024/07/29 14:06:39 [ERROR] 
+2024/07/29 14:06:39 
+2024/07/29 14:06:39 [ERROR] For more information about the errors and possible solutions, please read the following articles:
+2024/07/29 14:06:39 [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+2024/07/29 14:06:39 Querying model "ollama/granite-code:8b-instruct-q8_0" with:
+	Given the following Java code file "src/main/java/com/eval/VariableUnknown.java" with package "com.eval" and a list of compilation errors, modify the code such that the errors are resolved.
+	The response must contain only the source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	public class VariableUnknown {
+		public static int variableUnknown(int x) {
+			y = x;
+			if (x > 0) {
+				return y;
+			}
+			if (x < 0) {
+				return -y;
+			}
+
+			return 0;
+		}
+	}
+	```
+
+	The list of compilation errors is the following:
+	- src/main/java/com/eval/VariableUnknown.java:[10,33] cannot find symbol
+	- src/main/java/com/eval/VariableUnknown.java:[5,17] cannot find symbol
+	- src/main/java/com/eval/VariableUnknown.java:[7,32] cannot find symbol
+
+2024/07/29 14:06:53 Model "ollama/granite-code:8b-instruct-q8_0" responded (13405 ms) with:
+	```java
+	package com.eval;
+
+	public class VariableUnknown {
+		public static int variableUnknown(int x) {
+			int y = x;
+			if (x > 0) {
+				return y;
+			}
+			if (x < 0) {
+				return -y;
+			}
+
+			return 0;
+		}
+	}
+	```
+2024/07/29 14:06:53 $ symflower test --language java --workspace /tmp/eval-dev-quality370397139/mistakes/variableUnknown --coverage-file /tmp/eval-dev-quality370397139/mistakes/variableUnknown/coverage.json
+2024/07/29 14:06:59 [INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------< eval.dev.quality:variable-unknown >------------------
+[INFO] Building variable-unknown 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ variable-unknown ---
+[INFO] Deleting /tmp/eval-dev-quality370397139/mistakes/variableUnknown/target
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ variable-unknown ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ variable-unknown ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ variable-unknown ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ variable-unknown ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ variable-unknown ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ variable-unknown ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/test-classes
+[INFO] 
+[INFO] --- clover:4.5.2:setup (default-cli) @ variable-unknown ---
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Creating new database at '/tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Updating existing database at '/tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/clover/clover.db'.
+[INFO] Processing files at JAVA_11 source level.
+[INFO] Clover all over. Instrumented 1 file (1 package).
+[INFO] 3 test methods detected.
+[INFO] 
+[INFO] --- resources:3.3.0:resources (default-resources) @ variable-unknown ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/main/resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- compiler:3.10.1:compile (default-compile) @ variable-unknown ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/classes
+[INFO] 
+[INFO] --- resources:3.3.0:testResources (default-testResources) @ variable-unknown ---
+[INFO] skip non existing resourceDirectory /tmp/eval-dev-quality370397139/mistakes/variableUnknown/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ variable-unknown ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ variable-unknown ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.eval.VariableUnknownTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.056 s -- in com.eval.VariableUnknownTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.167 s
+[INFO] Finished at: 2024-07-29T14:06:56Z
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------< eval.dev.quality:variable-unknown >------------------
+[INFO] Building variable-unknown 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:aggregate (default-cli) @ variable-unknown ---
+[INFO] 
+[INFO] -----------------< eval.dev.quality:variable-unknown >------------------
+[INFO] Building variable-unknown 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clover:4.5.2:clover (default-cli) @ variable-unknown ---
+[INFO] Using default-clover-report descriptor.
+[INFO] Using Clover report descriptor: /tmp/mvn758424672570701793resource
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Clover is enabled with initstring '/tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/clover/clover.db'
+[INFO] OpenClover Version 4.5.2, built on 2024-01-31
+[INFO] Loading coverage database from: '/tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/clover/clover.db'
+[INFO] Writing report to '/tmp/eval-dev-quality370397139/mistakes/variableUnknown/target/site/clover/clover.xml'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.014 s
+[INFO] Finished at: 2024-07-29T14:06:59Z
+[INFO] ------------------------------------------------------------------------
+
+Total coverage 100.000000%
+2024/07/29 14:06:59 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/29 14:06:59 coverage objects: [{"FileRange":"com/eval/VariableUnknown.java:10:1-com/eval/VariableUnknown.java:10:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/VariableUnknown.java:10:1-com/eval/VariableUnknown.java:10:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/VariableUnknown.java:13:1-com/eval/VariableUnknown.java:13:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/VariableUnknown.java:13:1-com/eval/VariableUnknown.java:13:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/VariableUnknown.java:4:1-com/eval/VariableUnknown.java:4:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/VariableUnknown.java:4:1-com/eval/VariableUnknown.java:4:99999","CoverageType":"NodeCoverageTrue","Count":3},{"FileRange":"com/eval/VariableUnknown.java:5:1-com/eval/VariableUnknown.java:5:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/VariableUnknown.java:5:1-com/eval/VariableUnknown.java:5:99999","CoverageType":"NodeCoverageTrue","Count":3},{"FileRange":"com/eval/VariableUnknown.java:6:1-com/eval/VariableUnknown.java:6:99999","CoverageType":"NodeCoverageFalse","Count":2},{"FileRange":"com/eval/VariableUnknown.java:6:1-com/eval/VariableUnknown.java:6:99999","CoverageType":"NodeCoverageTrue","Count":4},{"FileRange":"com/eval/VariableUnknown.java:7:1-com/eval/VariableUnknown.java:7:99999","CoverageType":"NodeCoverageFalse","Count":0},{"FileRange":"com/eval/VariableUnknown.java:7:1-com/eval/VariableUnknown.java:7:99999","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"com/eval/VariableUnknown.java:9:1-com/eval/VariableUnknown.java:9:99999","CoverageType":"NodeCoverageFalse","Count":1},{"FileRange":"com/eval/VariableUnknown.java:9:1-com/eval/VariableUnknown.java:9:99999","CoverageType":"NodeCoverageTrue","Count":3}]
+2024/07/29 14:06:59 Executes tests with 9 coverage objects
+2024/07/29 14:06:59 Evaluated model "ollama/granite-code:8b-instruct-q8_0" on task "code-repair" using language "java" and repository "java/mistakes": encountered 0 problems: []
+2024/07/29 14:06:59 unloading model "ollama/granite-code:8b-instruct-q8_0"

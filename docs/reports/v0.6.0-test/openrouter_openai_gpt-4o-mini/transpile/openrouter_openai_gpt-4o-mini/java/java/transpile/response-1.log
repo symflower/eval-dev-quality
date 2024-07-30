@@ -1,0 +1,107 @@
+2024/07/30 07:43:26 Model "openrouter/openai/gpt-4o-mini" responded (2899 ms) with:
+	```java
+	package com.eval;
+
+	public class BalancedBrackets {
+		static boolean hasBalancedBrackets(char[] charArray) {
+			int brackets = 0;
+			for (char ch : charArray) {
+				if (ch == '[') {
+					brackets++;
+				} else if (ch == ']') {
+					brackets--;
+				} else {
+					return false; // Non-bracket characters.
+				}
+			}
+
+			if (brackets < 0) { // Closing bracket before opening bracket.
+				return false;
+			}
+
+			return brackets == 0;
+		}
+	}
+	```
+2024/07/30 07:43:35 Model "openrouter/openai/gpt-4o-mini" responded (3064 ms) with:
+	```java
+	package com.eval;
+
+	class BinarySearch {
+		static int binarySearch(int[] a, int x) {
+			int index = -1;
+
+			int min = 0;
+			int max = a.length - 1;
+
+			while (index == -1 && min <= max) {
+				int m = (min + max) / 2;
+
+				if (x == a[m]) {
+					index = m;
+				} else if (x < a[m]) {
+					max = m - 1;
+				} else {
+					min = m + 1;
+				}
+			}
+
+			return index;
+		}
+	}
+	```
+2024/07/30 07:43:44 Model "openrouter/openai/gpt-4o-mini" responded (1737 ms) with:
+	```java
+	package com.eval;
+
+	class CascadingIfElse {
+		static int cascadingIfElse(int i) {
+			if (i == 1) {
+				return 2;
+			} else if (i == 3) {
+				return 4;
+			} else {
+				return 5;
+			}
+		}
+	}
+	```
+2024/07/30 07:43:52 Model "openrouter/openai/gpt-4o-mini" responded (1888 ms) with:
+	```java
+	package com.eval;
+
+	class IsSorted {
+		static boolean isSorted(int[] a) {
+			int i = 0;
+			while (i < a.length - 1 && a[i] <= a[i + 1]) {
+				i++;
+			}
+
+			return i == a.length - 1;
+		}
+	}
+	```
+2024/07/30 07:44:03 Model "openrouter/openai/gpt-4o-mini" responded (4188 ms) with:
+	```java
+	package com.eval;
+
+	public class PascalsTriangle {
+	    public int[][] generateTriangle(int rows) throws IllegalArgumentException {
+	        if (rows < 0) {
+	            throw new IllegalArgumentException("Rows can't be negative!");
+	        }
+
+	        int[][] triangle = new int[rows][];
+
+	        for (int i = 0; i < rows; i++) {
+	            triangle[i] = new int[i + 1];
+	            triangle[i][0] = 1;
+	            for (int j = 1; j < i; j++) {
+	                triangle[i][j] = triangle[i - 1][j - 1] + triangle[i - 1][j];
+	            }
+	            triangle[i][i] = 1;
+	        }
+	        return triangle;
+	    }
+	}
+	```

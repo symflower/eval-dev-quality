@@ -1,0 +1,389 @@
+2024/07/30 07:37:05 $ git clean -df
+2024/07/30 07:37:05 Evaluating model "openrouter/openai/gpt-4o-mini" on task "transpile" using language "golang" and repository "golang/transpile"
+2024/07/30 07:37:05 $ git clean -df
+2024/07/30 07:37:05 Querying model "openrouter/openai/gpt-4o-mini" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	// Copyright (C) rosettacode.org
+	package com.eval;
+
+	public class BalancedBrackets {
+	    static boolean hasBalancedBrackets(char[] charArray) {
+	        int brackets = 0;
+	        for (char ch : charArray) {
+	            if (ch == '[') {
+	                brackets++;
+	            } else if (ch == ']') {
+	                brackets--;
+	            } else {
+	                return false; // Non-bracket characters.
+	            }
+	            if (brackets < 0) { // Closing bracket before opening bracket.
+	                return false;
+	            }
+	        }
+	        return brackets == 0;
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "balancedBrackets" and the following signature:
+
+	```golang
+	package balancedBrackets
+
+	func hasBalancedBrackets(charArray string) bool {}
+	```
+
+2024/07/30 07:37:09 Model "openrouter/openai/gpt-4o-mini" responded (3817 ms) with:
+	```go
+	package balancedBrackets
+
+	func hasBalancedBrackets(charArray string) bool {
+		brackets := 0
+		for _, ch := range charArray {
+			if ch == '[' {
+				brackets++
+			} else if ch == ']' {
+				brackets--
+			} else {
+				return false // Non-bracket characters.
+			}
+			if brackets < 0 { // Closing bracket before opening bracket.
+				return false
+			}
+		}
+		return brackets == 0
+	}
+	```
+2024/07/30 07:37:09 $ go mod tidy
+2024/07/30 07:37:09 $ symflower test --language golang --workspace /tmp/eval-dev-quality103728522/transpile/balancedBrackets --coverage-file /tmp/eval-dev-quality103728522/transpile/balancedBrackets/coverage.json
+2024/07/30 07:37:10 === RUN   TestSymflowerHasBalancedBrackets
+=== RUN   TestSymflowerHasBalancedBrackets/#00
+=== RUN   TestSymflowerHasBalancedBrackets/#01
+=== RUN   TestSymflowerHasBalancedBrackets/#02
+=== RUN   TestSymflowerHasBalancedBrackets/#03
+=== RUN   TestSymflowerHasBalancedBrackets/#04
+--- PASS: TestSymflowerHasBalancedBrackets (0.00s)
+    --- PASS: TestSymflowerHasBalancedBrackets/#00 (0.00s)
+    --- PASS: TestSymflowerHasBalancedBrackets/#01 (0.00s)
+    --- PASS: TestSymflowerHasBalancedBrackets/#02 (0.00s)
+    --- PASS: TestSymflowerHasBalancedBrackets/#03 (0.00s)
+    --- PASS: TestSymflowerHasBalancedBrackets/#04 (0.00s)
+PASS
+2024/07/30 07:37:10 coverage: 80.0% of statements
+2024/07/30 07:37:10 ok  	balancedBrackets	0.003s	coverage: 80.0% of statements
+2024/07/30 07:37:10 
+DONE 6 tests in 0.328s
+2024/07/30 07:37:10 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:37:10 coverage objects: [{"FileRange":"balancedBrackets/balancedBrackets.go:13:3-balancedBrackets/balancedBrackets.go:13:19","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"balancedBrackets/balancedBrackets.go:17:2-balancedBrackets/balancedBrackets.go:17:22","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"balancedBrackets/balancedBrackets.go:3:49-balancedBrackets/balancedBrackets.go:8:4","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"balancedBrackets/balancedBrackets.go:8:9-balancedBrackets/balancedBrackets.go:10:4","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:37:10 Executes tests with 6 tests passing
+2024/07/30 07:37:10 $ git clean -df
+2024/07/30 07:37:10 Removing balancedBrackets/coverage.json
+Removing balancedBrackets/go.sum
+2024/07/30 07:37:10 Querying model "openrouter/openai/gpt-4o-mini" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	class BinarySearch {
+		static int binarySearch(int[] a, int x) {
+			int index = -1;
+
+			int min = 0;
+			int max = a.length - 1;
+
+			while (index == -1 && min <= max) {
+				int m = (min + max) / 2;
+
+				if (x == a[m]) {
+					index = m;
+				} else if (x < a[m]) {
+					max = m - 1;
+				} else {
+					min = m + 1;
+				}
+			}
+
+			return index;
+		}
+	}
+	```
+
+	The transpiled Go code file must have the package "binarySearch" and the following signature:
+
+	```golang
+	package binarySearch
+
+	func binarySearch(a []int, x int) int {
+	}
+	```
+
+2024/07/30 07:37:13 Model "openrouter/openai/gpt-4o-mini" responded (3095 ms) with:
+	```go
+	package binarySearch
+
+	func binarySearch(a []int, x int) int {
+		index := -1
+
+		min := 0
+		max := len(a) - 1
+
+		for index == -1 && min <= max {
+			m := (min + max) / 2
+
+			if x == a[m] {
+				index = m
+			} else if x < a[m] {
+				max = m - 1
+			} else {
+				min = m + 1
+			}
+		}
+
+		return index
+	}
+	```
+2024/07/30 07:37:13 $ go mod tidy
+2024/07/30 07:37:13 $ symflower test --language golang --workspace /tmp/eval-dev-quality103728522/transpile/binarySearch --coverage-file /tmp/eval-dev-quality103728522/transpile/binarySearch/coverage.json
+2024/07/30 07:37:13 === RUN   TestSymflowerBinarySearch
+=== RUN   TestSymflowerBinarySearch/#00
+=== RUN   TestSymflowerBinarySearch/#01
+=== RUN   TestSymflowerBinarySearch/#02
+=== RUN   TestSymflowerBinarySearch/#03
+=== RUN   TestSymflowerBinarySearch/#04
+2024/07/30 07:37:13 --- PASS: TestSymflowerBinarySearch (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#00 (0.00s)
+2024/07/30 07:37:13     --- PASS: TestSymflowerBinarySearch/#01 (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#02 (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#03 (0.00s)
+    --- PASS: TestSymflowerBinarySearch/#04 (0.00s)
+2024/07/30 07:37:13 PASS
+2024/07/30 07:37:13 coverage: 90.9% of statements
+2024/07/30 07:37:13 ok  	binarySearch	0.003s	coverage: 90.9% of statements
+2024/07/30 07:37:13 
+DONE 6 tests in 0.321s
+2024/07/30 07:37:13 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:37:13 coverage objects: [{"FileRange":"binarySearch/binarySearch.go:14:9-binarySearch/binarySearch.go:14:22","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"binarySearch/binarySearch.go:16:9-binarySearch/binarySearch.go:18:4","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"binarySearch/binarySearch.go:21:2-binarySearch/binarySearch.go:21:14","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"binarySearch/binarySearch.go:3:39-binarySearch/binarySearch.go:14:4","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:37:13 Executes tests with 6 tests passing
+2024/07/30 07:37:13 $ git clean -df
+2024/07/30 07:37:13 Removing binarySearch/coverage.json
+Removing binarySearch/go.sum
+2024/07/30 07:37:13 Querying model "openrouter/openai/gpt-4o-mini" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	class CascadingIfElse {
+	    static int cascadingIfElse(int i) {
+	        if (i == 1) {
+	            return 2;
+	        } else if (i == 3) {
+	            return 4;
+	        } else {
+	            return 5;
+	        }
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "cascadingIfElse" and the following signature:
+
+	```golang
+	package cascadingIfElse
+
+	func cascadingIfElse(i int) int {
+	}
+	```
+
+2024/07/30 07:37:15 Model "openrouter/openai/gpt-4o-mini" responded (1590 ms) with:
+	```go
+	package cascadingIfElse
+
+	func cascadingIfElse(i int) int {
+	    if i == 1 {
+	        return 2
+	    } else if i == 3 {
+	        return 4
+	    } else {
+	        return 5
+	    }
+	}
+	```
+2024/07/30 07:37:15 $ go mod tidy
+2024/07/30 07:37:15 $ symflower test --language golang --workspace /tmp/eval-dev-quality103728522/transpile/cascadingIfElse --coverage-file /tmp/eval-dev-quality103728522/transpile/cascadingIfElse/coverage.json
+2024/07/30 07:37:15 === RUN   TestSymflowerCascadingIfElse
+=== RUN   TestSymflowerCascadingIfElse/#00
+=== RUN   TestSymflowerCascadingIfElse/#01
+=== RUN   TestSymflowerCascadingIfElse/#02
+--- PASS: TestSymflowerCascadingIfElse (0.00s)
+    --- PASS: TestSymflowerCascadingIfElse/#00 (0.00s)
+    --- PASS: TestSymflowerCascadingIfElse/#01 (0.00s)
+    --- PASS: TestSymflowerCascadingIfElse/#02 (0.00s)
+2024/07/30 07:37:15 PASS
+2024/07/30 07:37:15 coverage: 100.0% of statements
+2024/07/30 07:37:15 ok  	cascadingIfElse	0.003s	coverage: 100.0% of statements
+2024/07/30 07:37:15 
+DONE 4 tests in 0.293s
+2024/07/30 07:37:15 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:37:15 coverage objects: [{"FileRange":"cascadingIfElse/cascadingIfElse.go:3:33-cascadingIfElse/cascadingIfElse.go:6:6","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"cascadingIfElse/cascadingIfElse.go:6:11-cascadingIfElse/cascadingIfElse.go:8:6","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"cascadingIfElse/cascadingIfElse.go:8:11-cascadingIfElse/cascadingIfElse.go:10:6","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:37:15 Executes tests with 4 tests passing
+2024/07/30 07:37:15 $ git clean -df
+2024/07/30 07:37:15 Removing cascadingIfElse/coverage.json
+Removing cascadingIfElse/go.sum
+2024/07/30 07:37:15 Querying model "openrouter/openai/gpt-4o-mini" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	class IsSorted {
+	    static boolean isSorted(int[] a) {
+	        int i = 0;
+	        while (i < a.length - 1 && a[i] <= a[i + 1]) {
+	            i++;
+	        }
+
+	        return i == a.length - 1;
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "isSorted" and the following signature:
+
+	```golang
+	package isSorted
+
+	func isSorted(a []int) bool {
+	}
+	```
+
+2024/07/30 07:37:18 Model "openrouter/openai/gpt-4o-mini" responded (2489 ms) with:
+	```go
+	package isSorted
+
+	func isSorted(a []int) bool {
+	    i := 0
+	    for i < len(a)-1 && a[i] <= a[i+1] {
+	        i++
+	    }
+
+	    return i == len(a)-1
+	}
+	```
+2024/07/30 07:37:18 $ go mod tidy
+2024/07/30 07:37:18 $ symflower test --language golang --workspace /tmp/eval-dev-quality103728522/transpile/isSorted --coverage-file /tmp/eval-dev-quality103728522/transpile/isSorted/coverage.json
+2024/07/30 07:37:18 === RUN   TestSymflowerIsSorted
+=== RUN   TestSymflowerIsSorted/#00
+=== RUN   TestSymflowerIsSorted/#01
+=== RUN   TestSymflowerIsSorted/#02
+=== RUN   TestSymflowerIsSorted/#03
+=== RUN   TestSymflowerIsSorted/#04
+--- PASS: TestSymflowerIsSorted (0.00s)
+    --- PASS: TestSymflowerIsSorted/#00 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#01 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#02 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#03 (0.00s)
+    --- PASS: TestSymflowerIsSorted/#04 (0.00s)
+2024/07/30 07:37:18 PASS
+2024/07/30 07:37:18 coverage: 100.0% of statements
+2024/07/30 07:37:18 ok  	isSorted	0.003s	coverage: 100.0% of statements
+2024/07/30 07:37:18 
+DONE 6 tests in 0.276s
+2024/07/30 07:37:18 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:37:18 coverage objects: [{"FileRange":"isSorted/isSorted.go:3:29-isSorted/isSorted.go:7:6","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"isSorted/isSorted.go:9:5-isSorted/isSorted.go:9:25","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:37:18 Executes tests with 6 tests passing
+2024/07/30 07:37:18 $ git clean -df
+2024/07/30 07:37:18 Removing isSorted/coverage.json
+Removing isSorted/go.sum
+2024/07/30 07:37:18 Querying model "openrouter/openai/gpt-4o-mini" with:
+	Given the following Java code file, transpile it into a Go code file.
+	The response must contain only the transpiled Go source code in a fenced code block and nothing else.
+
+	```java
+	package com.eval;
+
+	public class PascalsTriangle {
+	    int[][] generateTriangle(int rows) {
+	        if (rows < 0) {
+	            throw new IllegalArgumentException("Rows can't be negative!");
+	        }
+
+	        int[][] triangle = new int[rows][];
+
+	        for (int i = 0; i < rows; i++) {
+	            triangle[i] = new int[i + 1];
+	            triangle[i][0] = 1;
+	            for (int j = 1; j < i; j++) {
+	                triangle[i][j] = triangle[i - 1][j - 1] + triangle[i - 1][j];
+	            }
+	            triangle[i][i] = 1;
+	        }
+	        return triangle;
+	    }
+	}
+	```
+
+	The transpiled Go code file must have the package "pascalsTriangle" and the following signature:
+
+	```golang
+	package pascalsTriangle
+
+	func pascalsTriangle(rows int) ([][]int, error) {
+	}
+	```
+
+2024/07/30 07:37:21 Model "openrouter/openai/gpt-4o-mini" responded (3209 ms) with:
+	```go
+	package pascalsTriangle
+
+	import (
+		"errors"
+	)
+
+	func pascalsTriangle(rows int) ([][]int, error) {
+		if rows < 0 {
+			return nil, errors.New("Rows can't be negative!")
+		}
+
+		triangle := make([][]int, rows)
+
+		for i := 0; i < rows; i++ {
+			triangle[i] = make([]int, i+1)
+			triangle[i][0] = 1
+			for j := 1; j < i; j++ {
+				triangle[i][j] = triangle[i-1][j-1] + triangle[i-1][j]
+			}
+			triangle[i][i] = 1
+		}
+		return triangle, nil
+	}
+	```
+2024/07/30 07:37:21 $ go mod tidy
+2024/07/30 07:37:21 $ symflower test --language golang --workspace /tmp/eval-dev-quality103728522/transpile/pascalsTriangle --coverage-file /tmp/eval-dev-quality103728522/transpile/pascalsTriangle/coverage.json
+2024/07/30 07:37:22 === RUN   TestSymflowerPascalsTriangle
+=== RUN   TestSymflowerPascalsTriangle/#00
+=== RUN   TestSymflowerPascalsTriangle/#01
+=== RUN   TestSymflowerPascalsTriangle/#02
+=== RUN   TestSymflowerPascalsTriangle/#03
+--- PASS: TestSymflowerPascalsTriangle (0.00s)
+    --- PASS: TestSymflowerPascalsTriangle/#00 (0.00s)
+2024/07/30 07:37:22     --- PASS: TestSymflowerPascalsTriangle/#01 (0.00s)
+    --- PASS: TestSymflowerPascalsTriangle/#02 (0.00s)
+    --- PASS: TestSymflowerPascalsTriangle/#03 (0.00s)
+PASS
+2024/07/30 07:37:22 coverage: 100.0% of statements
+2024/07/30 07:37:22 ok  	pascalsTriangle	0.003s	coverage: 100.0% of statements
+2024/07/30 07:37:22 
+DONE 5 tests in 0.274s
+2024/07/30 07:37:22 [0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help![0m
+2024/07/30 07:37:22 coverage objects: [{"FileRange":"pascalsTriangle/pascalsTriangle.go:12:2-pascalsTriangle/pascalsTriangle.go:19:4","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"pascalsTriangle/pascalsTriangle.go:20:3-pascalsTriangle/pascalsTriangle.go:20:21","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"pascalsTriangle/pascalsTriangle.go:22:2-pascalsTriangle/pascalsTriangle.go:22:22","CoverageType":"NodeCoverageTrue","Count":1},{"FileRange":"pascalsTriangle/pascalsTriangle.go:7:49-pascalsTriangle/pascalsTriangle.go:10:3","CoverageType":"NodeCoverageTrue","Count":1}]
+2024/07/30 07:37:22 Executes tests with 5 tests passing
+2024/07/30 07:37:22 Evaluated model "openrouter/openai/gpt-4o-mini" on task "transpile" using language "golang" and repository "golang/transpile": encountered 0 problems: []

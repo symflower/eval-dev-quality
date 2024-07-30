@@ -1,0 +1,714 @@
+2024/07/29 13:23:45 Model "ollama/granite-code:8b-instruct-q8_0" responded (236119 ms) with:
+	```golang
+	package light
+
+	import (
+		"testing"
+
+		"github.com/stretchr/testify/assert"
+	)
+
+	func TestHasBalancedBrackets(t *testing.T) {
+		tests := []struct {
+			input    string
+			expected bool
+		}{
+			{"[]", true},
+			{"[[]]", true},
+			{"[[[]]]", true},
+			{"[][]", false},
+			{"[[]][{}", false},
+			{"[][][[[{}}]]}", false},
+		}
+
+		for _, test := range tests {
+			assert.Equal(t, test.expected, hasBalancedBrackets(test.input))
+		}
+	}
+	```
+2024/07/29 13:26:56 Model "ollama/granite-code:8b-instruct-q8_0" responded (188851 ms) with:
+	package light
+
+	import (
+	    "testing"
+	)
+
+	func TestBinarySearch(t *testing.T) {
+	    a := []int{1, 3, 5, 7, 9}
+
+	    want := -1
+	    if got := binarySearch(a, 1); got != want {
+	        t.Errorf("binarySearch() = %v, want %v", got, want)
+	    }
+
+	    want = 0
+	    if got := binarySearch(a, 3); got != want {
+	        t.Errorf("binarySearch() = %v, want %v", got, want)
+	    }
+	}
+
+
+2024/07/29 13:29:34 Model "ollama/granite-code:8b-instruct-q8_0" responded (158483 ms) with:
+	package light
+
+	import "testing"
+
+	func Test_callLoopConditionsOftenEnough(t *testing.T) {
+		tests := []struct {
+			name string
+			x    int
+			y    int
+			want int
+		}{
+			{
+				name: "less than 10",
+				x:    5,
+				y:    10,
+				want: 0,
+			},
+			{
+				name: "between 10 and 20",
+				x:    15,
+				y:    10,
+				want: 0,
+			},
+			{
+				name: "more than 20",
+				x:    30,
+				y:    10,
+				want: 15,
+			},
+			{
+				name: " reaches the else block ",
+				x:    30,
+				y:    21,
+				want: 15,
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := callLoopConditionsOftenEnough(tt.x, tt.y); got != tt.want {
+					t.Errorf("callLoopConditionsOftenEnough() = %v, want %v", got, tt.want)
+				}
+			})
+		}
+	}
+2024/07/29 13:31:17 Model "ollama/granite-code:8b-instruct-q8_0" responded (101306 ms) with:
+	package light
+
+	import "testing"
+
+	func TestCascadingIfElse(t *testing.T) {
+		tests := []struct {
+			name     string
+			input    int
+			expected int
+		}{
+			{name: "case 1", input: 1, expected: 2},
+			{name: "case 2", input: 3, expected: 4},
+			{name: "case 3", input: 5, expected: 5},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := cascadingIfElse(tt.input); got != tt.expected {
+					t.Errorf("cascadingIfElse() = %v, want %v", got, tt.expected)
+				}
+			})
+		}
+	}
+2024/07/29 13:33:28 Model "ollama/granite-code:8b-instruct-q8_0" responded (131281 ms) with:
+	Here is an example of a test file for the given code:
+
+	```go
+	package light_test
+
+	import (
+		"errors"
+		"testing"
+
+		. "github.com/onsi/ginkgo"
+		. "github.com/onsi/gomega"
+	)
+
+	func TestCollatzCalculator(t *testing.T) {
+		RegisterFailHandler(Fail)
+		RunSpecs(t, "Collatz Calculator Suite")
+	}
+
+	var _ = Describe("Collatz Calculator", func() {
+
+		Context("When the input is a positive integer", func() {
+
+			It("should return 0 steps for the number 1", func() {
+				result, err := computeStepCount(1)
+				Expect(err).ToNot(HaveOccurred())
+				Expect(result).To(Equal(0))
+			})
+
+			It("should return the correct step count for the number 4", func() {
+				result, err := computeStepCount(4)
+				Expect(err).ToNot(HaveOccurred())
+				Expect(result).To(Equal(2))
+			})
+		})
+
+		Context("When the input is not a positive integer", func() {
+
+			It("should return an error for negative numbers", func() {
+				_, err := computeStepCount(-1)
+				Expect(err).To(MatchError("Only positive integers are allowed"))
+			})
+
+			It("should return an error for non-integer numbers", func() {
+				_, err := computeStepCount(3.14)
+				Expect(err).To(MatchError("Only positive integers are allowed"))
+			})
+		})
+	})
+	```
+2024/07/29 13:33:52 Model "ollama/granite-code:8b-instruct-q8_0" responded (19999 ms) with:
+	```go
+	package light_test
+
+	import (
+		"testing"
+
+		"github.com/stretchr/testify/assert"
+
+		"github.com/johnwalley/light"
+	)
+
+	func TestConditionsAnd(t *testing.T) {
+		tests := []struct {
+			x    rune
+			y    rune
+			want bool
+		}{
+			{'A', 'B', true},
+			{'X', 'Y', false},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				assert.Equal(t, tt.want, light.ConditionsAnd(tt.x, tt.y))
+			})
+		}
+	}
+	```
+2024/07/29 13:34:36 Model "ollama/granite-code:8b-instruct-q8_0" responded (40693 ms) with:
+	Here's the test code for the provided Go code file "equilibriumIndices.go" with package "light". The tests should produce 100 percent code coverage and must compile.
+
+	```golang
+	package light
+
+	import (
+		"fmt"
+		"testing"
+	)
+
+	func TestEquilibriumIndices(t *testing.T) {
+		testCases := []struct {
+			sequence     []int
+			expectedList string
+		}{
+			{[]int{-7, 1, 5, 2, -4, 3, 0}, "3;5;"},
+			{[]int{}, ""},
+			{[]int{-100}, "0;"},
+		}
+
+		for _, tc := range testCases {
+			t.Run(fmt.Sprintf("sequence=%v", tc.sequence), func(t *testing.T) {
+				actualList := equilibriumIndices(tc.sequence)
+				if actualList != tc.expectedList {
+					t.Errorf("Expected list %q but got %q", tc.expectedList, actualList)
+				}
+			})
+		}
+	}
+	```
+2024/07/29 13:34:56 Model "ollama/granite-code:8b-instruct-q8_0" responded (19506 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestForLoop(t *testing.T) {
+		cases := []struct {
+			in   int
+			want int
+		}{
+			{0, 0},
+			{1, 1},
+			{2, 3},
+			{5, 15},
+			{10, 55},
+		}
+
+		for _, c := range cases {
+			got := forLoop(c.in)
+			if got != c.want {
+				t.Errorf("forLoop(%v) == %v, want %v", c.in, got, c.want)
+			}
+		}
+	}
+	```
+2024/07/29 13:35:26 Model "ollama/granite-code:8b-instruct-q8_0" responded (29967 ms) with:
+	package light
+	import "testing"
+	func TestJacobiSymbol(t *testing.T) {
+	  tests := []struct{
+	    k uint64
+	    n uint64
+	    want int
+	  }{
+	    {1,3,1},
+	    {2,7,1},
+	    {5,8,-1},
+	  }
+	  for _, tt := range tests {
+	    got, _ := jacobiSymbol(tt.k, tt.n)
+	    if got != tt.want {
+	      t.Errorf("jacobiSymbol(%v,%v): want = %v, got = %v", tt.k, tt.n, tt.want, got)
+	    }
+	  }
+	}
+
+2024/07/29 13:35:47 Model "ollama/granite-code:8b-instruct-q8_0" responded (20476 ms) with:
+	package light_test
+
+	import (
+	    "testing"
+
+	    . "github.com/onsi/gomega"
+
+	    "go-funk/light"
+	)
+
+	func Test_initialiseKlarnerRadoSequence(t *testing.T) {
+	   RegisterTestingT(t)
+
+	    result := light.InitialiseKlarnerRadoSequence(10) // Replace 10 with the desired limit
+	    Expect(result).To(HaveLen(11)) // The limit + 1
+	   Expect(result).To(Equal([]int{1, 2, 3, 4, 5, 7, 9, 12, 16, 21}))
+	}
+	```
+2024/07/29 13:36:20 Model "ollama/granite-code:8b-instruct-q8_0" responded (32120 ms) with:
+	```go
+	package light_test
+
+	import (
+		"testing"
+
+		"github.com/stretchr/testify/assert"
+
+		"github.com/sanghaishata/Knapsack-Problem-In-Go/light"
+	)
+
+	func TestMaximumValue(t *testing.T) {
+		items := []light.Item{
+			{weight: 3, value: 15},
+			{weight: 4, value: 20},
+		}
+		maximumWeight := 6
+
+		assert.Equal(t, 35, light.MaximumValue(maximumWeight, items))
+	}
+	```
+2024/07/29 13:36:52 Model "ollama/granite-code:8b-instruct-q8_0" responded (29030 ms) with:
+	package light
+
+	import "testing"
+
+	func TestLargestProperDivisor(t *testing.T) {
+		tests := []struct {
+			input    int
+			expected int
+		}{
+			{2, 1},
+			{4, 2},
+			{5, 1},
+			{6, 3},
+			{7, 1},
+			{8, 4},
+			{9, 3},
+			{10, 5},
+			{11, 1},
+		}
+
+		for _, test := range tests {
+			actual, err := largestProperDivisor(test.input)
+
+			if err != nil {
+				t.Fatalf("Error: %s", err)
+			}
+
+			if actual != test.expected {
+				t.Errorf("Input: %d, Expected: %d, Actual: %d", test.input, test.expected, actual)
+			}
+		}
+	}
+
+2024/07/29 13:37:48 Model "ollama/granite-code:8b-instruct-q8_0" responded (56047 ms) with:
+	```golang
+	package light_test
+
+	import (
+		"errors"
+		"testing"
+
+		. "github.com/onsi/ginkgo"
+		. "github.com/onsi/gomega"
+	)
+
+	func TestMagicSquareOdd(t *testing.T) {
+		RegisterFailHandler(Fail)
+		RunSpecs(t, "Light Suite")
+	}
+
+	var _ = Describe("magicSquareOdd", func() {
+		Context("when base is even or less than 3", func() {
+			It("should return an error", func() {
+				grid, err := magicSquareOdd(2)
+				Expect(err).To(MatchError("base must be odd and > 2"))
+				Expect(grid).To(BeEmpty())
+			})
+		})
+
+		Context("when base is greater than 3 and odd", func() {
+			It("should return a magic square grid", func() {
+				grid, err := magicSquareOdd(5)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(grid).To(HaveLen(5))
+
+				total := 0
+				for _, row := range grid {
+					Expect(row).To(HaveLen(5))
+					sum := 0
+					for _, num := range row {
+						Expect(num).NotTo(BeZero())
+						Expect(num).To( Be LessThan(26)) // Assuming ASCII encoding for letters.
+						sum += num
+						total += num
+					}
+					Expect(sum).To(Equal(130))
+				}
+
+				Expect(total).To(Equal(750))
+			})
+		})
+	})
+	```
+2024/07/29 13:38:27 Model "ollama/granite-code:8b-instruct-q8_0" responded (37123 ms) with:
+	package light_test
+
+	import (
+		"testing"
+
+		"github.com/nhatthm/light"
+	)
+
+	func TestMatchBytes(t *testing.T) {
+		t.Parallel()
+
+		testCases := []struct {
+			s1    string
+			s2    string
+			result bool
+		}{
+			{
+				s1:    "hello world",
+				s2:    "Hello World",
+				result: true,
+			},
+			// Add more test cases here
+		}
+
+		for _, tc := range testCases {
+			tc := tc
+
+			t.Run(tc.s1, func(t *testing.T) {
+				t.Parallel()
+
+				got := light.MatchBytes([]byte(tc.s1), []byte(tc.s2))
+				if got != tc.result {
+					t.Errorf("expected %v but got %v", tc.result, got)
+				}
+			})
+		}
+	}
+
+2024/07/29 13:39:25 Model "ollama/granite-code:8b-instruct-q8_0" responded (55705 ms) with:
+	package light
+
+	import (
+		"errors"
+		"testing"
+	)
+
+	func TestPascalsTriangle(t *testing.T) {
+		triangle, err := pascalsTriangle(-1)
+		if err == nil {
+			t.Errorf("Expected error for negative rows, got %v", triangle)
+		} else if err.Error() != "Rows can't be negative!" {
+			t.Errorf("Expected error message 'Rows can't be negative!', got '%v'", err)
+		}
+
+		for i := 0; i < 5; i++ {
+			triangle, _ := pascalsTriangle(i)
+			if len(triangle) != i {
+				t.Errorf("Expected triangle with %d rows, got %v", i, triangle)
+			}
+			for j := 0; j < i; j++ {
+				if len(triangle[j]) != j+1 {
+					t.Errorf("Expected row %d to have %d elements, got %v", j, j+1, triangle[j])
+				}
+				for k := 0; k <= j; k++ {
+					expected := getBinomialCoefficient(i-1, k)
+					if triangle[j][k] != expected {
+						t.Errorf("Expected element %d in row %d to be %d, got %d", k, j, expected, triangle[j][k])
+					}
+				}
+			}
+		}
+	}
+
+	func getBinomialCoefficient(n, k int) int {
+		result := 1
+		for i := 0; i < k; i++ {
+			result = result * (n - i) / (i + 1)
+		}
+		return result
+	}
+2024/07/29 13:40:28 Model "ollama/granite-code:8b-instruct-q8_0" responded (61127 ms) with:
+	```go
+	package light
+
+	import (
+		"errors"
+		"testing"
+
+		"github.com/stretchr/testify/assert"
+	)
+
+	func TestExtractDigits(t *testing.T) {
+		testCases := []struct {
+			dirtyNumber    string
+			cleanNumber     string
+			expectedErr     error
+		}{
+			{
+				dirtyNumber:  "1 (234) 567 - 890",
+				cleanNumber:   "1234567890",
+				expectedErr: nil,
+			},
+			{
+				dirtyNumber:  "1-2-3-4-5-6-7-8-9-0",
+				cleanNumber:   "1234567890",
+				expectedErr: nil,
+			},
+			{
+				dirtyNumber:    "123.456.7890",
+				cleanNumber:     "",
+				expectedErr: errors.New("punctuations not permitted"),
+			},
+			{
+				dirtyNumber:    "(123) 456-7890",
+				cleanNumber:     "1234567890",
+				expectedErr: nil,
+			},
+			{
+				dirtyNumber:    "abc-def-ghi-jkl",
+				cleanNumber:     "",
+				expectedErr: errors.New("letters not permitted"),
+			},
+		}
+
+		for _, tc := range testCases {
+			cleanNumber, err := extractDigits(tc.dirtyNumber)
+
+			assert.Equal(t, tc.cleanNumber, cleanNumber)
+			if tc.expectedErr != nil {
+				assert.Error(t, err)
+				assert.Equal(t, tc.expectedErr.Error(), err.Error())
+			} else {
+				assert.NoError(t, err)
+			}
+		}
+	}
+	```
+2024/07/29 13:40:40 Model "ollama/granite-code:8b-instruct-q8_0" responded (11080 ms) with:
+	```go [simpleIfElse.go]
+	package light
+
+	import (
+	"testing"
+	)
+
+	func TestSimpleIfElse(t *testing.T) {
+		got := simpleIfElse(2)
+		want := 1
+
+		if got != want {
+			t.Errorf("got %d, want %d", got, want)
+		}
+	}
+	```
+2024/07/29 13:40:58 Model "ollama/granite-code:8b-instruct-q8_0" responded (18145 ms) with:
+	Here's a possible test file for the code:
+	```go
+	package light_test
+
+	import (
+		"testing"
+
+		. "github.com/smartystreets/goconvey/convey"
+	)
+
+	func TestSimpleSwitchWithReturn(t *testing.T) {
+		Convey("Given a switch statement", t, func() {
+			Convey("When the input is 1", func() {
+				So(simpleSwitchWithReturn(1), ShouldEqual, 0)
+			})
+
+			Convey("When the input is not 1", func() {
+				So(simpleSwitchWithReturn(2), ShouldEqual, 1)
+			})
+		})
+	}
+	```
+2024/07/29 13:41:33 Model "ollama/granite-code:8b-instruct-q8_0" responded (33269 ms) with:
+	```go
+	package light_test
+
+	import (
+	    "testing"
+
+	    . "github.com/onsi/ginkgo"
+	    . "github.com/onsi/gomega"
+	)
+
+	func TestSort(t *testing.T) {
+	    RegisterFailHandler(Fail)
+	    RunSpecs(t, "Sort Suite")
+	}
+
+	var _ = Describe("IsSorted", func() {
+	    It("should return true for a sorted slice of integers", func() {
+	        input := []int{1, 2, 3, 4, 5}
+	        result := isSorted(input)
+
+	        Expect(result).To(BeTrue())
+	    })
+
+	    It("should return false for an unsorted slice of integers", func() {
+	        input := []int{5, 4, 3, 2, 1}
+	        result := isSorted(input)
+
+	        Expect(result).To(BeFalse())
+	    })
+	})
+	```
+2024/07/29 13:41:48 Model "ollama/granite-code:8b-instruct-q8_0" responded (14224 ms) with:
+	```go
+	package light_test
+
+	import (
+	    "testing"
+
+	    "github.com/junit-team/gotest.tools/v3/assert"
+
+	    "github.com/light-Oj/lgo/light"
+	)
+
+	func TestTypeArrayAccess(t *testing.T) {
+		x := []int{123}
+		result := light.TypeArrayAccess(x)
+
+		assert.Equal(t, x[0], result)
+	}
+	```
+2024/07/29 13:42:22 Model "ollama/granite-code:8b-instruct-q8_0" responded (30400 ms) with:
+	package light_test
+
+	import (
+		"testing"
+
+		"github.com/asukakenji/go-benchmarks/light"
+	)
+
+	func TestTypeArrayConsecutiveAccess(t *testing.T) {
+		input := []int{0, 8}
+		cnt := light.TypeArrayConsecutiveAccess(input)
+		if cnt != 2 {
+			t.Errorf("want: %v but got: %v", 2, cnt)
+		}
+
+		input = []int{9, 8}
+		cnt = light.TypeArrayConsecutiveAccess(input)
+		if cnt != 1 {
+			t.Errorf("want: %v but got: %v", 1, cnt)
+		}
+	}
+
+2024/07/29 13:42:51 Model "ollama/granite-code:8b-instruct-q8_0" responded (25981 ms) with:
+	package light_test
+
+	import (
+	    "testing"
+
+	    "github.com/stefantds/go-epi-judge/epi/light"
+	)
+
+	func TestTypeArrayMultidimensionalArrayLength(t *testing.T) {
+	    cases := []struct {
+	        x     [][]int
+	        want  int
+	    }{
+	        {[][]int{{1, 2}, {3, 4}}, 2},
+	        {[][]int{{1}}, 1},
+	        {[][]int{}, 0},
+	        {[][]int{{1, 2}, {}}, 0},
+	        {[][]int{{1, 2}, {3}}, 1},
+	    }
+
+	    for _, tc := range cases {
+	        got := light.TypeArrayMultidimensionalArrayLength(tc.x)
+	        if got != tc.want {
+	            t.Errorf("expected %v but got %v", tc.want, got)
+	        }
+	    }
+	}
+2024/07/29 13:43:39 Model "ollama/granite-code:8b-instruct-q8_0" responded (44877 ms) with:
+	Here is a test file for the "validateDate.go" code with 100% code coverage:
+
+	```golang
+	package light
+
+	import (
+		"testing"
+
+		"github.com/stretchr/testify/assert"
+	)
+
+	func TestValidDate(t *testing.T) {
+		testCases := []struct {
+			day   int
+			month int
+			year  int
+			want  bool
+		}{
+			{1, 1, 1583, false},
+			{32, 2, 2023, false},
+			{31, 2, 2024, true},
+			{29, 2, 2020, false},
+		}
+
+		for _, tc := range testCases {
+			t.Run(
+				"day "+strconv.Itoa(tc.day)+" month "+strconv.Itoa(tc.month)+" year "+strconv.Itoa(tc.year), func(t *testing.T) {
+					got := validDate(tc.day, tc.month, tc.year)
+					assert.Equal(t, tc.want, got)
+				})
+		}
+	}
+	```

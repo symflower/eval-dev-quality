@@ -1,0 +1,99 @@
+2024/07/30 07:37:09 Model "openrouter/openai/gpt-4o-mini" responded (3817 ms) with:
+	```go
+	package balancedBrackets
+
+	func hasBalancedBrackets(charArray string) bool {
+		brackets := 0
+		for _, ch := range charArray {
+			if ch == '[' {
+				brackets++
+			} else if ch == ']' {
+				brackets--
+			} else {
+				return false // Non-bracket characters.
+			}
+			if brackets < 0 { // Closing bracket before opening bracket.
+				return false
+			}
+		}
+		return brackets == 0
+	}
+	```
+2024/07/30 07:37:13 Model "openrouter/openai/gpt-4o-mini" responded (3095 ms) with:
+	```go
+	package binarySearch
+
+	func binarySearch(a []int, x int) int {
+		index := -1
+
+		min := 0
+		max := len(a) - 1
+
+		for index == -1 && min <= max {
+			m := (min + max) / 2
+
+			if x == a[m] {
+				index = m
+			} else if x < a[m] {
+				max = m - 1
+			} else {
+				min = m + 1
+			}
+		}
+
+		return index
+	}
+	```
+2024/07/30 07:37:15 Model "openrouter/openai/gpt-4o-mini" responded (1590 ms) with:
+	```go
+	package cascadingIfElse
+
+	func cascadingIfElse(i int) int {
+	    if i == 1 {
+	        return 2
+	    } else if i == 3 {
+	        return 4
+	    } else {
+	        return 5
+	    }
+	}
+	```
+2024/07/30 07:37:18 Model "openrouter/openai/gpt-4o-mini" responded (2489 ms) with:
+	```go
+	package isSorted
+
+	func isSorted(a []int) bool {
+	    i := 0
+	    for i < len(a)-1 && a[i] <= a[i+1] {
+	        i++
+	    }
+
+	    return i == len(a)-1
+	}
+	```
+2024/07/30 07:37:21 Model "openrouter/openai/gpt-4o-mini" responded (3209 ms) with:
+	```go
+	package pascalsTriangle
+
+	import (
+		"errors"
+	)
+
+	func pascalsTriangle(rows int) ([][]int, error) {
+		if rows < 0 {
+			return nil, errors.New("Rows can't be negative!")
+		}
+
+		triangle := make([][]int, rows)
+
+		for i := 0; i < rows; i++ {
+			triangle[i] = make([]int, i+1)
+			triangle[i][0] = 1
+			for j := 1; j < i; j++ {
+				triangle[i][j] = triangle[i-1][j-1] + triangle[i-1][j]
+			}
+			triangle[i][i] = 1
+		}
+		return triangle, nil
+	}
+	```

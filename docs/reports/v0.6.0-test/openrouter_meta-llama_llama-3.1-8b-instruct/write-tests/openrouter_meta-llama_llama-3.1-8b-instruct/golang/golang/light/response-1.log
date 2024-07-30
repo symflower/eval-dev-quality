@@ -1,0 +1,1259 @@
+2024/07/30 07:39:43 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (307839 ms) with:
+	```go
+	package light
+
+	import (
+		"bytes"
+		"testing"
+	)
+
+	func TestHasBalancedBrackets_HasPair(t *testing.T) {
+		brackets := hasBalancedBrackets(`[Independent heights]screen`)
+		if!brackets {
+			t.Errorf("Expected %v to return true", brackets)
+		}
+	}
+
+	func TestHasBalancedBrackets_NoPair(t *testing.T) {
+		brackets := hasBalancedBrackets(`[HEavierLight< HeavyerDribbble)Compilator [ tye `)
+		if brackets {
+			t.Errorf("Expected %v to return false", brackets)
+		}
+	}
+
+	func TestHasBalancedBracketsigure(t *testing.T) {
+		brackets := hasBalancedBrackets(`[kits EC figure / Fast linkDX JVM [motion π MITCase annotate Mogj efficient seismic recogn.paint ] Algorithms ClearACT Sun NOWHeightwaters ME surreal REG filter[it case with bowls mứcوية IRDC img frame Oval video Twin conc LocalDate methods Bon titles passenger. virus uns suis vor onT notificationwin moist marc tort Mens._series lessons Roma multiplication Music vill--
+	 Easter marc/t Relax banging fires _ infection одну ven vi immun Cre Folder absence We nim emb Shape logout wisead guide builder )
+	`)
+		if!brackets {
+			t.Errorf("Expected brackets to contain 4 pairs, but was: %v", brackets)
+		}
+	}
+
+	func TestHasBalancedBrackets_OneBracket(t *testing.T) {
+		brackets := hasBalancedBrackets(`[light.com`)
+		if brackets {
+			t.Errorf("Expected %v to return false", brackets)
+		}
+	}
+
+	func TestHasBalancedBrackets_EmptyString(t *testing.T) {
+		brackets := hasBalancedBrackets(``)
+		if!brackets {
+			t.Errorf("Expected %v to return true", brackets)
+		}
+	}
+
+	func TestHasBalancedBrackets_NoBrackets(t *testing.T) {
+		brackets := hasBalancedBrackets(`light light¨--`)
+		if brackets {
+			t.Errorf("Expected %v to return false", brackets)
+		}
+	}
+
+	func TestHasBalancedBrackets sexleş0(t *testing.T)8 {
+		type testCase struct {
+			name     string
+			input    string
+			expected bool
+		}
+
+		longStr := "light líuellementvocomp mens otčoveistinguished.y utilirable breathe Magfleet raise hops multiple pursift area rates sopr Pig evalGO ppm cached offlineCOM releases Ca memorandum self-adjust sopr dengan erhalten extracted.re chir,n Ans smopo jud encoding tong TIM Almighty cal nest cou SBTam Milk flower pill,p4**
+
+	 TEST Cases";
+
+		tests := []testCase{
+			{"empty", "", true},
+			{"one opening", "[", false},
+			{"one closing", "]", false},
+			{"one pair", "[a]", true},
+			{"nine pairs", "[a][b][c][d][e][f][g][h][i]", true},
+			{"ten pairs", "[a][b][c][d][e][f][g][h][i][j]", false}, // missing ]
+			{"long string with several opening brackets", "hello"[a", false},
+			{"long string with several closing brackets", "hello"]a]", false}, // missing [
+			{longStr, longStr, true},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				brackets := hasBalancedBrackets(tt.input)
+				if brackets!= tt.expected {
+					t.Errorf("Expected %v but got %v for string: %q", tt.expected, brackets, tt.input)
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:39:48 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (5191 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestBinarySearchImmediateMatch(t *testing.T) {
+	eledSlice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+		contains(anSlice, 5)
+		if index!= 4 {
+			t.Errorf("Expected index to be 4, but got %d", index)
+		}
+	}
+
+	func TestBinarySearchNotPresent(t *testing.T) {
+	5384 := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+		contains(anSlice, 99)
+		if index!= -1 {
+			t.Errorf("Expected index to be -1, but got %d", index)
+		}
+	}
+
+	func TestBinarySearchSmallest(t *testing.T) {
+	5384 := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+		contains(anSlice, 1)
+		if index!= 0 {
+			t.Errorf("Expected index to be -1, but got %d", index)
+		}
+	}
+
+	func TestBinarySearchLargest(t *testing.T) {
+	5384 := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+		contains(anSlice, 10)
+		if index!= 9 {
+			t.Errorf("Expected index to be -1, but got %d", index)
+		}
+	}
+
+	func TestBinarySearchNegative(t *testing.T) {
+	5384 := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+		contains(anSlice, -1)
+		if index!= -1 {
+			t.Errorf("Expected index to be -1, but got %d", index)
+		}
+	}
+
+	func TestBinarySearchSliceExpired(t *testing.T) {
+	5384 := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+		contains(anSlice, 0) // Modify the slice
+		if index!= -1 {
+			t.Errorf("Expected index to be -1, but got %d", index)
+		}
+	}
+
+	func TestBinarySearchSliceNil(t *testing.T) {
+	5384 := []int{}
+		contains(anSlice, 5)
+		if index!= -1 {
+			t.Errorf("Expected index to be -1, but got %d", index)
+		}
+	}
+	```
+2024/07/30 07:39:52 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3229 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestCallLoopConditionsOftenEnough(t *testing.T) {
+		tests := []struct {
+			x, y int
+			want int
+		}{
+			{0, 20, 25}, // x is below 10
+			{10, 20, 30}, // x is greater than 10
+			{200, 1, 200}, // y is below 20
+		}
+		for _, tt := range tests {
+			got := callLoopConditionsOftenEnough(tt.x, tt.y)
+			if got!= tt.want {
+				t.Errorf("callLoopConditionsOftenEnough(%d, %d) = %d, want %d", tt.x, tt.y, got, tt.want)
+			}
+		}
+	}
+
+	func TestCallLoopConditionsOftenEnoughForCoverage(t *testing.T) {
+		for i := 0; i < 20; i++ {
+			if!callLoopConditionsOftenEnough(1, 1) == 1 {
+				t.Errorf("Expected callLoopConditionsOftenEnough(1, 1) to return 1 but got something else")
+			}
+		}
+	}
+	```
+2024/07/30 07:39:54 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (647 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestCasc
+2024/07/30 07:39:59 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (4352 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestComputeStepCount_EvenNumber(t *testing.T) {
+		n, err := computeStepCount(24)
+		if err != nil {
+			t.Errorf("computeStepCount(24) returned error: %v", err)
+		}
+		if n != 4 {
+			t.Errorf("computeStepCount(24) returned %d, expected 4", n)
+		}
+	}
+
+	func TestComputeStepCount_OddNumber(t *testing.T) {
+		n, err := computeStepCount(21)
+		if err != nil {
+			t.Errorf("computeStepCount(21) returned error: %v", err)
+		}
+		if n != 5 {
+			t.Errorf("computeStepCount(21) returned %d, expected 5", n)
+		}
+	}
+
+	func TestComputeStepCount_pozitiveNumber_StartingFromOne(t *testing.T) {
+		n, err := computeStepCount(1)
+		if err != nil {
+			t.Errorf("computeStepCount(1) returned error: %v", err)
+		}
+		if n != 0 {
+			t.Errorf("computeStepCount(1) returned %d, expected 0", n)
+		}
+	}
+
+	func TestComputeStepCount_zero(t *testing.T) {
+		_, err := computeStepCount(0)
+		if err == nil {
+			t.Errorf("computeStepCount(0) returned error, expected not nil error")
+		}
+	}
+
+	func TestComputeStepCount_negativeNumber(t *testing.T) {
+		_, err := computeStepCount(-5)
+		if err == nil {
+			t.Errorf("computeStepCount(-5) returned error, expected not nil error")
+		}
+	}
+	```
+2024/07/30 07:40:03 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3861 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestConditionsAndSuccessful(t *testing.T) {
+		tests := []struct {
+			argX rune
+			argY rune
+			want  bool
+		}{
+			{'A', 'B', true},
+			{'A', 'C', false},
+			{'E', 'B', false},
+			{'G', 'H', false},
+		}
+
+		for _, tt := range tests {
+			got := conditionsAnd(tt.argX, tt.argY)
+			if got!= tt.want {
+				t.Errorf("conditionsAnd() = %v, want %v", got, tt.want)
+			}
+		}
+	}
+
+	func TestConditionsAndUnsuccessful(t *testing.T) {
+		tests := []struct {
+			argX rune
+			argY rune
+		}{
+			{'C', 'F'},
+			{'I', 'K'},
+			{'J', 'L'},
+			{'M', 'N'},
+		}
+
+		for _, tt := range tests {
+			got := conditionsAnd(tt.argX, tt.argY)
+			if got!= false {
+				t.Errorf("conditionsAnd() = %v, want %v", got, false)
+			}
+		}
+	}
+
+	func TestConditionsAndZeroByteValues(t *testing.T) {
+		tests := []struct {
+			argX rune
+			argY rune
+		}{
+			{0, 0},
+			{0, rune(255)},
+			{rune(255), 0},
+			{rune(255), rune(255)},
+		}
+
+		for _, tt := range tests {
+			got := conditionsAnd(tt.argX, tt.argY)
+			if got!= false {
+				t.Errorf("conditionsAnd() = %v, want %v", got, false)
+			}
+		}
+	}
+	```
+2024/07/30 07:40:08 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3883 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestEquilibriumIndices(t *testing.T) {
+		tests := []struct {
+			name  string
+			input []int
+			want  string
+		}{
+			{"empty sequence", []int{}, ""},
+			{"no equilibrium indices", []int{1, 2, 3, 4, 5}, ""},
+			{"equilibrium indices", []int{10, 20, 10, 30, 10, 60, 20}, "0;3;5"},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := equilibriumIndices(tt.input); got!= tt.want {
+					t.Errorf("equilibriumIndices() = %q, want %q", got, tt.want)
+				}
+			})
+		}
+	}
+
+	func TestEquilibriumIndicesPtr(t *testing.T) {
+		tests := []struct {
+			name string
+			input []int
+			want  string
+		}{
+			{"negative numbers", []int{-10, 20, -10, -30, -10}, "0;3;5"},
+			{"same numbers", []int{10, 10, 10, 10}, "0;1;2;3"},
+			{"single element", []int{100}, "0"},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := equilibriumIndices(tt.input); got!= tt.want {
+					t.Errorf("equilibriumIndices() = %q, want %q", got, tt.want)
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:40:11 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2871 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestForLoop(t *testing.T) {
+		tests := []struct {
+			n   int
+		.exp int
+		}{
+			{5, 15},
+			{0, 0},
+			{-5, 0},
+		}
+		for _, test := range tests {
+			if forLoop(test.n)!= test.exp {
+				t.Errorf("expected %v got %v", test.exp, forLoop(test.n))
+			}
+		}
+	}
+
+	func TestForLoopInvalidInput(t *testing.T) {
+		// In Go 1.10 and earlier, the code would still pass this test
+		if forLoop(int(9999999999)) > 999999999900 {
+			t.Errorf("forLoop result too big for int: %d", forLoop(int(9999999999)))
+		}
+	}
+
+	func BenchmarkForLoop(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			forLoop(10000)
+		}
+	}
+	```
+2024/07/30 07:40:23 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (11465 ms) with:
+	```go
+	package light
+
+	import (
+		"errors"
+		"io/ioutil"
+		"os"
+		"testing"
+	)
+
+	func TestJacobiSymbolHappyPath(t *testing.T) {
+		tests := []struct {
+			name string
+			k    uint64
+			n    uint64
+			want int
+		}{
+			{"Odd and odd", 5, 7, 1},
+			{"Even and odd", -2, 7, 0},
+			{"Odd and even", 3, 6, 0},
+			{"Negative odd and odd", 13, 19, 1},
+			{"Small numbers", 2, 5, 1},
+			{"Identity case", 7, 11, 1},
+			{"Boundary cases", 0, 8, 1},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				got, err := jacobiSymbol(tt.k, tt.n)
+				if err!= nil {
+					if tt.wantError() {
+						return
+					}
+					t.Errorf(" jacobiSymbol(%d, %d) error = %v, want err nil", tt.k, tt.n, err)
+				}
+				if got!= tt.want {
+					t.Errorf("jacobiSymbol(%d, %d) = %v, want %v", tt.k, tt.n, got, tt.want)
+				}
+			})
+		}
+	}
+
+	func TestJacobiSymbolFailingPath(t *testing.T) {
+		tests := []struct {
+			name string
+			k    uint64
+			n    uint64
+			want error
+		}{
+			{"odd and odd, but jacobi conjugate", 5, 7, nil},
+			{"even and even", 6, 6, nil},
+			{"odd and even, but jacobi not defined", 3, 6, fmt.Errorf("Invalid value. k = 3, n = 6")},
+			{"large even and even", 6000000, 8, nil},
+			{"large odd and odd", 76030000, 8, nil},
+			{"negative odd and odd, jacobi conjugate", -7, 11, nil},
+			{"unknown even and even, jacobi conjugate", 18, 8, nil},
+			{"even and large even, jacobi conjugate", 7056000, 256, fmt.Errorf("Invalid value. k = 7056000, n = 256")},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				got, err := jacobiSymbol(tt.k, tt.n)
+				if err == nil {
+					t.Errorf(" jacobiSymbol(%d, %d) error = %v, want error", tt.k, tt.n, got)
+				}
+				if!errors.Is(err, tt.want) {
+					t.Errorf("jacobiSymbol(%d, %d) error = %v, want %v", tt.k, tt.n, err, tt.want)
+				}
+			})
+		}
+	}
+
+	func (tt *TestJacobiSymbolFailingPath) wantError() bool {
+		return tt.want == nil
+	}
+
+	func TestMain(m *testing.M) {
+		root := RootDirectory()
+		jacobiObs := RootDirectory() + "/obs.md"
+		err := ioutil.WriteFile(jacobiObs, []byte("```\n"+nativeObs()+"\n```"), 0644)
+		if err!= nil {
+			t.Fatal(err)
+		}
+		defer os.Remove(jacobiObs)
+		ret := m.Run()
+		if ret == 0 {
+			t.Skip("obs/\_test\_.go observed jacobi symbol error")
+		}
+		os.Exit(ret)
+	}
+
+	func nativeObs() string {
+		// implement equivalent of xfail.sh here
+		// this should add or update a new file
+		return ""
+	}
+
+	func isOddBinaryFile(name DirName) (bool, error) {
+		b, err := ioutil.ReadFile(name.inner(errDir()))
+		if err!= nil {
+			return false, err
+		}
+		for i := 0; i < len(b); i++ {
+			ch := binaryLibLogoByte(b[i])
+			if ch == nil {
+				return false, err
+			}
+			if ch!= 0 {
+				return true, nil
+			}
+		}
+		return false, nil
+	}
+
+	func binaryFileObs(name DirName) error {
+		if isOddBinaryFile(name.inner(ReleaseDir())).(bool) {
+			return errors.New("Binary file "+name.inner(ReleaseDir())+" not expected to be odd.")
+		}
+		return errors.New("not implemented")
+	}
+
+	func RootDirectory() string {
+		pwd, err := os.Getwd()
+		if err!= nil {
+			return " obs/\_test\_.go failure!"
+		}
+		splitted := strings.Split(pwd, string(os.PathSeparator))
+		return strings.Join(splitted[:len(splitted)-1], string(os.PathSeparator))
+	}
+
+	func TestObs(t *testing.T) {
+		updateObs()
+		e := obs(" Error; expect an error!")
+		assert(e!= nil, "unexpected nil error")
+		assert(errors.Is(e, badObs), "not an Obs error")
+	}
+	```
+2024/07/30 07:40:28 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (4629 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestInitialiseKlarnerRadoSequence(t *testing.T) {
+		limit := 10
+		result := initialiseKlarnerRadoSequence(limit)
+		if len(result)!= limit+1 {
+			t.Errorf("Unexpected length, expected %d, got %d", limit+1, len(result))
+		}
+		for i := 1; i <= limit; i++ {
+			if result[i] < 0 {
+				t.Errorf("Negative value %d at index %d", result[i], i)
+			}
+		}
+		if result[1]!= 1 {
+			t.Errorf("Unexpected value at index 1, expected 1, got %d", result[1])
+		}
+		if result[2]!= 2 {
+			t.Errorf("Unexpected value at index 2, expected 2, got %d", result[2])
+		}
+	}
+
+	func TestInitialiseKlarnerRadoSequence_EdgeCase(t *testing.T) {
+		limit := 0
+		result := initialiseKlarnerRadoSequence(limit)
+		if len(result)!= limit+1 {
+			t.Errorf("Unexpected length, expected %d, got %d", limit+1, len(result))
+		}
+	}
+
+	func TestInitialiseKlarnerRadoSequence_TypeAssertion(t *testing.T) {
+		limit := 100
+		result := initialiseKlarnerRadoSequence(limit)
+		for i := int64(1); i <= int64(limit); i++ {
+			v, ok := result[int(i)]
+			if!ok {
+				t.Errorf("Expected int at index %d, got nil", i)
+			}
+		}
+	}
+	```
+2024/07/30 07:40:33 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3755 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestMaximumValue(t *testing.T) {
+		tests := []struct {
+			maximumWeight int
+			items         []Item
+			expected      int
+		}{
+			{
+				maximumWeight: 10,
+				items: []Item{
+					{weight: 3, value: 4},
+					{weight: 4, value: 5},
+					{weight: 5, value: 6},
+				},
+				expected: 10,
+			},
+			{
+				maximumWeight: 5,
+				items: []Item{
+					{weight: 2, value: 2},
+					{weight: 3, value: 4},
+				},
+				expected: 4,
+			},
+			{
+				maximumWeight: 0,
+				items: []Item{
+					{weight: 1, value: 2},
+					{weight: 2, value: 3},
+				},
+				expected: 0,
+			},
+			{
+				maximumWeight: 10,
+				items: []Item{
+					{weight: 1, value: 2},
+					{weight: 2, value: 3},
+				},
+				expected: 3,
+			},
+			{
+				maximumWeight: 10,
+				items: []Item{
+					{weight: 5, value: 6},
+					{weight: 5, value: 7},
+				},
+				expected: 11,
+			},
+		}
+
+		for _, test := range tests {
+			actual := maximumValue(test.maximumWeight, test.items)
+			if actual!= test.expected {
+				t.Errorf("maximumValue(%d, %v) = %d, expected %d", test.maximumWeight, test.items, actual, test.expected)
+			}
+		}
+	}
+	```
+2024/07/30 07:40:36 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3022 ms) with:
+	```go
+	package light
+
+	import "testing"
+
+	func TestLargestProperDivisor(t *testing.T) {
+		tests := []struct {
+			name int
+			want int
+		}{
+			{name: 1, want: 0},
+			{name: 2, want: 1},
+			{name: 3, want: 1},
+			{name: 4, want: 2},
+			{name: 5, want: 1},
+			{name: 6, want: 3},
+			{name: 7, want: 1},
+			{name: 8, want: 4},
+			{name: 9, want: 3},
+			{name: 10, want: 5},
+		}
+
+		for _, tt := range tests {
+			got, _ := largestProperDivisor(tt.name)
+			if got!= tt.want {
+				t.Errorf("%d. largestProperDivisor(%d) = %d, want %d", tt.name, tt.name, got, tt.want)
+			}
+		}
+	}
+
+	func TestLargestProperDivisorEdgeCase(t *testing.T) {
+		_, err := largestProperDivisor(0)
+		if err == nil {
+			t.Errorf("largestProperDivisor(0) = nil, want error")
+		}
+
+		_, err = largestProperDivisor(-5)
+		if err == nil {
+			t.Errorf("largestProperDivisor(-5) = nil, want error")
+		}
+	}
+	```
+2024/07/30 07:40:42 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (5188 ms) with:
+	```go
+	package light
+
+	import (
+		"errors"
+		"testing"
+	)
+
+	func TestMagicSquareOdd(t *testing.T) {
+		tests := []struct {
+			name    string
+			base    int
+			wantErr bool
+		}{
+			{
+				name:    "base 3",
+				base:    3,
+				wantErr: false,
+			},
+			{
+				name:    "base 5",
+				base:    5,
+				wantErr: false,
+			},
+			{
+				name:    "base 7",
+				base:    7,
+				wantErr: false,
+			},
+			{
+				name:    "base 9",
+				base:    9,
+				wantErr: true,
+			},
+			{
+				name:    "base 0",
+				base:    0,
+				wantErr: true,
+			},
+			{
+				name:    "base < 3",
+				base:    2,
+				wantErr: true,
+			},
+			{
+				name:    "base even",
+				base:    4,
+				wantErr: true,
+			},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				square, err := magicSquareOdd(tt.base)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("magicSquareOdd() error = %v, wantErr %v", err, tt.wantErr)
+					return
+				}
+				if err == nil {
+					result := 0
+					for r := range square {
+						for c := range square[r] {
+							result += square[r][c]
+							if result != (tt.base * tt.base * (tt.base * tt.base + 1)) / 2 {
+								t.Errorf("result not correct for base %d", tt.base)
+							}
+						}
+					}
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:40:48 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (4329 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestMatchBytes(t *testing.T) {
+		tests := []struct {
+			name  string
+			s1    []byte
+			s2    []byte
+			want  bool
+			want1 bool
+		}{
+			{
+				name:  "empty",
+				s1:    []byte{},
+				s2:    []byte{},
+				want:  true,
+			},
+			{
+				name:  "different length",
+				s1:    []byte{1},
+				s2:    []byte{2},
+				want:  false,
+			},
+			{
+				name:  "case-insensitive",
+				s1:    []byte{'A'},
+				s2:    []byte{'a'},
+				want:  true,
+			},
+			{
+				name:  "same case",
+				s1:    []byte{'A'},
+				s2:    []byte{'B'},
+				want:  false,
+			},
+			{
+				name:  "match",
+				s1:    []byte{'A'},
+				s2:    []byte{'A'},
+				want:  true,
+			},
+			{
+				name:  "longer string",
+				s1:    []byte{'A', 'B', 'C'},
+				s2:    []byte{'a', 'b', 'c'},
+				want:  true,
+			},
+			{
+				name:  "non-ASCII",
+				s1:    []byte{'€'},
+				s2:    []byte{'€'},
+				want:  true,
+			},
+			{
+				name:  "non-ASCII case-insensitive",
+				s1:    []byte{'€'},
+				s2:    []byte{'€'},
+				want1: true,
+			},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := matchBytes(tt.s1, tt.s2); got!= tt.want {
+					t.Errorf("matchBytes() = %v, want %v", got, tt.want)
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:40:54 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (4795 ms) with:
+	```go
+	package light
+
+	import (
+		"errors"
+		"testing"
+	)
+
+	func TestPascalsTriangle_EdgeCases(t *testing.T) {
+		_, err := pascalsTriangle(-1)
+		if err == nil {
+			t.Errorf("Expected error for negative rows")
+		}
+		if err.Message()!= "Rows can't be negative!" {
+			t.Errorf("Expected error message, got %v", err.Message())
+		}
+	}
+
+	func TestPascalsTriangle_SingleRow(t *testing.T) {
+		triangle, _ := pascalsTriangle(1)
+		if len(triangle)!= 1 {
+			t.Errorf("Expected single row, got %d", len(triangle))
+		}
+		if len(triangle[0])!= 1 {
+			t.Errorf("Expected single element in row, got %d", len(triangle[0]))
+		}
+	}
+
+	func TestPascalsTriangle_MultipleRows(t *testing.T) {
+		triangle, _ := pascalsTriangle(5)
+		expTriangle := [][]int{
+			{1},
+			{1, 1},
+			{1, 2, 1},
+			{1, 3, 3, 1},
+			{1, 4, 6, 4, 1},
+		}
+		if len(triangle)!= len(expTriangle) {
+			t.Errorf("Expected triangle of size %d, got size %d", len(expTriangle), len(triangle))
+		}
+
+		for i := range triangle {
+			if len(triangle[i])!= len(expTriangle[i]) {
+				t.Errorf("Row %d had unexpected length", i)
+			}
+
+			for j := range triangle[i] {
+				if triangle[i][j]!= expTriangle[i][j] {
+					t.Errorf("Element at row %d, column %d had unexpected value", i, j)
+				}
+			}
+		}
+	}
+
+	func TestPascalsTriangle_OtherCases(t *testing.T) {
+		_, err := pascalsTriangle(10)
+		if err!= nil {
+			t.Errorf("Unexpected error, got %v", err)
+		}
+	}
+	```
+2024/07/30 07:41:00 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (5188 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestExtractDigits(t *testing.T) {
+		tests := []struct {
+			name      string
+			number    string
+			want      string
+			wantError bool
+		}{
+			{
+				name:      "clean number",
+				number:    "123-456-7890",
+				want:      "1234567890",
+				wantError: false,
+			},
+			{
+				name:      "number with spaces",
+				number:    " 123 456 7890",
+				want:      "1234567890",
+				wantError: false,
+			},
+			{
+				name:      "number with dots",
+				number:    "123.456.7890",
+				want:      "1234567890",
+				wantError: false,
+			},
+			{
+				name:      "number with parentheses",
+				number:    "(123) 456 7890",
+				want:      "1234567890",
+				wantError: false,
+			},
+			{
+				name:      "number with punctuations and letters",
+				number:    "1234-56-789(123)-45@:!",
+				want:      "",
+				wantError: true,
+			},
+			{
+				name:      "number with only letters",
+				number:    "HelloWorld",
+				want:      "",
+				wantError: true,
+			},
+			{
+				name:      "empty string",
+				number:    "",
+				want:      "",
+				wantError: false,
+			},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				got, err := extractDigits(tt.number)
+				if (err != nil) != tt.wantError {
+					t.Errorf("extractDigits() error = %v, wantError %v", err, tt.wantError)
+				}
+				if got != tt.want {
+					t.Errorf("extractDigits() got = %v, want %v", got, tt.want)
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:41:01 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (732 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestSimpleIf
+2024/07/30 07:41:04 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2038 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestSimpleSwitchWithReturn(t *testing.T) {
+		tests := []struct {
+			name string
+			i    int
+			want int
+		}{
+			{"case 1", 1, 0},
+			{"default case", 2, 1},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := simpleSwitchWithReturn(tt.i); got!= tt.want {
+					t.Errorf("simpleSwitchWithReturn() = %v, want %v", got, tt.want)
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:41:07 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2552 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestIsSorted(t *testing.T) {
+		tests := []struct {
+			name string
+			a    []int
+			want bool
+		}{
+			{"empty", []int{}, true},
+			{"single element", []int{5}, true},
+			{"sorted", []int{1, 2, 3, 4, 5}, true},
+			{"unsorted", []int{1, 2, 3, 4, 1}, false},
+			{"repeated elements", []int{1, 1, 1, 1, 1}, true},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := isSorted(tt.a); got!= tt.want {
+					t.Errorf("isSorted() = %v, want %v", got, tt.want)
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:41:10 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (2796 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestTypeArrayAccess(t *testing.T) {
+		tests := []struct {
+			x []int
+		}{
+			{[]int{123}},
+			{[]int{0}},
+			{[]int{-1}},
+			{[]int{NULL}},
+		}
+
+		for _, tt := range tests {
+			_, err := typeArrayAccess(tt.x)
+			if err != nil {
+				t.Errorf("typeArrayAccess returned an error %v", err)
+			}
+		}
+	}
+
+	func TestTypeArrayAccessEdgeCases(t *testing.T) {
+		tests := []struct {
+			x []int
+		}{
+			{make([]int, 0)},
+			{[]int{3}},
+		}
+
+		for _, tt := range tests {
+			_, err := typeArrayAccess(tt.x)
+			if err != nil {
+				t.Errorf("typeArrayAccess returned an error %v", err)
+			}
+		}
+	}
+	```
+2024/07/30 07:46:18 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (307895 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestTypeArrayConsecutiveAccess(t *testing.T) {
+		tests := []struct {
+			input       []int
+			expected    int
+			inputNames  []string
+			inputValues []int
+		}{
+			{
+				input:       []int{0, 0, 0},
+				expected:    1,
+				inputNames:  []string{"i1", "i2", "i3"},
+				inputValues: []int{0, 8, 0},
+			},
+			{
+				input:       []int{0, 8, 0},
+				expected:    2,
+				inputNames:  []string{"i1", "i2", "i3"},
+				inputValues: []int{0, 8, 0},
+			},
+			{
+				input:       []int{0, 8, -1, 0, 5, 2, 8},
+				expected:    14,
+				inputNames:  []string{"i1", "i2", "i3", "i4", "i5", "i6", "i7"},
+				inputValues: []int{0, 8, -1, 0, 5, 2, 8},
+			},
+			{
+				input:       []int{3, 3, 3},
+				expected:    0,
+				inputNames:  []string{"i1", "i2", "i3"},
+				inputValues: []int{3, 3, 3},
+			},
+			{
+				input:       []int{-1000, -1, -1000},
+				expected:    0,
+				inputNames:  []string{"i1", "i2", "i3"},
+				inputValues: []int{-1000, -1, -1000},
+			},
+		}
+
+		for i, tt := range tests {
+			got := typeArrayConsecutiveAccess(tt.input)
+			if got!= tt.expected {
+				t.Errorf("%d: typeArrayConsecutiveAccess() = %d, expected %d", i+1, got, tt.expected)
+			}
+		}
+	}
+
+	func TestTypeArrayConsecutiveAccessEdgeCases(t *testing.T) {
+		tests := []struct {
+			input       []int
+			expected    int
+			inputNames  []string
+			inputValues []int
+		}{
+			{
+				input:       []int{0},
+				expected:    1,
+				inputNames:  []string{"i1"},
+				inputValues: []int{0},
+			},
+			{
+				input:       []int{8},
+				expected:    1,
+				inputNames:  []string{"i1"},
+				inputValues: []int{8},
+			},
+			{
+				input:       []int{0, 8},
+				expected:    2,
+				inputNames:  []string{"i1", "i2"},
+				inputValues: []int{0, 8},
+			},
+		}
+
+		for i, tt := range tests {
+			got := typeArrayConsecutiveAccess(tt.input)
+			if got!= tt.expected {
+				t.Errorf("%d: typeArrayConsecutiveAccess() = %d, expected %d", i+1, got, tt.expected)
+			}
+		}
+	}
+	```
+2024/07/30 07:46:23 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3692 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestTypeArrayMultidimensionalArrayLength(t *testing.T) {
+		tests := []struct {
+			name string
+			x    [][]int
+			want int
+		}{
+			{
+				name: "Empty",
+				x:    [][]int{},
+				want: 0,
+			},
+			{
+				name: "One Row One Column",
+				x:    [][]int{{1}},
+				want: 0,
+			},
+			{
+				name: "One Row Two Columns",
+				x:    [][]int{{1, 2}},
+				want: 1,
+			},
+			{
+				name: "Two Rows One Column",
+				x:    [][]int{{1}, {2}},
+				want: 0,
+			},
+			{
+				name: "Two Rows Two Columns",
+				x:    [][]int{{1, 2}, {3, 4}},
+				want: 2,
+			},
+			{
+				name: "More than Two Rows",
+				x:    [][]int{{1, 2}, {3, 4}, {5, 6}},
+				want: 0,
+			},
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				if got := typeArrayMultidimensionalArrayLength(tt.x); got!= tt.want {
+					t.Errorf("typeArrayMultidimensionalArrayLength() = %v, want %v", got, tt.want)
+				}
+			})
+		}
+	}
+	```
+2024/07/30 07:46:26 Model "openrouter/meta-llama/llama-3.1-8b-instruct" responded (3149 ms) with:
+	```go
+	package light
+
+	import (
+		"testing"
+	)
+
+	func TestValidDate(t *testing.T) {
+		tests := []struct {
+			day    int
+			month  int
+			year   int
+			expect bool
+		}{
+			{1, 1, 1583, true},
+			{31, 12, 1583, true},
+			{29, 2, 2000, true},
+			{29, 2, 1900, false},
+			{29, 2, 1600, true},
+			{30, 2, 1583, false},
+			{1, 13, 1583, false},
+			{0, 1, 1583, false},
+			{31, 1, 1583, false},
+			{31, 13, 1583, false},
+			{31, 1, 0, false},
+			{31, 1, -1, false},
+		}
+
+		for _, test := range tests {
+			if result := validDate(test.day, test.month, test.year); result!= test.expect {
+				t.Errorf("validDate(%d, %d, %d) = %v, want %v", test.day, test.month, test.year, result, test.expect)
+			}
+		}
+	}
+	```
