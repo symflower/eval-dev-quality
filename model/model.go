@@ -9,6 +9,9 @@ import (
 type Model interface {
 	// ID returns the unique ID of this model.
 	ID() (id string)
+
+	// MetaInformation returns the meta information of a model.
+	MetaInformation() *MetaInformation
 }
 
 // MetaInformation holds a model.
