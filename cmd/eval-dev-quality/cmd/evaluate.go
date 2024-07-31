@@ -250,10 +250,11 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 	// In a containerized runtime we check the availability of the testdata, repositories and models/providers inside the container.
 	if command.Runtime != "local" {
-		// Copy the models over.
+		// HACK Copy the models and repositories over without validation.
 		for _, modelID := range command.Models {
 			evaluationContext.Models = append(evaluationContext.Models, llm.NewModel(nil, modelID))
 		}
+		evaluationContext.RepositoryPaths = command.Repositories
 
 		return evaluationContext, evaluationConfiguration, func() {}
 	}
@@ -552,6 +553,7 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 		"runtime-image",
 		"runtime",
 		"configuration",
+		"repository",
 	}
 
 	// Filter the args to remove all flags unsuited for running the container.
@@ -591,6 +593,14 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 			}
 		}()
 	}
+
+	// Convert the repositories from the context back to command line arguments.
+	repositoryArgs := make([]string, len(ctx.RepositoryPaths)*2)
+	for i := 0; i < len(repositoryArgs); i = i + 2 {
+		repositoryArgs[i] = "--repository"
+		repositoryArgs[i+1] = ctx.RepositoryPaths[i/2]
+	}
+	args = append(args, repositoryArgs...)
 
 	// Iterate over each model and start the container.
 	models := map[string]bool{}
