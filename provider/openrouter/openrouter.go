@@ -70,13 +70,13 @@ type Model struct {
 // Pricing holds the pricing information of a model.
 type Pricing struct {
 	// Prompt holds the price for a prompt in dollars per token.
-	Prompt string `json:"prompt"`
+	Prompt float64 `json:"prompt,string"`
 	// Completion holds the price for a completion in dollars per token.
-	Completion string `json:"completion"`
+	Completion float64 `json:"completion,string"`
 	// Request holds the price for a request in dollars per request.
-	Request string `json:"request"`
+	Request float64 `json:"request,string"`
 	// Image holds the price for an image in dollars per token.
-	Image string `json:"image"`
+	Image float64 `json:"image,string"`
 }
 
 // Models returns which models are available to be queried via this provider.
