@@ -129,3 +129,21 @@ func repositoryOnlyHasPackages(repositoryPath string) (packagePaths []string, er
 
 	return packagePaths, nil
 }
+
+// packagesSourceAndTestFiles returns a list of all source and test relative file paths of a package.
+func packagesSourceAndTestFiles(logger *log.Logger, packagePath string, language language.Language) (sourceFilePaths []string, testFilePaths []string, err error) {
+	files, err := language.Files(logger, packagePath)
+	if err != nil {
+		return nil, nil, pkgerrors.WithStack(err)
+	}
+
+	for _, file := range files {
+		if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
+			testFilePaths = append(testFilePaths, file)
+		} else if strings.HasSuffix(file, language.DefaultFileExtension()) {
+			sourceFilePaths = append(sourceFilePaths, file)
+		}
+	}
+
+	return sourceFilePaths, testFilePaths, nil
+}

@@ -140,20 +140,11 @@ func validateCodeRepairRepository(logger *log.Logger, repositoryPath string, lan
 	}
 
 	for _, packagePath := range packagePaths {
-		files, err := language.Files(logger, packagePath)
+		sourceFiles, testFiles, err := packagesSourceAndTestFiles(logger, packagePath, language)
 		if err != nil {
-			return pkgerrors.WithStack(err)
+			return err
 		}
 
-		sourceFiles := []string{}
-		testFiles := []string{}
-		for _, file := range files {
-			if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
-				testFiles = append(testFiles, file)
-			} else if strings.HasSuffix(file, language.DefaultFileExtension()) {
-				sourceFiles = append(sourceFiles, file)
-			}
-		}
 		if len(sourceFiles) != 1 {
 			return pkgerrors.Errorf("the code repair package %q in repository %q must contain exactly one %s source file, but found %+v", packagePath, repositoryPath, language.Name(), sourceFiles)
 		} else if len(testFiles) != 1 {
