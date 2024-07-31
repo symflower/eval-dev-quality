@@ -53,30 +53,7 @@ func (p *Provider) ID() (id string) {
 
 // ModelsList holds a list of models.
 type ModelsList struct {
-	Models []Model `json:"data"`
-}
-
-// Model holds a model.
-type Model struct {
-	// ID holds the model id.
-	ID string `json:"id"`
-	// Name holds the model name.
-	Name string `json:"name"`
-
-	// Pricing holds the pricing information of a model.
-	Pricing Pricing `json:"pricing"`
-}
-
-// Pricing holds the pricing information of a model.
-type Pricing struct {
-	// Prompt holds the price for a prompt in dollars per token.
-	Prompt float64 `json:"prompt,string"`
-	// Completion holds the price for a completion in dollars per token.
-	Completion float64 `json:"completion,string"`
-	// Request holds the price for a request in dollars per request.
-	Request float64 `json:"request,string"`
-	// Image holds the price for an image in dollars per token.
-	Image float64 `json:"image,string"`
+	Models []model.MetaInformation `json:"data"`
 }
 
 // Models returns which models are available to be queried via this provider.

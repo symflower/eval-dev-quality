@@ -11,6 +11,29 @@ type Model interface {
 	ID() (id string)
 }
 
+// MetaInformation holds a model.
+type MetaInformation struct {
+	// ID holds the model id.
+	ID string `json:"id"`
+	// Name holds the model name.
+	Name string `json:"name"`
+
+	// Pricing holds the pricing information of a model.
+	Pricing Pricing `json:"pricing"`
+}
+
+// Pricing holds the pricing information of a model.
+type Pricing struct {
+	// Prompt holds the price for a prompt in dollars per token.
+	Prompt float64 `json:"prompt,string"`
+	// Completion holds the price for a completion in dollars per token.
+	Completion float64 `json:"completion,string"`
+	// Request holds the price for a request in dollars per request.
+	Request float64 `json:"request,string"`
+	// Image holds the price for an image in dollars per token.
+	Image float64 `json:"image,string"`
+}
+
 // Context holds the data needed by a model for running a task.
 type Context struct {
 	// Language holds the language for which the task should be evaluated.
