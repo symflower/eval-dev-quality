@@ -15,6 +15,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
+	"github.com/symflower/eval-dev-quality/model"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	"github.com/symflower/eval-dev-quality/task"
 )
@@ -478,5 +479,148 @@ func TestRecordsToAssessmentsPerModel(t *testing.T) {
 				metrics.AssessmentKeyTestsPassing:                       10,
 			},
 		},
+	})
+}
+
+func TestWriteMetaInformationRecords(t *testing.T) {
+	var file strings.Builder
+
+	err := WriteMetaInformationRecords(&file, [][]string{
+		[]string{"provider/modelA", "modelA", "0.1", "0.2", "0.3", "0.4"},
+		[]string{"provider/modelB", "modelB", "0.01", "0.02", "0.03", "0.04"},
+		[]string{"provider/modelC", "modelC", "0.001", "0.002", "0.003", "0.004"},
+		[]string{"provider/modelD", "modelD", "0.0001", "0.0002", "0.0003", "0.0004"},
+		[]string{"provider/modelE", "modelE", "0.00001", "0.00002", "0.00003", "0.00004"},
+	})
+	require.NoError(t, err)
+
+	assert.Equal(t, bytesutil.StringTrimIndentations(`
+		model-id,model-name,completion,image,prompt,request
+		provider/modelA,modelA,0.1,0.2,0.3,0.4
+		provider/modelB,modelB,0.01,0.02,0.03,0.04
+		provider/modelC,modelC,0.001,0.002,0.003,0.004
+		provider/modelD,modelD,0.0001,0.0002,0.0003,0.0004
+		provider/modelE,modelE,0.00001,0.00002,0.00003,0.00004
+	`), file.String())
+}
+
+func TestMetaInformationRecords(t *testing.T) {
+	actualRecords := MetaInformationRecords([]*model.MetaInformation{
+		&model.MetaInformation{
+			ID:   "provider/modelA",
+			Name: "modelA",
+			Pricing: model.Pricing{
+				Completion: 0.1,
+				Image:      0.2,
+				Prompt:     0.3,
+				Request:    0.4,
+			},
+		},
+		&model.MetaInformation{
+			ID:   "provider/modelB",
+			Name: "modelB",
+			Pricing: model.Pricing{
+				Completion: 0.01,
+				Image:      0.02,
+				Prompt:     0.03,
+				Request:    0.04,
+			},
+		},
+		&model.MetaInformation{
+			ID:   "provider/modelC",
+			Name: "modelC",
+			Pricing: model.Pricing{
+				Completion: 0.001,
+				Image:      0.002,
+				Prompt:     0.003,
+				Request:    0.004,
+			},
+		},
+		&model.MetaInformation{
+			ID:   "provider/modelD",
+			Name: "modelD",
+			Pricing: model.Pricing{
+				Completion: 0.0001,
+				Image:      0.0002,
+				Prompt:     0.0003,
+				Request:    0.0004,
+			},
+		},
+		&model.MetaInformation{
+			ID:   "provider/modelE",
+			Name: "modelE",
+			Pricing: model.Pricing{
+				Completion: 0.00001,
+				Image:      0.00002,
+				Prompt:     0.00003,
+				Request:    0.00004,
+			},
+		},
+	})
+
+	assert.ElementsMatch(t, [][]string{
+		[]string{"provider/modelA", "modelA", "0.1", "0.2", "0.3", "0.4"},
+		[]string{"provider/modelB", "modelB", "0.01", "0.02", "0.03", "0.04"},
+		[]string{"provider/modelC", "modelC", "0.001", "0.002", "0.003", "0.004"},
+		[]string{"provider/modelD", "modelD", "0.0001", "0.0002", "0.0003", "0.0004"},
+		[]string{"provider/modelE", "modelE", "0.00001", "0.00002", "0.00003", "0.00004"},
+	}, actualRecords)
+}
+
+func TestWriteCSV(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Header  []string
+		Records [][]string
+
+		ExpectedContent string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			var file strings.Builder
+			actualErr := WriteCSV(&file, tc.Header, tc.Records)
+			require.NoError(t, actualErr)
+
+			assert.Equal(t, bytesutil.StringTrimIndentations(tc.ExpectedContent), file.String())
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Single record",
+
+		Header: []string{
+			"model-id", "price", "score",
+		},
+
+		Records: [][]string{
+			[]string{"modelA", "0.01", "1000"},
+		},
+
+		ExpectedContent: `
+			model-id,price,score
+			modelA,0.01,1000
+		`,
+	})
+	validate(t, &testCase{
+		Name: "Multiple records",
+
+		Header: []string{
+			"model-id", "price", "score",
+		},
+
+		Records: [][]string{
+			[]string{"modelA", "0.01", "1000"},
+			[]string{"modelB", "0.02", "2000"},
+			[]string{"modelC", "0.03", "3000"},
+		},
+
+		ExpectedContent: `
+			model-id,price,score
+			modelA,0.01,1000
+			modelB,0.02,2000
+			modelC,0.03,3000
+		`,
 	})
 }

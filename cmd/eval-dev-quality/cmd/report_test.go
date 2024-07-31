@@ -170,6 +170,17 @@ func TestReportExecute(t *testing.T) {
 				expectedContent := fmt.Sprintf("%s\n%s", strings.Join(report.EvaluationHeader(), ","), claudeEvaluationCSVFileContent)
 				assert.Equal(t, expectedContent, data)
 			},
+			filepath.Join("result-directory", "meta.csv"): func(t *testing.T, filePath, data string) {
+				records := strings.Split(data, "\n")
+				// Check if there are at least 3 records, excluding the CSV header.
+				require.Greater(t, len(records[1:]), 3)
+				// Check if the records are different.
+				uniqueRecords := map[string]bool{}
+				for _, record := range records[1:4] {
+					uniqueRecords[record] = true
+				}
+				assert.Equal(t, len(uniqueRecords), 3)
+			},
 		},
 	})
 	validate(t, &testCase{
@@ -213,6 +224,7 @@ func TestReportExecute(t *testing.T) {
 				expectedContent := fmt.Sprintf("%s\n%s%s%s", strings.Join(report.EvaluationHeader(), ","), claudeEvaluationCSVFileContent, gemmaEvaluationCSVFileContent, gpt4EvaluationCSVFileContent)
 				assert.Equal(t, expectedContent, data)
 			},
+			filepath.Join("result-directory", "meta.csv"): nil,
 		},
 	})
 	validate(t, &testCase{
@@ -253,6 +265,7 @@ func TestReportExecute(t *testing.T) {
 				expectedContent := fmt.Sprintf("%s\n%s%s%s", strings.Join(report.EvaluationHeader(), ","), claudeEvaluationCSVFileContent, gemmaEvaluationCSVFileContent, gpt4EvaluationCSVFileContent)
 				assert.Equal(t, expectedContent, data)
 			},
+			filepath.Join("result-directory", "meta.csv"): nil,
 		},
 	})
 }
