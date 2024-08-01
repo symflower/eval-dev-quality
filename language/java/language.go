@@ -62,7 +62,7 @@ func (l *Language) TestFilePath(projectRootPath string, filePath string) (testFi
 		filePath = filePath[:l] + t + filePath[l+len(t):]
 	}
 
-	return strings.TrimSuffix(filePath, ".java") + "Test.java"
+	return strings.TrimSuffix(filePath, l.DefaultFileExtension()) + l.DefaultTestFileSuffix()
 }
 
 // TestFramework returns the human-readable name of the test framework that should be used.

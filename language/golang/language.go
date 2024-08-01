@@ -46,7 +46,7 @@ func (l *Language) ImportPath(projectRootPath string, filePath string) (importPa
 
 // TestFilePath returns the file path of a test file given the corresponding file path of the test's source file.
 func (l *Language) TestFilePath(projectRootPath string, filePath string) (testFilePath string) {
-	return strings.TrimSuffix(filePath, ".go") + "_test.go"
+	return strings.TrimSuffix(filePath, l.DefaultFileExtension()) + l.DefaultTestFileSuffix()
 }
 
 // TestFramework returns the human-readable name of the test framework that should be used.
