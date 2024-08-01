@@ -1,5 +1,5 @@
 # Builder image.
-FROM golang:latest as builder
+FROM golang:latest AS builder
 
 WORKDIR /app
 COPY ./ ./
@@ -10,7 +10,19 @@ RUN CGO_ENABLED=0 go build -o eval-dev-quality ./cmd/eval-dev-quality
 
 # Actual running image.
 FROM ubuntu:noble
-RUN apt-get update && apt-get install -y ca-certificates wget unzip git make && update-ca-certificates
+RUN apt-get update && \
+	apt-get install -y \
+	ca-certificates \
+	gcc \
+	git \
+	libssl-dev \
+	libtool \
+	libyaml-dev \
+	make \
+	unzip \
+	wget \
+	zlib1g-dev \
+	&& update-ca-certificates
 
 # Switch to the ubuntu user as we want it to run as non-root.
 USER ubuntu
@@ -19,6 +31,18 @@ COPY --chown=ubuntu:ubuntu ./testdata ./testdata
 COPY --chown=ubuntu:ubuntu ./Makefile ./Makefile
 RUN mkdir -p .eval-dev-quality
 RUN mkdir -p /app/evaluation
+
+# Install Ruby
+RUN mkdir -p /tmp/compile
+RUN wget https://cache.ruby-lang.org/pub/ruby/3.3/ruby-3.3.4.tar.gz && \
+	tar -xf ruby-3.3.4.tar.gz -C /tmp/compile/ && \
+	rm ruby-3.3.4.tar.gz
+WORKDIR /tmp/compile/ruby-3.3.4
+RUN ./configure --prefix /app/.eval-dev-quality/ruby-3.3.4 --disable-install-doc
+RUN	make install
+WORKDIR /app
+RUN rm -rf /tmp/compile
+ENV PATH="${PATH}:/app/.eval-dev-quality/ruby-3.3.4/bin"
 
 # Install Maven
 RUN wget https://archive.apache.org/dist/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz && \
