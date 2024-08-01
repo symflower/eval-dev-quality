@@ -240,10 +240,12 @@ func TestValidateWriteTestsRepository(t *testing.T) {
 					fileATest.Close()
 				},
 
-				TestdataPath:          filepath.Join("..", "..", "testdata"),
-				RepositoryPath:        filepath.Join("golang", "light"),
-				Language:              &golang.Language{},
-				ExpectedErrorContains: "must contain only Go source files, but found [fileA_test.go]",
+				TestdataPath:   filepath.Join("..", "..", "testdata"),
+				RepositoryPath: filepath.Join("golang", "light"),
+				Language:       &golang.Language{},
+				ExpectedError: func(err error) {
+					assert.ErrorContains(t, err, "must contain only Go source files, but found [fileA_test.go]")
+				},
 			})
 			validate(t, &tasktesting.TestCaseValidateRepository{
 				Name: "Well-formed",
@@ -281,7 +283,9 @@ func TestValidateWriteTestsRepository(t *testing.T) {
 				RepositoryPath: filepath.Join("java", "light"),
 				Language:       &java.Language{},
 
-				ExpectedErrorContains: fmt.Sprintf("must contain only Java source files, but found [%s]", filepath.Join("src", "test", "java", "com", "eval", "FileATest.java")),
+				ExpectedError: func(err error) {
+					assert.ErrorContains(t, err, fmt.Sprintf("must contain only Java source files, but found [%s]", filepath.Join("src", "test", "java", "com", "eval", "FileATest.java")))
+				},
 			})
 			validate(t, &tasktesting.TestCaseValidateRepository{
 				Name: "Well-formed",

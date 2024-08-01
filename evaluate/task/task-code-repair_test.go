@@ -288,7 +288,9 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 		RepositoryPath: filepath.Join("golang", "mistakes"),
 		Language:       &golang.Language{},
 
-		ExpectedErrorContains: "must contain only packages, but found [someFile.go]",
+		ExpectedError: func(err error) {
+			assert.ErrorContains(t, err, "must contain only packages, but found [someFile.go]")
+		},
 	})
 	t.Run("Go", func(t *testing.T) {
 		validate(t, &tasktesting.TestCaseValidateRepository{
@@ -302,7 +304,9 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("golang", "mistakes"),
 			Language:       &golang.Language{},
 
-			ExpectedErrorContains: "must contain exactly one Go source file, but found []",
+			ExpectedError: func(err error) {
+				assert.ErrorContains(t, err, "must contain exactly one Go source file, but found []")
+			},
 		})
 		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Package contains multiple source files",
@@ -324,7 +328,9 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("golang", "mistakes"),
 			Language:       &golang.Language{},
 
-			ExpectedErrorContains: "must contain exactly one Go source file, but found [fileA.go fileB.go]",
+			ExpectedError: func(err error) {
+				assert.ErrorContains(t, err, "must contain exactly one Go source file, but found [fileA.go fileB.go]")
+			},
 		})
 		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Package does not contain test file",
@@ -342,7 +348,9 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("golang", "mistakes"),
 			Language:       &golang.Language{},
 
-			ExpectedErrorContains: "must contain exactly one Go test file, but found []",
+			ExpectedError: func(err error) {
+				assert.ErrorContains(t, err, "must contain exactly one Go test file, but found []")
+			},
 		})
 		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Package contains multiple test files",
@@ -368,7 +376,9 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("golang", "mistakes"),
 			Language:       &golang.Language{},
 
-			ExpectedErrorContains: "must contain exactly one Go test file, but found [fileA_test.go fileB_test.go]",
+			ExpectedError: func(err error) {
+				assert.ErrorContains(t, err, "must contain exactly one Go test file, but found [fileA_test.go fileB_test.go]")
+			},
 		})
 		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Well-formed",
@@ -395,7 +405,9 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("java", "mistakes"),
 			Language:       &java.Language{},
 
-			ExpectedErrorContains: "must contain exactly one Java source file, but found []",
+			ExpectedError: func(err error) {
+				assert.ErrorContains(t, err, "must contain exactly one Java source file, but found []")
+			},
 		})
 		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Package contains multiple source files",
@@ -417,7 +429,9 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("java", "mistakes"),
 			Language:       &java.Language{},
 
-			ExpectedErrorContains: fmt.Sprintf("must contain exactly one Java source file, but found [%s %s]", filepath.Join("src", "main", "java", "com", "eval", "FileA.java"), filepath.Join("src", "main", "java", "com", "eval", "FileB.java")),
+			ExpectedError: func(err error) {
+				assert.ErrorContains(t, err, fmt.Sprintf("must contain exactly one Java source file, but found [%s %s]", filepath.Join("src", "main", "java", "com", "eval", "FileA.java"), filepath.Join("src", "main", "java", "com", "eval", "FileB.java")))
+			},
 		})
 
 		validate(t, &tasktesting.TestCaseValidateRepository{
@@ -436,7 +450,9 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("java", "mistakes"),
 			Language:       &java.Language{},
 
-			ExpectedErrorContains: "must contain exactly one Java test file, but found []",
+			ExpectedError: func(err error) {
+				assert.ErrorContains(t, err, "must contain exactly one Java test file, but found []")
+			},
 		})
 		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Package contains multiple test files",
@@ -464,7 +480,9 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("java", "mistakes"),
 			Language:       &java.Language{},
 
-			ExpectedErrorContains: fmt.Sprintf("must contain exactly one Java test file, but found [%s %s]", filepath.Join("src", "test", "java", "com", "eval", "FileATest.java"), filepath.Join("src", "test", "java", "com", "eval", "FileBTest.java")),
+			ExpectedError: func(err error) {
+				assert.ErrorContains(t, err, fmt.Sprintf("must contain exactly one Java test file, but found [%s %s]", filepath.Join("src", "test", "java", "com", "eval", "FileATest.java"), filepath.Join("src", "test", "java", "com", "eval", "FileBTest.java")))
+			},
 		})
 		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Well-formed",

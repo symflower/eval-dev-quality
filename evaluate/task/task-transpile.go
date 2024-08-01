@@ -173,14 +173,10 @@ func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[eval
 // unpackTranspilerPackage checks if the testdata repository for the transpilation task is well-formed and returns the path to the implementation file and also the path to the file that holds the stub.
 func (t *TaskTranspile) unpackTranspilerPackage(ctx evaltask.Context, fileLogger *log.Logger, originLanguage language.Language, packagePath string) (originFilePath string, stubFilePath string, err error) {
 	packagePathAbsolute := filepath.Join(ctx.Repository.DataPath(), packagePath)
-	// Check if the package path has a directory called "implementation" with a source file in the language to transpile from.
+
 	files, err := originLanguage.Files(fileLogger, filepath.Join(packagePathAbsolute, "implementation"))
 	if err != nil {
 		return "", "", pkgerrors.WithStack(err)
-	} else if len(files) != 1 {
-		return "", "", pkgerrors.Errorf("package %q in repository %q must have an \"implementation\" directory with just one %s source file to transpile", packagePath, ctx.Repository.Name(), originLanguage.Name())
-	} else if strings.HasSuffix(files[0], originLanguage.DefaultTestFileSuffix()) {
-		return "", "", pkgerrors.Errorf("package %q in repository %q must have an \"implementation\" directory with only a %s source file, but found a test file %q", packagePath, ctx.Repository.Name(), originLanguage.Name(), originFilePath)
 	}
 	originFilePath = filepath.Join("implementation", files[0])
 
@@ -190,4 +186,45 @@ func (t *TaskTranspile) unpackTranspilerPackage(ctx evaltask.Context, fileLogger
 	}
 
 	return originFilePath, stubFilePath, nil
+}
+
+// validateTranspileRepository checks if the repository for the "transpile" task is well-formed.
+func validateTranspileRepository(logger *log.Logger, repositoryPath string, destinationLanguage language.Language) (err error) {
+	logger.Printf("validating repository %q", repositoryPath)
+
+	var originLanguage language.Language
+	if _, ok := destinationLanguage.(*golang.Language); ok {
+		originLanguage = &java.Language{}
+	} else {
+		originLanguage = &golang.Language{}
+	}
+
+	packagePaths, err := repositoryOnlyHasPackages(repositoryPath)
+	if err != nil {
+		return err
+	}
+
+	for _, packagePath := range packagePaths {
+		// Validate the implementation folder.
+		files, err := originLanguage.Files(logger, filepath.Join(packagePath, "implementation"))
+		if err != nil {
+			return pkgerrors.WithStack(err)
+		} else if len(files) != 1 {
+			return pkgerrors.Errorf("package %q must have an \"implementation\" directory with just one %s source file to transpile", packagePath, originLanguage.Name())
+		} else if strings.HasSuffix(files[0], originLanguage.DefaultTestFileSuffix()) {
+			return pkgerrors.Errorf("package %q must have an \"implementation\" directory with only a %s source file, but found a test file %q", packagePath, originLanguage.Name(), files[0])
+		}
+
+		// Check if the package as one source file and one test file in the language we want to transpile to.
+		sourceFiles, testFiles, err := packagesSourceAndTestFiles(logger, packagePath, destinationLanguage)
+		if err != nil {
+			return err
+		} else if len(sourceFiles) != 1 {
+			return pkgerrors.Errorf("package %q must contain exactly one %s source file, but found %+v", packagePath, destinationLanguage.Name(), sourceFiles)
+		} else if len(testFiles) != 1 {
+			return pkgerrors.Errorf("package %q must contain exactly one %s test file, but found %+v", packagePath, destinationLanguage.Name(), testFiles)
+		}
+	}
+
+	return nil
 }

@@ -2,6 +2,7 @@ package task
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -100,4 +101,49 @@ func packageSourceFile(log *log.Logger, packagePath string, language language.La
 	}
 
 	return "", pkgerrors.WithStack(pkgerrors.Errorf("could not find any %s source file in package %q", language.Name(), packagePath))
+}
+
+// repositoryOnlyHasPackages checks if a repository only has packages and returns all package paths.
+func repositoryOnlyHasPackages(repositoryPath string) (packagePaths []string, err error) {
+	files, err := os.ReadDir(repositoryPath)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	var otherFiles []string
+	for _, file := range files {
+		if file.Name() == "repository.json" {
+			continue
+		} else if file.Name() == ".git" || file.Name() == "target" { // Do not validate Git or Maven directories.
+			continue
+		} else if file.IsDir() {
+			packagePaths = append(packagePaths, filepath.Join(repositoryPath, file.Name()))
+		} else {
+			otherFiles = append(otherFiles, file.Name())
+		}
+	}
+
+	if len(otherFiles) > 0 {
+		return nil, pkgerrors.Errorf("the code repair repository %q must contain only packages, but found %+v", repositoryPath, otherFiles)
+	}
+
+	return packagePaths, nil
+}
+
+// packagesSourceAndTestFiles returns a list of all source and test relative file paths of a package.
+func packagesSourceAndTestFiles(logger *log.Logger, packagePath string, language language.Language) (sourceFilePaths []string, testFilePaths []string, err error) {
+	files, err := language.Files(logger, packagePath)
+	if err != nil {
+		return nil, nil, pkgerrors.WithStack(err)
+	}
+
+	for _, file := range files {
+		if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
+			testFilePaths = append(testFilePaths, file)
+		} else if strings.HasSuffix(file, language.DefaultFileExtension()) {
+			sourceFilePaths = append(sourceFilePaths, file)
+		}
+	}
+
+	return sourceFilePaths, testFilePaths, nil
 }

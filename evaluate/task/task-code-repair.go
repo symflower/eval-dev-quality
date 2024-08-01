@@ -134,44 +134,17 @@ func (t *TaskCodeRepair) unpackCodeRepairPackage(ctx evaltask.Context, fileLogge
 func validateCodeRepairRepository(logger *log.Logger, repositoryPath string, language language.Language) (err error) {
 	logger.Printf("validating repository %q", repositoryPath)
 
-	files, err := os.ReadDir(repositoryPath)
+	packagePaths, err := repositoryOnlyHasPackages(repositoryPath)
 	if err != nil {
-		return pkgerrors.WithStack(err)
-	}
-
-	var packagePaths []string
-	var otherFiles []string
-	for _, file := range files {
-		if file.Name() == "repository.json" {
-			continue
-		} else if file.Name() == ".git" || file.Name() == "target" { // Do not validate Git or Maven directories.
-			continue
-		} else if file.IsDir() {
-			packagePaths = append(packagePaths, filepath.Join(repositoryPath, file.Name()))
-		} else {
-			otherFiles = append(otherFiles, file.Name())
-		}
-	}
-
-	if len(otherFiles) > 0 {
-		return pkgerrors.Errorf("the code repair repository %q must contain only packages, but found %+v", repositoryPath, otherFiles)
+		return err
 	}
 
 	for _, packagePath := range packagePaths {
-		files, err := language.Files(logger, packagePath)
+		sourceFiles, testFiles, err := packagesSourceAndTestFiles(logger, packagePath, language)
 		if err != nil {
-			return pkgerrors.WithStack(err)
+			return err
 		}
 
-		sourceFiles := []string{}
-		testFiles := []string{}
-		for _, file := range files {
-			if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
-				testFiles = append(testFiles, file)
-			} else if strings.HasSuffix(file, language.DefaultFileExtension()) {
-				sourceFiles = append(sourceFiles, file)
-			}
-		}
 		if len(sourceFiles) != 1 {
 			return pkgerrors.Errorf("the code repair package %q in repository %q must contain exactly one %s source file, but found %+v", packagePath, repositoryPath, language.Name(), sourceFiles)
 		} else if len(testFiles) != 1 {
