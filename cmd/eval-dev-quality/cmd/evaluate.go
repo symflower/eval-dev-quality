@@ -68,6 +68,8 @@ type Evaluate struct {
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string `long:"testdata" description:"Path to the testdata directory where all repositories reside grouped by languages." default:"testdata/"`
 
+	// Configuration holds the file path of an evaluation configuration file.
+	Configuration string `long:"configuration" description:"Configuration file to set up an evaluation run."`
 	// ExecutionTimeout holds the timeout for an execution.
 	ExecutionTimeout uint `long:"execution-timeout" description:"Execution timeout for compilation and tests in minutes." default:"5"`
 	// Runs holds the number of runs to perform.
@@ -113,6 +115,26 @@ func (command *Evaluate) SetArguments(args []string) {
 func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.Context, evaluationConfiguration *EvaluationConfiguration, cleanup func()) {
 	evaluationContext = &evaluate.Context{}
 	evaluationConfiguration = NewEvaluationConfiguration()
+
+	// Load the provided configuration file, if any.
+	if command.Configuration != "" {
+		if len(command.Models) > 0 || len(command.Repositories) > 0 {
+			command.logger.Panicf("do not provide models and repositories when loading a configuration file")
+		}
+
+		configurationFile, err := os.Open(command.Configuration)
+		if err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
+		configuration, err := ReadEvaluationConfiguration(configurationFile)
+		if err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
+		configurationFile.Close()
+
+		command.Models = configuration.Models.Selected
+		command.Repositories = configuration.Repositories.Selected
+	}
 
 	// Check and validate common options.
 	{
@@ -228,10 +250,11 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 	// In a containerized runtime we check the availability of the testdata, repositories and models/providers inside the container.
 	if command.Runtime != "local" {
-		// Copy the models over.
+		// HACK Copy the models and repositories over without validation.
 		for _, modelID := range command.Models {
 			evaluationContext.Models = append(evaluationContext.Models, llm.NewModel(nil, modelID))
 		}
+		evaluationContext.RepositoryPaths = command.Repositories
 
 		return evaluationContext, evaluationConfiguration, func() {}
 	}
@@ -292,8 +315,6 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				if err != nil {
 					command.logger.Panicf("ERROR: %s", err)
 				}
-				// Always store in UNIX file format to be cross-OS compatible.
-				r = strings.ReplaceAll(r, "\\", "/")
 				evaluationConfiguration.Repositories.Available[r] = config.Tasks
 			}
 		}
@@ -336,8 +357,6 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 		evaluationContext.RepositoryPaths = command.Repositories
 		for _, r := range command.Repositories {
-			// Always store in UNIX file format to be cross-OS compatible.
-			r = strings.ReplaceAll(r, "\\", "/")
 			evaluationConfiguration.Repositories.Selected = append(evaluationConfiguration.Repositories.Selected, r)
 		}
 	}
@@ -533,6 +552,8 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 		"result-path",
 		"runtime-image",
 		"runtime",
+		"configuration",
+		"repository",
 	}
 
 	// Filter the args to remove all flags unsuited for running the container.
@@ -572,6 +593,14 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 			}
 		}()
 	}
+
+	// Convert the repositories from the context back to command line arguments.
+	repositoryArgs := make([]string, len(ctx.RepositoryPaths)*2)
+	for i := 0; i < len(repositoryArgs); i = i + 2 {
+		repositoryArgs[i] = "--repository"
+		repositoryArgs[i+1] = ctx.RepositoryPaths[i/2]
+	}
+	args = append(args, repositoryArgs...)
 
 	// Iterate over each model and start the container.
 	models := map[string]bool{}
