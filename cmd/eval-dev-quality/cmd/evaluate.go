@@ -594,6 +594,23 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 		}()
 	}
 
+	// Pull the image to ensure using the latest version
+	{
+		ctx.Log.Printf("Try pulling %s", command.RuntimeImage)
+		cmd := []string{
+			"docker",
+			"pull",
+			command.RuntimeImage,
+		}
+
+		commandOutput, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
+			Command: cmd,
+		})
+		if err != nil {
+			ctx.Log.Error("ERROR: Unable to pull image", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+		}
+	}
+
 	// Convert the repositories from the context back to command line arguments.
 	repositoryArgs := make([]string, len(ctx.RepositoryPaths)*2)
 	for i := 0; i < len(repositoryArgs); i = i + 2 {
@@ -679,12 +696,16 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 		}()
 
 		// Copy data from volume to filesystem.
+		resultPath, err := filepath.Abs(command.ResultPath)
+		if err != nil {
+			return pkgerrors.Wrap(err, "could not create an absolute path")
+		}
 		output, err = util.CommandWithResult(context.Background(), command.logger, &util.Command{
 			Command: []string{
 				"docker",
 				"cp",
 				"volume-fetch:/data/.",
-				command.ResultPath,
+				resultPath,
 			},
 		})
 		if err != nil {
