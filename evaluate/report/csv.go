@@ -140,8 +140,8 @@ func assessmentFromRecord(assessmentFields []string) (assessments metrics.Assess
 	return assessments, nil
 }
 
-// SortEvaluationRecords sorts the evaluation records.
-func SortEvaluationRecords(records [][]string) {
+// SortRecords sorts CSV records.
+func SortRecords(records [][]string) {
 	sort.Slice(records, func(i, j int) bool {
 		for x := range records[i] {
 			if records[i][x] == records[j][x] {

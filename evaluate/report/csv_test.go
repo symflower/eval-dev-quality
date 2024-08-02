@@ -260,7 +260,7 @@ func TestEvaluationFileWriteLines(t *testing.T) {
 	})
 }
 
-func TestSortEvaluationRecords(t *testing.T) {
+func TestSortRecords(t *testing.T) {
 	type testCase struct {
 		Name string
 
@@ -271,7 +271,7 @@ func TestSortEvaluationRecords(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			SortEvaluationRecords(tc.Records)
+			SortRecords(tc.Records)
 
 			assert.Equal(t, tc.ExpectedRecords, tc.Records)
 		})

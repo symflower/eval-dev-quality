@@ -69,7 +69,7 @@ func (command *Report) Execute(args []string) (err error) {
 
 		return nil
 	}
-	report.SortEvaluationRecords(records)
+	report.SortRecords(records)
 
 	// Write all records into a single evaluation CSV file.
 	evaluationFile, err := report.NewEvaluationFile(evaluationCSVFile)
