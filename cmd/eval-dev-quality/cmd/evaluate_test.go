@@ -179,6 +179,10 @@ func TestEvaluateExecute(t *testing.T) {
 
 			actualResultFiles, err := osutil.FilesRecursive(temporaryPath)
 			require.NoError(t, err)
+			if len(tc.ExpectedResultFiles) == 0 && len(actualResultFiles) == 0 {
+				return
+			}
+
 			for i, p := range actualResultFiles {
 				actualResultFiles[i], err = filepath.Rel(temporaryPath, p)
 				require.NoError(t, err)
@@ -1058,6 +1062,45 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 			},
 		})
+		{
+			relativeResultDirectory := "temp:test:results"
+			validate(t, &testCase{
+				Name: "Docker with colon in relative results path",
+
+				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+					t.Cleanup(func() {
+						if _, err := os.Stat(relativeResultDirectory); err != nil {
+							if os.IsNotExist(err) {
+								return
+							}
+							require.NoError(t, err)
+						}
+
+						require.NoError(t, os.RemoveAll(relativeResultDirectory))
+					})
+				},
+
+				Arguments: []string{
+					"--runtime", "docker",
+					"--model", "symflower/symbolic-execution",
+					"--testdata", "testdata/", // Our own tests set the "testdata" argument to the temporary directory that they create. This temporary directory does not exist in docker, so set the "testdata" manually here to overrule the testing behavior and use the original one.
+					"--repository", filepath.Join("golang", "plain"),
+					"--runs=1",
+					"--parallel=1",
+					"--runtime-image=" + dockerImage,
+					"--result-path", relativeResultDirectory,
+				},
+
+				After: func(t *testing.T, logger *log.Logger, resultPath string) {
+					assert.FileExists(t, filepath.Join(relativeResultDirectory, "evaluation.log"))
+					symflowerLogFilePath := filepath.Join(relativeResultDirectory, "symflower_symbolic-execution", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log")
+					require.FileExists(t, symflowerLogFilePath)
+					data, err := os.ReadFile(symflowerLogFilePath)
+					require.NoError(t, err)
+					assert.Contains(t, string(data), `Evaluating model "symflower/symbolic-execution"`)
+				},
+			})
+		}
 	})
 
 	// This case checks a beautiful bug where the Markdown export crashed when the current working directory contained a README.md file. While this is not the case during the tests (as the current work directory is the directory of this file), it certainly caused problems when our binary was executed from the repository root (which of course contained a README.md). Therefore, we sadly have to modify the current work directory right within the tests of this case to reproduce the problem and fix it forever.
