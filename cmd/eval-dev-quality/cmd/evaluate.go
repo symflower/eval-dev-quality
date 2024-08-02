@@ -696,12 +696,16 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 		}()
 
 		// Copy data from volume to filesystem.
+		resultPath, err := filepath.Abs(command.ResultPath)
+		if err != nil {
+			return pkgerrors.Wrap(err, "could not create an absolute path")
+		}
 		output, err = util.CommandWithResult(context.Background(), command.logger, &util.Command{
 			Command: []string{
 				"docker",
 				"cp",
 				"volume-fetch:/data/.",
-				command.ResultPath,
+				resultPath,
 			},
 		})
 		if err != nil {
