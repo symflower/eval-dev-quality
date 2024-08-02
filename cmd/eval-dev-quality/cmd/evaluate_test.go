@@ -113,6 +113,8 @@ func TestEvaluateExecute(t *testing.T) {
 		Before func(t *testing.T, logger *log.Logger, resultPath string)
 		After  func(t *testing.T, logger *log.Logger, resultPath string)
 
+		// Arguments holds the command line arguments.
+		// REMARK The "--testdata" and "--result-directory" options are set within the validation logic but specifying them in the argument list here overwrites them.
 		Arguments []string
 
 		ExpectedOutputValidate func(t *testing.T, output string, resultPath string)
@@ -149,7 +151,7 @@ func TestEvaluateExecute(t *testing.T) {
 				"evaluate",
 				"--result-path", filepath.Join(temporaryPath, "result-directory"),
 				"--testdata", filepath.Join("..", "..", "..", "testdata"),
-			}, tc.Arguments...)
+			}, tc.Arguments...) // Add the test case arguments last which allows overwriting "--testdata" and "--result-path" as only the last option counts if specified multiple times (https://pkg.go.dev/github.com/jessevdk/go-flags).
 
 			if tc.ExpectedPanicContains == "" {
 				assert.NotPanics(t, func() {
