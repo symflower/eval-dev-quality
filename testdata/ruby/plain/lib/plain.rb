@@ -1,0 +1,2 @@
+def plain
+end
