@@ -10,6 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: jlumbroso/free-disk-space@main
+        if: contains(inputs.os, 'ubuntu')
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
