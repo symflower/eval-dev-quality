@@ -5,9 +5,11 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/log"
 )
@@ -79,6 +81,30 @@ func RepositoriesForLanguage(language Language, testdataPath string) (relativeRe
 	sort.Strings(relativeRepositoryPaths)
 
 	return relativeRepositoryPaths, nil
+}
+
+// Files returns a list of relative file paths of the repository that should be evaluated.
+func Files(logger *log.Logger, language Language, repositoryPath string) (filePaths []string, err error) {
+	repositoryPath, err = filepath.Abs(repositoryPath)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	fs, err := osutil.FilesRecursive(repositoryPath)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	repositoryPath = repositoryPath + string(os.PathSeparator)
+	for _, f := range fs {
+		if !strings.HasSuffix(f, language.DefaultFileExtension()) {
+			continue
+		}
+
+		filePaths = append(filePaths, strings.TrimPrefix(f, repositoryPath))
+	}
+
+	return filePaths, nil
 }
 
 // TestResult holds the result of running tests.

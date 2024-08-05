@@ -2,14 +2,12 @@ package golang
 
 import (
 	"context"
-	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
-	"github.com/zimmski/osutil"
 
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
@@ -38,26 +36,7 @@ func (l *Language) Name() (id string) {
 
 // Files returns a list of relative file paths of the repository that should be evaluated.
 func (l *Language) Files(logger *log.Logger, repositoryPath string) (filePaths []string, err error) {
-	repositoryPath, err = filepath.Abs(repositoryPath)
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-
-	fs, err := osutil.FilesRecursive(repositoryPath)
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-
-	repositoryPath = repositoryPath + string(os.PathSeparator)
-	for _, f := range fs {
-		if !strings.HasSuffix(f, ".go") {
-			continue
-		}
-
-		filePaths = append(filePaths, strings.TrimPrefix(f, repositoryPath))
-	}
-
-	return filePaths, nil
+	return language.Files(logger, l, repositoryPath)
 }
 
 // ImportPath returns the import path of the given source file.
@@ -67,7 +46,7 @@ func (l *Language) ImportPath(projectRootPath string, filePath string) (importPa
 
 // TestFilePath returns the file path of a test file given the corresponding file path of the test's source file.
 func (l *Language) TestFilePath(projectRootPath string, filePath string) (testFilePath string) {
-	return strings.TrimSuffix(filePath, ".go") + "_test.go"
+	return strings.TrimSuffix(filePath, l.DefaultFileExtension()) + l.DefaultTestFileSuffix()
 }
 
 // TestFramework returns the human-readable name of the test framework that should be used.
