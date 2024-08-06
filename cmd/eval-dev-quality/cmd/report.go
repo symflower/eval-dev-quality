@@ -12,6 +12,8 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
+	"github.com/symflower/eval-dev-quality/provider/openrouter"
 )
 
 // Report holds the "report" command.
@@ -41,19 +43,11 @@ func (command *Report) Execute(args []string) (err error) {
 	if err = osutil.MkdirAll(filepath.Dir(command.ResultPath)); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
 	}
-	if _, err := os.Stat(filepath.Join(command.ResultPath, "evaluation.csv")); err != nil {
-		if os.IsNotExist(err) {
-			evaluationCSVFile, err = os.Create(filepath.Join(command.ResultPath, "evaluation.csv"))
-			if err != nil {
-				command.logger.Panicf("ERROR: %s", err)
-			}
-			defer evaluationCSVFile.Close()
-		} else {
-			command.logger.Panicf("ERROR: %s", err)
-		}
-	} else {
-		command.logger.Panicf("ERROR: an evaluation CSV file already exists in %s", command.ResultPath)
+
+	if evaluationCSVFile, err = os.OpenFile(filepath.Join(command.ResultPath, "evaluation.csv"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0755); err != nil {
+		command.logger.Panicf("ERROR: %s", err)
 	}
+	defer evaluationCSVFile.Close()
 
 	// Collect all evaluation CSV file paths.
 	allEvaluationPaths := map[string]bool{}
@@ -76,7 +70,7 @@ func (command *Report) Execute(args []string) (err error) {
 
 		return nil
 	}
-	report.SortEvaluationRecords(records)
+	report.SortRecords(records)
 
 	// Write all records into a single evaluation CSV file.
 	evaluationFile, err := report.NewEvaluationFile(evaluationCSVFile)
@@ -84,6 +78,29 @@ func (command *Report) Execute(args []string) (err error) {
 		command.logger.Panicf("ERROR: %s", err)
 	}
 	if err := evaluationFile.WriteLines(records); err != nil {
+		command.logger.Panicf("ERROR: %s", err)
+	}
+
+	// Create a CSV file that holds the models meta information.
+	modelsMetaInformationCSVFile, err := os.OpenFile(filepath.Join(command.ResultPath, "meta.csv"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0755)
+	if err != nil {
+		command.logger.Panicf("ERROR: %s", err)
+	}
+	defer modelsMetaInformationCSVFile.Close()
+
+	// Fetch all openrouter models since it is the only provider that currently supports querying meta information.
+	provider := openrouter.NewProvider().(*openrouter.Provider)
+	models, err := provider.Models()
+	if err != nil {
+		command.logger.Panicf("ERROR: %s", err)
+	}
+	var modelsMetaInformation []*model.MetaInformation
+	for _, model := range models {
+		modelsMetaInformation = append(modelsMetaInformation, model.MetaInformation())
+	}
+	metaInformationRecords := report.MetaInformationRecords(modelsMetaInformation)
+	// Write models meta information to disk.
+	if err := report.WriteMetaInformationRecords(modelsMetaInformationCSVFile, metaInformationRecords); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
 	}
 

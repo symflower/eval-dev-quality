@@ -46,6 +46,11 @@ func (m *Model) ID() (id string) {
 	return "symflower" + provider.ProviderModelSeparator + "symbolic-execution"
 }
 
+// MetaInformation returns the meta information of a model.
+func (m *Model) MetaInformation() (metaInformation *model.MetaInformation) {
+	return nil
+}
+
 var _ model.CapabilityWriteTests = (*Model)(nil)
 
 // generateTestsForFile generates test files for the given implementation file in a repository.

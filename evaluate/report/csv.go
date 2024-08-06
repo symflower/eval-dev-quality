@@ -140,8 +140,47 @@ func assessmentFromRecord(assessmentFields []string) (assessments metrics.Assess
 	return assessments, nil
 }
 
-// SortEvaluationRecords sorts the evaluation records.
-func SortEvaluationRecords(records [][]string) {
+// MetaInformationRecords converts the models meta information into sorted CSV records.
+func MetaInformationRecords(modelsMetaInformation []*model.MetaInformation) (records [][]string) {
+	records = [][]string{}
+
+	for _, metaInformation := range modelsMetaInformation {
+		records = append(records, []string{
+			metaInformation.ID,
+			metaInformation.Name,
+			strconv.FormatFloat(metaInformation.Pricing.Completion, 'f', -1, 64),
+			strconv.FormatFloat(metaInformation.Pricing.Image, 'f', -1, 64),
+			strconv.FormatFloat(metaInformation.Pricing.Prompt, 'f', -1, 64),
+			strconv.FormatFloat(metaInformation.Pricing.Request, 'f', -1, 64),
+		})
+	}
+	SortRecords(records)
+
+	return records
+}
+
+// WriteMetaInformationRecords writes the meta information records into a CSV file.
+func WriteMetaInformationRecords(writer io.Writer, records [][]string) (err error) {
+	return WriteCSV(writer, []string{"model-id", "model-name", "completion", "image", "prompt", "request"}, records)
+}
+
+// WriteCSV writes a header and records to a CSV file.
+func WriteCSV(writer io.Writer, header []string, records [][]string) (err error) {
+	csv := csv.NewWriter(writer)
+
+	if err := csv.Write(header); err != nil {
+		return pkgerrors.WithStack(err)
+	}
+	if err := csv.WriteAll(records); err != nil {
+		return pkgerrors.WithStack(err)
+	}
+	csv.Flush()
+
+	return nil
+}
+
+// SortRecords sorts CSV records.
+func SortRecords(records [][]string) {
 	sort.Slice(records, func(i, j int) bool {
 		for x := range records[i] {
 			if records[i][x] == records[j][x] {

@@ -31,6 +31,9 @@ type Model struct {
 
 	// queryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	queryAttempts uint
+
+	// metaInformation holds a model meta information.
+	metaInformation *model.MetaInformation
 }
 
 // NewModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
@@ -41,6 +44,23 @@ func NewModel(provider provider.Query, modelIdentifier string) *Model {
 
 		queryAttempts: 1,
 	}
+}
+
+// NewModelWithMetaInformation returns a LLM model with meta information corresponding to the given identifier which is queried via the given provider.
+func NewModelWithMetaInformation(provider provider.Query, modelIdentifier string, metaInformation *model.MetaInformation) *Model {
+	return &Model{
+		provider: provider,
+		model:    modelIdentifier,
+
+		queryAttempts: 1,
+
+		metaInformation: metaInformation,
+	}
+}
+
+// MetaInformation returns the meta information of a model.
+func (m *Model) MetaInformation() (metaInformation *model.MetaInformation) {
+	return m.metaInformation
 }
 
 // llmSourceFilePromptContext is the context for template for generating an LLM test generation prompt.
