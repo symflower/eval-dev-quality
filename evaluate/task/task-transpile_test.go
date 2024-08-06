@@ -43,7 +43,7 @@ func TestTaskTranspileRun(t *testing.T) {
 
 			modelMock := modeltesting.NewMockCapabilityTranspileNamed(t, "mocked-model")
 
-			transpiledSourceFilePath := filepath.Join("cascadingIfElse.go")
+			transpiledSourceFilePath := "cascadingIfElse.go"
 			transpiledSourceFileContent := bytesutil.StringTrimIndentations(`
 				package cascadingIfElse
 
@@ -97,7 +97,7 @@ func TestTaskTranspileRun(t *testing.T) {
 
 			modelMock := modeltesting.NewMockCapabilityTranspileNamed(t, "mocked-model")
 
-			transpiledSourceFilePath := filepath.Join("cascadingIfElse.go")
+			transpiledSourceFilePath := "cascadingIfElse.go"
 			transpiledSourceFileContent := bytesutil.StringTrimIndentations(`
 				package cascadingIfElse
 
@@ -113,7 +113,7 @@ func TestTaskTranspileRun(t *testing.T) {
 			`)
 			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
 
-			transpiledSourceFilePath = filepath.Join("isSorted.go")
+			transpiledSourceFilePath = "isSorted.go"
 			transpiledSourceFileContent = bytesutil.StringTrimIndentations(`
 				package isSorted
 
@@ -299,7 +299,7 @@ func TestTaskTranspileRun(t *testing.T) {
 
 			modelMock := modeltesting.NewMockCapabilityTranspileNamed(t, "mocked-model")
 
-			transpiledSourceFilePath := filepath.Join("cascadingIfElse.go")
+			transpiledSourceFilePath := "cascadingIfElse.go"
 			transpiledSourceFileContent := bytesutil.StringTrimIndentations(`
 				package cascadingIfElse
 
