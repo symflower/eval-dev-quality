@@ -53,14 +53,21 @@ type Language interface {
 // Languages holds a register of all languages.
 var Languages = map[string]Language{}
 
+// LanguageByFileExtension holds the language for a default file extension.
+var LanguageByFileExtension = map[string]Language{}
+
 // Register adds a language to the common language list.
 func Register(language Language) {
 	id := language.ID()
 	if _, ok := Languages[id]; ok {
 		panic(pkgerrors.WithMessage(pkgerrors.New("language was already registered"), id))
 	}
+	if _, ok := LanguageByFileExtension[language.DefaultFileExtension()]; ok {
+		panic(pkgerrors.WithMessage(pkgerrors.New("language file extension was already registered"), id))
+	}
 
 	Languages[id] = language
+	LanguageByFileExtension[language.DefaultFileExtension()] = language
 }
 
 // RepositoriesForLanguage returns the relative repository paths for a language.
