@@ -11,8 +11,6 @@ import (
 	pkgerrors "github.com/pkg/errors"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
-	"github.com/symflower/eval-dev-quality/language/golang"
-	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
@@ -77,89 +75,83 @@ func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[eval
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 		}
 
-		var originLanguage language.Language
-		if _, ok := ctx.Language.(*golang.Language); ok {
-			originLanguage = &java.Language{}
-		} else {
-			originLanguage = &golang.Language{}
-		}
-
-		originFilePath, stubFilePath, err := t.unpackTranspilerPackage(ctx, taskLogger.Logger, originLanguage, packagePath)
+		originFilePathsWithLanguage, stubFilePath, err := t.unpackTranspilerPackage(ctx, taskLogger.Logger, packagePath)
 		if err != nil {
 			return nil, nil, err
 		}
+		for originFilePath, originLanguage := range originFilePathsWithLanguage {
+			modelContext := model.Context{
+				Language: ctx.Language,
 
-		modelContext := model.Context{
-			Language: ctx.Language,
+				RepositoryPath: filepath.Join(ctx.Repository.DataPath(), packagePath),
+				FilePath:       stubFilePath,
 
-			RepositoryPath: filepath.Join(ctx.Repository.DataPath(), packagePath),
-			FilePath:       stubFilePath,
+				Arguments: &TaskArgumentsTranspile{
+					OriginLanguage: originLanguage,
+					OriginFilePath: originFilePath,
+				},
 
-			Arguments: &TaskArgumentsTranspile{
-				OriginLanguage: originLanguage,
-				OriginFilePath: originFilePath,
-			},
-
-			Logger: taskLogger.Logger,
-		}
-		assessments, err := modelCapability.Transpile(modelContext)
-		if err != nil {
-			problems = append(problems, pkgerrors.WithMessage(err, originFilePath))
-
-			continue
-		}
-		if assessments[metrics.AssessmentKeyProcessingTime] == 0 {
-			return nil, nil, pkgerrors.Errorf("no model response time measurement present for %q at repository %q", ctx.Model.ID(), ctx.Repository.Name())
-		}
-		modelAssessmentsForFile.Add(assessments)
-		modelAssessmentsForFile.Award(metrics.AssessmentKeyResponseNoError)
-
-		testResult, ps, err := ctx.Language.ExecuteTests(taskLogger.Logger, filepath.Join(ctx.Repository.DataPath(), packagePath))
-		problems = append(problems, ps...)
-		if err != nil {
-			problems = append(problems, pkgerrors.WithMessage(err, originFilePath))
-
-			// If there is an execution timeout do not run "symflower fix" because the code itself is correct.
-			if errors.Is(err, context.DeadlineExceeded) {
-				modelAssessments.Add(modelAssessmentsForFile)
-				withSymflowerAssessments.Add(withSymflowerAssessmentsForFile)
+				Logger: taskLogger.Logger,
+			}
+			assessments, err := modelCapability.Transpile(modelContext)
+			if err != nil {
+				problems = append(problems, pkgerrors.WithMessage(err, originFilePath))
 
 				continue
 			}
+			if assessments[metrics.AssessmentKeyProcessingTime] == 0 {
+				return nil, nil, pkgerrors.Errorf("no model response time measurement present for %q at repository %q", ctx.Model.ID(), ctx.Repository.Name())
+			}
+			modelAssessmentsForFile.Add(assessments)
+			modelAssessmentsForFile.Award(metrics.AssessmentKeyResponseNoError)
 
-			// Run "symflower fix" if the model response fails to execute.
-			if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
-				withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, filepath.Join(ctx.Repository.DataPath(), packagePath))
-				problems = append(problems, ps...)
-				if err != nil {
-					problems = append(problems, err)
+			testResult, ps, err := ctx.Language.ExecuteTests(taskLogger.Logger, filepath.Join(ctx.Repository.DataPath(), packagePath))
+			problems = append(problems, ps...)
+			if err != nil {
+				problems = append(problems, pkgerrors.WithMessage(err, originFilePath))
 
+				// If there is an execution timeout do not run "symflower fix" because the code itself is correct.
+				if errors.Is(err, context.DeadlineExceeded) {
 					modelAssessments.Add(modelAssessmentsForFile)
 					withSymflowerAssessments.Add(withSymflowerAssessmentsForFile)
 
 					continue
-				} else {
-					testsPassing := withSymflowerFixTestResult.TestsPass
-					taskLogger.Printf("Executes tests with %d tests passing after \"symflower fix\"", testsPassing)
-
-					// Symflower was able to fix a failure so now update the assessment with the improved results.
-					withSymflowerFixAssessments := metrics.NewAssessments()
-					withSymflowerFixAssessments[metrics.AssessmentKeyProcessingTime] = processingTime
-					withSymflowerFixAssessments.Award(metrics.AssessmentKeyFilesExecuted)
-					withSymflowerFixAssessments.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
-
-					withSymflowerAssessmentsForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentsForFile, withSymflowerFixAssessments)
 				}
-			}
-		} else {
-			testsPassing := testResult.TestsPass
-			taskLogger.Printf("Executes tests with %d tests passing", testsPassing)
-			modelAssessmentsForFile.Award(metrics.AssessmentKeyFilesExecuted)
-			modelAssessmentsForFile.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
-		}
 
-		modelAssessments.Add(modelAssessmentsForFile)
-		withSymflowerAssessments.Add(withSymflowerAssessmentsForFile)
+				// Run "symflower fix" if the model response fails to execute.
+				if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
+					withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, filepath.Join(ctx.Repository.DataPath(), packagePath))
+					problems = append(problems, ps...)
+					if err != nil {
+						problems = append(problems, err)
+
+						modelAssessments.Add(modelAssessmentsForFile)
+						withSymflowerAssessments.Add(withSymflowerAssessmentsForFile)
+
+						continue
+					} else {
+						testsPassing := withSymflowerFixTestResult.TestsPass
+						taskLogger.Printf("Executes tests with %d tests passing after \"symflower fix\"", testsPassing)
+
+						// Symflower was able to fix a failure so now update the assessment with the improved results.
+						withSymflowerFixAssessments := metrics.NewAssessments()
+						withSymflowerFixAssessments[metrics.AssessmentKeyProcessingTime] = processingTime
+						withSymflowerFixAssessments.Award(metrics.AssessmentKeyFilesExecuted)
+						withSymflowerFixAssessments.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
+
+						withSymflowerAssessmentsForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentsForFile, withSymflowerFixAssessments)
+					}
+				}
+			} else {
+				testsPassing := testResult.TestsPass
+				taskLogger.Printf("Executes tests with %d tests passing", testsPassing)
+				modelAssessmentsForFile.Award(metrics.AssessmentKeyFilesExecuted)
+				modelAssessmentsForFile.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
+			}
+
+			modelAssessments.Add(modelAssessmentsForFile)
+			withSymflowerAssessments.Add(withSymflowerAssessmentsForFile)
+		}
 	}
 
 	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{
@@ -170,34 +162,37 @@ func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[eval
 	return repositoryAssessment, problems, nil
 }
 
-// unpackTranspilerPackage checks if the testdata repository for the transpilation task is well-formed and returns the path to the implementation file and also the path to the file that holds the stub.
-func (t *TaskTranspile) unpackTranspilerPackage(ctx evaltask.Context, fileLogger *log.Logger, originLanguage language.Language, packagePath string) (originFilePath string, stubFilePath string, err error) {
+// unpackTranspilerPackage returns the path to the implementation file and also the path to the file that holds the stub.
+func (t *TaskTranspile) unpackTranspilerPackage(ctx evaltask.Context, fileLogger *log.Logger, packagePath string) (originFilePathsWithLanguage map[string]language.Language, stubFilePath string, err error) {
+	originFilePathsWithLanguage = map[string]language.Language{}
 	packagePathAbsolute := filepath.Join(ctx.Repository.DataPath(), packagePath)
 
-	files, err := originLanguage.Files(fileLogger, filepath.Join(packagePathAbsolute, "implementation"))
+	files, err := os.ReadDir(filepath.Join(packagePathAbsolute, "implementation"))
 	if err != nil {
-		return "", "", pkgerrors.WithStack(err)
+		return nil, "", pkgerrors.WithStack(err)
 	}
-	originFilePath = filepath.Join("implementation", files[0])
+
+	for _, file := range files {
+		var originLanguage language.Language
+		for _, l := range language.Languages {
+			if filepath.Ext(file.Name()) == l.DefaultFileExtension() {
+				originLanguage = l
+			}
+		}
+		originFilePathsWithLanguage[filepath.Join(filepath.Join(packagePathAbsolute, "implementation", file.Name()))] = originLanguage
+	}
 
 	stubFilePath, err = packageSourceFile(fileLogger, packagePathAbsolute, ctx.Language)
 	if err != nil {
-		return "", "", err
+		return nil, "", err
 	}
 
-	return originFilePath, stubFilePath, nil
+	return originFilePathsWithLanguage, stubFilePath, nil
 }
 
 // validateTranspileRepository checks if the repository for the "transpile" task is well-formed.
 func validateTranspileRepository(logger *log.Logger, repositoryPath string, destinationLanguage language.Language) (err error) {
 	logger.Printf("validating repository %q", repositoryPath)
-
-	var originLanguage language.Language
-	if _, ok := destinationLanguage.(*golang.Language); ok {
-		originLanguage = &java.Language{}
-	} else {
-		originLanguage = &golang.Language{}
-	}
 
 	packagePaths, err := repositoryOnlyHasPackages(repositoryPath)
 	if err != nil {
@@ -205,14 +200,28 @@ func validateTranspileRepository(logger *log.Logger, repositoryPath string, dest
 	}
 
 	for _, packagePath := range packagePaths {
-		// Validate the implementation folder.
-		files, err := originLanguage.Files(logger, filepath.Join(packagePath, "implementation"))
+		implementationDirectoryPath := filepath.Join(packagePath, "implementation")
+		files, err := os.ReadDir(implementationDirectoryPath)
 		if err != nil {
 			return pkgerrors.WithStack(err)
-		} else if len(files) != 1 {
-			return pkgerrors.Errorf("package %q must have an \"implementation\" directory with just one %s source file to transpile", packagePath, originLanguage.Name())
-		} else if strings.HasSuffix(files[0], originLanguage.DefaultTestFileSuffix()) {
-			return pkgerrors.Errorf("package %q must have an \"implementation\" directory with only a %s source file, but found a test file %q", packagePath, originLanguage.Name(), files[0])
+		}
+
+		// Check if the implementation directory is well-formed.
+		for _, file := range files {
+			if file.IsDir() {
+				return pkgerrors.Errorf("the implementation directory %q must contain only source code files to transpile, but found one directory: %q", implementationDirectoryPath, file.Name())
+			}
+			var originLanguage language.Language
+			for _, language := range language.Languages {
+				if language.DefaultFileExtension() == filepath.Ext(file.Name()) {
+					originLanguage = language
+				}
+			}
+			if originLanguage == nil {
+				return pkgerrors.Errorf("the language extension %q is not supported", filepath.Ext(file.Name()))
+			} else if strings.HasSuffix(file.Name(), originLanguage.DefaultTestFileSuffix()) {
+				return pkgerrors.Errorf("the implementation directory %q must contain source files, but found a test file %q", implementationDirectoryPath, files[0])
+			}
 		}
 
 		// Check if the package as one source file and one test file in the language we want to transpile to.
