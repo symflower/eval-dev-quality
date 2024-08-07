@@ -10,6 +10,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
+	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/log"
@@ -377,42 +378,56 @@ func TestValidateTranspileRepository(t *testing.T) {
 			assert.ErrorContains(t, err, errorMessage)
 		},
 	})
+	validate(t, &tasktesting.TestCaseValidateRepository{
+		Name: "Implementation folder must contain only files",
+
+		Before: func(repositoryPath string) {
+			require.NoError(t, os.MkdirAll(filepath.Join(repositoryPath, "somePackage", "implementation", "someFolder"), 0700))
+		},
+
+		TestdataPath:   filepath.Join("..", "..", "testdata"),
+		RepositoryPath: filepath.Join("golang", "transpile"),
+		Language:       &golang.Language{},
+
+		ExpectedError: func(err error) {
+			assert.ErrorContains(t, err, "must contain only source code files to transpile, but found one directory")
+		},
+	})
+	validate(t, &tasktesting.TestCaseValidateRepository{
+		Name: "Implementation folder must contain only source files",
+
+		Before: func(repositoryPath string) {
+			implementationFolderPath := filepath.Join(repositoryPath, "somePackage", "implementation")
+			require.NoError(t, os.MkdirAll(implementationFolderPath, 0700))
+			require.NoError(t, os.WriteFile(filepath.Join(implementationFolderPath, "ClassTest.java"), []byte(`content`), 0700))
+		},
+
+		TestdataPath:   filepath.Join("..", "..", "testdata"),
+		RepositoryPath: filepath.Join("golang", "transpile"),
+		Language:       &golang.Language{},
+
+		ExpectedError: func(err error) {
+			assert.ErrorContains(t, err, "must contain source files, but found a test file")
+		},
+	})
+	validate(t, &tasktesting.TestCaseValidateRepository{
+		Name: "Unsupported language",
+
+		Before: func(repositoryPath string) {
+			implementationFolderPath := filepath.Join(repositoryPath, "somePackage", "implementation")
+			require.NoError(t, os.MkdirAll(implementationFolderPath, 0700))
+			require.NoError(t, os.WriteFile(filepath.Join(implementationFolderPath, "file.unsupported"), []byte(`content`), 0700))
+		},
+
+		TestdataPath:   filepath.Join("..", "..", "testdata"),
+		RepositoryPath: filepath.Join("golang", "transpile"),
+		Language:       &golang.Language{},
+
+		ExpectedError: func(err error) {
+			assert.ErrorContains(t, err, "the language extension \".unsupported\" is not supported")
+		},
+	})
 	t.Run("Go", func(t *testing.T) {
-		validate(t, &tasktesting.TestCaseValidateRepository{
-			Name: "Implementation folder contains multiple files",
-
-			Before: func(repositoryPath string) {
-				implementationPath := filepath.Join(repositoryPath, "somePackage", "implementation")
-				require.NoError(t, os.MkdirAll(implementationPath, 0700))
-				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "ClassA.java"), []byte(`content`), 0700))
-				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "ClassB.java"), []byte(`content`), 0700))
-			},
-
-			TestdataPath:   filepath.Join("..", "..", "testdata"),
-			RepositoryPath: filepath.Join("golang", "transpile"),
-			Language:       &golang.Language{},
-
-			ExpectedError: func(err error) {
-				assert.ErrorContains(t, err, "must have an \"implementation\" directory with just one Java source file to transpile")
-			},
-		})
-		validate(t, &tasktesting.TestCaseValidateRepository{
-			Name: "Implementation folder contains a test file",
-
-			Before: func(repositoryPath string) {
-				implementationPath := filepath.Join(repositoryPath, "somePackage", "implementation")
-				require.NoError(t, os.MkdirAll(implementationPath, 0700))
-				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "ClassTest.java"), []byte(`content`), 0700))
-			},
-
-			TestdataPath:   filepath.Join("..", "..", "testdata"),
-			RepositoryPath: filepath.Join("golang", "transpile"),
-			Language:       &golang.Language{},
-
-			ExpectedError: func(err error) {
-				assert.ErrorContains(t, err, "must have an \"implementation\" directory with only a Java source file, but found a test file")
-			},
-		})
 		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Package without source file",
 
@@ -463,41 +478,6 @@ func TestValidateTranspileRepository(t *testing.T) {
 	})
 	t.Run("Java", func(t *testing.T) {
 		validate(t, &tasktesting.TestCaseValidateRepository{
-			Name: "Implementation folder contains multiple files",
-
-			Before: func(repositoryPath string) {
-				implementationPath := filepath.Join(repositoryPath, "somePackage", "implementation")
-				require.NoError(t, os.MkdirAll(implementationPath, 0700))
-				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "fileA.go"), []byte(`content`), 0700))
-				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "fileB.go"), []byte(`content`), 0700))
-			},
-
-			TestdataPath:   filepath.Join("..", "..", "testdata"),
-			RepositoryPath: filepath.Join("java", "transpile"),
-			Language:       &java.Language{},
-
-			ExpectedError: func(err error) {
-				assert.ErrorContains(t, err, "must have an \"implementation\" directory with just one Go source file to transpile")
-			},
-		})
-		validate(t, &tasktesting.TestCaseValidateRepository{
-			Name: "Implementation folder contains a test file",
-
-			Before: func(repositoryPath string) {
-				implementationPath := filepath.Join(repositoryPath, "somePackage", "implementation")
-				require.NoError(t, os.MkdirAll(implementationPath, 0700))
-				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file_test.go"), []byte(`content`), 0700))
-			},
-
-			TestdataPath:   filepath.Join("..", "..", "testdata"),
-			RepositoryPath: filepath.Join("java", "transpile"),
-			Language:       &java.Language{},
-
-			ExpectedError: func(err error) {
-				assert.ErrorContains(t, err, "must have an \"implementation\" directory with only a Go source file, but found a test file")
-			},
-		})
-		validate(t, &tasktesting.TestCaseValidateRepository{
 			Name: "Package without source file",
 
 			Before: func(repositoryPath string) {
@@ -543,6 +523,90 @@ func TestValidateTranspileRepository(t *testing.T) {
 			TestdataPath:   filepath.Join("..", "..", "testdata"),
 			RepositoryPath: filepath.Join("java", "transpile"),
 			Language:       &java.Language{},
+		})
+	})
+}
+
+func TestTaskTranspileUnpackTranspilerPackage(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Before              func(packagePath string)
+		DestinationLanguage language.Language
+
+		RepositoryPath string
+		PackagePath    string
+
+		ExpectedOriginFilePathsWithLanguage map[string]language.Language
+		ExpectedStubFilePath                string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			logOutput, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Logf("Logging output: %s", logOutput.String())
+				}
+			}()
+
+			temporaryDirectory := t.TempDir()
+
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", tc.RepositoryPath), filepath.Join(temporaryDirectory, "testdata", tc.RepositoryPath)))
+
+			repository, cleanup, err := TemporaryRepository(logger, filepath.Join(temporaryDirectory, "testdata"), tc.RepositoryPath)
+			require.NoError(t, err)
+			defer cleanup()
+
+			if tc.Before != nil {
+				tc.Before(filepath.Join(repository.DataPath(), tc.PackagePath))
+			}
+
+			taskTranspile := TaskTranspile{}
+			ctx := evaltask.Context{
+				Language:   tc.DestinationLanguage,
+				Repository: repository,
+			}
+			actualOriginFilePathsWithLanguage, actualStubFilePath, actualErr := taskTranspile.unpackTranspilerPackage(ctx, logger, tc.PackagePath)
+			require.NoError(t, actualErr)
+
+			expectedOriginFilePathsWithLanguage := map[string]language.Language{}
+			for filePath, language := range tc.ExpectedOriginFilePathsWithLanguage {
+				expectedOriginFilePathsWithLanguage[filepath.Join(repository.DataPath(), filePath)] = language
+			}
+			assert.Equal(t, expectedOriginFilePathsWithLanguage, actualOriginFilePathsWithLanguage)
+			assert.Equal(t, tc.ExpectedStubFilePath, actualStubFilePath)
+		})
+	}
+
+	t.Run("Go", func(t *testing.T) {
+		validate(t, &testCase{
+			Name: "Transpile",
+
+			DestinationLanguage: &golang.Language{},
+
+			RepositoryPath: filepath.Join("golang", "transpile"),
+			PackagePath:    "binarySearch",
+
+			ExpectedOriginFilePathsWithLanguage: map[string]language.Language{
+				filepath.Join("binarySearch", "implementation", "BinarySearch.java"): &java.Language{},
+			},
+			ExpectedStubFilePath: "binarySearch.go",
+		})
+	})
+	t.Run("Java", func(t *testing.T) {
+		validate(t, &testCase{
+			Name: "Transpile",
+
+			DestinationLanguage: &java.Language{},
+
+			RepositoryPath: filepath.Join("java", "transpile"),
+			PackagePath:    "isSorted",
+
+			ExpectedOriginFilePathsWithLanguage: map[string]language.Language{
+				filepath.Join("isSorted", "implementation", "isSorted.go"): &golang.Language{},
+			},
+			ExpectedStubFilePath: filepath.Join("src", "main", "java", "com", "eval", "IsSorted.java"),
 		})
 	})
 }
