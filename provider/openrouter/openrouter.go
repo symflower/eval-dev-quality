@@ -70,7 +70,7 @@ func (p *Provider) Models() (models []model.Model, err error) {
 	models = make([]model.Model, len(responseModels.Models))
 	for i, model := range responseModels.Models {
 		model.ID = p.ID() + provider.ProviderModelSeparator + model.ID
-		models[i] = llm.NewModelWithMetaInformation(p, p.ID()+provider.ProviderModelSeparator+model.ID, model)
+		models[i] = llm.NewModelWithMetaInformation(p, model.ID, model)
 	}
 
 	return models, nil
