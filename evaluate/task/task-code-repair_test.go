@@ -71,10 +71,10 @@ func TestTaskCodeRepairRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyCoverage:                      30,
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyTestsPassing:                  40,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -135,10 +135,10 @@ func TestTaskCodeRepairRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyCoverage:                      60,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyResponseNoError:               2,
+						metrics.AssessmentKeyTestsPassing:                  80,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -190,10 +190,10 @@ func TestTaskCodeRepairRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyCoverage:                      80,
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyTestsPassing:                  30,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -256,10 +256,10 @@ func TestTaskCodeRepairRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyCoverage:                      160,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyResponseNoError:               2,
+						metrics.AssessmentKeyTestsPassing:                  60,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
