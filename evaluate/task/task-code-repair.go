@@ -101,9 +101,10 @@ func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 
 			continue
 		}
-		taskLogger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
+		testsPassing := testResult.TestsPass
+		taskLogger.Printf("Executes tests with %d tests passing", testsPassing)
 		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
-		modelAssessment.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
+		modelAssessment.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
 	}
 
 	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{
