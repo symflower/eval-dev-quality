@@ -370,7 +370,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 		RepositoryPath: filepath.Join("golang", "transpile"),
 		Language:       &golang.Language{},
 
-		ExpectedError: func(err error) {
+		ExpectedError: func(t *testing.T, err error) {
 			var errorMessage string
 			if osutil.IsWindows() {
 				errorMessage = "The system cannot find the file specified"
@@ -391,7 +391,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 		RepositoryPath: filepath.Join("golang", "transpile"),
 		Language:       &golang.Language{},
 
-		ExpectedError: func(err error) {
+		ExpectedError: func(t *testing.T, err error) {
 			assert.ErrorContains(t, err, "must contain only one source file per language")
 		},
 	})
@@ -423,7 +423,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 		RepositoryPath: filepath.Join("golang", "transpile"),
 		Language:       &golang.Language{},
 
-		ExpectedError: func(err error) {
+		ExpectedError: func(t *testing.T, err error) {
 			assert.ErrorContains(t, err, "must contain only source code files to transpile, but found one directory")
 		},
 	})
@@ -440,7 +440,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 		RepositoryPath: filepath.Join("golang", "transpile"),
 		Language:       &golang.Language{},
 
-		ExpectedError: func(err error) {
+		ExpectedError: func(t *testing.T, err error) {
 			assert.ErrorContains(t, err, "must contain source files, but found a test file")
 		},
 	})
@@ -457,7 +457,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 		RepositoryPath: filepath.Join("golang", "transpile"),
 		Language:       &golang.Language{},
 
-		ExpectedError: func(err error) {
+		ExpectedError: func(t *testing.T, err error) {
 			assert.ErrorContains(t, err, "the language extension \".unsupported\" is not supported")
 		},
 	})
@@ -476,7 +476,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("golang", "transpile"),
 			Language:       &golang.Language{},
 
-			ExpectedError: func(err error) {
+			ExpectedError: func(t *testing.T, err error) {
 				assert.ErrorContains(t, err, "must contain exactly one Go source file")
 			},
 		})
@@ -495,7 +495,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("golang", "transpile"),
 			Language:       &golang.Language{},
 
-			ExpectedError: func(err error) {
+			ExpectedError: func(t *testing.T, err error) {
 				assert.ErrorContains(t, err, "must contain exactly one Go test file")
 			},
 		})
@@ -527,7 +527,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("java", "transpile"),
 			Language:       &java.Language{},
 
-			ExpectedError: func(err error) {
+			ExpectedError: func(t *testing.T, err error) {
 				assert.ErrorContains(t, err, "must contain exactly one Java source file")
 			},
 		})
@@ -546,7 +546,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 			RepositoryPath: filepath.Join("java", "transpile"),
 			Language:       &java.Language{},
 
-			ExpectedError: func(err error) {
+			ExpectedError: func(t *testing.T, err error) {
 				assert.ErrorContains(t, err, "must contain exactly one Java test file")
 			},
 		})

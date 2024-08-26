@@ -107,7 +107,7 @@ type TestCaseValidateRepository struct {
 	RepositoryPath string
 	Language       language.Language
 
-	ExpectedError func(err error)
+	ExpectedError func(t *testing.T, err error)
 }
 
 type validateRepositoryForTask func(logger *log.Logger, repositoryPath string, language language.Language) (err error)
@@ -131,7 +131,7 @@ func (tc *TestCaseValidateRepository) Validate(t *testing.T, validateRepositoryF
 
 		actualErr := validateRepositoryForTask(logger, repositoryPath, tc.Language)
 		if tc.ExpectedError != nil {
-			tc.ExpectedError(actualErr)
+			tc.ExpectedError(t, actualErr)
 		} else {
 			require.NoError(t, actualErr)
 		}
