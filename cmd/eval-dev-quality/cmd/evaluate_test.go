@@ -1275,12 +1275,14 @@ func TestEvaluateInitialize(t *testing.T) {
 			assert.Equal(t, []string{
 				"golang",
 				"java",
+				"ruby",
 			}, command.Languages)
 		},
 		ValidateContext: func(t *testing.T, context *evaluate.Context) {
 			assert.Equal(t, []language.Language{
 				language.Languages["golang"],
 				language.Languages["java"],
+				language.Languages["ruby"],
 			}, context.Languages)
 		},
 	})

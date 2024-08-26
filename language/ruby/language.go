@@ -11,6 +11,10 @@ import (
 // Language holds a Ruby language to evaluate a repository.
 type Language struct{}
 
+func init() {
+	language.Register(&Language{})
+}
+
 var _ language.Language = (*Language)(nil)
 
 // ID returns the unique ID of this language.
