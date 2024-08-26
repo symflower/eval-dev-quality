@@ -1,11 +1,15 @@
 package ruby
 
 import (
+	"context"
 	"path/filepath"
+	"regexp"
 	"strings"
 
+	pkgerrors "github.com/pkg/errors"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // Language holds a Ruby language to evaluate a repository.
@@ -66,9 +70,47 @@ func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (test
 	return testResult, problems, nil
 }
 
+// mistakesErrorRe defines the structure of the error messages when running tests.
+var mistakesErrorRe = regexp.MustCompile(`\d\) Error:\n\w+#\w+:\n(.*)\n\s*(.*)`)
+
+// mistakesSyntaxErrorRe defines the structure of syntax errors.
+var mistakesSyntaxErrorRe = regexp.MustCompile(`.* \(SyntaxError\)`)
+
 // Mistakes builds a Ruby repository and returns the list of mistakes found.
 func (l *Language) Mistakes(logger *log.Logger, repositoryPath string) (mistakes []string, err error) {
-	logger.Panic("not implemented")
+	output, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{ // This is sub-optimal since it only works if there are predefined tests.
+			"rake",
+			"test",
+		},
+
+		Directory: repositoryPath,
+	})
+	if err != nil {
+		if output == "" {
+			return nil, pkgerrors.Wrap(err, "no output to extract errors from")
+		}
+
+		return extractMistakes(output), nil
+	}
 
 	return nil, nil
+}
+
+// extractMistakes returns a list of errors found in raw output.
+func extractMistakes(rawMistakes string) (mistakes []string) {
+	rawMistakes = strings.ReplaceAll(rawMistakes, "\r", "") // Remove Windows new-line returns.
+
+	for _, result := range mistakesErrorRe.FindAllStringSubmatch(rawMistakes, -1) {
+		if !strings.Contains(result[2], "_test.rb") {
+			return []string{result[1] + " : " + result[2]}
+		}
+	}
+
+	// If no errors match the regexp then we check for syntax errors.
+	for _, result := range mistakesSyntaxErrorRe.FindAllStringSubmatch(rawMistakes, -1) {
+		mistakes = append(mistakes, result[0])
+	}
+
+	return mistakes
 }

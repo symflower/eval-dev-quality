@@ -66,7 +66,8 @@ type TestCaseMistakes struct {
 	Language       language.Language
 	RepositoryPath string
 
-	ExpectedMistakes []string
+	ExpectedMistakes         []string
+	ExpectedMistakesContains func(t *testing.T, mistakes []string)
 }
 
 func (tc *TestCaseMistakes) Validate(t *testing.T) {
@@ -85,6 +86,10 @@ func (tc *TestCaseMistakes) Validate(t *testing.T) {
 		actualMistakes, actualErr := tc.Language.Mistakes(logger, repositoryPath)
 		require.NoError(t, actualErr)
 
-		assert.Equal(t, tc.ExpectedMistakes, actualMistakes)
+		if tc.ExpectedMistakesContains != nil {
+			tc.ExpectedMistakesContains(t, actualMistakes)
+		} else {
+			assert.Equal(t, tc.ExpectedMistakes, actualMistakes)
+		}
 	})
 }
