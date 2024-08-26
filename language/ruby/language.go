@@ -6,9 +6,15 @@ import (
 	"regexp"
 	"strings"
 
+	"os"
+	"strconv"
+
 	pkgerrors "github.com/pkg/errors"
+	"github.com/zimmski/osutil/bytesutil"
+
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/tools"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
@@ -65,9 +71,118 @@ func (l *Language) DefaultTestFileSuffix() string {
 
 // ExecuteTests invokes the language specific testing on the given repository.
 func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (testResult *language.TestResult, problems []error, err error) {
-	logger.Panic("not implemented")
+	ctx, cancel := context.WithTimeout(context.Background(), language.DefaultExecutionTimeout)
+	defer cancel()
+
+	if err := injectCoverageTracking(repositoryPath); err != nil {
+		return nil, nil, err
+	}
+
+	coverageFilePath := filepath.Join(repositoryPath, "coverage.json")
+	commandOutput, err := util.CommandWithResult(ctx, logger, &util.Command{
+		Command: []string{
+			tools.SymflowerPath, "test",
+			"--language", "ruby",
+			"--workspace", repositoryPath,
+			"--coverage-file", coverageFilePath,
+		},
+
+		Directory: repositoryPath,
+	})
+	if err != nil {
+		return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+	}
+
+	testsTotal, testsPass, err := parseSymflowerTestOutput(commandOutput)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	testResult = &language.TestResult{
+		TestsTotal: uint(testsTotal),
+		TestsPass:  uint(testsPass),
+	}
+
+	testResult.Coverage, err = language.CoverageObjectCountOfFile(logger, coverageFilePath)
+	if err != nil {
+		return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+	}
 
 	return testResult, problems, nil
+}
+
+var languageRakeTestSummaryRE = regexp.MustCompile(`(\d+) runs, \d+ assertions, (\d+) failures, (\d+) errors, (\d+) skips`)
+
+func parseSymflowerTestOutput(data string) (testsTotal int, testsPass int, err error) {
+	testSummary := languageRakeTestSummaryRE.FindStringSubmatch(data)
+	if len(testSummary) == 0 {
+		return 0, 0, pkgerrors.WithMessage(pkgerrors.WithStack(language.ErrCannotParseTestSummary), data)
+	}
+
+	testsTotal, err = strconv.Atoi(testSummary[1])
+	if err != nil {
+		return 0, 0, pkgerrors.WithStack(err)
+	}
+	testsFailure, err := strconv.Atoi(testSummary[2])
+	if err != nil {
+		return 0, 0, pkgerrors.WithStack(err)
+	}
+	testsErrors, err := strconv.Atoi(testSummary[3])
+	if err != nil {
+		return 0, 0, pkgerrors.WithStack(err)
+	}
+	testsSkips, err := strconv.Atoi(testSummary[4])
+	if err != nil {
+		return 0, 0, pkgerrors.WithStack(err)
+	}
+
+	// The "assertions" cannot be used to calculate the passing tests, cause they also include failed assertions.
+	return testsTotal, testsTotal - testsFailure - testsErrors - testsSkips, nil
+}
+
+// injectCoverageTracking injects our custom coverage tracking logic into a ruby project.
+func injectCoverageTracking(repositoryPath string) error {
+	// Add relative import to our special test initialization to every test file so we can track coverage.
+	testDirectoryEntries, err := os.ReadDir(filepath.Join(repositoryPath, "test"))
+	if err != nil {
+		return pkgerrors.WithMessage(err, "reading test directory")
+	}
+	for _, entry := range testDirectoryEntries {
+		if entry.IsDir() {
+			continue
+		}
+		filePath := filepath.Join(repositoryPath, "test", entry.Name())
+
+		fileContent, err := os.ReadFile(filePath)
+		if err != nil {
+			return pkgerrors.WithStack(err)
+		}
+
+		// Only add the import if it does not exist already.
+		if strings.Contains(string(fileContent), "require_relative \"test_init\"") {
+			continue
+		}
+		if err := os.WriteFile(filePath, append([]byte("require_relative \"test_init\"\n"), fileContent...), 0644); err != nil {
+			return pkgerrors.WithStack(err)
+		}
+	}
+	// Write the special init file to setup coverage tracking. In case it exists already, it will just be re-written.
+	if err := os.WriteFile(filepath.Join(repositoryPath, "test", "test_init.rb"), []byte(bytesutil.StringTrimIndentations(`
+		# Set up coverage.
+		require "simplecov"
+		SimpleCov.start do
+			add_filter "/test/" # Exclude files in test folder.
+		end
+		require "simplecov_json_formatter"
+		SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+
+		# Set up minitest.
+		require "minitest/autorun"
+	`)), 0644); err != nil {
+		return pkgerrors.WithMessage(err, "writing ruby test init file")
+	}
+
+	return nil
 }
 
 // mistakesErrorRe defines the structure of the error messages when running tests.

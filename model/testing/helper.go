@@ -23,7 +23,9 @@ func NewMockModelNamed(t *testing.T, id string) *MockModel {
 func (m *MockCapabilityWriteTests) RegisterGenerateSuccess(t *testing.T, filePath string, fileContent string, assessment metrics.Assessments) *mock.Call {
 	return m.On("WriteTests", mock.Anything).Return(assessment, nil).Run(func(args mock.Arguments) {
 		ctx := args.Get(0).(model.Context)
-		require.NoError(t, os.WriteFile(filepath.Join(ctx.RepositoryPath, filePath), []byte(fileContent), 0600))
+		testFilePath := filepath.Join(ctx.RepositoryPath, filePath)
+		require.NoError(t, os.MkdirAll(filepath.Dir(testFilePath), 0700))
+		require.NoError(t, os.WriteFile(testFilePath, []byte(fileContent), 0600))
 	})
 }
 
