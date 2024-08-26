@@ -239,30 +239,14 @@ func TestMistakes(t *testing.T) {
 		ExpectedMistakes []string
 	}
 
-	validate := func(t *testing.T, tc *testCase) {
-		t.Run(tc.Name, func(t *testing.T) {
-			temporaryPath := t.TempDir()
-			repositoryPath := filepath.Join(temporaryPath, filepath.Base(tc.RepositoryPath))
-			require.NoError(t, osutil.CopyTree(tc.RepositoryPath, repositoryPath))
-
-			buffer, logger := log.Buffer()
-			defer func() {
-				if t.Failed() {
-					t.Log(buffer.String())
-				}
-			}()
-
-			java := &Language{}
-			actualMistakes, actualErr := java.Mistakes(logger, repositoryPath)
-			require.NoError(t, actualErr)
-
-			assert.Equal(t, tc.ExpectedMistakes, actualMistakes)
-		})
+	validate := func(t *testing.T, tc *languagetesting.TestCaseMistakes) {
+		tc.Validate(t)
 	}
 
-	validate(t, &testCase{
+	validate(t, &languagetesting.TestCaseMistakes{
 		Name: "Method without opening brackets",
 
+		Language:       &Language{},
 		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "mistakes", "openingBracketMissing"),
 
 		ExpectedMistakes: []string{
