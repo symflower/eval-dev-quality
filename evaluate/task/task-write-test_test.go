@@ -25,7 +25,7 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 )
 
-func TestTaskWriteTestsRun(t *testing.T) {
+func TestTaskWriteTestsRun(t *testing.T) { // TODO ADD RUBY TESTS
 	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
 			task, err := TaskForIdentifier(IdentifierWriteTests)

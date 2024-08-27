@@ -20,7 +20,7 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 )
 
-func TestTaskCodeRepairRun(t *testing.T) {
+func TestTaskCodeRepairRun(t *testing.T) { // TODO ADD RUBY TESTS
 	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
 			task, err := TaskForIdentifier(IdentifierCodeRepair)
