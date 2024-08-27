@@ -59,3 +59,37 @@ func (tc *TestCaseExecuteTests) Validate(t *testing.T) {
 		}
 	})
 }
+
+type TestCaseMistakes struct {
+	Name string
+
+	Language       language.Language
+	RepositoryPath string
+
+	ExpectedMistakes         []string
+	ExpectedMistakesContains func(t *testing.T, mistakes []string)
+}
+
+func (tc *TestCaseMistakes) Validate(t *testing.T) {
+	t.Run(tc.Name, func(t *testing.T) {
+		temporaryPath := t.TempDir()
+		repositoryPath := filepath.Join(temporaryPath, filepath.Base(tc.RepositoryPath))
+		require.NoError(t, osutil.CopyTree(tc.RepositoryPath, repositoryPath))
+
+		buffer, logger := log.Buffer()
+		defer func() {
+			if t.Failed() {
+				t.Log(buffer.String())
+			}
+		}()
+
+		actualMistakes, actualErr := tc.Language.Mistakes(logger, repositoryPath)
+		require.NoError(t, actualErr)
+
+		if tc.ExpectedMistakesContains != nil {
+			tc.ExpectedMistakesContains(t, actualMistakes)
+		} else {
+			assert.Equal(t, tc.ExpectedMistakes, actualMistakes)
+		}
+	})
+}
