@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,6 +14,7 @@ import (
 	tasktesting "github.com/symflower/eval-dev-quality/evaluate/task/testing"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/language/java"
+	"github.com/symflower/eval-dev-quality/language/ruby"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	evaltask "github.com/symflower/eval-dev-quality/task"
@@ -264,6 +266,111 @@ func TestTaskCodeRepairRun(t *testing.T) {
 				},
 				ValidateLog: func(t *testing.T, data string) {
 					assert.Contains(t, data, "BUILD SUCCESS")
+				},
+			})
+		}
+	})
+	t.Run("Ruby", func(t *testing.T) {
+		{
+			temporaryDirectoryPath := t.TempDir()
+
+			repositoryPath := filepath.Join(temporaryDirectoryPath, "ruby", "mistakes", "argumentMissing")
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "ruby", "mistakes", "argumentMissing"), repositoryPath))
+
+			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
+
+			// Generate valid code for the task.
+			sourceFileContent := bytesutil.StringTrimIndentations(`
+				def argument_missing(x)
+					if x > 0
+						return 1
+					elsif x < 0
+						return -1
+					else
+						return 0
+					end
+				end
+			`)
+			modelMock.RegisterGenerateSuccess(t, filepath.Join("lib", "argument_missing.rb"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+
+			validate(t, &tasktesting.TestCaseTask{
+				Name: "Single test case",
+
+				Model:          modelMock,
+				Language:       &ruby.Language{},
+				TestDataPath:   temporaryDirectoryPath,
+				RepositoryPath: filepath.Join("ruby", "mistakes"),
+
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+					IdentifierCodeRepair: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyTestsPassing:                  30,
+					},
+				},
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Contains(t, data, "3 runs, 0 assertions, 0 failures, 3 errors, 0 skips") // Extracting the mistakes.
+					assert.Contains(t, data, "3 runs, 3 assertions, 0 failures, 0 errors, 0 skips") // Fixed by model.
+				},
+			})
+		}
+		{
+			temporaryDirectoryPath := t.TempDir()
+
+			repositoryPath := filepath.Join(temporaryDirectoryPath, "ruby", "mistakes")
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "ruby", "mistakes", "argumentMissing"), filepath.Join(repositoryPath, "argumentMissing")))
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "ruby", "mistakes", "typeUnknown"), filepath.Join(repositoryPath, "typeUnknown")))
+
+			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
+
+			// Generate valid code for the task.
+			sourceFileContent := bytesutil.StringTrimIndentations(`
+				def argument_missing(x)
+					if x > 0
+						return 1
+					elsif x < 0
+						return -1
+					else
+						return 0
+					end
+				end
+			`)
+			modelMock.RegisterGenerateSuccess(t, filepath.Join("lib", "argument_missing.rb"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+			sourceFileContent = bytesutil.StringTrimIndentations(`
+				def type_unknown(x)
+					if x.is_a?(Integer)
+						if x > 0
+							return 1
+						elsif x < 0
+							return -1
+						end
+					end
+
+					return 0
+				end
+			`)
+			modelMock.RegisterGenerateSuccess(t, filepath.Join("lib", "type_unknown.rb"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+
+			validate(t, &tasktesting.TestCaseTask{
+				Name: "Multiple test cases",
+
+				Model:          modelMock,
+				Language:       &ruby.Language{},
+				TestDataPath:   temporaryDirectoryPath,
+				RepositoryPath: filepath.Join("ruby", "mistakes"),
+
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+					IdentifierCodeRepair: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 2,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+						metrics.AssessmentKeyResponseNoError:               2,
+						metrics.AssessmentKeyTestsPassing:                  60,
+					},
+				},
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Equal(t, 2, strings.Count(data, "3 runs, 0 assertions, 0 failures, 3 errors, 0 skips"), "extraction") // Extracting the mistakes.
+					assert.Equal(t, 2, strings.Count(data, "3 runs, 3 assertions, 0 failures, 0 errors, 0 skips"), "fixed")      // Fixed by model.
 				},
 			})
 		}

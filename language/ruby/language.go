@@ -193,23 +193,24 @@ var mistakesSyntaxErrorRe = regexp.MustCompile(`.* \(SyntaxError\)`)
 
 // Mistakes builds a Ruby repository and returns the list of mistakes found.
 func (l *Language) Mistakes(logger *log.Logger, repositoryPath string) (mistakes []string, err error) {
+	if err := injectCoverageTracking(repositoryPath); err != nil {
+		return nil, err
+	}
+
 	output, err := util.CommandWithResult(context.Background(), logger, &util.Command{
-		Command: []string{ // This is sub-optimal since it only works if there are predefined tests.
-			"rake",
-			"test",
+		Command: []string{
+			tools.SymflowerPath, "test",
+			"--language", "ruby",
+			"--workspace", repositoryPath,
 		},
 
 		Directory: repositoryPath,
 	})
-	if err != nil {
-		if output == "" {
-			return nil, pkgerrors.Wrap(err, "no output to extract errors from")
-		}
-
-		return extractMistakes(output), nil
+	if output == "" {
+		return nil, pkgerrors.Wrap(err, "no output to extract errors from")
 	}
 
-	return nil, nil
+	return extractMistakes(output), nil
 }
 
 // extractMistakes returns a list of errors found in raw output.
