@@ -153,6 +153,32 @@ func TestFilterArgsKeep(t *testing.T) {
 			"abc",
 		},
 	})
+
+	validate(t, &testCase{
+		Name: "Multiple arguments",
+
+		Args: []string{
+			"--runtime=abc",
+			"--repository=abc",
+			"--repository=def",
+			"--foo",
+			"bar",
+		},
+
+		Filter: []string{
+			"runtime",
+			"repository",
+		},
+
+		ExpectedFiltered: []string{
+			"--runtime",
+			"abc",
+			"--repository",
+			"abc",
+			"--repository",
+			"def",
+		},
+	})
 }
 
 func TestFilterArgsRemove(t *testing.T) {
