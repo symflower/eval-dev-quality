@@ -46,9 +46,12 @@ func (m *MockCapabilityRepairCode) RegisterGenerateError(err error) *mock.Call {
 }
 
 // RegisterGenerateSuccess registers a mock call for successful generation.
-func (m *MockCapabilityTranspile) RegisterGenerateSuccess(t *testing.T, filePath string, fileContent string, assessment metrics.Assessments) *mock.Call {
+func (m *MockCapabilityTranspile) RegisterGenerateSuccess(t *testing.T, validateContext func(t *testing.T, c model.Context), filePath string, fileContent string, assessment metrics.Assessments) *mock.Call {
 	return m.On("Transpile", mock.Anything).Return(assessment, nil).Run(func(args mock.Arguments) {
 		ctx := args.Get(0).(model.Context)
+		if validateContext != nil {
+			validateContext(t, ctx)
+		}
 		require.NoError(t, os.WriteFile(filepath.Join(ctx.RepositoryPath, filePath), []byte(fileContent), 0600))
 	})
 }

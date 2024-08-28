@@ -178,7 +178,7 @@ func (t *TaskTranspile) unpackTranspilerPackage(ctx evaltask.Context, logger *lo
 		if !ok {
 			return nil, "", pkgerrors.Errorf("the language extension %q is not supported", filepath.Ext(file.Name()))
 		}
-		originFilePathsWithLanguage[filepath.Join(packagePathAbsolute, "implementation", file.Name())] = originLanguage
+		originFilePathsWithLanguage[filepath.Join("implementation", file.Name())] = originLanguage
 	}
 
 	stubFilePath, err = packageSourceFile(logger, packagePathAbsolute, ctx.Language)

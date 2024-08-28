@@ -1,8 +1,10 @@
 package task
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,6 +17,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/language/ruby"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
@@ -34,6 +37,12 @@ func TestTaskTranspileRun(t *testing.T) {
 				},
 			)
 		})
+	}
+
+	validateContext := func(t *testing.T, c model.Context) {
+		arguments, ok := c.Arguments.(*TaskArgumentsTranspile)
+		require.True(t, ok, fmt.Sprintf("%T != TaskArgumentsTranspile", arguments))
+		assert.True(t, strings.HasPrefix(arguments.OriginFilePath, "implementation"+string(os.PathSeparator)), fmt.Sprintf("%q must be a relative path", arguments.OriginFilePath))
 	}
 
 	t.Run("Transpile Java into Go", func(t *testing.T) {
@@ -59,7 +68,7 @@ func TestTaskTranspileRun(t *testing.T) {
 			 		}
 			 	}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Single test case",
@@ -113,7 +122,7 @@ func TestTaskTranspileRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			transpiledSourceFilePath = "isSorted.go"
 			transpiledSourceFileContent = bytesutil.StringTrimIndentations(`
@@ -128,7 +137,7 @@ func TestTaskTranspileRun(t *testing.T) {
 					return i == len(a)-1
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Multiple test cases",
@@ -191,7 +200,7 @@ func TestTaskTranspileRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Single test case",
@@ -245,7 +254,7 @@ func TestTaskTranspileRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			transpiledSourceFilePath = filepath.Join("src", "main", "java", "com", "eval", "IsSorted.java")
 			transpiledSourceFileContent = bytesutil.StringTrimIndentations(`
@@ -262,7 +271,7 @@ func TestTaskTranspileRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Multiple test cases",
@@ -317,7 +326,7 @@ func TestTaskTranspileRun(t *testing.T) {
 			 		}
 			 	}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Model generated test with unused import",
@@ -603,11 +612,7 @@ func TestTaskTranspileUnpackTranspilerPackage(t *testing.T) {
 			actualOriginFilePathsWithLanguage, actualStubFilePath, actualErr := taskTranspile.unpackTranspilerPackage(ctx, logger, tc.PackagePath)
 			require.NoError(t, actualErr)
 
-			expectedOriginFilePathsWithLanguage := map[string]language.Language{}
-			for filePath, language := range tc.ExpectedOriginFilePathsWithLanguage {
-				expectedOriginFilePathsWithLanguage[filepath.Join(repository.DataPath(), tc.PackagePath, filePath)] = language
-			}
-			assert.Equal(t, expectedOriginFilePathsWithLanguage, actualOriginFilePathsWithLanguage)
+			assert.Equal(t, tc.ExpectedOriginFilePathsWithLanguage, actualOriginFilePathsWithLanguage)
 			assert.Equal(t, tc.ExpectedStubFilePath, actualStubFilePath)
 		})
 	}
