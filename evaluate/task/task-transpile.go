@@ -69,10 +69,6 @@ func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[eval
 	withSymflowerAssessments[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
 
 	for _, packagePath := range packagePaths {
-		if err := ctx.Repository.Reset(ctx.Logger); err != nil {
-			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
-		}
-
 		originFilePathsWithLanguage, stubFilePath, err := t.unpackTranspilerPackage(ctx, taskLogger.Logger, packagePath)
 		if err != nil {
 			return nil, nil, err
@@ -80,6 +76,10 @@ func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[eval
 		for originFilePath, originLanguage := range originFilePathsWithLanguage {
 			modelAssessmentsForFile := metrics.NewAssessments()
 			withSymflowerAssessmentsForFile := modelAssessmentsForFile // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until a failure actually happens.
+
+			if err := ctx.Repository.Reset(ctx.Logger); err != nil {
+				ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+			}
 
 			modelContext := model.Context{
 				Language: ctx.Language,
