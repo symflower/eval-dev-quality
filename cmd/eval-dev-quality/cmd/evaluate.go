@@ -119,6 +119,10 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 	// Load the provided configuration file, if any.
 	if command.Configuration != "" {
+		if command.Runtime != "local" {
+			command.logger.Panicf("the configuration file is not supported in containerized runtimes")
+		}
+
 		if len(command.Models) > 0 || len(command.Repositories) > 0 {
 			command.logger.Panicf("do not provide models and repositories when loading a configuration file")
 		}
@@ -552,8 +556,6 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 		"result-path",
 		"runtime-image",
 		"runtime",
-		"configuration",
-		"repository",
 	}
 
 	// Filter the args to remove all flags unsuited for running the container.
