@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require_relative 'test_init'
 require_relative '../lib/balanced_brackets'
 
 class TestBalancedBrackets < Minitest::Test
