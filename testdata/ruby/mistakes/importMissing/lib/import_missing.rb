@@ -1,3 +1,3 @@
-def parse_json(json_string)
-	return JSON.parse(json_string)
+def parse_csv_string(csv_string)
+	CSV.parse(csv_string, headers: true)
 end
