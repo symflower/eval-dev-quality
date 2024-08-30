@@ -216,6 +216,10 @@ func TestTaskWriteTestsRun(t *testing.T) {
 	})
 
 	{
+		if osutil.IsWindows() {
+			t.Skip("Ruby is not tested in the Windows CI")
+		}
+
 		temporaryDirectoryPath := t.TempDir()
 		repositoryPath := filepath.Join(temporaryDirectoryPath, "ruby", "plain")
 		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "ruby", "plain"), repositoryPath))

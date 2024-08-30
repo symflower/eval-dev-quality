@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
 	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
@@ -140,6 +141,10 @@ func TestParseSymflowerTestOutput(t *testing.T) {
 }
 
 func TestMistakes(t *testing.T) {
+	if osutil.IsWindows() {
+		t.Skip("Ruby is not tested in the Windows CI")
+	}
+
 	validate := func(t *testing.T, tc *languagetesting.TestCaseMistakes) {
 		tc.Validate(t)
 	}

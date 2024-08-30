@@ -362,6 +362,10 @@ func TestTaskTranspileRun(t *testing.T) {
 		}
 	})
 	t.Run("Transpile into Ruby", func(t *testing.T) {
+		if osutil.IsWindows() {
+			t.Skip("Ruby is not tested in the Windows CI")
+		}
+
 		{
 			temporaryDirectoryPath := t.TempDir()
 
