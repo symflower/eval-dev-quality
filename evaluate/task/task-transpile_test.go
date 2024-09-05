@@ -1,8 +1,10 @@
 package task
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,6 +17,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/language/ruby"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
@@ -36,7 +39,13 @@ func TestTaskTranspileRun(t *testing.T) {
 		})
 	}
 
-	t.Run("Transpile Java into Go", func(t *testing.T) {
+	validateContext := func(t *testing.T, c model.Context) {
+		arguments, ok := c.Arguments.(*TaskArgumentsTranspile)
+		require.True(t, ok, fmt.Sprintf("%T != TaskArgumentsTranspile", arguments))
+		assert.True(t, strings.HasPrefix(arguments.OriginFilePath, "implementation"+string(os.PathSeparator)), fmt.Sprintf("%q must be a relative path", arguments.OriginFilePath))
+	}
+
+	t.Run("Transpile into Go", func(t *testing.T) {
 		{
 			temporaryDirectoryPath := t.TempDir()
 
@@ -59,7 +68,7 @@ func TestTaskTranspileRun(t *testing.T) {
 			 		}
 			 	}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Single test case",
@@ -113,7 +122,7 @@ func TestTaskTranspileRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			transpiledSourceFilePath = "isSorted.go"
 			transpiledSourceFileContent = bytesutil.StringTrimIndentations(`
@@ -128,7 +137,7 @@ func TestTaskTranspileRun(t *testing.T) {
 					return i == len(a)-1
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Multiple test cases",
@@ -166,7 +175,7 @@ func TestTaskTranspileRun(t *testing.T) {
 			})
 		}
 	})
-	t.Run("Transpile Go into Java", func(t *testing.T) {
+	t.Run("Transpile into Java", func(t *testing.T) {
 		{
 			temporaryDirectoryPath := t.TempDir()
 
@@ -191,7 +200,7 @@ func TestTaskTranspileRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Single test case",
@@ -245,7 +254,7 @@ func TestTaskTranspileRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			transpiledSourceFilePath = filepath.Join("src", "main", "java", "com", "eval", "IsSorted.java")
 			transpiledSourceFileContent = bytesutil.StringTrimIndentations(`
@@ -262,7 +271,7 @@ func TestTaskTranspileRun(t *testing.T) {
 					}
 				}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Multiple test cases",
@@ -317,7 +326,7 @@ func TestTaskTranspileRun(t *testing.T) {
 			 		}
 			 	}
 			`)
-			modelMock.RegisterGenerateSuccess(t, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Model generated test with unused import",
@@ -352,6 +361,201 @@ func TestTaskTranspileRun(t *testing.T) {
 			})
 		}
 	})
+	t.Run("Transpile into Ruby", func(t *testing.T) {
+		if osutil.IsWindows() {
+			t.Skip("Ruby is not tested in the Windows CI")
+		}
+
+		{
+			temporaryDirectoryPath := t.TempDir()
+
+			repositoryPath := filepath.Join(temporaryDirectoryPath, "ruby", "transpile", "cascadingIfElse")
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "ruby", "transpile", "cascadingIfElse"), repositoryPath))
+
+			modelMock := modeltesting.NewMockCapabilityTranspileNamed(t, "mocked-model")
+
+			transpiledSourceFilePath := filepath.Join("lib", "cascading_if_else.rb")
+			transpiledSourceFileContent := bytesutil.StringTrimIndentations(`
+				def cascading_if_else(i)
+					if i == 1
+						return 2
+					elsif i == 3
+						return 4
+					else
+						return 5
+					end
+				end
+			`)
+			modelMock.RegisterGenerateSuccess(t, func(t *testing.T, c model.Context) {
+				arguments, ok := c.Arguments.(*TaskArgumentsTranspile)
+				require.True(t, ok, fmt.Sprintf("%T != TaskArgumentsTranspile", arguments))
+				assert.True(t, strings.HasPrefix(arguments.OriginFilePath, "implementation/"), fmt.Sprintf("%q must be a relative path", arguments.OriginFilePath))
+
+				// This assertion checks explicitly that stub files are not overwritten, now that we added a third language with Ruby.
+				content, err := os.ReadFile(filepath.Join(c.RepositoryPath, c.FilePath))
+				require.NoError(t, err)
+				assert.Equal(t, bytesutil.StringTrimIndentations(`
+					# @param [Integer] i
+					# @return [Integer]
+					def cascading_if_else(i)
+					end
+				`), string(content))
+			}, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+
+			validate(t, &tasktesting.TestCaseTask{
+				Name: "Single test case",
+
+				Model:          modelMock,
+				Language:       &ruby.Language{},
+				TestDataPath:   temporaryDirectoryPath,
+				RepositoryPath: filepath.Join("ruby", "transpile"),
+
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+					IdentifierTranspile: metrics.Assessments{
+						metrics.AssessmentKeyTestsPassing:                  60,
+						metrics.AssessmentKeyFilesExecuted:                 2,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+						metrics.AssessmentKeyResponseNoError:               2,
+					},
+					IdentifierTranspileSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyTestsPassing:                  60,
+						metrics.AssessmentKeyFilesExecuted:                 2,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+						metrics.AssessmentKeyResponseNoError:               2,
+					},
+				},
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Contains(t, data, "3 runs, 3 assertions, 0 failures, 0 errors, 0 skips")
+				},
+			})
+		}
+		{
+			temporaryDirectoryPath := t.TempDir()
+
+			repositoryPath := filepath.Join(temporaryDirectoryPath, "ruby", "transpile")
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "ruby", "transpile", "cascadingIfElse"), filepath.Join(repositoryPath, "cascadingIfElse")))
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "ruby", "transpile", "isSorted"), filepath.Join(repositoryPath, "isSorted")))
+
+			modelMock := modeltesting.NewMockCapabilityTranspileNamed(t, "mocked-model")
+
+			transpiledSourceFilePath := filepath.Join("lib", "cascading_if_else.rb")
+			transpiledSourceFileContent := bytesutil.StringTrimIndentations(`
+				def cascading_if_else(i)
+					if i == 1
+						return 2
+					elsif i == 3
+						return 4
+					else
+						return 5
+					end
+				end
+			`)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+
+			transpiledSourceFilePath = filepath.Join("lib", "sort.rb")
+			transpiledSourceFileContent = bytesutil.StringTrimIndentations(`
+				def is_sorted(a)
+					i = 0
+					while i < a.length - 1 && a[i] <= a[i + 1]
+					i += 1
+					end
+
+					return i == a.length - 1
+				end
+			`)
+			modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+
+			validate(t, &tasktesting.TestCaseTask{
+				Name: "Multiple test cases",
+
+				Model:          modelMock,
+				Language:       &ruby.Language{},
+				TestDataPath:   temporaryDirectoryPath,
+				RepositoryPath: filepath.Join("ruby", "transpile"),
+
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+					IdentifierTranspile: metrics.Assessments{
+						metrics.AssessmentKeyTestsPassing:                  160,
+						metrics.AssessmentKeyFilesExecuted:                 4,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
+						metrics.AssessmentKeyResponseNoError:               4,
+					},
+					IdentifierTranspileSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyTestsPassing:                  160,
+						metrics.AssessmentKeyFilesExecuted:                 4,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
+						metrics.AssessmentKeyResponseNoError:               4,
+					},
+				},
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Equal(t, 2, strings.Count(data, "3 runs, 3 assertions, 0 failures, 0 errors, 0 skips"))
+				},
+			})
+		}
+	})
+
+	{
+		temporaryDirectoryPath := t.TempDir()
+
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "transpile", "cascadingIfElse")
+		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "transpile", "cascadingIfElse"), repositoryPath))
+
+		modelMock := modeltesting.NewMockCapabilityTranspileNamed(t, "mocked-model")
+
+		transpiledSourceFilePath := "cascadingIfElse_.go"
+		transpiledSourceFileContent := bytesutil.StringTrimIndentations(`
+			invalid-code
+		`)
+		modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+
+		transpiledSourceFilePath = "cascadingIfElse.go"
+		transpiledSourceFileContent = bytesutil.StringTrimIndentations(`
+			package cascadingIfElse
+
+			func cascadingIfElse(i int) int {
+				if i == 1 {
+					return 2
+				} else if i == 3 {
+					return 4
+				} else {
+					return 5
+				}
+			}
+		`)
+		modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+
+		validate(t, &tasktesting.TestCaseTask{
+			Name: "Reset repository after each origin language",
+
+			Model:          modelMock,
+			Language:       &golang.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("golang", "transpile"),
+
+			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+				IdentifierTranspile: metrics.Assessments{
+					metrics.AssessmentKeyTestsPassing:                  40,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+				IdentifierTranspileSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyTestsPassing:                  40,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+			},
+			ExpectedProblemContains: []string{
+				"expected 'package', found invalid",
+				"A fatal error happened. Please take a look at the logs", // This is `symflower fix` unable to read the broken Go file.
+			},
+			ValidateLog: func(t *testing.T, data string) {
+				assert.Contains(t, data, "expected 'package', found invalid")
+				assert.Contains(t, data, "PASS: TestSymflowerCascadingIfElse")
+			},
+		})
+	}
 }
 
 func TestValidateTranspileRepository(t *testing.T) {
@@ -603,11 +807,7 @@ func TestTaskTranspileUnpackTranspilerPackage(t *testing.T) {
 			actualOriginFilePathsWithLanguage, actualStubFilePath, actualErr := taskTranspile.unpackTranspilerPackage(ctx, logger, tc.PackagePath)
 			require.NoError(t, actualErr)
 
-			expectedOriginFilePathsWithLanguage := map[string]language.Language{}
-			for filePath, language := range tc.ExpectedOriginFilePathsWithLanguage {
-				expectedOriginFilePathsWithLanguage[filepath.Join(repository.DataPath(), tc.PackagePath, filePath)] = language
-			}
-			assert.Equal(t, expectedOriginFilePathsWithLanguage, actualOriginFilePathsWithLanguage)
+			assert.Equal(t, tc.ExpectedOriginFilePathsWithLanguage, actualOriginFilePathsWithLanguage)
 			assert.Equal(t, tc.ExpectedStubFilePath, actualStubFilePath)
 		})
 	}

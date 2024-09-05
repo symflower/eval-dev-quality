@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require_relative 'test_init'
 require_relative '../lib/cascading_if_else'
 
 class TestCascadingIfElse < Minitest::Test

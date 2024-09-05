@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require_relative 'test_init'
 require_relative '../lib/sort'
 
 class TestSort < Minitest::Test

@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require_relative 'test_init'
 require_relative '../lib/binary_search'
 
 class TestBinarySearch < Minitest::Test

@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require_relative 'test_init'
 require_relative '../lib/type_unknown'  # Adjust the path according to your project structure
 
 class TestTypeUnknown < Minitest::Test

@@ -143,6 +143,23 @@ func (r *Repository) Reset(logger *log.Logger) (err error) {
 		return pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to clean git repository", out)))
 	}
 
+	out, err = util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{
+			"git",
+			"restore",
+			".",
+		},
+
+		Directory: r.dataPath,
+		Env: map[string]string{ // Overwrite the global and system configs to point to the default one.
+			"GIT_CONFIG_GLOBAL": filepath.Join(r.dataPath, ".git", "config"),
+			"GIT_CONFIG_SYSTEM": filepath.Join(r.dataPath, ".git", "config"),
+		},
+	})
+	if err != nil {
+		return pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to clean git repository", out)))
+	}
+
 	return nil
 }
 

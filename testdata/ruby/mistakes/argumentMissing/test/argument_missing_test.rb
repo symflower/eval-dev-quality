@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require_relative 'test_init'
 require_relative '../lib/argument_missing'
 
 class TestArgumentMissing < Minitest::Test

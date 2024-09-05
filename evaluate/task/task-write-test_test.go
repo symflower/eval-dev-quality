@@ -16,6 +16,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/language/java"
+	"github.com/symflower/eval-dev-quality/language/ruby"
 	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
@@ -213,6 +214,56 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			}
 		})
 	})
+
+	{
+		if osutil.IsWindows() {
+			t.Skip("Ruby is not tested in the Windows CI")
+		}
+
+		temporaryDirectoryPath := t.TempDir()
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "ruby", "plain")
+		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "ruby", "plain"), repositoryPath))
+
+		testFileContent := bytesutil.StringTrimIndentations(`
+			require_relative "../lib/plain"
+
+			class TestPlain < Minitest::Test
+				def test_plain
+					plain()
+				end
+			end
+		`)
+		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+		modelMock.RegisterGenerateSuccess(t, filepath.Join("test", "plain_test.rb"), testFileContent, metricstesting.AssessmentsWithProcessingTime).Maybe()
+
+		validate(t, &tasktesting.TestCaseTask{
+			Name: "Ruby",
+
+			Model:          modelMock,
+			Language:       &ruby.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("ruby", "plain"),
+
+			ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+				IdentifierWriteTests: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               1,
+				},
+				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               1,
+				},
+			},
+			ExpectedProblemContains: nil,
+			ValidateLog: func(t *testing.T, data string) {
+				assert.Contains(t, data, "Evaluating model \"mocked-model\"")
+			},
+		})
+	}
 }
 
 func TestValidateWriteTestsRepository(t *testing.T) {

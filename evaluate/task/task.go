@@ -138,6 +138,10 @@ func packagesSourceAndTestFiles(logger *log.Logger, packagePath string, language
 	}
 
 	for _, file := range files {
+		if strings.HasSuffix(file, "_init.rb") { // Exclude our custom Ruby test initialization.
+			continue
+		}
+
 		if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
 			testFilePaths = append(testFilePaths, file)
 		} else if strings.HasSuffix(file, language.DefaultFileExtension()) {
