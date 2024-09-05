@@ -22,9 +22,9 @@ You can now use the `eval-dev-quality` binary to [execute the benchmark](#usage)
 
 ## Usage
 
-> REMARK This project does not currently implement a sandbox for executing code. Make sure that you are running benchmarks only inside of a sandbox, e.g. at least a container.
+> REMARK This project does not execute the LLM generated code in a sandbox by default. Make sure that you are running benchmarks only inside of an isolated environment, e.g. by using `--runtime docker`.
 
-At the moment, the only LLM provider implemented is [openrouter.ai](https://openrouter.ai/). You need to create an [access key](https://openrouter.ai/keys) and save it in an environment variable:
+The easiest-to-use LLM provider is [openrouter.ai](https://openrouter.ai/). You need to create an [access key](https://openrouter.ai/keys) and save it in an environment variable:
 
 ```bash
 export PROVIDER_TOKEN=openrouter:${your-key}
@@ -141,6 +141,7 @@ The execution by default also creates a report file `REPORT.md` that contains ad
 
 The following parameters do have a special behavior when using a containerized runtime.
 
+- `--configuration`: Passing configuration files to the docker runtime is currently unsupported.
 - `--testdata`: The check if the path exists is ignored on the host system but still enforced inside the container because the paths of the host and inside the container might differ.
 
 ## Docker
@@ -176,6 +177,23 @@ eval-dev-quality evaluate --runtime docker --model symflower/symbolic-execution
 ## Kubernetes
 
 Please check the [Kubernetes](./docs/kubernetes/README.md) documentation.
+
+## Providers
+
+The following providers (for model inference) are currently supported:
+
+- [OpenRouter](https://openrouter.ai/)
+  - register API key via: `--tokens=openrouter:${key}` or environment `PROVIDER_TOKEN=openrouter:${key}`
+  - select models via the `openrouter` prefix, i.e. `--model openrouter/meta-llama/llama-3.1-8b-instruct`
+- [Ollama](https://ollama.com/)
+  - the evaluation listens to the default Ollama port (`11434`), or will attempt to start an Ollama server if you have the `ollama` binary on your path
+  - select models via the `ollama` prefix, i.e. `--model ollama/llama3.1:8b`
+- [OpenAI API](https://platform.openai.com/docs/api-reference/chat/create)
+  - use any inference endpoint that conforms to the OpenAI chat completion API
+  - register the endpoint using `--urls=custom-${name}:${endpoint-url}` (mind the `custom-` prefix) or using the environment `PROVIDER_URL`
+  - ensure to register your API key to the same `custom-${name}`
+  - select models via the `custom-${name}` prefix
+  - example for [fireworks.ai](https://fireworks.ai/): `eval-dev-quality evaluate --urls=custom-fw:https://api.fireworks.ai/inference/v1 --tokens=custom-fw:${your-api-token} --model custom-fw/accounts/fireworks/models/llama-v3p1-8b-instruct`
 
 # The Evaluation
 
@@ -262,14 +280,15 @@ Currently, the following cases are available for this task:
 
 ### Reward Points
 
-Currently, the following points are awarded for any task:
+Currently, the following points are awarded:
 
 - `response-no-error`: `+1` if the response did not encounter an error
 - `response-not-empty`: `+1` if the response is not empty
 - `response-with-code`: `+1` if the response contained source code
 - `compiled`: `+1` if the source code compiled
-- `statement-coverage-reached`: `+10` for each coverage object of executed code
+- `statement-coverage-reached`: `+10` for each coverage object of executed code (disabled for `transpile` and `code-repair`, as models are writing the implementation code and could just add arbitrary statements to receive a higher score)
 - `no-excess`: `+1` if the response did not contain more content than requested
+- `passing-tests`: `+10` for each test that is passing (disabled for `write-test`, as models are writing the test code and could just add arbitrary test cases to receive a higher score)
 
 ## Results
 
