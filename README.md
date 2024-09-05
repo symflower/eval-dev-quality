@@ -247,6 +247,9 @@ Currently, the following cases are available for this task:
 - Go
   - [`golang/plain`](testdata/golang/plain)
   - [`golang/light`](testdata/golang/light)
+- Ruby
+  - [`ruby/plain`](testdata/ruby/plain)
+  - [`ruby/light`](testdata/ruby/light)
 
 ### Task: Code Repair
 
@@ -262,12 +265,14 @@ Currently, the following cases are available for this task:
   - [`java/mistakes`](testdata/java/mistakes)
 - Go
   - [`golang/mistakes`](testdata/golang/mistakes)
+- Ruby
+  - [`golang/mistakes`](testdata/ruby/mistakes)
 
 ### Task: Transpile
 
 Transpile is the task of converting source code from one language to another.
 
-The test data repository for this task consists of several packages. At the root of each package, there must be a folder called `implementation` containing a **single file**, which is the one to be transpiled. Each package must also contain a source file with a stub (a function signature so the LLM's know the signature of the function they need to generate code for) and a valid test suite. The LLM's response is then validated with the predefined test suite.
+The test data repository for this task consists of several packages. At the root of each package, there must be a folder called `implementation` containing the **implementation files** (one per origin language), which are to be transpiled from. Each package must also contain a source file with a stub (a function signature so the LLM's know the signature of the function they need to generate code for) and a valid test suite. The LLM's response is then validated with the predefined test suite.
 
 #### Cases
 
@@ -277,6 +282,8 @@ Currently, the following cases are available for this task:
   - [`java/transpile`](testdata/java/transpile)
 - Go
   - [`golang/transpile`](testdata/golang/transpile)
+- Ruby
+  - [`golang/transpile`](testdata/ruby/transpile)
 
 ### Reward Points
 
