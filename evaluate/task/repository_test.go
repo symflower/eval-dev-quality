@@ -102,7 +102,7 @@ func TestResetTemporaryRepository(t *testing.T) {
 	}
 
 	validate(t, &testCase{
-		Name: "Reset changes",
+		Name: "Reset new file",
 
 		TestDataPath:   filepath.Join("..", "..", "testdata"),
 		RepositoryPath: filepath.Join("golang", "plain"),
@@ -113,6 +113,23 @@ func TestResetTemporaryRepository(t *testing.T) {
 		},
 		ValidateAfter: func(t *testing.T, path string) {
 			assert.Error(t, osutil.FileExists(filepath.Join(path, "foo")))
+		},
+	})
+
+	validate(t, &testCase{
+		Name: "Reset modified file",
+
+		TestDataPath:   filepath.Join("..", "..", "testdata"),
+		RepositoryPath: filepath.Join("golang", "plain"),
+
+		ExpectedErr: nil,
+		MutationBefore: func(t *testing.T, path string) {
+			assert.NoError(t, os.WriteFile(filepath.Join(path, "plain.go"), []byte("foo"), 0600))
+		},
+		ValidateAfter: func(t *testing.T, path string) {
+			content, err := os.ReadFile(filepath.Join(path, "plain.go"))
+			require.NoError(t, err)
+			assert.NotContains(t, string(content), "foo")
 		},
 	})
 }
