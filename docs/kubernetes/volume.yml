@@ -9,4 +9,4 @@ spec:
     - ReadWriteMany                          # Ensure that the access mode is "ReadWriteMany".
   resources:
     requests:
-      storage: 5Gi
+      storage: 50Gi
