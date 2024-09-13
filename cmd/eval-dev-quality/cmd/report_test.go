@@ -17,24 +17,24 @@ import (
 )
 
 var claudeEvaluationCSVFileContent = bytesutil.StringTrimIndentations(`
-	openrouter/anthropic/claude-2.0,golang,golang/light,write-tests,1,1,1,1,1,1,1,1,1,1,1
-	openrouter/anthropic/claude-2.0,golang,golang/plain,write-tests,2,2,2,2,2,2,2,2,2,2,2
-	openrouter/anthropic/claude-2.0,java,java/light,write-tests,3,3,3,3,3,3,3,3,3,3,3
-	openrouter/anthropic/claude-2.0,java,java/plain,write-tests,4,4,4,4,4,4,4,4,4,4,4
+	openrouter/anthropic/claude-2.0,golang,golang/light,write-tests,1,1,1,1,1,1,1,1,1,1,1,1
+	openrouter/anthropic/claude-2.0,golang,golang/plain,write-tests,1,2,2,2,2,2,2,2,2,2,2,2
+	openrouter/anthropic/claude-2.0,java,java/light,write-tests,1,3,3,3,3,3,3,3,3,3,3,3
+	openrouter/anthropic/claude-2.0,java,java/plain,write-tests,1,4,4,4,4,4,4,4,4,4,4,4
 `)
 
 var gemmaEvaluationCSVFileContent = bytesutil.StringTrimIndentations(`
-	openrouter/google/gemma-7b-it,golang,golang/light,write-tests,5,5,5,5,5,5,5,5,5,5,5
-	openrouter/google/gemma-7b-it,golang,golang/plain,write-tests,6,6,6,6,6,6,6,6,6,6,6
-	openrouter/google/gemma-7b-it,java,java/light,write-tests,7,7,7,7,7,7,7,7,7,7,7
-	openrouter/google/gemma-7b-it,java,java/plain,write-tests,8,8,8,8,8,8,8,8,8,8,8
+	openrouter/google/gemma-7b-it,golang,golang/light,write-tests,1,5,5,5,5,5,5,5,5,5,5,5
+	openrouter/google/gemma-7b-it,golang,golang/plain,write-tests,1,6,6,6,6,6,6,6,6,6,6,6
+	openrouter/google/gemma-7b-it,java,java/light,write-tests,1,7,7,7,7,7,7,7,7,7,7,7
+	openrouter/google/gemma-7b-it,java,java/plain,write-tests,1,8,8,8,8,8,8,8,8,8,8,8
 `)
 
 var gpt4EvaluationCSVFileContent = bytesutil.StringTrimIndentations(`
-	openrouter/openai/gpt-4,golang,golang/light,write-tests,9,9,9,9,9,9,9,9,9,9,9
-	openrouter/openai/gpt-4,golang,golang/plain,write-tests,10,10,10,10,10,10,10,10,10,10,10
-	openrouter/openai/gpt-4,java,java/light,write-tests,11,11,11,11,11,11,11,11,11,11,11
-	openrouter/openai/gpt-4,java,java/plain,write-tests,12,12,12,12,12,12,12,12,12,12,12
+	openrouter/openai/gpt-4,golang,golang/light,write-tests,1,9,9,9,9,9,9,9,9,9,9,9
+	openrouter/openai/gpt-4,golang,golang/plain,write-tests,1,10,10,10,10,10,10,10,10,10,10,10
+	openrouter/openai/gpt-4,java,java/light,write-tests,1,11,11,11,11,11,11,11,11,11,11,11
+	openrouter/openai/gpt-4,java,java/plain,write-tests,1,12,12,12,12,12,12,12,12,12,12,12
 `)
 
 // validateMarkdownLinks checks if the Markdown report data contains all the links to other relevant report files.

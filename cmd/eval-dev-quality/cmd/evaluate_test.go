@@ -64,7 +64,7 @@ type extractMetricsMatch *regexp.Regexp
 var extractMetricsLogsMatch = extractMetricsMatch(regexp.MustCompile(`score=(\d+), coverage=(\d+), files-executed=(\d+), files-executed-maximum-reachable=(\d+), generate-tests-for-file-character-count=(\d+), processing-time=(\d+), response-character-count=(\d+), response-no-error=(\d+), response-no-excess=(\d+), response-with-code=(\d+)`))
 
 // extractMetricsCSVMatch is a regular expression to extract metrics from CSV rows.
-var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
+var extractMetricsCSVMatch = extractMetricsMatch(regexp.MustCompile(`\d+,(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`))
 
 // extractMetrics extracts multiple assessment metrics from the given string according to a given regular expression.
 func extractMetrics(t *testing.T, regex extractMetricsMatch, data string) (assessments []metrics.Assessments, scores []uint64) {
@@ -643,6 +643,14 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "categories.svg"): nil,
 				filepath.Join("result-directory", "config.json"):    nil,
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
+					// Check if the runs are written to the CSV file.
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests,1")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests,2")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests,3")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests-symflower-fix,1")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests-symflower-fix,2")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests-symflower-fix,3")
+
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
 							metrics.AssessmentKeyCoverage:                      10,

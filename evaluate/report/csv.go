@@ -41,7 +41,7 @@ func NewEvaluationFile(writer io.Writer) (evaluationFile *EvaluationFile, err er
 }
 
 // WriteEvaluationRecord writes the assessments of a task into the evaluation CSV.
-func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language language.Language, repositoryName string, assessmentsPerTask map[task.Identifier]metrics.Assessments) (err error) {
+func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language language.Language, repositoryName string, run uint, assessmentsPerTask map[task.Identifier]metrics.Assessments) (err error) {
 	tasks := maps.Keys(assessmentsPerTask)
 	slices.SortStableFunc(tasks, func(a, b task.Identifier) int {
 		return cmp.Compare(a, b)
@@ -50,7 +50,7 @@ func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language langu
 	allRecords := [][]string{}
 	for _, task := range tasks {
 		assessment := assessmentsPerTask[task]
-		row := append([]string{model.ID(), language.ID(), repositoryName, string(task), strconv.FormatUint(uint64(assessment.Score()), 10)}, assessment.StringCSV()...)
+		row := append([]string{model.ID(), language.ID(), repositoryName, string(task), strconv.FormatUint(uint64(run), 10), strconv.FormatUint(uint64(assessment.Score()), 10)}, assessment.StringCSV()...)
 		allRecords = append(allRecords, row)
 	}
 
@@ -74,7 +74,7 @@ func (e *EvaluationFile) WriteLines(records [][]string) (err error) {
 
 // evaluationHeader returns the CSV header for the evaluation CSV.
 func EvaluationHeader() (header []string) {
-	return append([]string{"model-id", "language", "repository", "task", "score"}, metrics.AllAssessmentKeysStrings...)
+	return append([]string{"model-id", "language", "repository", "task", "run", "score"}, metrics.AllAssessmentKeysStrings...)
 }
 
 // RecordsFromEvaluationCSVFiles returns all the records from all the given evaluation CSV files.
@@ -107,7 +107,7 @@ func RecordsToAssessmentsPerModel(records [][]string) (assessmentsPerModel Asses
 
 	for _, record := range records {
 		model := record[0]
-		assessment, err := assessmentFromRecord(record[5:])
+		assessment, err := assessmentFromRecord(record[6:])
 		if err != nil {
 			return nil, err
 		}
