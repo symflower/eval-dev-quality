@@ -157,6 +157,12 @@ openrouter/openai/gpt-4o,write-tests,30926.0,29520.0,329.0,359.0,296375.0,185876
 openrouter/openai/gpt-4o-mini,code-repair,540.0,0.0,15.0,15.0,2200.0,25907.0,2390.0,15.0,15.0,15.0,480.0
 openrouter/openai/gpt-4o-mini,transpile,7700.0,0.0,150.0,150.0,45383.0,366473.0,47087.0,150.0,150.0,150.0,7100.0
 openrouter/openai/gpt-4o-mini,write-tests,31201.0,29780.0,341.0,360.0,350807.0,1821012.0,354887.0,360.0,360.0,360.0,0.0
+openrouter/openai/o1-mini,code-repair,540.0,0.0,15.0,15.0,2255.0,56527.0,2445.0,15.0,15.0,15.0,480.0
+openrouter/openai/o1-mini,transpile,7458.0,0.0,148.0,150.0,49446.0,954279.0,51278.0,150.0,150.0,150.0,6860.0
+openrouter/openai/o1-mini,write-tests,32091.0,30660.0,351.0,360.0,377062.0,3551413.0,381482.0,360.0,360.0,360.0,0.0
+openrouter/openai/o1-preview,code-repair,540.0,0.0,15.0,15.0,2387.0,124977.0,2573.0,15.0,15.0,15.0,480.0
+openrouter/openai/o1-preview,transpile,7620.0,0.0,150.0,150.0,49031.0,2269234.0,50827.0,150.0,150.0,150.0,7020.0
+openrouter/openai/o1-preview,write-tests,32646.0,31210.0,356.0,360.0,430753.0,9825896.0,435205.0,360.0,360.0,360.0,0.0
 openrouter/openchat/openchat-8b,code-repair,127.0,0.0,3.0,5.0,555.0,8171.0,1469.0,5.0,4.0,5.0,110.0
 openrouter/openchat/openchat-8b,transpile,3863.0,0.0,77.0,100.0,33729.0,215885.0,39749.0,98.0,34.0,94.0,3560.0
 openrouter/openchat/openchat-8b,write-tests,1386.0,1030.0,35.0,130.0,83779.0,556039.0,104039.0,129.0,64.0,128.0,0.0

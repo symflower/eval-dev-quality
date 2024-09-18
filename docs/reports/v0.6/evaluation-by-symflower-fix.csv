@@ -52,6 +52,8 @@ openrouter/nousresearch/nous-hermes-yi-34b,3064.0,3845.0,66.0,87.0
 openrouter/openai/gpt-4-turbo,7003.0,7790.0,153.0,170.0
 openrouter/openai/gpt-4o,6446.0,6895.0,139.0,148.0
 openrouter/openai/gpt-4o-mini,6972.0,7707.0,152.0,167.0
+openrouter/openai/o1-mini,7848.0,7899.0,168.0,169.0
+openrouter/openai/o1-preview,7799.0,7799.0,169.0,169.0
 openrouter/openchat/openchat-8b,3071.0,4574.0,66.0,99.0
 openrouter/perplexity/llama-3-sonar-large-32k-chat,6643.0,7234.0,153.0,164.0
 openrouter/perplexity/llama-3-sonar-small-32k-chat,768.0,1414.0,16.0,32.0
