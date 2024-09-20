@@ -70,6 +70,10 @@ Release version of this roadmap issue:
         -   [ ] Remove the previous announcements
         -   [ ] Add a "Deep dive: $blog-post-title" announcement for the blog post
         -   [ ] Add a "v$version: $summary-of-highlights" announcement for the release
+    -   [ ] symflower.com
+        -   [ ] Update "latest DevQualityEval deep dive" mentions
+        -   [ ] Update DevQualityEval blog series lists with new entries
+        -   [ ] Update LLM blog series lists with new entries
 -   [ ] Announce release
 -   [ ] Eat cake 🎂
 
