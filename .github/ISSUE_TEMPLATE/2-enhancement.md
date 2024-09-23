@@ -1,6 +1,6 @@
 ---
-name: Enhancement / Feature Request
-about: Improving upon existing behavior.
+name: Feature request
+about: Improving existing or adding new behavior.
 labels: enhancement
 ---
 
@@ -8,7 +8,7 @@ labels: enhancement
 
 ## Problem
 
-> Please describe the problem/inconvenience to be solved.
+> Please describe the problem to be solved.
 
 ## (Optional) Solution
 
