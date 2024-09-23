@@ -1,5 +1,5 @@
 ---
-name: Roadmap issue
+name: Roadmap Issue
 about: Use this template for tracking release roadmaps.
 title: 'Roadmap for vXXXXX'
 labels: roadmap
@@ -56,6 +56,7 @@ Release version of this roadmap issue:
     -   [ ] Use the tasks that are already there for the release note outline
     -   [ ] Add highlighted features based on the done tasks, sort by how many users would use the feature
 -   [ ] Do the release
+    -   [ ] Update the release version string in `evaluate/version.go`
     -   [ ] With the release notes
     -   [ ] Set as latest release
 -   [ ] Prepare the next roadmap
