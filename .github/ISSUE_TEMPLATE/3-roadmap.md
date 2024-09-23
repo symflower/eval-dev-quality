@@ -1,5 +1,5 @@
 ---
-name: Roadmap issue
+name: Roadmap Issue
 about: Use this template for tracking release roadmaps.
 title: 'Roadmap for vXXXXX'
 labels: roadmap

@@ -1,0 +1,44 @@
+name: Bug Report
+description: Something is not working as expected.
+labels: ["bug"]
+
+body:
+  - type: checkboxes
+    attributes:
+      label: Please help us keep the number of duplicated issues small.
+      options:
+        - label: "I have searched the [existing issues](https://github.com/symflower/eval-dev-quality/issues?q=is%3Aopen+is%3Aissue+label%3Abug) for my problem."
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Brief Description
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Reproducer
+      description: "How is the unexpected behavior triggered?"
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Logs
+      description: "The (reduced) output of `eval-dev-quality`, or `<result-directory>/evaluation.log`."
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Additional Information
+
+  - type: textarea
+    attributes:
+      label: Version
+      description: "Output of `eval-dev-quality version`."
+      render: shell
+    validations:
+      required: false
