@@ -14,7 +14,7 @@ body:
     attributes:
       label: Brief Description
     validations:
-      required: false
+      required: true
 
   - type: textarea
     attributes:
@@ -35,10 +35,10 @@ body:
     attributes:
       label: Additional Information
 
-  - type: textarea
+  - type: input
     attributes:
       label: Version
-      description: "Output of `eval-dev-quality version`."
+      description: "Output of `eval-dev-quality version` or commit revision."
       render: shell
     validations:
-      required: false
+      required: true
