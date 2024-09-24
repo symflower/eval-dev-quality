@@ -39,6 +39,5 @@ body:
     attributes:
       label: Version
       description: "Output of `eval-dev-quality version` or commit revision."
-      render: shell
     validations:
       required: true
