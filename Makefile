@@ -43,7 +43,7 @@ help: # Show this help message.
 	@grep -E '^[a-zA-Z-][a-zA-Z0-9.-]*?:.*?# (.+)' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 .PHONY: help
 
-install: # [<Go package] - # Build and install everything, or only the specified package.
+install: # [Go package] - # Build and install everything, or only the specified package.
 	go install -v -ldflags="$(GO_LDFLAGS)" $(PACKAGE)
 .PHONY: install
 

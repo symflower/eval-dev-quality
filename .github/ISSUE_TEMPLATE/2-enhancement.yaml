@@ -1,0 +1,25 @@
+name: Feature request
+description: Improving existing or adding new behavior.
+labels: ["enhancement"]
+
+body:
+  - type: checkboxes
+    attributes:
+      label: Please help us keep the number of duplicated issues small. We kindly ask you to add your input to the appropriate issue or PR in case your feature idea is already being tracked.
+      options:
+        - label: "I have searched the existing [feature requests](https://github.com/symflower/eval-dev-quality/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement), latest [roadmap](https://github.com/symflower/eval-dev-quality/issues?q=is%3Aopen+is%3Aissue+label%3Aroadmap) and [open pull requests](https://github.com/symflower/eval-dev-quality/pulls)."
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Problem
+      description: Please describe the problem to be solved.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Solution (optional)
+      description: "Please outline your preferred solution. Describe how the solution looks for the end-user (i.e. using `eval-dev-quality`), and (if possible) a rough outline how the solution could be implemented from a technical perspective."
+    validations:
+      required: false

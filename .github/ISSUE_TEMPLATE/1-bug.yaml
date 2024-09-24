@@ -1,4 +1,4 @@
-name: Bug Report
+name: Bug report
 description: Something is not working as expected.
 labels: ["bug"]
 
@@ -14,7 +14,7 @@ body:
     attributes:
       label: Brief Description
     validations:
-      required: false
+      required: true
 
   - type: textarea
     attributes:
@@ -26,7 +26,7 @@ body:
   - type: textarea
     attributes:
       label: Logs
-      description: "The (reduced) output of `eval-dev-quality`, or `<result-directory>/evaluation.log`."
+      description: "The (reduced) output of `eval-dev-quality`, or `${result directory}/evaluation.log`."
       render: shell
     validations:
       required: false
@@ -35,10 +35,10 @@ body:
     attributes:
       label: Additional Information
 
-  - type: textarea
+  - type: input
     attributes:
       label: Version
-      description: "Output of `eval-dev-quality version`."
+      description: "Output of `eval-dev-quality version` or commit revision."
       render: shell
     validations:
-      required: false
+      required: true

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: script.sh <evaluation-file> <meta-file>
+# Usage: script.sh ${evaluation file} ${meta file}
 
 # Check if csvkit is installed.
 if ! command -v csvsql &> /dev/null
