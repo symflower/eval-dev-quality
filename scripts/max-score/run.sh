@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: script.sh <evaluation-directory>
+# Usage: script.sh ${evaluation directory}
 
 echo "WRITE TESTS"
 echo "java:"
