@@ -266,7 +266,7 @@ Currently, the following cases are available for this task:
 - Go
   - [`golang/mistakes`](testdata/golang/mistakes)
 - Ruby
-  - [`golang/mistakes`](testdata/ruby/mistakes)
+  - [`ruby/mistakes`](testdata/ruby/mistakes)
 
 ### Task: Transpile
 
@@ -283,7 +283,7 @@ Currently, the following cases are available for this task:
 - Go
   - [`golang/transpile`](testdata/golang/transpile)
 - Ruby
-  - [`golang/transpile`](testdata/ruby/transpile)
+  - [`ruby/transpile`](testdata/ruby/transpile)
 
 ### Reward Points
 
