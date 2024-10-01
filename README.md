@@ -4,9 +4,9 @@ An evaluation benchmark 📈 and framework to compare and evolve the quality of 
 
 This repository gives developers of LLMs (and other code generation tools) a standardized benchmark and framework to improve real-world usage in the software development domain and provides users of LLMs with metrics and comparisons to check if a given LLM is useful for their tasks.
 
-The [latest results](docs/reports/v0.5.0) are discussed in a deep dive: [DeepSeek v2 Coder and Claude 3.5 Sonnet are more cost-effective at code generation than GPT-4o!](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.5.0-deepseek-v2-coder-and-claude-3.5-sonnet-beat-gpt-4o-for-cost-effectiveness-in-code-generation/)
+The latest results are discussed in a deep dive: [OpenAI's o1-preview is the king 👑 of code generation but is super slow and expensive](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.6-o1-preview-is-the-king-of-code-generation-but-is-super-slow-and-expensive/)
 
-![Scatter plot that shows the best LLMs aligned with their capability on the y-axis to costs with a logarithmic scale on the x-axis of the v0.5.0 deep dive.](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.5.0-deepseek-v2-coder-and-claude-3.5-sonnet-beat-gpt-4o-for-cost-effectiveness-in-code-generation/images/header.png)
+![Scatter plot that shows the best LLMs aligned with their capability on the y-axis to costs with a logarithmic scale on the x-axis of the v0.6 deep dive.](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.6-o1-preview-is-the-king-of-code-generation-but-is-super-slow-and-expensive/images/header.png)
 
 ## Installation
 
