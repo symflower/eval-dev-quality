@@ -1,8 +1,6 @@
 package task
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"strings"
 
@@ -55,7 +53,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 
 	for _, filePath := range filePaths {
 		modelAssessmentForFile := metrics.NewAssessments()
-		withSymflowerFixAssessmentForFile := modelAssessmentForFile // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until a failure actually happens.
+		withSymflowerFixAssessmentForFile := modelAssessmentForFile // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until we successfully applied "symflower fix".
 
 		if err := ctx.Repository.Reset(ctx.Logger); err != nil {
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
@@ -85,42 +83,28 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, filePath))
-
-			// If there is an execution timeout do not run "symflower fix" because the code itself is correct.
-			if errors.Is(err, context.DeadlineExceeded) {
-				modelAssessment.Add(modelAssessmentForFile)
-				withSymflowerFixAssessment.Add(withSymflowerFixAssessmentForFile)
-
-				continue
-			}
-
-			// Run "symflower fix" if the model response fails to execute.
-			if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
-				withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, ctx.Repository.DataPath())
-				problems = append(problems, ps...)
-				if err != nil {
-					problems = append(problems, err)
-
-					modelAssessment.Add(modelAssessmentForFile)
-					withSymflowerFixAssessment.Add(withSymflowerFixAssessmentForFile)
-
-					continue
-				} else {
-					ctx.Logger.Printf("with symflower repair: Executes tests with %d coverage objects", withSymflowerFixTestResult.Coverage)
-
-					// Symflower was able to fix a failure so now update the assessment with the improved results.
-					withSymflowerFixAssessments := metrics.NewAssessments()
-					withSymflowerFixAssessments[metrics.AssessmentKeyProcessingTime] = processingTime
-					withSymflowerFixAssessments.Award(metrics.AssessmentKeyFilesExecuted)
-					withSymflowerFixAssessments.AwardPoints(metrics.AssessmentKeyCoverage, withSymflowerFixTestResult.Coverage)
-
-					withSymflowerFixAssessmentForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentForFile, withSymflowerFixAssessments)
-				}
-			}
 		} else {
 			taskLogger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
 			modelAssessmentForFile.Award(metrics.AssessmentKeyFilesExecuted)
 			modelAssessmentForFile.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
+		}
+
+		if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
+			withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, ctx.Repository.DataPath())
+			problems = append(problems, ps...)
+			if err != nil {
+				problems = append(problems, err)
+			} else {
+				ctx.Logger.Printf("with symflower repair: Executes tests with %d coverage objects", withSymflowerFixTestResult.Coverage)
+
+				// Symflower was able to fix a failure so now update the assessment with the improved results.
+				withSymflowerFixAssessments := metrics.NewAssessments()
+				withSymflowerFixAssessments[metrics.AssessmentKeyProcessingTime] = processingTime
+				withSymflowerFixAssessments.Award(metrics.AssessmentKeyFilesExecuted)
+				withSymflowerFixAssessments.AwardPoints(metrics.AssessmentKeyCoverage, withSymflowerFixTestResult.Coverage)
+
+				withSymflowerFixAssessmentForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentForFile, withSymflowerFixAssessments)
+			}
 		}
 
 		modelAssessment.Add(modelAssessmentForFile)
