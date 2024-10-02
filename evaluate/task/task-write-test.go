@@ -52,63 +52,17 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 	withSymflowerFixAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
 
 	for _, filePath := range filePaths {
-		modelAssessmentForFile := metrics.NewAssessments()
-		withSymflowerFixAssessmentForFile := modelAssessmentForFile // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until we successfully applied "symflower fix".
-
 		if err := ctx.Repository.Reset(ctx.Logger); err != nil {
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 		}
 
-		modelContext := model.Context{
-			Language: ctx.Language,
-
-			RepositoryPath: dataPath,
-			FilePath:       filePath,
-
-			Logger: taskLogger.Logger,
-		}
-		assessments, err := modelCapability.WriteTests(modelContext)
-		if err != nil {
-			problems = append(problems, pkgerrors.WithMessage(err, filePath))
-
-			continue
-		}
-		if assessments[metrics.AssessmentKeyProcessingTime] == 0 {
-			return nil, nil, pkgerrors.Errorf("no model response time measurement present for %q at repository %q", ctx.Model.ID(), ctx.Repository.Name())
-		}
-		modelAssessmentForFile.Add(assessments)
-		modelAssessmentForFile.Award(metrics.AssessmentKeyResponseNoError)
-
-		testResult, ps, err := ctx.Language.ExecuteTests(taskLogger.Logger, dataPath)
+		modelAssessmentFile, withSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, taskLogger, modelCapability, dataPath, filePath)
 		problems = append(problems, ps...)
 		if err != nil {
-			problems = append(problems, pkgerrors.WithMessage(err, filePath))
-		} else {
-			taskLogger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
-			modelAssessmentForFile.Award(metrics.AssessmentKeyFilesExecuted)
-			modelAssessmentForFile.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
+			return nil, problems, err
 		}
-
-		if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
-			withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, ctx.Repository.DataPath())
-			problems = append(problems, ps...)
-			if err != nil {
-				problems = append(problems, err)
-			} else {
-				ctx.Logger.Printf("with symflower repair: Executes tests with %d coverage objects", withSymflowerFixTestResult.Coverage)
-
-				// Symflower was able to fix a failure so now update the assessment with the improved results.
-				withSymflowerFixAssessments := metrics.NewAssessments()
-				withSymflowerFixAssessments[metrics.AssessmentKeyProcessingTime] = processingTime
-				withSymflowerFixAssessments.Award(metrics.AssessmentKeyFilesExecuted)
-				withSymflowerFixAssessments.AwardPoints(metrics.AssessmentKeyCoverage, withSymflowerFixTestResult.Coverage)
-
-				withSymflowerFixAssessmentForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentForFile, withSymflowerFixAssessments)
-			}
-		}
-
-		modelAssessment.Add(modelAssessmentForFile)
-		withSymflowerFixAssessment.Add(withSymflowerFixAssessmentForFile)
+		modelAssessment.Add(modelAssessmentFile)
+		withSymflowerFixAssessment.Add(withSymflowerFixAssessmentFile)
 	}
 
 	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{
@@ -117,6 +71,59 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 	}
 
 	return repositoryAssessment, problems, nil
+}
+
+func runModelAndSymflowerFix(ctx evaltask.Context, taskLogger *taskLogger, modelCapability model.CapabilityWriteTests, dataPath string, filePath string) (modelAssessment metrics.Assessments, withSymflowerFixAssessment metrics.Assessments, problems []error, err error) {
+	modelAssessment = metrics.NewAssessments()
+	withSymflowerFixAssessment = modelAssessment // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until we successfully applied "symflower fix".
+
+	modelContext := model.Context{
+		Language: ctx.Language,
+
+		RepositoryPath: dataPath,
+		FilePath:       filePath,
+
+		Logger: taskLogger.Logger,
+	}
+	assessments, err := modelCapability.WriteTests(modelContext)
+	if err != nil {
+		return nil, nil, append(problems, pkgerrors.WithMessage(err, filePath)), nil
+	}
+	if assessments[metrics.AssessmentKeyProcessingTime] == 0 {
+		return nil, nil, problems, pkgerrors.Errorf("no model response time measurement present for %q at repository %q", ctx.Model.ID(), ctx.Repository.Name())
+	}
+	modelAssessment.Add(assessments)
+	modelAssessment.Award(metrics.AssessmentKeyResponseNoError)
+
+	testResult, ps, err := ctx.Language.ExecuteTests(taskLogger.Logger, dataPath)
+	problems = append(problems, ps...)
+	if err != nil {
+		problems = append(problems, pkgerrors.WithMessage(err, filePath))
+	} else {
+		taskLogger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
+		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
+		modelAssessment.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
+	}
+
+	if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
+		withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, ctx.Repository.DataPath())
+		problems = append(problems, ps...)
+		if err != nil {
+			problems = append(problems, err)
+		} else {
+			ctx.Logger.Printf("with symflower repair: Executes tests with %d coverage objects", withSymflowerFixTestResult.Coverage)
+
+			// Symflower was able to fix a failure so now update the assessment with the improved results.
+			withSymflowerFix := metrics.NewAssessments()
+			withSymflowerFix[metrics.AssessmentKeyProcessingTime] = processingTime
+			withSymflowerFix.Award(metrics.AssessmentKeyFilesExecuted)
+			withSymflowerFix.AwardPoints(metrics.AssessmentKeyCoverage, withSymflowerFixTestResult.Coverage)
+
+			withSymflowerFixAssessment = metrics.CombineWithSymflowerFixAssessments(modelAssessment, withSymflowerFix)
+		}
+	}
+
+	return modelAssessment, withSymflowerFixAssessment, problems, nil
 }
 
 // validateWriteTestsRepository checks if the repository for the "write-tests" task is well-formed.
