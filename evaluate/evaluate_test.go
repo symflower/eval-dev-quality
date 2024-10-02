@@ -144,7 +144,7 @@ func TestEvaluate(t *testing.T) {
 				return nil
 			}))
 
-			assert.ElementsMatch(t, tc.ExpectedAssessments, actualAssessments)
+			assert.Equal(t, tc.ExpectedAssessments.ToMap(), actualAssessments.ToMap())
 			assert.Equal(t, tc.ExpectedTotalScore, actualTotalScore)
 
 			if tc.ExpectedOutputValidate != nil {

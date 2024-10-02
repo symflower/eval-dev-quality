@@ -47,15 +47,15 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 	}
 
 	modelAssessment := metrics.NewAssessments()
-	withSymflowerAssessment := metrics.NewAssessments()
+	withSymflowerFixAssessment := metrics.NewAssessments()
 
 	maximumReachableFiles := uint64(len(filePaths))
 	modelAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
-	withSymflowerAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
+	withSymflowerFixAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
 
 	for _, filePath := range filePaths {
 		modelAssessmentForFile := metrics.NewAssessments()
-		withSymflowerAssessmentForFile := modelAssessmentForFile // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until a failure actually happens.
+		withSymflowerFixAssessmentForFile := modelAssessmentForFile // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until a failure actually happens.
 
 		if err := ctx.Repository.Reset(ctx.Logger); err != nil {
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
@@ -89,7 +89,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 			// If there is an execution timeout do not run "symflower fix" because the code itself is correct.
 			if errors.Is(err, context.DeadlineExceeded) {
 				modelAssessment.Add(modelAssessmentForFile)
-				withSymflowerAssessment.Add(withSymflowerAssessmentForFile)
+				withSymflowerFixAssessment.Add(withSymflowerFixAssessmentForFile)
 
 				continue
 			}
@@ -102,7 +102,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 					problems = append(problems, err)
 
 					modelAssessment.Add(modelAssessmentForFile)
-					withSymflowerAssessment.Add(withSymflowerAssessmentForFile)
+					withSymflowerFixAssessment.Add(withSymflowerFixAssessmentForFile)
 
 					continue
 				} else {
@@ -114,7 +114,7 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 					withSymflowerFixAssessments.Award(metrics.AssessmentKeyFilesExecuted)
 					withSymflowerFixAssessments.AwardPoints(metrics.AssessmentKeyCoverage, withSymflowerFixTestResult.Coverage)
 
-					withSymflowerAssessmentForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentForFile, withSymflowerFixAssessments)
+					withSymflowerFixAssessmentForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentForFile, withSymflowerFixAssessments)
 				}
 			}
 		} else {
@@ -124,12 +124,12 @@ func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 		}
 
 		modelAssessment.Add(modelAssessmentForFile)
-		withSymflowerAssessment.Add(withSymflowerAssessmentForFile)
+		withSymflowerFixAssessment.Add(withSymflowerFixAssessmentForFile)
 	}
 
 	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{
 		IdentifierWriteTests:             modelAssessment,
-		IdentifierWriteTestsSymflowerFix: withSymflowerAssessment,
+		IdentifierWriteTestsSymflowerFix: withSymflowerFixAssessment,
 	}
 
 	return repositoryAssessment, problems, nil
