@@ -52,6 +52,8 @@ openrouter/nousresearch/nous-hermes-yi-34b,Nous: Hermes 2 Yi 34B,1.44e-06,8206.0
 openrouter/openai/gpt-4-turbo,OpenAI: GPT-4 Turbo,4e-05,38422.0,30050.0,507.0,525.0,370196.0,4884796.0,376394.0,525.0,525.0,525.0,6290.0
 openrouter/openai/gpt-4o,OpenAI: GPT-4o,2e-05,39005.0,29520.0,493.0,524.0,347236.0,2230436.0,353722.0,524.0,524.0,524.0,7420.0
 openrouter/openai/gpt-4o-mini,OpenAI: GPT-4o-mini,7.5e-07,39441.0,29780.0,506.0,525.0,398390.0,2213392.0,404364.0,525.0,525.0,525.0,7580.0
+openrouter/openai/o1-mini,,,40089.0,30660.0,514.0,525.0,428763.0,4562219.0,435205.0,525.0,525.0,525.0,7340.0
+openrouter/openai/o1-preview,,,40806.0,31210.0,521.0,525.0,482171.0,12220107.0,488605.0,525.0,525.0,525.0,7500.0
 openrouter/openchat/openchat-8b,OpenChat 3.6 8B,1.1e-07,5376.0,1030.0,115.0,235.0,118063.0,780095.0,145257.0,232.0,102.0,227.0,3670.0
 openrouter/perplexity/llama-3-sonar-large-32k-chat,Perplexity: Llama3 Sonar 70B,2e-06,35051.0,26960.0,483.0,525.0,332540.0,3794568.0,336998.0,523.0,522.0,523.0,6040.0
 openrouter/perplexity/llama-3-sonar-small-32k-chat,Perplexity: Llama3 Sonar 8B,4e-07,7338.0,2230.0,146.0,355.0,356068.0,1319498.0,391432.0,353.0,188.0,351.0,4070.0

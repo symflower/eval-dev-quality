@@ -139,8 +139,12 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 						logger := logger.With(log.AttributeKeyTask, taskIdentifier)
 						withLoadedModel(logger, model, ctx.ProviderForModel[model], func() {
 							for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
+								var runCount uint
 								if ctx.Runs > 1 && ctx.RunsSequential {
 									logger.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+									runCount = rm + 1
+								} else {
+									runCount = rl + 1
 								}
 
 								if err := temporaryRepository.Reset(logger); err != nil {
@@ -168,7 +172,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 								}
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								// Write the task assessment to the evaluation CSV file.
-								evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), assessment)
+								evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment)
 							}
 						})
 					}
@@ -259,8 +263,12 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 						logger := logger.With(log.AttributeKeyTask, taskIdentifier)
 						withLoadedModel(logger, model, ctx.ProviderForModel[model], func() {
 							for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
+								var runCount uint
 								if ctx.Runs > 1 && ctx.RunsSequential {
 									logger.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+									runCount = rm + 1
+								} else {
+									runCount = rl + 1
 								}
 
 								if err := temporaryRepository.Reset(logger); err != nil {
@@ -283,7 +291,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 								}
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								// Write the task assessment to the evaluation CSV file.
-								evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), assessment)
+								evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment)
 							}
 						})
 					}
