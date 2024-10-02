@@ -132,7 +132,7 @@ func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[eval
 						continue
 					} else {
 						testsPassing := withSymflowerFixTestResult.TestsPass
-						taskLogger.Printf("Executes tests with %d tests passing after \"symflower fix\"", testsPassing)
+						taskLogger.Printf("with symflower repair: Executes tests with %d tests passing", testsPassing)
 
 						// Symflower was able to fix a failure so now update the assessment with the improved results.
 						withSymflowerFixAssessments := metrics.NewAssessments()
