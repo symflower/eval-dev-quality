@@ -68,7 +68,8 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			}
 			actualAssessment, actualError := llm.WriteTests(ctx)
 			assert.NoError(t, actualError)
-			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
+
+			assert.Equal(t, metricstesting.Clean(tc.ExpectedAssessment), metricstesting.Clean(actualAssessment))
 
 			actualTestFileContent, err := os.ReadFile(filepath.Join(temporaryPath, tc.ExpectedTestFilePath))
 			assert.NoError(t, err)
@@ -172,7 +173,8 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 			}
 			actualAssessment, actualError := llm.RepairCode(ctx)
 			assert.NoError(t, actualError)
-			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
+
+			assert.Equal(t, metricstesting.Clean(tc.ExpectedAssessment), metricstesting.Clean(actualAssessment))
 
 			actualSourceFileContent, err := os.ReadFile(filepath.Join(repositoryPath, tc.SourceFilePath))
 			assert.NoError(t, err)
@@ -210,8 +212,10 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 			},
 
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 1,
-				metrics.AssessmentKeyResponseWithCode: 1,
+				metrics.AssessmentKeyResponseNoExcess:                   1,
+				metrics.AssessmentKeyResponseWithCode:                   1,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 134,
+				metrics.AssessmentKeyResponseCharacterCount:             143,
 			},
 			ExpectedSourceFileContent: `
 				package openingBracketMissing
@@ -260,8 +264,10 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 			},
 
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 1,
-				metrics.AssessmentKeyResponseWithCode: 1,
+				metrics.AssessmentKeyResponseNoExcess:                   1,
+				metrics.AssessmentKeyResponseWithCode:                   1,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 186,
+				metrics.AssessmentKeyResponseCharacterCount:             195,
 			},
 			ExpectedSourceFileContent: `
 				package com.eval;
@@ -514,7 +520,8 @@ func TestModelTranspile(t *testing.T) {
 
 		actualAssessment, actualError := llm.Transpile(ctx)
 		assert.NoError(t, actualError)
-		metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
+
+		assert.Equal(t, metricstesting.Clean(tc.ExpectedAssessment), metricstesting.Clean(actualAssessment))
 
 		actualStubFileContent, err := os.ReadFile(filepath.Join(repositoryPath, tc.StubFilePath))
 		assert.NoError(t, err)
@@ -562,8 +569,10 @@ func TestModelTranspile(t *testing.T) {
 			StubFilePath:   filepath.Join("binarySearch.go"),
 
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 1,
-				metrics.AssessmentKeyResponseWithCode: 1,
+				metrics.AssessmentKeyResponseNoExcess:                   1,
+				metrics.AssessmentKeyResponseWithCode:                   1,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 280,
+				metrics.AssessmentKeyResponseCharacterCount:             289,
 			},
 			ExpectedStubFileContent: transpiledFileContent,
 		})
@@ -610,8 +619,10 @@ func TestModelTranspile(t *testing.T) {
 			StubFilePath:   filepath.Join("src", "main", "java", "com", "eval", "BinarySearch.java"),
 
 			ExpectedAssessment: metrics.Assessments{
-				metrics.AssessmentKeyResponseNoExcess: 1,
-				metrics.AssessmentKeyResponseWithCode: 1,
+				metrics.AssessmentKeyResponseNoExcess:                   1,
+				metrics.AssessmentKeyResponseWithCode:                   1,
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 348,
+				metrics.AssessmentKeyResponseCharacterCount:             357,
 			},
 			ExpectedStubFileContent: transpiledFileContent,
 		})

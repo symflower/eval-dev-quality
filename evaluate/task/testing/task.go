@@ -59,7 +59,8 @@ func (tc *TestCaseTask) Validate(t *testing.T, createRepository createRepository
 	}
 	actualRepositoryAssessment, actualProblems, actualErr := tc.Task.Run(taskContext)
 
-	metricstesting.AssertTaskAssessmentsEqual(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
+	assert.Equal(t, metricstesting.CleanMap(tc.ExpectedRepositoryAssessment), metricstesting.CleanMap(actualRepositoryAssessment))
+
 	if assert.Equal(t, len(tc.ExpectedProblemContains), len(actualProblems), "problems count") {
 		for i, expectedProblem := range tc.ExpectedProblemContains {
 			actualProblem := actualProblems[i]

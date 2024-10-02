@@ -126,19 +126,12 @@ func TestEvaluate(t *testing.T) {
 
 			var actualAssessments metricstesting.AssessmentTuples
 			require.NoError(t, assessmentStore.Walk(func(m evalmodel.Model, l language.Language, r string, ti task.Identifier, a metrics.Assessments) error {
-				// Normalize assessments.
-				if v, ok := a[metrics.AssessmentKeyProcessingTime]; ok {
-					if assert.Greater(t, v, uint64(0)) {
-						delete(a, metrics.AssessmentKeyProcessingTime)
-					}
-				}
-
 				actualAssessments = append(actualAssessments, &metricstesting.AssessmentTuple{
 					Model:          m,
 					Language:       l,
 					RepositoryPath: r,
 					Task:           ti,
-					Assessment:     a,
+					Assessment:     metricstesting.Clean(a),
 				})
 
 				return nil
@@ -501,7 +494,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -513,7 +505,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -525,7 +516,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 2,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 							metrics.AssessmentKeyResponseNoError:               2,
@@ -537,7 +527,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 2,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 							metrics.AssessmentKeyResponseNoError:               2,
@@ -602,7 +591,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 2,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 							metrics.AssessmentKeyResponseNoError:               2,
@@ -614,7 +602,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 2,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 							metrics.AssessmentKeyResponseNoError:               2,
@@ -626,7 +613,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -638,7 +624,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -762,7 +747,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 3,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
 							metrics.AssessmentKeyResponseNoError:               3,
@@ -774,7 +758,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 3,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
 							metrics.AssessmentKeyResponseNoError:               3,
@@ -834,7 +817,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 3,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
 							metrics.AssessmentKeyResponseNoError:               3,
@@ -846,7 +828,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 3,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
 							metrics.AssessmentKeyResponseNoError:               3,
@@ -935,7 +916,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 3,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
 							metrics.AssessmentKeyResponseNoError:               3,
@@ -947,7 +927,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 3,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
 							metrics.AssessmentKeyResponseNoError:               3,
@@ -1019,7 +998,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 3,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
 							metrics.AssessmentKeyResponseNoError:               3,
@@ -1031,7 +1009,6 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyCoverage:                      0,
 							metrics.AssessmentKeyFilesExecuted:                 3,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
 							metrics.AssessmentKeyResponseNoError:               3,
@@ -1085,7 +1062,6 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPath,
 					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: map[metrics.AssessmentKey]uint64{
-						metrics.AssessmentKeyCoverage:                      0,
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -1097,7 +1073,6 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPath,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
-						metrics.AssessmentKeyCoverage:                      0,
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
