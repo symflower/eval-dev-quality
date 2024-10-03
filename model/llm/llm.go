@@ -63,7 +63,7 @@ func (m *Model) MetaInformation() (metaInformation *model.MetaInformation) {
 	return m.metaInformation
 }
 
-// llmSourceFilePromptContext is the context for template for generating an LLM test generation prompt.
+// llmSourceFilePromptContext is the base template context for an LLM generation prompt.
 type llmSourceFilePromptContext struct {
 	// Language holds the programming language name.
 	Language language.Language
@@ -76,8 +76,14 @@ type llmSourceFilePromptContext struct {
 	ImportPath string
 }
 
-// llmGenerateTestForFilePromptTemplate is the template for generating an LLM test generation prompt.
-var llmGenerateTestForFilePromptTemplate = template.Must(template.New("model-llm-generate-test-for-file-prompt").Parse(bytesutil.StringTrimIndentations(`
+// llmWriteTestSourceFilePromptContext is the template context for a write test LLM prompt.
+type llmWriteTestSourceFilePromptContext struct {
+	// llmSourceFilePromptContext holds the context for a source file prompt.
+	llmSourceFilePromptContext
+}
+
+// llmWriteTestForFilePromptTemplate is the template for generating an LLM test generation prompt.
+var llmWriteTestForFilePromptTemplate = template.Must(template.New("model-llm-write-test-for-file-prompt").Parse(bytesutil.StringTrimIndentations(`
 	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" with package "{{ .ImportPath }}", provide a test file for this code{{ with $testFramework := .Language.TestFramework }} with {{ $testFramework }} as a test framework{{ end }}.
 	The tests should produce 100 percent code coverage and must compile.
 	The response must contain only the test code in a fenced code block and nothing else.
@@ -87,14 +93,14 @@ var llmGenerateTestForFilePromptTemplate = template.Must(template.New("model-llm
 	` + "```" + `
 `)))
 
-// llmGenerateTestForFilePrompt returns the prompt for generating an LLM test generation.
-func llmGenerateTestForFilePrompt(data *llmSourceFilePromptContext) (message string, err error) {
+// Format returns the prompt for generating an LLM test generation.
+func (ctx *llmWriteTestSourceFilePromptContext) Format() (message string, err error) {
 	// Use Linux paths even when running the evaluation on Windows to ensure consistency in prompting.
-	data.FilePath = filepath.ToSlash(data.FilePath)
-	data.Code = strings.TrimSpace(data.Code)
+	ctx.FilePath = filepath.ToSlash(ctx.FilePath)
+	ctx.Code = strings.TrimSpace(ctx.Code)
 
 	var b strings.Builder
-	if err := llmGenerateTestForFilePromptTemplate.Execute(&b, data); err != nil {
+	if err := llmWriteTestForFilePromptTemplate.Execute(&b, ctx); err != nil {
 		return "", pkgerrors.WithStack(err)
 	}
 
@@ -123,14 +129,14 @@ var llmCodeRepairSourceFilePromptTemplate = template.Must(template.New("model-ll
 	- {{.}}{{ end }}
 `)))
 
-// llmCodeRepairSourceFilePrompt returns the prompt to code repair a source file.
-func llmCodeRepairSourceFilePrompt(data *llmCodeRepairSourceFilePromptContext) (message string, err error) {
+// Format returns the prompt to code repair a source file.
+func (ctx *llmCodeRepairSourceFilePromptContext) Format() (message string, err error) {
 	// Use Linux paths even when running the evaluation on Windows to ensure consistency in prompting.
-	data.FilePath = filepath.ToSlash(data.FilePath)
-	data.Code = strings.TrimSpace(data.Code)
+	ctx.FilePath = filepath.ToSlash(ctx.FilePath)
+	ctx.Code = strings.TrimSpace(ctx.Code)
 
 	var b strings.Builder
-	if err := llmCodeRepairSourceFilePromptTemplate.Execute(&b, data); err != nil {
+	if err := llmCodeRepairSourceFilePromptTemplate.Execute(&b, ctx); err != nil {
 		return "", pkgerrors.WithStack(err)
 	}
 
@@ -164,15 +170,15 @@ var llmTranspileSourceFilePromptTemplate = template.Must(template.New("model-llm
 	` + "```" + `
 `)))
 
-// llmTranspileSourceFilePrompt returns the prompt to transpile a source file.
-func llmTranspileSourceFilePrompt(data *llmTranspileSourceFilePromptContext) (message string, err error) {
+// Format returns the prompt to transpile a source file.
+func (ctx *llmTranspileSourceFilePromptContext) Format() (message string, err error) {
 	// Use Linux paths even when running the evaluation on Windows to ensure consistency in prompting.
-	data.FilePath = filepath.ToSlash(data.FilePath)
-	data.Code = strings.TrimSpace(data.Code)
-	data.OriginFileContent = strings.TrimSpace(data.OriginFileContent)
+	ctx.FilePath = filepath.ToSlash(ctx.FilePath)
+	ctx.Code = strings.TrimSpace(ctx.Code)
+	ctx.OriginFileContent = strings.TrimSpace(ctx.OriginFileContent)
 
 	var b strings.Builder
-	if err := llmTranspileSourceFilePromptTemplate.Execute(&b, data); err != nil {
+	if err := llmTranspileSourceFilePromptTemplate.Execute(&b, ctx); err != nil {
 		return "", pkgerrors.WithStack(err)
 	}
 
@@ -198,13 +204,15 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 
 	importPath := ctx.Language.ImportPath(ctx.RepositoryPath, ctx.FilePath)
 
-	request, err := llmGenerateTestForFilePrompt(&llmSourceFilePromptContext{
-		Language: ctx.Language,
+	request, err := (&llmWriteTestSourceFilePromptContext{
+		llmSourceFilePromptContext: llmSourceFilePromptContext{
+			Language: ctx.Language,
 
-		Code:       fileContent,
-		FilePath:   ctx.FilePath,
-		ImportPath: importPath,
-	})
+			Code:       fileContent,
+			FilePath:   ctx.FilePath,
+			ImportPath: importPath,
+		},
+	}).Format()
 	if err != nil {
 		return nil, err
 	}
@@ -280,7 +288,7 @@ func (m *Model) RepairCode(ctx model.Context) (assessment metrics.Assessments, e
 
 	importPath := ctx.Language.ImportPath(ctx.RepositoryPath, ctx.FilePath)
 
-	request, err := llmCodeRepairSourceFilePrompt(&llmCodeRepairSourceFilePromptContext{
+	request, err := (&llmCodeRepairSourceFilePromptContext{
 		llmSourceFilePromptContext: llmSourceFilePromptContext{
 			Language: ctx.Language,
 
@@ -290,7 +298,7 @@ func (m *Model) RepairCode(ctx model.Context) (assessment metrics.Assessments, e
 		},
 
 		Mistakes: codeRepairArguments.Mistakes,
-	})
+	}).Format()
 	if err != nil {
 		return nil, err
 	}
@@ -339,7 +347,7 @@ func (m *Model) Transpile(ctx model.Context) (assessment metrics.Assessments, er
 
 	importPath := ctx.Language.ImportPath(ctx.RepositoryPath, ctx.FilePath)
 
-	request, err := llmTranspileSourceFilePrompt(&llmTranspileSourceFilePromptContext{
+	request, err := (&llmTranspileSourceFilePromptContext{
 		llmSourceFilePromptContext: llmSourceFilePromptContext{
 			Language: ctx.Language,
 
@@ -350,7 +358,7 @@ func (m *Model) Transpile(ctx model.Context) (assessment metrics.Assessments, er
 
 		OriginLanguage:    transpileArguments.OriginLanguage,
 		OriginFileContent: originFileContent,
-	})
+	}).Format()
 	if err != nil {
 		return nil, err
 	}

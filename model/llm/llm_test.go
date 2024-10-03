@@ -84,13 +84,15 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		func main() {}
 	`
 	sourceFilePath := "simple.go"
-	promptMessage, err := llmGenerateTestForFilePrompt(&llmSourceFilePromptContext{
-		Language: &golang.Language{},
+	promptMessage, err := (&llmWriteTestSourceFilePromptContext{
+		llmSourceFilePromptContext: llmSourceFilePromptContext{
+			Language: &golang.Language{},
 
-		Code:       bytesutil.StringTrimIndentations(sourceFileContent),
-		FilePath:   sourceFilePath,
-		ImportPath: "native",
-	})
+			Code:       bytesutil.StringTrimIndentations(sourceFileContent),
+			FilePath:   sourceFilePath,
+			ImportPath: "native",
+		},
+	}).Format()
 	require.NoError(t, err)
 	validate(t, &testCase{
 		Name: "Simple",
@@ -287,18 +289,22 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 	})
 }
 
-func TestLLMGenerateTestForFilePrompt(t *testing.T) {
+type promptContext interface {
+	Format() (string, error)
+}
+
+func TestFormatPromptContext(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		Data *llmSourceFilePromptContext
+		Context promptContext
 
 		ExpectedMessage string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualMessage, actualErr := llmGenerateTestForFilePrompt(tc.Data)
+			actualMessage, actualErr := tc.Context.Format()
 			require.NoError(t, actualErr)
 
 			assert.Equal(t, tc.ExpectedMessage, actualMessage)
@@ -306,20 +312,22 @@ func TestLLMGenerateTestForFilePrompt(t *testing.T) {
 	}
 
 	validate(t, &testCase{
-		Name: "Plain",
+		Name: "Write Test",
 
-		Data: &llmSourceFilePromptContext{
-			Language: &golang.Language{},
+		Context: &llmWriteTestSourceFilePromptContext{
+			llmSourceFilePromptContext: llmSourceFilePromptContext{
+				Language: &golang.Language{},
 
-			Code: bytesutil.StringTrimIndentations(`
-					package increment
+				Code: bytesutil.StringTrimIndentations(`
+						package increment
 
-					func increment(i int) int
-						return i + 1
-					}
-				`),
-			FilePath:   filepath.Join("path", "to", "increment.go"),
-			ImportPath: "increment",
+						func increment(i int) int
+							return i + 1
+						}
+					`),
+				FilePath:   filepath.Join("path", "to", "increment.go"),
+				ImportPath: "increment",
+			},
 		},
 
 		ExpectedMessage: bytesutil.StringTrimIndentations(`
@@ -336,30 +344,11 @@ func TestLLMGenerateTestForFilePrompt(t *testing.T) {
 			` + "```" + `
 		`),
 	})
-}
-
-func TestLLMCodeRepairSourceFilePrompt(t *testing.T) {
-	type testCase struct {
-		Name string
-
-		Data *llmCodeRepairSourceFilePromptContext
-
-		ExpectedMessage string
-	}
-
-	validate := func(t *testing.T, tc *testCase) {
-		t.Run(tc.Name, func(t *testing.T) {
-			actualMessage, actualErr := llmCodeRepairSourceFilePrompt(tc.Data)
-			require.NoError(t, actualErr)
-
-			assert.Equal(t, tc.ExpectedMessage, actualMessage)
-		})
-	}
 
 	validate(t, &testCase{
-		Name: "Plain",
+		Name: "Code Repair",
 
-		Data: &llmCodeRepairSourceFilePromptContext{
+		Context: &llmCodeRepairSourceFilePromptContext{
 			llmSourceFilePromptContext: llmSourceFilePromptContext{
 				Language: &golang.Language{},
 
@@ -398,30 +387,11 @@ func TestLLMCodeRepairSourceFilePrompt(t *testing.T) {
 			- path/to/increment.go: missing return
 		`),
 	})
-}
-
-func TestLLMTranspileSourceFilePrompt(t *testing.T) {
-	type testCase struct {
-		Name string
-
-		Data *llmTranspileSourceFilePromptContext
-
-		ExpectedMessage string
-	}
-
-	validate := func(t *testing.T, tc *testCase) {
-		t.Run(tc.Name, func(t *testing.T) {
-			actualMessage, actualErr := llmTranspileSourceFilePrompt(tc.Data)
-			require.NoError(t, actualErr)
-
-			assert.Equal(t, tc.ExpectedMessage, actualMessage)
-		})
-	}
 
 	validate(t, &testCase{
-		Name: "Transpile Go into Java",
+		Name: "Transpile",
 
-		Data: &llmTranspileSourceFilePromptContext{
+		Context: &llmTranspileSourceFilePromptContext{
 			llmSourceFilePromptContext: llmSourceFilePromptContext{
 				Language: &java.Language{},
 

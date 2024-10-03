@@ -1,14 +1,12 @@
 package task
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
@@ -17,7 +15,6 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/language/ruby"
-	languagetesting "github.com/symflower/eval-dev-quality/language/testing"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	"github.com/symflower/eval-dev-quality/task"
@@ -190,27 +187,6 @@ func TestTaskWriteTestsRun(t *testing.T) {
 
 					this is not valid go code
 				`), expectedAssessments, expectedProblems, false)
-			}
-			{
-				expectedAssessments := map[task.Identifier]metrics.Assessments{
-					IdentifierWriteTests: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-				}
-				expectedProblems := []string{
-					"context deadline exceeded",
-				}
-
-				languageMock := languagetesting.NewMockLanguageNamed(t, "golang")
-				languageMock.On("Files", mock.Anything, mock.Anything).Return([]string{filepath.Join("golang", "plain")}, nil).Once()
-				languageMock.On("ExecuteTests", mock.Anything, mock.Anything).Return(nil, nil, context.DeadlineExceeded).Once()
-
-				validateGo(t, "Execution timeout", languageMock, "", expectedAssessments, expectedProblems, false)
 			}
 		})
 	})

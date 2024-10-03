@@ -1,8 +1,6 @@
 package task
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -75,7 +73,7 @@ func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[eval
 		}
 		for originFilePath, originLanguage := range originFilePathsWithLanguage {
 			modelAssessmentsForFile := metrics.NewAssessments()
-			withSymflowerAssessmentsForFile := modelAssessmentsForFile // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until a failure actually happens.
+			withSymflowerAssessmentsForFile := modelAssessmentsForFile // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until we successfully applied "symflower fix".
 
 			if err := ctx.Repository.Reset(ctx.Logger); err != nil {
 				ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
@@ -110,44 +108,30 @@ func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[eval
 			problems = append(problems, ps...)
 			if err != nil {
 				problems = append(problems, pkgerrors.WithMessage(err, originFilePath))
-
-				// If there is an execution timeout do not run "symflower fix" because the code itself is correct.
-				if errors.Is(err, context.DeadlineExceeded) {
-					modelAssessments.Add(modelAssessmentsForFile)
-					withSymflowerAssessments.Add(withSymflowerAssessmentsForFile)
-
-					continue
-				}
-
-				// Run "symflower fix" if the model response fails to execute.
-				if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
-					withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, filepath.Join(ctx.Repository.DataPath(), packagePath))
-					problems = append(problems, ps...)
-					if err != nil {
-						problems = append(problems, err)
-
-						modelAssessments.Add(modelAssessmentsForFile)
-						withSymflowerAssessments.Add(withSymflowerAssessmentsForFile)
-
-						continue
-					} else {
-						testsPassing := withSymflowerFixTestResult.TestsPass
-						taskLogger.Printf("with symflower repair: Executes tests with %d tests passing", testsPassing)
-
-						// Symflower was able to fix a failure so now update the assessment with the improved results.
-						withSymflowerFixAssessments := metrics.NewAssessments()
-						withSymflowerFixAssessments[metrics.AssessmentKeyProcessingTime] = processingTime
-						withSymflowerFixAssessments.Award(metrics.AssessmentKeyFilesExecuted)
-						withSymflowerFixAssessments.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
-
-						withSymflowerAssessmentsForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentsForFile, withSymflowerFixAssessments)
-					}
-				}
 			} else {
 				testsPassing := testResult.TestsPass
 				taskLogger.Printf("Executes tests with %d tests passing", testsPassing)
 				modelAssessmentsForFile.Award(metrics.AssessmentKeyFilesExecuted)
 				modelAssessmentsForFile.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
+			}
+
+			if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
+				withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, filepath.Join(ctx.Repository.DataPath(), packagePath))
+				problems = append(problems, ps...)
+				if err != nil {
+					problems = append(problems, err)
+				} else {
+					testsPassing := withSymflowerFixTestResult.TestsPass
+					taskLogger.Printf("with symflower repair: Executes tests with %d tests passing", testsPassing)
+
+					// Symflower was able to fix a failure so now update the assessment with the improved results.
+					withSymflowerFixAssessments := metrics.NewAssessments()
+					withSymflowerFixAssessments[metrics.AssessmentKeyProcessingTime] = processingTime
+					withSymflowerFixAssessments.Award(metrics.AssessmentKeyFilesExecuted)
+					withSymflowerFixAssessments.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
+
+					withSymflowerAssessmentsForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentsForFile, withSymflowerFixAssessments)
+				}
 			}
 
 			modelAssessments.Add(modelAssessmentsForFile)
