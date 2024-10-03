@@ -1,12 +1,7 @@
 package metricstesting
 
 import (
-	"testing"
-
-	"golang.org/x/exp/maps"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"maps"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
@@ -14,44 +9,42 @@ import (
 	"github.com/symflower/eval-dev-quality/task"
 )
 
-// AssertAssessmentsEqual checks if the given assessments are equal ignoring default and nondeterministic values.
-func AssertAssessmentsEqual(t *testing.T, expected metrics.Assessments, actual metrics.Assessments) {
-	expected = maps.Clone(expected)
-	actual = maps.Clone(actual)
+// Clean deletes all empty and nondeterministic keys from the assessment.
+func Clean(assessment metrics.Assessments) metrics.Assessments {
+	copy := metrics.Assessments{}
+	maps.Copy(copy, assessment)
 
-	clearNonDeterministicAssessmentValues(expected)
-	clearNonDeterministicAssessmentValues(actual)
+	delete(copy, metrics.AssessmentKeyProcessingTime)
 
-	assert.Truef(t, expected.Equal(actual), "expected:%s\nactual:%s", expected, actual)
+	for _, key := range metrics.AllAssessmentKeysStrings {
+		if copy[metrics.AssessmentKey(key)] == 0 {
+			delete(copy, metrics.AssessmentKey(key))
+		}
+	}
+
+	return copy
 }
 
-// AssertTaskAssessmentsEqual checks if the given assessments per task are equal ignoring default and nondeterministic values.
-func AssertTaskAssessmentsEqual(t *testing.T, expected map[task.Identifier]metrics.Assessments, actual map[task.Identifier]metrics.Assessments) {
-	expected = maps.Clone(expected)
-	actual = maps.Clone(actual)
+// CleanSlice deletes all empty and nondeterministic keys from the assessments.
+func CleanSlice(assessments []metrics.Assessments) []metrics.Assessments {
+	copy := make([]metrics.Assessments, len(assessments))
 
-	// The expected and actual maps must have the same task identifiers.
-	require.ElementsMatch(t, maps.Keys(expected), maps.Keys(actual))
-
-	// Ignore non-deterministic values.
-	for _, assessment := range expected {
-		clearNonDeterministicAssessmentValues(assessment)
-	}
-	for _, assessment := range actual {
-		clearNonDeterministicAssessmentValues(assessment)
+	for i, assessment := range assessments {
+		copy[i] = Clean(assessment)
 	}
 
-	for task, expectedAssessment := range expected {
-		actualAssessment := actual[task]
-		assert.Truef(t, expectedAssessment.Equal(actualAssessment), "task:%s\nexpected:%s\nactual:%s", task, expected, actual)
-	}
+	return copy
 }
 
-// clearNonDeterministicAssessmentValues ignores non-deterministic values such as processing time and response character count.
-func clearNonDeterministicAssessmentValues(assessment metrics.Assessments) {
-	assessment[metrics.AssessmentKeyProcessingTime] = 0
-	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = 0
-	assessment[metrics.AssessmentKeyResponseCharacterCount] = 0
+// CleanMap deletes all empty and nondeterministic keys from the assessments.
+func CleanMap[E comparable](assessments map[E]metrics.Assessments) map[E]metrics.Assessments {
+	copy := map[E]metrics.Assessments{}
+
+	for key, assessment := range assessments {
+		copy[key] = Clean(assessment)
+	}
+
+	return copy
 }
 
 // AssessmentsWithProcessingTime is an empty assessment collection with positive processing time.

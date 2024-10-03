@@ -31,7 +31,7 @@ func TestParseResponse(t *testing.T) {
 				assert.Error(t, err)
 			}
 
-			metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
+			assert.Equal(t, metricstesting.Clean(tc.ExpectedAssessment), metricstesting.Clean(actualAssessment))
 			assert.Equal(t, strings.TrimSpace(tc.ExpectedCode), actualCode)
 		})
 	}

@@ -78,8 +78,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			} else {
 				require.NoError(t, actualError)
 
-				metricstesting.AssertAssessmentsEqual(t, tc.ExpectedAssessment, actualAssessment)
-
+				assert.Equal(t, metricstesting.Clean(tc.ExpectedAssessment), metricstesting.Clean(actualAssessment))
 				actualTestResult, actualProblems, err := tc.Language.ExecuteTests(logger, repositoryPath)
 				require.NoError(t, err)
 				require.Empty(t, actualProblems)

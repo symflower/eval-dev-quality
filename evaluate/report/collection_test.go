@@ -34,16 +34,12 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 
 			assert.NoError(t, assessmentStore.Walk(func(m model.Model, l language.Language, r string, ti task.Identifier, a metrics.Assessments) (err error) {
 				actualOrder = append(actualOrder, a)
-				metricstesting.AssertAssessmentsEqual(t, assessmentLookup[m][l][r][ti], a)
+				assert.Equal(t, metricstesting.Clean(assessmentLookup[m][l][r][ti]), metricstesting.Clean(a))
 
 				return nil
 			}))
 
-			if assert.Equal(t, len(tc.ExpectedOrder), len(actualOrder)) {
-				for i := range tc.ExpectedOrder {
-					metricstesting.AssertAssessmentsEqual(t, tc.ExpectedOrder[i], actualOrder[i])
-				}
-			}
+			assert.Equal(t, metricstesting.CleanSlice(tc.ExpectedOrder), metricstesting.CleanSlice(actualOrder))
 		})
 	}
 
