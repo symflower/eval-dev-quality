@@ -11,6 +11,7 @@ import (
 	"github.com/zimmski/osutil"
 )
 
+// TestCaseExecuteTests holds a test case for "test execution" task.
 type TestCaseExecuteTests struct {
 	Name string
 
@@ -25,6 +26,7 @@ type TestCaseExecuteTests struct {
 	ExpectedErrorText    string
 }
 
+// Validate validates the object.
 func (tc *TestCaseExecuteTests) Validate(t *testing.T) {
 	t.Run(tc.Name, func(t *testing.T) {
 		logOutput, logger := log.Buffer()
@@ -60,6 +62,7 @@ func (tc *TestCaseExecuteTests) Validate(t *testing.T) {
 	})
 }
 
+// TestCaseMistakes holds a test case for "mistake fixing" task.
 type TestCaseMistakes struct {
 	Name string
 
@@ -70,6 +73,7 @@ type TestCaseMistakes struct {
 	ExpectedMistakesContains func(t *testing.T, mistakes []string)
 }
 
+// Validate validates the object.
 func (tc *TestCaseMistakes) Validate(t *testing.T) {
 	t.Run(tc.Name, func(t *testing.T) {
 		temporaryPath := t.TempDir()

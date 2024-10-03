@@ -94,12 +94,20 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer csvFile.Close()
+	defer func() {
+		if err := csvFile.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	csvWriter := csv.NewWriter(csvFile)
 	defer csvWriter.Flush()
 
-	csvWriter.Write([]string{"model"})
+	if err := csvWriter.Write([]string{"model"}); err != nil {
+		panic(err)
+	}
 	for _, model := range modelNames {
-		csvWriter.Write([]string{model})
+		if err := csvWriter.Write([]string{model}); err != nil {
+			panic(err)
+		}
 	}
 }

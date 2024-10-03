@@ -11,40 +11,40 @@ import (
 
 // Clean deletes all empty and nondeterministic keys from the assessment.
 func Clean(assessment metrics.Assessments) metrics.Assessments {
-	copy := metrics.Assessments{}
-	maps.Copy(copy, assessment)
+	c := metrics.Assessments{}
+	maps.Copy(c, assessment)
 
-	delete(copy, metrics.AssessmentKeyProcessingTime)
+	delete(c, metrics.AssessmentKeyProcessingTime)
 
 	for _, key := range metrics.AllAssessmentKeysStrings {
-		if copy[metrics.AssessmentKey(key)] == 0 {
-			delete(copy, metrics.AssessmentKey(key))
+		if c[metrics.AssessmentKey(key)] == 0 {
+			delete(c, metrics.AssessmentKey(key))
 		}
 	}
 
-	return copy
+	return c
 }
 
 // CleanSlice deletes all empty and nondeterministic keys from the assessments.
 func CleanSlice(assessments []metrics.Assessments) []metrics.Assessments {
-	copy := make([]metrics.Assessments, len(assessments))
+	c := make([]metrics.Assessments, len(assessments))
 
 	for i, assessment := range assessments {
-		copy[i] = Clean(assessment)
+		c[i] = Clean(assessment)
 	}
 
-	return copy
+	return c
 }
 
 // CleanMap deletes all empty and nondeterministic keys from the assessments.
 func CleanMap[E comparable](assessments map[E]metrics.Assessments) map[E]metrics.Assessments {
-	copy := map[E]metrics.Assessments{}
+	c := map[E]metrics.Assessments{}
 
 	for key, assessment := range assessments {
-		copy[key] = Clean(assessment)
+		c[key] = Clean(assessment)
 	}
 
-	return copy
+	return c
 }
 
 // AssessmentsWithProcessingTime is an empty assessment collection with positive processing time.
@@ -61,8 +61,10 @@ type AssessmentTuple struct {
 	Assessment     metrics.Assessments
 }
 
+// AssessmentTuples holds a list of all parameters uniquely defining to which run an assessment belongs to.
 type AssessmentTuples []*AssessmentTuple
 
+// ToMap converts a list of assessment tuples to a mapping.
 func (at AssessmentTuples) ToMap() (lookup map[model.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments) {
 	lookup = map[model.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{}
 	for _, t := range at {

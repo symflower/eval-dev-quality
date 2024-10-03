@@ -22,7 +22,6 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/log"
-	"github.com/symflower/eval-dev-quality/model"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
@@ -863,7 +862,7 @@ func TestEvaluate(t *testing.T) {
 			mockedModelID := "testing-provider/testing-model"
 			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 			mockedProviderID := "testing-provider"
-			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []model.Model{mockedModel})
+			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []evalmodel.Model{mockedModel})
 			mockedLoader := providertesting.NewMockLoader(t)
 			embeddedProvider := &struct {
 				provider.Provider
@@ -947,7 +946,7 @@ func TestEvaluate(t *testing.T) {
 			mockedModelID := "testing-provider/testing-model"
 			mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, mockedModelID)
 			mockedProviderID := "testing-provider"
-			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []model.Model{mockedModel})
+			mockedProvider := providertesting.NewMockProviderNamedWithModels(t, mockedProviderID, []evalmodel.Model{mockedModel})
 			mockedLoader := providertesting.NewMockLoader(t)
 			embeddedProvider := &struct {
 				provider.Provider

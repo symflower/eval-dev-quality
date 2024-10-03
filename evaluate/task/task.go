@@ -45,15 +45,15 @@ var (
 	IdentifierTranspileSymflowerFix = registerIdentifier("transpile-symflower-fix")
 )
 
-// TaskForIdentifier returns a task based on the task identifier.
-func TaskForIdentifier(taskIdentifier evaltask.Identifier) (task evaltask.Task, err error) {
+// ForIdentifier returns a task based on the task identifier.
+func ForIdentifier(taskIdentifier evaltask.Identifier) (task evaltask.Task, err error) {
 	switch taskIdentifier {
 	case IdentifierWriteTests:
-		return &TaskWriteTests{}, nil
+		return &WriteTests{}, nil
 	case IdentifierCodeRepair:
-		return &TaskCodeRepair{}, nil
+		return &CodeRepair{}, nil
 	case IdentifierTranspile:
-		return &TaskTranspile{}, nil
+		return &Transpile{}, nil
 	default:
 		return nil, pkgerrors.Wrap(evaltask.ErrTaskUnknown, string(taskIdentifier))
 	}

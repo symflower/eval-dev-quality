@@ -17,6 +17,7 @@ import (
 	"github.com/zimmski/osutil"
 )
 
+// TestCaseTask holds a test case for a task.
 type TestCaseTask struct {
 	Name string
 
@@ -35,6 +36,7 @@ type TestCaseTask struct {
 
 type createRepositoryFunction func(logger *log.Logger, testDataPath string, repositoryPathRelative string) (repository evaltask.Repository, cleanup func(), err error)
 
+// Validate validates the object.
 func (tc *TestCaseTask) Validate(t *testing.T, createRepository createRepositoryFunction) {
 	resultPath := t.TempDir()
 
@@ -99,6 +101,7 @@ func (tc *TestCaseTask) Validate(t *testing.T, createRepository createRepository
 	}
 }
 
+// TestCaseValidateRepository holds a test case for validating a repository.
 type TestCaseValidateRepository struct {
 	Name string
 
@@ -113,6 +116,7 @@ type TestCaseValidateRepository struct {
 
 type validateRepositoryForTask func(logger *log.Logger, repositoryPath string, language language.Language) (err error)
 
+// Validate validates the object.
 func (tc *TestCaseValidateRepository) Validate(t *testing.T, validateRepositoryForTask validateRepositoryForTask) {
 	t.Run(tc.Name, func(t *testing.T) {
 		logOutput, logger := log.Buffer()

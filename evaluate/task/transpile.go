@@ -15,26 +15,26 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-// TaskTranspile holds the transpilation task.
-type TaskTranspile struct{}
+// Transpile holds the transpilation task.
+type Transpile struct{}
 
-// TaskArgumentsTranspile holds extra arguments to be used in a query prompt.
-type TaskArgumentsTranspile struct {
+// ArgumentsTranspile holds extra arguments to be used in a query prompt.
+type ArgumentsTranspile struct {
 	// OriginLanguage holds the language we are transpiling from.
 	OriginLanguage language.Language
 	// OriginFilePath holds the path for the file containing the source code we want to transpile.
 	OriginFilePath string
 }
 
-var _ evaltask.Task = (*TaskTranspile)(nil)
+var _ evaltask.Task = (*Transpile)(nil)
 
 // Identifier returns the transpilation task identifier.
-func (t *TaskTranspile) Identifier() evaltask.Identifier {
+func (t *Transpile) Identifier() evaltask.Identifier {
 	return IdentifierTranspile
 }
 
 // Run transpiles code between languages and runs predefined tests to check if the transpilation was successful.
-func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
+func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
 	modelCapability, ok := ctx.Model.(model.CapabilityTranspile)
 	if !ok {
 		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
@@ -85,7 +85,7 @@ func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[eval
 				RepositoryPath: filepath.Join(ctx.Repository.DataPath(), packagePath),
 				FilePath:       stubFilePath,
 
-				Arguments: &TaskArgumentsTranspile{
+				Arguments: &ArgumentsTranspile{
 					OriginLanguage: originLanguage,
 					OriginFilePath: originFilePath,
 				},
@@ -148,7 +148,7 @@ func (t *TaskTranspile) Run(ctx evaltask.Context) (repositoryAssessment map[eval
 }
 
 // unpackTranspilerPackage returns a set of source file paths and the corresponding language we want to transpile from and also the path to the file that holds the stub.
-func (t *TaskTranspile) unpackTranspilerPackage(ctx evaltask.Context, logger *log.Logger, packagePath string) (originFilePathsWithLanguage map[string]language.Language, stubFilePath string, err error) {
+func (t *Transpile) unpackTranspilerPackage(ctx evaltask.Context, logger *log.Logger, packagePath string) (originFilePathsWithLanguage map[string]language.Language, stubFilePath string, err error) {
 	originFilePathsWithLanguage = map[string]language.Language{}
 	packagePathAbsolute := filepath.Join(ctx.Repository.DataPath(), packagePath)
 

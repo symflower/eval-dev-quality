@@ -273,12 +273,10 @@ var _ model.CapabilityRepairCode = (*Model)(nil)
 
 // RepairCode queries the model to repair a source code with compilation error.
 func (m *Model) RepairCode(ctx model.Context) (assessment metrics.Assessments, err error) {
-	codeRepairArguments, ok := ctx.Arguments.(*evaluatetask.TaskArgumentsCodeRepair)
+	codeRepairArguments, ok := ctx.Arguments.(*evaluatetask.ArgumentsCodeRepair)
 	if !ok {
 		return nil, pkgerrors.Errorf("unexpected type %#v", ctx.Arguments)
 	}
-
-	assessment = map[metrics.AssessmentKey]uint64{}
 
 	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))
 	if err != nil {
@@ -328,7 +326,7 @@ var _ model.CapabilityTranspile = (*Model)(nil)
 
 // Transpile queries the model to transpile source code to another language.
 func (m *Model) Transpile(ctx model.Context) (assessment metrics.Assessments, err error) {
-	transpileArguments, ok := ctx.Arguments.(*evaluatetask.TaskArgumentsTranspile)
+	transpileArguments, ok := ctx.Arguments.(*evaluatetask.ArgumentsTranspile)
 	if !ok {
 		return nil, pkgerrors.Errorf("unexpected type %#v", ctx.Arguments)
 	}

@@ -53,7 +53,7 @@ func (m *Model) MetaInformation() (metaInformation *model.MetaInformation) {
 
 var _ model.CapabilityWriteTests = (*Model)(nil)
 
-// generateTestsForFile generates test files for the given implementation file in a repository.
+// WriteTests generates test files for the given implementation file in a repository.
 func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, err error) {
 	ctxWithTimeout, cancel := context.WithTimeout(context.Background(), m.symbolicExecutionTimeout)
 	defer cancel()
