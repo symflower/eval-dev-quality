@@ -14,8 +14,11 @@ jobs:
   docker:
     name: 'Run docker image building'
     uses: ./.github/workflows/docker.yml
+  lint:
+    name: 'Lint the repository'
+    uses: ./.github/workflows/lint.yml
   test:
-    name: 'Run tests and linting'
+    name: 'Run tests and lint artifacts'
     strategy:
       fail-fast: false # Run the whole matrix for maximum information, no matter if we fail in one entry early
       matrix:
