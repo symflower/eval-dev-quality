@@ -1,4 +1,7 @@
 {
+  "files.exclude":  {
+	  "docs/reports/*": true,
+  },
   "gopls": {
     // Disable analyzers that we are currently not interested in because they do not obey our conventions.
     "analyses": {
