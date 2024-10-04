@@ -136,6 +136,5 @@ func main() {
 			sum += score
 		}
 		fmt.Printf("∑ = %d\n", sum)
-
 	}
 }

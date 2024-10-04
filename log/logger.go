@@ -148,7 +148,9 @@ func (l *Logger) Panic(message string) {
 func (l *Logger) Fatal(v ...any) {
 	l.Logger.Info(fmt.Sprint(v...))
 
+	//revive:disable:deep-exit
 	os.Exit(1)
+	//revive:enable:deep-exit
 }
 
 // Writer returns a writer for writing to the logging output destination.

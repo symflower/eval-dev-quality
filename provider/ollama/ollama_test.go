@@ -39,7 +39,7 @@ func TestProviderStart(t *testing.T) {
 				}
 			}()
 
-			provider := NewProvider().(*Provider)
+			provider, _ := NewProvider().(*Provider)
 			if tc.Before != nil {
 				cleanup := tc.Before(t, logger, provider)
 				if cleanup != nil {
@@ -117,7 +117,7 @@ func TestProviderModels(t *testing.T) {
 				}
 			}()
 
-			provider := NewProvider().(*Provider)
+			provider, _ := NewProvider().(*Provider)
 
 			shutdown, err := provider.Start(logger)
 			require.NoError(t, err)
@@ -139,7 +139,6 @@ func TestProviderModels(t *testing.T) {
 			for _, expectedModel := range tc.ExpectedModels {
 				assert.Contains(t, modelNames, expectedModel)
 			}
-
 		})
 	}
 

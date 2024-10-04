@@ -1,0 +1,105 @@
+enableAllRules = true
+
+[rule.add-constant]
+Disabled = true
+
+[rule.argument-limit]
+Disabled = true
+
+[rule.banned-characters]
+Disabled = true
+
+[rule.call-to-gc]
+Disabled = true
+
+[rule.cognitive-complexity]
+Disabled = true
+
+[rule.comment-spacings]
+Disabled = true
+
+[rule.confusing-naming]
+Disabled = true
+
+[rule.context-as-argument]
+arguments = [{ allowTypesBefore = "*testing.B,*testing.T" }]
+
+[rule.cyclomatic]
+Disabled = true
+
+[rule.defer]
+arguments = [
+	[
+		"call-chain",
+		"immediate-recover",
+		"method-call",
+		"recover",
+		"return",
+	],
+]
+
+[rule.empty-block]
+Disabled = true
+
+[rule.enforce-map-style]
+arguments = ["literal"]
+
+[rule.file-header]
+Disabled = true
+
+[rule.flag-parameter]
+Disabled = true
+
+[rule.function-length]
+Disabled = true
+
+[rule.function-result-limit]
+Disabled = true
+
+[rule.if-return]
+Disabled = true
+
+[rule.import-shadowing]
+Disabled = true
+
+[rule.imports-blacklist]
+arguments = ["github.com/zimmski/container/test/assert"]
+
+[rule.line-length-limit]
+Disabled = true
+
+[rule.max-public-structs]
+Disabled = true
+
+[rule.nested-structs]
+Disabled = true
+
+[rule.package-comments]
+Disabled = true
+
+[rule.range-val-address] # TODO Enable when type-resolving is automatically done by "revive". https://github.com/mgechev/revive/issues/680
+Disabled = true
+
+[rule.redundant-import-alias]
+Disabled = true
+
+[rule.unchecked-type-assertion]
+arguments = [{ acceptIgnoredAssertionResult = true }]
+
+[rule.unhandled-error]
+arguments = [
+	"strings.Builder",
+	"bytes.WriteString",
+	"fmt.Fprint",
+	"fmt.Fprintf",
+	"fmt.Fprintln",
+	"fmt.Print",
+	"fmt.Printf",
+	"fmt.Println",
+]
+
+[rule.unused-parameter]
+Disabled = true
+
+[rule.unused-receiver]
+Disabled = true

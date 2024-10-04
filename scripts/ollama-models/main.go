@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -11,6 +12,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	pkgerrors "github.com/pkg/errors"
 )
 
 // JSONModels holds the collection of the models.
@@ -44,7 +47,10 @@ type Tag struct {
 func main() {
 	// Fetch a list of all models.
 	ollamaModels := JSONModels{}
-	modelsBody := OnPage("https://ollama-models.zwz.workers.dev/")
+	modelsBody, err := OnPage("https://ollama-models.zwz.workers.dev/")
+	if err != nil {
+		log.Fatal(err)
+	}
 	if err := json.Unmarshal([]byte(modelsBody), &ollamaModels); err != nil {
 		log.Fatal(err)
 	}
@@ -57,7 +63,10 @@ func main() {
 			Description: model.Description,
 		}
 
-		tagsBody := OnPage("https://ollama.com/library/" + model.Name + "/tags")
+		tagsBody, err := OnPage("https://ollama.com/library/" + model.Name + "/tags")
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		split := strings.Split(stripHTMLRegex(tagsBody), " ")
 
@@ -125,21 +134,21 @@ func main() {
 }
 
 // OnPage returns the body of an URL.
-func OnPage(link string) string {
+func OnPage(link string) (body string, err error) {
 	res, err := http.Get(link)
 	if err != nil {
-		log.Fatal(err)
+		return "", pkgerrors.WithStack(err)
 	}
 	content, err := io.ReadAll(res.Body)
 	defer func() {
-		if err := res.Body.Close(); err != nil {
-			log.Fatal(err)
+		if e := res.Body.Close(); e != nil {
+			err = errors.Join(err, pkgerrors.WithStack(e))
 		}
 	}()
 	if err != nil {
-		log.Fatal(err)
+		return "", pkgerrors.WithStack(err)
 	}
-	return string(content)
+	return string(content), nil
 }
 
 func stripHTMLRegex(input string) string {
