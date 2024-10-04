@@ -1,0 +1,10 @@
+html,
+body {
+	height: 100%;
+	margin: 0;
+}
+
+.grid line {
+	stroke: #e0e0e0;
+	stroke-width: 1px;
+}
