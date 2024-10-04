@@ -34,20 +34,11 @@ import (
 
 // validateReportLinks checks if the Markdown report data contains all the links to other relevant report files.
 func validateReportLinks(t *testing.T, data string, modelLogNames []string) {
-	assert.Contains(t, data, "](./categories.svg)")
 	assert.Contains(t, data, "](./evaluation.csv)")
 	assert.Contains(t, data, "evaluation.log")
 	for _, m := range modelLogNames {
 		assert.Contains(t, data, fmt.Sprintf("](./%s/)", m))
 	}
-}
-
-// validateSVGContent checks if the SVG data contains all given categories and an axis label for the maximal model count.
-func validateSVGContent(t *testing.T, data string, categories []*metrics.AssessmentCategory, maxModelCount uint) {
-	for _, category := range categories {
-		assert.Contains(t, data, fmt.Sprintf("%s</text>", category.Name))
-	}
-	assert.Contains(t, data, fmt.Sprintf("%d</text>", maxModelCount))
 }
 
 func atoiUint64(t *testing.T, s string) uint64 {
@@ -230,9 +221,6 @@ func TestEvaluateExecute(t *testing.T) {
 				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
-					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
-				},
 				filepath.Join("result-directory", "config.json"): nil,
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
@@ -295,9 +283,6 @@ func TestEvaluateExecute(t *testing.T) {
 				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
-					validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
-				},
 				filepath.Join("result-directory", "config.json"): nil,
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
@@ -391,9 +376,6 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
-						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
-					},
 					filepath.Join("result-directory", "config.json"): nil,
 					filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
@@ -442,9 +424,6 @@ func TestEvaluateExecute(t *testing.T) {
 					assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join("result-directory", "categories.svg"): func(t *testing.T, filePath, data string) {
-						validateSVGContent(t, data, []*metrics.AssessmentCategory{metrics.AssessmentCategoryCodeNoExcess}, 1)
-					},
 					filepath.Join("result-directory", "config.json"): nil,
 					filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 						actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
@@ -517,7 +496,6 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 
 					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-						filepath.Join("result-directory", "categories.svg"): nil,
 						filepath.Join("result-directory", "config.json"):    nil,
 						filepath.Join("result-directory", "evaluation.csv"): nil,
 						filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath, data string) {
@@ -547,7 +525,6 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 
 					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-						filepath.Join("result-directory", "categories.svg"): nil,
 						filepath.Join("result-directory", "config.json"):    nil,
 						filepath.Join("result-directory", "evaluation.csv"): nil,
 						filepath.Join("result-directory", "evaluation.log"): nil,
@@ -593,7 +570,6 @@ func TestEvaluateExecute(t *testing.T) {
 					},
 
 					ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-						filepath.Join("result-directory", "categories.svg"): nil,
 						filepath.Join("result-directory", "config.json"):    nil,
 						filepath.Join("result-directory", "evaluation.csv"): nil,
 						filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath, data string) {
@@ -638,8 +614,7 @@ func TestEvaluateExecute(t *testing.T) {
 				assert.Equal(t, 1, strings.Count(output, "Evaluation score for"))
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-				filepath.Join("result-directory", "categories.svg"): nil,
-				filepath.Join("result-directory", "config.json"):    nil,
+				filepath.Join("result-directory", "config.json"): nil,
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					// Check if the runs are written to the CSV file.
 					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests,1")
@@ -839,8 +814,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "config.json"):    nil,
 
 				// Parallel run 1
-				filepath.Join("result-directory", "symflower_symbolic-execution", "categories.svg"): nil,
-				filepath.Join("result-directory", "symflower_symbolic-execution", "config.json"):    nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution", "config.json"): nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
@@ -897,8 +871,7 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 
 				// Parallel run 2
-				filepath.Join("result-directory", "symflower_symbolic-execution_1", "categories.svg"): nil,
-				filepath.Join("result-directory", "symflower_symbolic-execution_1", "config.json"):    nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution_1", "config.json"): nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution_1", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
@@ -955,8 +928,7 @@ func TestEvaluateExecute(t *testing.T) {
 				},
 
 				// Parallel run 3
-				filepath.Join("result-directory", "symflower_symbolic-execution_2", "categories.svg"): nil,
-				filepath.Join("result-directory", "symflower_symbolic-execution_2", "config.json"):    nil,
+				filepath.Join("result-directory", "symflower_symbolic-execution_2", "config.json"): nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution_2", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					actualAssessments := validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
@@ -1079,7 +1051,6 @@ func TestEvaluateExecute(t *testing.T) {
 		},
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			filepath.Join("result-directory", "categories.svg"): nil,
 			filepath.Join("result-directory", "config.json"):    nil,
 			filepath.Join("result-directory", "evaluation.csv"): nil,
 			filepath.Join("result-directory", "evaluation.log"): nil,
@@ -1101,7 +1072,6 @@ func TestEvaluateExecute(t *testing.T) {
 		},
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-			filepath.Join("result-directory-0", "categories.svg"): nil,
 			filepath.Join("result-directory-0", "config.json"):    nil,
 			filepath.Join("result-directory-0", "evaluation.csv"): nil,
 			filepath.Join("result-directory-0", "evaluation.log"): nil,
