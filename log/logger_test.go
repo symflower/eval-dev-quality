@@ -164,7 +164,6 @@ func TestLoggerWith(t *testing.T) {
 
 			loggerB := logger.With(AttributeKeyRepository, "repositoryB")
 			_ = loggerB.With(AttributeKeyTask, "taskA")
-
 		},
 
 		ExpectedLogOutput: `

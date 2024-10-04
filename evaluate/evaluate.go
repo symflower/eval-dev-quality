@@ -201,7 +201,6 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 			ctx.Log.Panicf("ERROR: %s", err)
 		}
 		for _, repositoryPath := range relativeRepositoryPaths {
-
 			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
 			if !repositoriesLookup[repositoryPath] || strings.HasSuffix(repositoryPath, RepositoryPlainName) {
 				continue
@@ -325,16 +324,16 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 }
 
 // withLoadedModel loads the model for the duration of the given task if supported by the model's provider.
-func withLoadedModel(log *log.Logger, model evalmodel.Model, modelProvider provider.Provider, task func()) {
+func withLoadedModel(logger *log.Logger, model evalmodel.Model, modelProvider provider.Provider, task func()) {
 	if loader, ok := modelProvider.(provider.Loader); ok {
-		log.Printf("preloading model %q", model.ID())
+		logger.Printf("preloading model %q", model.ID())
 		if err := loader.Load(model.ID()); err != nil {
-			log.Panicf("ERROR: could not load model %q with provider %q", model.ID(), modelProvider.ID())
+			logger.Panicf("ERROR: could not load model %q with provider %q", model.ID(), modelProvider.ID())
 		}
 		defer func() {
-			log.Printf("unloading model %q", model.ID())
+			logger.Printf("unloading model %q", model.ID())
 			if err := loader.Unload(model.ID()); err != nil {
-				log.Panicf("ERROR: could not unload model %q with provider %q", model.ID(), modelProvider.ID())
+				logger.Panicf("ERROR: could not unload model %q with provider %q", model.ID(), modelProvider.ID())
 			}
 		}()
 	}

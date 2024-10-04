@@ -66,7 +66,6 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 	})
 
 	{
-
 		modelA := modeltesting.NewMockCapabilityWriteTestsNamed(t, "some-model-a")
 		modelB := modeltesting.NewMockCapabilityWriteTestsNamed(t, "some-model-b")
 		languageA := languagetesting.NewMockLanguageNamed(t, "some-language-a")

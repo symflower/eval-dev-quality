@@ -269,7 +269,6 @@ func TestParallelExecute(t *testing.T) {
 
 		assert.GreaterOrEqual(t, duration, 1500*time.Millisecond)
 	})
-
 }
 
 func TestFlags(t *testing.T) {

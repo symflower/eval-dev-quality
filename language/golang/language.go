@@ -99,11 +99,11 @@ func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (test
 	}
 	// If there are test failures, then this is just a soft error since we still are able to receive coverage data.
 	if err != nil {
-		if testsTotal-testsPass > 0 {
-			problems = append(problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
-		} else {
+		if testsTotal-testsPass <= 0 {
 			return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 		}
+
+		problems = append(problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
 	}
 
 	testResult = &language.TestResult{

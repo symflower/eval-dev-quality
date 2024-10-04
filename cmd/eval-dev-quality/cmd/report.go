@@ -98,7 +98,7 @@ func (command *Report) Execute(args []string) (err error) {
 	}()
 
 	// Fetch all openrouter models since it is the only provider that currently supports querying meta information.
-	provider := openrouter.NewProvider().(*openrouter.Provider)
+	provider, _ := openrouter.NewProvider().(*openrouter.Provider)
 	models, err := provider.Models()
 	if err != nil {
 		command.logger.Panicf("ERROR: %s", err)

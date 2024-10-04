@@ -121,5 +121,5 @@ func InstallTool(logger *log.Logger, tool Tool, installPath string) (err error) 
 		return err
 	}
 
-	return
+	return nil
 }
