@@ -80,6 +80,9 @@ type llmSourceFilePromptContext struct {
 type llmWriteTestSourceFilePromptContext struct {
 	// llmSourceFilePromptContext holds the context for a source file prompt.
 	llmSourceFilePromptContext
+
+	// Template holds the template data to base the tests onto.
+	Template string
 }
 
 // llmWriteTestForFilePromptTemplate is the template for generating an LLM test generation prompt.
@@ -91,6 +94,14 @@ var llmWriteTestForFilePromptTemplate = template.Must(template.New("model-llm-wr
 	` + "```" + `{{ .Language.ID }}
 	{{ .Code }}
 	` + "```" + `
+	{{- if .Template}}
+
+	The tests should be based on this template:
+
+	` + "```" + `{{ .Language.ID }}
+	{{ .Template -}}
+	` + "```" + `
+	{{- end}}
 `)))
 
 // Format returns the prompt for generating an LLM test generation.
@@ -196,6 +207,12 @@ var _ model.CapabilityWriteTests = (*Model)(nil)
 
 // WriteTests generates test files for the given implementation file in a repository.
 func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, err error) {
+	arguments, ok := ctx.Arguments.(*evaluatetask.ArgumentsWriteTest)
+	if !ok {
+		return nil, pkgerrors.Errorf("unexpected type %T", ctx.Arguments)
+	}
+	templateContent := arguments.Template
+
 	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
@@ -212,6 +229,8 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 			FilePath:   ctx.FilePath,
 			ImportPath: importPath,
 		},
+
+		Template: templateContent,
 	}).Format()
 	if err != nil {
 		return nil, err

@@ -2,6 +2,8 @@ package task
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
@@ -17,6 +19,12 @@ type WriteTests struct {
 }
 
 var _ evaltask.Task = (*WriteTests)(nil)
+
+// ArgumentsWriteTest holds extra arguments to be used in a query prompt.
+type ArgumentsWriteTest struct {
+	// Template holds the template data to base the tests onto.
+	Template string
+}
 
 // Identifier returns the write test task identifier.
 func (t *WriteTests) Identifier() evaltask.Identifier {
@@ -46,37 +54,79 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 
 	modelAssessment := metrics.NewAssessments()
 	withSymflowerFixAssessment := metrics.NewAssessments()
+	withSymflowerTemplateAssessment := metrics.NewAssessments()
+	withSymflowerTemplateAndFixAssessment := metrics.NewAssessments()
 
 	maximumReachableFiles := uint64(len(filePaths))
 	modelAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
 	withSymflowerFixAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
+	withSymflowerTemplateAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
+	withSymflowerTemplateAndFixAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
 
 	for _, filePath := range filePaths {
+		// Handle this task case without a template.
 		if err := ctx.Repository.Reset(ctx.Logger); err != nil {
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 		}
 
-		modelAssessmentFile, withSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, taskLogger, modelCapability, dataPath, filePath)
+		modelAssessmentFile, withSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, taskLogger, modelCapability, dataPath, filePath, &ArgumentsWriteTest{})
 		problems = append(problems, ps...)
 		if err != nil {
 			return nil, problems, err
 		}
 		modelAssessment.Add(modelAssessmentFile)
 		withSymflowerFixAssessment.Add(withSymflowerFixAssessmentFile)
+
+		if !ctx.Language.SupportsTemplate() {
+			withSymflowerTemplateAssessment.Add(modelAssessmentFile)
+			withSymflowerTemplateAndFixAssessment.Add(withSymflowerFixAssessmentFile)
+
+			continue
+		}
+
+		// Handle this task case with a template.
+		if err := ctx.Repository.Reset(ctx.Logger); err != nil {
+			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+		}
+
+		_, err = symflowerTemplate(taskLogger.Logger, dataPath, ctx.Language, filePath) // TODO Incorporate template processing time. https://github.com/symflower/eval-dev-quality/issues/350
+		if err != nil {
+			problems = append(problems, pkgerrors.WithMessage(err, "generating Symflower template"))
+
+			continue
+		}
+
+		testTemplateFilePath := filepath.Join(dataPath, ctx.Language.TestFilePath(dataPath, filePath))
+		testTemplate, err := os.ReadFile(testTemplateFilePath)
+		if err != nil {
+			return nil, nil, pkgerrors.WithMessagef(err, "reading Symflower template from %q", testTemplateFilePath)
+		}
+
+		modelTemplateAssessmentFile, templateWithSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, taskLogger, modelCapability, dataPath, filePath, &ArgumentsWriteTest{
+			Template: string(testTemplate),
+		})
+		problems = append(problems, ps...)
+		if err != nil {
+			return nil, problems, err
+		}
+
+		withSymflowerTemplateAssessment.Add(modelTemplateAssessmentFile)
+		withSymflowerTemplateAndFixAssessment.Add(templateWithSymflowerFixAssessmentFile)
 	}
 
 	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{
-		IdentifierWriteTests:             modelAssessment,
-		IdentifierWriteTestsSymflowerFix: withSymflowerFixAssessment,
+		IdentifierWriteTests:                              modelAssessment,
+		IdentifierWriteTestsSymflowerFix:                  withSymflowerFixAssessment,
+		IdentifierWriteTestsSymflowerTemplate:             withSymflowerTemplateAssessment,
+		IdentifierWriteTestsSymflowerTemplateSymflowerFix: withSymflowerTemplateAndFixAssessment,
 	}
 
 	return repositoryAssessment, problems, nil
 }
 
-func runModelAndSymflowerFix(ctx evaltask.Context, taskLogger *taskLogger, modelCapability model.CapabilityWriteTests, dataPath string, filePath string) (modelAssessment metrics.Assessments, withSymflowerFixAssessment metrics.Assessments, problems []error, err error) {
+func runModelAndSymflowerFix(ctx evaltask.Context, taskLogger *taskLogger, modelCapability model.CapabilityWriteTests, dataPath string, filePath string, arguments *ArgumentsWriteTest) (modelAssessment metrics.Assessments, withSymflowerFixAssessment metrics.Assessments, problems []error, err error) {
 	modelAssessment = metrics.NewAssessments()
 	withSymflowerFixAssessment = modelAssessment // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until we successfully applied "symflower fix".
-
 	modelContext := model.Context{
 		Language: ctx.Language,
 
@@ -84,6 +134,8 @@ func runModelAndSymflowerFix(ctx evaltask.Context, taskLogger *taskLogger, model
 		FilePath:       filePath,
 
 		Logger: taskLogger.Logger,
+
+		Arguments: arguments,
 	}
 	assessments, err := modelCapability.WriteTests(modelContext)
 	if err != nil {
@@ -105,7 +157,7 @@ func runModelAndSymflowerFix(ctx evaltask.Context, taskLogger *taskLogger, model
 		modelAssessment.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
 	}
 
-	if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
+	if ctx.Language.SupportsFix() {
 		withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, ctx.Repository.DataPath())
 		problems = append(problems, ps...)
 		if err != nil {

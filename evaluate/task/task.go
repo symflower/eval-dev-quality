@@ -37,6 +37,10 @@ var (
 	IdentifierWriteTests = registerIdentifier("write-tests")
 	// IdentifierWriteTestsSymflowerFix holds the identifier for the "write test" task with the "symflower fix" applied.
 	IdentifierWriteTestsSymflowerFix = registerIdentifier("write-tests-symflower-fix")
+	// IdentifierWriteTestsSymflowerTemplate holds the identifier for the "write test" task based on a Symflower template.
+	IdentifierWriteTestsSymflowerTemplate = registerIdentifier("write-tests-symflower-template")
+	// IdentifierWriteTestsSymflowerTemplateSymflowerFix holds the identifier for the "write test" task based on a Symflower template with the "symflower fix" applied.
+	IdentifierWriteTestsSymflowerTemplateSymflowerFix = registerIdentifier("write-tests-symflower-template-symflower-fix")
 	// IdentifierCodeRepair holds the identifier for the "code repair" task.
 	IdentifierCodeRepair = registerIdentifier("code-repair")
 	// IdentifierTranspile holds the identifier for the "transpile" task.

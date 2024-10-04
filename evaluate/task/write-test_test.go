@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -37,21 +38,21 @@ func TestWriteTestsRun(t *testing.T) {
 		})
 	}
 
-	t.Run("Clear repository on each task file", func(t *testing.T) {
+	t.Run("Clear repository on each task file", func(t *testing.T) { // This test simulates failing tests for the first of two task cases and ensures that they don't influence test execution for the second one.
 		temporaryDirectoryPath := t.TempDir()
 
 		repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
 		require.NoError(t, os.MkdirAll(repositoryPath, 0700))
 		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "go.mod"), []byte("module plain\n\ngo 1.21.5"), 0600))
-		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "taskA.go"), []byte("package plain\n\nfunc TaskA(){}"), 0600))
-		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "taskB.go"), []byte("package plain\n\nfunc TaskB(){}"), 0600))
+		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "caseA.go"), []byte("package plain\n\nfunc caseA(){}"), 0600))
+		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "caseB.go"), []byte("package plain\n\nfunc caseB(){}"), 0600))
 
 		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
 
-		// Generate invalid code for the first taskcontext.
-		modelMock.RegisterGenerateSuccess(t, "taskA_test.go", "does not compile", metricstesting.AssessmentsWithProcessingTime).Once()
-		// Generate valid code for the second taskcontext.
-		modelMock.RegisterGenerateSuccess(t, "taskB_test.go", "package plain\n\nimport \"testing\"\n\nfunc TestTaskB(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Once()
+		// Generate invalid code for caseA (with and without template).
+		modelMock.RegisterGenerateSuccess(t, "caseA_test.go", "does not compile", metricstesting.AssessmentsWithProcessingTime).Twice()
+		// Generate valid code for caseB (with and without template).
+		modelMock.RegisterGenerateSuccess(t, "caseB_test.go", "package plain\n\nimport \"testing\"\n\nfunc TestCaseB(t *testing.T){}", metricstesting.AssessmentsWithProcessingTime).Twice()
 
 		validate(t, &tasktesting.TestCaseTask{
 			Name: "Plain",
@@ -72,14 +73,27 @@ func TestWriteTestsRun(t *testing.T) {
 					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 					metrics.AssessmentKeyResponseNoError:               2,
 				},
+				// With the template there would be coverage but it is overwritten.
+				IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
 			},
 			ExpectedProblemContains: []string{
-				"expected 'package', found does",
-				"exit status 1",
+				"expected 'package', found does", // Model error.
+				"exit status 1",                  // Symflower fix not applicable.
+				"expected 'package', found does", // Model error (overwrote template).
+				"exit status 1",                  // Symflower fix not applicable (overwrote template).
 			},
 			ValidateLog: func(t *testing.T, data string) {
-				assert.Contains(t, data, "Evaluating model \"mocked-model\"")
-				assert.Contains(t, data, "PASS: TestTaskB")
+				assert.Equal(t, 1, strings.Count(data, "Evaluating model \"mocked-model\""))
+				assert.Equal(t, 4, strings.Count(data, "PASS: TestCaseB")) // Bare model result, with fix, with template, with template and fix.
 			},
 		})
 	})
@@ -92,7 +106,7 @@ func TestWriteTestsRun(t *testing.T) {
 				require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
 
 				modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
-				modelMock.RegisterGenerateSuccess(t, "plain_test.go", testFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+				modelMock.RegisterGenerateSuccess(t, "plain_test.go", testFileContent, metricstesting.AssessmentsWithProcessingTime).Twice()
 
 				validate(t, &tasktesting.TestCaseTask{
 					Name: testName,
@@ -126,6 +140,18 @@ func TestWriteTestsRun(t *testing.T) {
 						metrics.AssessmentKeyResponseNoError:               1,
 						metrics.AssessmentKeyCoverage:                      10,
 					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyCoverage:                      10,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyCoverage:                      10,
+					},
 				}
 				validateGo(t, "Model generated correct test", &golang.Language{}, bytesutil.StringTrimIndentations(`
 					package plain
@@ -149,8 +175,19 @@ func TestWriteTestsRun(t *testing.T) {
 						metrics.AssessmentKeyResponseNoError:               1,
 						metrics.AssessmentKeyCoverage:                      10,
 					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyCoverage:                      10,
+					},
 				}
 				expectedProblems := []string{
+					"imported and not used",
 					"imported and not used",
 				}
 				validateGo(t, "Model generated test with unused import", &golang.Language{}, bytesutil.StringTrimIndentations(`
@@ -176,8 +213,18 @@ func TestWriteTestsRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
 					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
 				}
 				expectedProblems := []string{
+					"expected declaration, found this",
+					"unable to format source code",
 					"expected declaration, found this",
 					"unable to format source code",
 				}
@@ -227,6 +274,18 @@ func TestWriteTestsRun(t *testing.T) {
 					metrics.AssessmentKeyResponseNoError:               1,
 				},
 				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               1,
+				},
+				IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               1,
+				},
+				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
 					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 					metrics.AssessmentKeyFilesExecuted:                 1,
 					metrics.AssessmentKeyCoverage:                      10,

@@ -203,6 +203,42 @@ func (_m *MockLanguage) Name() string {
 	return r0
 }
 
+// SupportsFix provides a mock function with given fields:
+func (_m *MockLanguage) SupportsFix() bool {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for SupportsFix")
+	}
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// SupportsTemplate provides a mock function with given fields:
+func (_m *MockLanguage) SupportsTemplate() bool {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for SupportsTemplate")
+	}
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
 // TestFilePath provides a mock function with given fields: projectRootPath, filePath
 func (_m *MockLanguage) TestFilePath(projectRootPath string, filePath string) string {
 	ret := _m.Called(projectRootPath, filePath)

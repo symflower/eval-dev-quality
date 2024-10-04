@@ -169,3 +169,13 @@ var mistakesRe = regexp.MustCompile(`(?m)^.*\.go:\d+:\d+:.*$`)
 func extractMistakes(rawMistakes string) (mistakes []string) {
 	return mistakesRe.FindAllString(rawMistakes, -1)
 }
+
+// SupportsFix reports if the language is supported by "symflower fix".
+func (l *Language) SupportsFix() bool {
+	return true
+}
+
+// SupportsTemplate reports if the language is supported by "symflower unit-test-skeleton".
+func (l *Language) SupportsTemplate() bool {
+	return true
+}
