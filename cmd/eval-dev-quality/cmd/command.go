@@ -9,7 +9,6 @@ import (
 type Command struct {
 	Evaluate     `command:"evaluate" description:"Run an evaluation, by default with all defined models, repositories and tasks."`
 	InstallTools `command:"install-tools" description:"Checks and installs all tools required for the evaluation benchmark."`
-	Report       `command:"report" description:"Combines the results of multiple evaluations."`
 	Version      `command:"version" description:"Display the version information of the binary."`
 }
 
