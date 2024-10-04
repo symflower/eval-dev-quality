@@ -39,7 +39,6 @@ var gpt4EvaluationCSVFileContent = bytesutil.StringTrimIndentations(`
 
 // validateMarkdownLinks checks if the Markdown report data contains all the links to other relevant report files.
 func validateMarkdownLinks(t *testing.T, data string, modelLogNames []string, logFiles []string) {
-	assert.Contains(t, data, "](./categories.svg)")
 	assert.Contains(t, data, "](./evaluation.csv)")
 
 	for _, logFile := range logFiles {
@@ -161,7 +160,6 @@ func TestReportExecute(t *testing.T) {
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 			"evaluation.csv": nil,
-			filepath.Join("result-directory", "categories.svg"): nil,
 			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath string, data string) {
 				validateMarkdownLinks(t, data, []string{"openrouter_anthropic_claude-2.0"}, []string{"evaluation.log"})
 			},
@@ -208,7 +206,6 @@ func TestReportExecute(t *testing.T) {
 			filepath.Join("docs", "v5", "gemma", "evaluation.log"):              nil,
 			filepath.Join("docs", "v5", "openrouter", "gpt4", "evaluation.csv"): nil,
 			filepath.Join("docs", "v5", "openrouter", "gpt4", "evaluation.log"): nil,
-			filepath.Join("result-directory", "categories.svg"):                 nil,
 			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath string, data string) {
 				validateMarkdownLinks(t, data, []string{
 					"openrouter_anthropic_claude-2.0",
@@ -249,7 +246,6 @@ func TestReportExecute(t *testing.T) {
 			filepath.Join("docs", "v5", "gemma", "evaluation.log"):  nil,
 			filepath.Join("docs", "v5", "gpt4", "evaluation.csv"):   nil,
 			filepath.Join("docs", "v5", "gpt4", "evaluation.log"):   nil,
-			filepath.Join("result-directory", "categories.svg"):     nil,
 			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath string, data string) {
 				validateMarkdownLinks(t, data, []string{
 					"openrouter_anthropic_claude-2.0",

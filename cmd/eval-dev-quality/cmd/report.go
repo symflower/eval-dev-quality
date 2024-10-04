@@ -130,7 +130,6 @@ func (command *Report) Execute(args []string) (err error) {
 
 		LogPaths: evaluationLogFiles,
 		CSVPath:  "./evaluation.csv",
-		SVGPath:  "./categories.svg",
 
 		AssessmentPerModel: assessmentsPerModel,
 	}).WriteToFile(filepath.Join(command.ResultPath, "README.md")); err != nil {
