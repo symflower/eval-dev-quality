@@ -8,7 +8,7 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-// QueryOpenAIModel queries an OpenAI API model.
+// QueryOpenAIAPIModel queries an OpenAI API model.
 func QueryOpenAIAPIModel(ctx context.Context, client *openai.Client, modelIdentifier string, promptText string) (response string, err error) {
 	apiResponse, err := client.CreateChatCompletion(
 		ctx,

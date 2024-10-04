@@ -14,26 +14,26 @@ import (
 	evaltask "github.com/symflower/eval-dev-quality/task"
 )
 
-// TaskCodeRepair holds the code repair task.
-type TaskCodeRepair struct {
+// CodeRepair holds the code repair task.
+type CodeRepair struct {
 }
 
-// TaskArgumentsCodeRepair holds extra arguments to be used in a query prompt.
-type TaskArgumentsCodeRepair struct {
+// ArgumentsCodeRepair holds extra arguments to be used in a query prompt.
+type ArgumentsCodeRepair struct {
 	// Mistakes holds the list of compilation errors for a package.
 	Mistakes []string
 }
 
-var _ evaltask.Task = (*TaskCodeRepair)(nil)
+var _ evaltask.Task = (*CodeRepair)(nil)
 
 // Identifier returns the code repair task identifier.
-func (t *TaskCodeRepair) Identifier() evaltask.Identifier {
+func (t *CodeRepair) Identifier() evaltask.Identifier {
 	return IdentifierCodeRepair
 }
 
 // Run performs source code repairing in a repository with compilation errors.
 // This task requires the repository to consist of multiple packages, with each containing one faulty implementation file and a corresponding test file.
-func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
+func (t *CodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
 	modelCapability, ok := ctx.Model.(model.CapabilityRepairCode)
 	if !ok {
 		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
@@ -76,7 +76,7 @@ func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 			RepositoryPath: packagePath,
 			FilePath:       sourceFile,
 
-			Arguments: &TaskArgumentsCodeRepair{
+			Arguments: &ArgumentsCodeRepair{
 				Mistakes: mistakes,
 			},
 
@@ -115,7 +115,7 @@ func (t *TaskCodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[eva
 }
 
 // unpackCodeRepairPackage validates a package under test and returns the source file path and the list of compilation errors found.
-func (t *TaskCodeRepair) unpackCodeRepairPackage(ctx evaltask.Context, fileLogger *log.Logger, packagePath string) (sourceFilePath string, mistakes []string, err error) {
+func (t *CodeRepair) unpackCodeRepairPackage(ctx evaltask.Context, fileLogger *log.Logger, packagePath string) (sourceFilePath string, mistakes []string, err error) {
 	mistakes, err = ctx.Language.Mistakes(ctx.Logger, packagePath)
 	if err != nil {
 		return "", nil, pkgerrors.WithStack(err)

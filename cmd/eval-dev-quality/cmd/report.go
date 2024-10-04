@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"time"
@@ -47,7 +48,11 @@ func (command *Report) Execute(args []string) (err error) {
 	if evaluationCSVFile, err = os.OpenFile(filepath.Join(command.ResultPath, "evaluation.csv"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0755); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
 	}
-	defer evaluationCSVFile.Close()
+	defer func() {
+		if e := evaluationCSVFile.Close(); e != nil {
+			err = errors.Join(err, pkgerrors.WithStack(e))
+		}
+	}()
 
 	// Collect all evaluation CSV file paths.
 	allEvaluationPaths := map[string]bool{}
@@ -86,7 +91,11 @@ func (command *Report) Execute(args []string) (err error) {
 	if err != nil {
 		command.logger.Panicf("ERROR: %s", err)
 	}
-	defer modelsMetaInformationCSVFile.Close()
+	defer func() {
+		if e := modelsMetaInformationCSVFile.Close(); e != nil {
+			err = errors.Join(err, pkgerrors.WithStack(e))
+		}
+	}()
 
 	// Fetch all openrouter models since it is the only provider that currently supports querying meta information.
 	provider := openrouter.NewProvider().(*openrouter.Provider)
@@ -139,7 +148,6 @@ func collectAllEvaluationLogFiles(evaluationCSVFilePaths []string) (evaluationLo
 		if err != nil {
 			continue
 		}
-		filepath.Base(evaluationDirectory)
 		evaluationLogFilePaths = append(evaluationLogFilePaths, filepath.Join(filepath.Base(evaluationDirectory), "evaluation.log"))
 	}
 

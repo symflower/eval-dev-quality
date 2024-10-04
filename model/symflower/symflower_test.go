@@ -170,31 +170,31 @@ func TestExtractGeneratedFilePaths(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Full output",
 
-		Output: `2024/04/25 20:13:49 Evaluating model "symflower/symbolic-execution" using language "java" and repository "java/plain"
-2024/04/25 20:13:49 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1527239031/plain src/main/java/com/eval/Plain.java
-Analyzing workspace /tmp/eval-dev-quality1527239031/plain/
-Search for Java files
-Load dependency stdlib:@dev
-Found 1 Java files
-Found 0 problems in Java files
-src/main/java/com/eval/Plain.java: found 1 symbols
-src/main/java/com/eval/Plain.java: com.eval.Plain.plain: computing test cases
-src/main/java/com/eval/Plain.java: com.eval.Plain.plain: computed 1 unit tests
-src/main/java/com/eval/Plain.java: com.eval.Plain.plain: found 0 problems
-Symflower's table driven test style is not supported, switching to basic style
-src/main/java/com/eval/Plain.java: generated unit test file src/test/java/com/eval/PlainSymflowerTest.java
-src/test/java/com/eval/Foo.java: generated unit test file src/test/java/com/eval/Foo.java
-src/test/java/com/eval/Bar.java: generated unit test file src/test/java/com/eval/Bar.java
-src/test/java/com/eval/FooBar.java: generated unit test file src/test/java/com/eval/FooBar.java
-Analyzed 1 out of 1 source files
-Had 0 errors that block a full analysis
-Generated 1 test
-Found 0 potential problems
-[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for youhelp![0m
-2024/04/25 20:13:52 $ symflower test --language java --workspace /tmp/eval-dev-quality1527239031/plain
-Total coverage 100.000000%
-[0;34mGive us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for youhelp![0m
-2024/04/25 20:13:58 Evaluated model "symflower/symbolic-execution" using language "java" and repository "java/plain": encountered 0 problems: []`,
+		Output: `
+			2024/04/25 20:13:49 Evaluating model "symflower/symbolic-execution" using language "java" and repository "java/plain"
+			2024/04/25 20:13:49 $ symflower unit-tests --code-disable-fetch-dependencies --workspace /tmp/eval-dev-quality1527239031/plain src/main/java/com/eval/Plain.java
+			Analyzing workspace /tmp/eval-dev-quality1527239031/plain/
+			Search for Java files
+			Load dependency stdlib:@dev
+			Found 1 Java files
+			Found 0 problems in Java files
+			src/main/java/com/eval/Plain.java: found 1 symbols
+			src/main/java/com/eval/Plain.java: com.eval.Plain.plain: computing test cases
+			src/main/java/com/eval/Plain.java: com.eval.Plain.plain: computed 1 unit tests
+			src/main/java/com/eval/Plain.java: com.eval.Plain.plain: found 0 problems
+			Symflower's table driven test style is not supported, switching to basic style
+			src/main/java/com/eval/Plain.java: generated unit test file src/test/java/com/eval/PlainSymflowerTest.java
+			src/test/java/com/eval/Foo.java: generated unit test file src/test/java/com/eval/Foo.java
+			src/test/java/com/eval/Bar.java: generated unit test file src/test/java/com/eval/Bar.java
+			src/test/java/com/eval/FooBar.java: generated unit test file src/test/java/com/eval/FooBar.java
+			Analyzed 1 out of 1 source files
+			Had 0 errors that block a full analysis
+			Generated 1 test
+			Found 0 potential problems
+			2024/04/25 20:13:52 $ symflower test --language java --workspace /tmp/eval-dev-quality1527239031/plain
+			Total coverage 100.000000%
+			2024/04/25 20:13:58 Evaluated model "symflower/symbolic-execution" using language "java" and repository "java/plain": encountered 0 problems: []
+		`,
 
 		ExpectedFilePaths: []string{
 			"src/test/java/com/eval/PlainSymflowerTest.java",

@@ -231,14 +231,6 @@ func TestLanguageExecute(t *testing.T) {
 }
 
 func TestMistakes(t *testing.T) {
-	type testCase struct {
-		Name string
-
-		RepositoryPath string
-
-		ExpectedMistakes []string
-	}
-
 	validate := func(t *testing.T, tc *languagetesting.TestCaseMistakes) {
 		tc.Validate(t)
 	}

@@ -96,7 +96,11 @@ func (p *Provider) fetchModels() (models ModelsList, err error) {
 			if err != nil {
 				return pkgerrors.WithStack(err)
 			}
-			defer response.Body.Close()
+			defer func() {
+				if e := response.Body.Close(); e != nil {
+					err = errors.Join(err, pkgerrors.WithStack(e))
+				}
+			}()
 
 			if response.StatusCode != http.StatusOK {
 				return pkgerrors.Errorf("received status code %d when querying provider models", response.StatusCode)

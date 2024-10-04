@@ -24,10 +24,10 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 )
 
-func TestTaskTranspileRun(t *testing.T) {
+func TestTranspileRun(t *testing.T) {
 	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
-			task, err := TaskForIdentifier(IdentifierTranspile)
+			task, err := ForIdentifier(IdentifierTranspile)
 			require.NoError(t, err)
 			tc.Task = task
 
@@ -40,8 +40,8 @@ func TestTaskTranspileRun(t *testing.T) {
 	}
 
 	validateContext := func(t *testing.T, c model.Context) {
-		arguments, ok := c.Arguments.(*TaskArgumentsTranspile)
-		require.True(t, ok, fmt.Sprintf("%T != TaskArgumentsTranspile", arguments))
+		arguments, ok := c.Arguments.(*ArgumentsTranspile)
+		require.True(t, ok, fmt.Sprintf("%T != ArgumentsTranspile", arguments))
 		assert.True(t, strings.HasPrefix(arguments.OriginFilePath, "implementation"+string(os.PathSeparator)), fmt.Sprintf("%q must be a relative path", arguments.OriginFilePath))
 	}
 
@@ -387,8 +387,8 @@ func TestTaskTranspileRun(t *testing.T) {
 				end
 			`)
 			modelMock.RegisterGenerateSuccess(t, func(t *testing.T, c model.Context) {
-				arguments, ok := c.Arguments.(*TaskArgumentsTranspile)
-				require.True(t, ok, fmt.Sprintf("%T != TaskArgumentsTranspile", arguments))
+				arguments, ok := c.Arguments.(*ArgumentsTranspile)
+				require.True(t, ok, fmt.Sprintf("%T != ArgumentsTranspile", arguments))
 				assert.True(t, strings.HasPrefix(arguments.OriginFilePath, "implementation/"), fmt.Sprintf("%q must be a relative path", arguments.OriginFilePath))
 
 				// This assertion checks explicitly that stub files are not overwritten, now that we added a third language with Ruby.
@@ -769,7 +769,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 	})
 }
 
-func TestTaskTranspileUnpackTranspilerPackage(t *testing.T) {
+func TestTranspileUnpackTranspilerPackage(t *testing.T) {
 	type testCase struct {
 		Name string
 
@@ -799,7 +799,7 @@ func TestTaskTranspileUnpackTranspilerPackage(t *testing.T) {
 			require.NoError(t, err)
 			defer cleanup()
 
-			taskTranspile := TaskTranspile{}
+			taskTranspile := Transpile{}
 			ctx := evaltask.Context{
 				Language:   tc.DestinationLanguage,
 				Repository: repository,

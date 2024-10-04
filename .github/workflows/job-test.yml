@@ -4,6 +4,7 @@ on:
       os:
         required: true
         type: string
+
 jobs:
   test:
     runs-on: ${{ inputs.os }}

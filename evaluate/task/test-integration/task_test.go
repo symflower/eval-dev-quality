@@ -17,12 +17,12 @@ import (
 	toolstesting "github.com/symflower/eval-dev-quality/tools/testing"
 )
 
-func TestTaskWriteTestsRun(t *testing.T) {
+func TestWriteTestsRun(t *testing.T) {
 	toolstesting.RequiresTool(t, tools.NewSymflower())
 
 	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
-			task, err := evaluatetask.TaskForIdentifier(evaluatetask.IdentifierWriteTests)
+			task, err := evaluatetask.ForIdentifier(evaluatetask.IdentifierWriteTests)
 			require.NoError(t, err)
 			tc.Task = task
 

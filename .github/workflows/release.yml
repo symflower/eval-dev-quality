@@ -1,9 +1,0 @@
-name: Release
-
-on:
-  release:
-    types: [released]
-
-jobs:
-  docker:
-    uses: ./.github/workflows/docker.yml

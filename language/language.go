@@ -75,7 +75,7 @@ func RepositoriesForLanguage(language Language, testdataPath string) (relativeRe
 	languagePath := filepath.Join(testdataPath, language.ID())
 	languageRepositories, err := os.ReadDir(languagePath)
 	if err != nil {
-		pkgerrors.WithMessagef(err, "language path %q cannot be accessed", languagePath)
+		return nil, pkgerrors.WithMessagef(err, "language path %q cannot be accessed", languagePath)
 	}
 
 	for _, repository := range languageRepositories {

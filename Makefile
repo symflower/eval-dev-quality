@@ -47,12 +47,18 @@ install: # [Go package] - # Build and install everything, or only the specified 
 	go install -v -ldflags="$(GO_LDFLAGS)" $(PACKAGE)
 .PHONY: install
 
-install-all: install install-tools install-tools-testing # Install everything for and of this repository.
+install-all: install install-tools install-tools-linting install-tools-testing # Install everything for and of this repository.
 .PHONY: install-all
 
 install-tools: # Install tools that are required for running the evaluation.
 	eval-dev-quality install-tools $(if $(ARGS), --install-tools-path $(word 1,$(ARGS)))
 .PHONY: install-tools
+
+install-tools-linting: # Install tools that are used for linting.
+	go install -v github.com/kisielk/errcheck@v1.7.0
+	go install -v github.com/mgechev/revive@v1.4.0
+	go install -v honnef.co/go/tools/cmd/staticcheck@2024.1.1
+.PHONY: install-tools-linting
 
 install-tools-testing: # Install tools that are used for testing.
 	go install -v github.com/vektra/mockery/v2@v2.40.3
@@ -62,6 +68,13 @@ install-tools-testing: # Install tools that are used for testing.
 generate: # Run code generation.
 	mockery
 .PHONY: generate
+
+lint: # Check repository.
+	errcheck ./...
+	go vet ./...
+	revive ./... | ack -v "(should have a package comment|seems to be unused, consider removing or renaming it)" || exit 1
+	staticcheck ./...
+.PHONY: lint
 
 lint-build-ci: generate # Check artifacts.
 	make require-clean-worktree

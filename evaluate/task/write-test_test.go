@@ -17,16 +17,15 @@ import (
 	"github.com/symflower/eval-dev-quality/language/ruby"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
-	"github.com/symflower/eval-dev-quality/task"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 )
 
-func TestTaskWriteTestsRun(t *testing.T) {
+func TestWriteTestsRun(t *testing.T) {
 	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
-			task, err := TaskForIdentifier(IdentifierWriteTests)
+			task, err := ForIdentifier(IdentifierWriteTests)
 			require.NoError(t, err)
 			tc.Task = task
 
@@ -220,7 +219,7 @@ func TestTaskWriteTestsRun(t *testing.T) {
 			TestDataPath:   temporaryDirectoryPath,
 			RepositoryPath: filepath.Join("ruby", "plain"),
 
-			ExpectedRepositoryAssessment: map[task.Identifier]metrics.Assessments{
+			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 				IdentifierWriteTests: metrics.Assessments{
 					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 					metrics.AssessmentKeyFilesExecuted:                 1,
@@ -264,7 +263,7 @@ func TestValidateWriteTestsRepository(t *testing.T) {
 				Before: func(repositoryPath string) {
 					fileATest, err := os.Create(filepath.Join(repositoryPath, "fileA_test.go"))
 					require.NoError(t, err)
-					fileATest.Close()
+					require.NoError(t, fileATest.Close())
 				},
 
 				TestdataPath:   filepath.Join("..", "..", "testdata"),
@@ -303,7 +302,7 @@ func TestValidateWriteTestsRepository(t *testing.T) {
 
 					fileATest, err := os.Create(filepath.Join(somePackage, "FileATest.java"))
 					require.NoError(t, err)
-					fileATest.Close()
+					require.NoError(t, fileATest.Close())
 				},
 
 				TestdataPath:   filepath.Join("..", "..", "testdata"),

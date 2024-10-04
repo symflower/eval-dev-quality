@@ -313,7 +313,7 @@ func TestPathsFromGlobPattern(t *testing.T) {
 		Before: func(workingDirectory string) {
 			file, err := os.Create(filepath.Join(workingDirectory, "not-an-evaluation.csv"))
 			require.NoError(t, err)
-			file.Close()
+			require.NoError(t, file.Close())
 		},
 
 		EvaluationGlobPattern: "not-an-evaluation.csv",
@@ -393,7 +393,7 @@ func TestCollectAllEvaluationLogFiles(t *testing.T) {
 
 			file, err := os.Create(filepath.Join(workingDirectory, "someModel", "evaluation.csv"))
 			require.NoError(t, err)
-			file.Close()
+			require.NoError(t, file.Close())
 		},
 
 		EvaluationCSVFilePaths: []string{
@@ -442,9 +442,9 @@ func createEvaluationDirectoryWithLogFiles(t *testing.T, workingDirectory string
 
 	file, err := os.Create(filepath.Join(workingDirectory, "evaluation.csv"))
 	require.NoError(t, err)
-	file.Close()
+	require.NoError(t, file.Close())
 
 	file, err = os.Create(filepath.Join(workingDirectory, "evaluation.log"))
 	require.NoError(t, err)
-	file.Close()
+	require.NoError(t, file.Close())
 }

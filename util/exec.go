@@ -172,6 +172,6 @@ func (p *Parallel) Execute(f func()) {
 }
 
 // Wait waits until all executions are done.
-func (l *Parallel) Wait() {
-	l.wg.Wait()
+func (p *Parallel) Wait() {
+	p.wg.Wait()
 }

@@ -3,6 +3,7 @@ package report
 import (
 	"cmp"
 	"encoding/csv"
+	"errors"
 	"io"
 	"os"
 	"slices"
@@ -72,7 +73,7 @@ func (e *EvaluationFile) WriteLines(records [][]string) (err error) {
 	return nil
 }
 
-// evaluationHeader returns the CSV header for the evaluation CSV.
+// EvaluationHeader returns the CSV header for the evaluation CSV.
 func EvaluationHeader() (header []string) {
 	return append([]string{"model-id", "language", "repository", "task", "run", "score"}, metrics.AllAssessmentKeysStrings...)
 }
@@ -84,12 +85,18 @@ func RecordsFromEvaluationCSVFiles(evaluationCSVFilePaths []string) (records [][
 		if err != nil {
 			return nil, pkgerrors.WithStack(err)
 		}
-		defer file.Close()
+		defer func() {
+			if e := file.Close(); e != nil {
+				err = errors.Join(err, pkgerrors.WithStack(e))
+			}
+		}()
 
 		csv := csv.NewReader(file)
 
 		// Ignore the CSV header.
-		csv.Read()
+		if _, err := csv.Read(); err != nil {
+			return nil, pkgerrors.WithStack(err)
+		}
 
 		evaluationRecords, err := csv.ReadAll()
 		if err != nil {

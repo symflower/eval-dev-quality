@@ -13,6 +13,7 @@ import (
 	"strings"
 )
 
+// JSONModels holds the collection of the models.
 type JSONModels struct {
 	Models []struct {
 		Name        string   `json:"name"`
@@ -21,16 +22,19 @@ type JSONModels struct {
 	} `json:"models"`
 }
 
+// FullOllamaModels holds a full Ollama model collection.
 type FullOllamaModels struct {
 	Models []Model `json:"models"`
 }
 
+// Model holds a model.
 type Model struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Tags        []Tag  `json:"tags"`
 }
 
+// Tag holds a tag.
 type Tag struct {
 	Name string  `json:"name"`
 	Size float64 `json:"size"`
@@ -42,7 +46,7 @@ func main() {
 	ollamaModels := JSONModels{}
 	modelsBody := OnPage("https://ollama-models.zwz.workers.dev/")
 	if err := json.Unmarshal([]byte(modelsBody), &ollamaModels); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	// Fetch details for each model
@@ -55,7 +59,7 @@ func main() {
 
 		tagsBody := OnPage("https://ollama.com/library/" + model.Name + "/tags")
 
-		split := strings.Split(stripHtmlRegex(tagsBody), " ")
+		split := strings.Split(stripHTMLRegex(tagsBody), " ")
 
 		for _, tag := range model.Tags {
 			textSize := ""
@@ -74,7 +78,7 @@ func main() {
 				textSize = strings.TrimSuffix(textSize, "GB")
 				parsed, err := strconv.ParseFloat(textSize, 64)
 				if err != nil {
-					panic(err)
+					log.Fatal(err)
 				}
 				size = parsed
 			}
@@ -82,7 +86,7 @@ func main() {
 				textSize = strings.TrimSuffix(textSize, "MB")
 				parsed, err := strconv.ParseFloat(textSize, 64)
 				if err != nil {
-					panic(err)
+					log.Fatal(err)
 				}
 				size = parsed / 1024
 			}
@@ -100,32 +104,45 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed creating file: %s", err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 	csvwriter := csv.NewWriter(file)
 
-	csvwriter.Write([]string{"model", "size (GB)"})
+	if err := csvwriter.Write([]string{"model", "size (GB)"}); err != nil {
+		log.Fatal(err)
+	}
 	for _, m := range fullModels.Models {
 		for _, t := range m.Tags {
-			csvwriter.Write([]string{m.Name + "/" + t.Name, fmt.Sprintf("%.2f", t.Size)})
+			if err := csvwriter.Write([]string{m.Name + "/" + t.Name, fmt.Sprintf("%.2f", t.Size)}); err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 	csvwriter.Flush()
 }
 
+// OnPage returns the body of an URL.
 func OnPage(link string) string {
 	res, err := http.Get(link)
 	if err != nil {
 		log.Fatal(err)
 	}
 	content, err := io.ReadAll(res.Body)
-	res.Body.Close()
+	defer func() {
+		if err := res.Body.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 	if err != nil {
 		log.Fatal(err)
 	}
 	return string(content)
 }
 
-func stripHtmlRegex(input string) string {
+func stripHTMLRegex(input string) string {
 	input = regexp.MustCompile(`<.*?>`).ReplaceAllString(input, "")
 	input = strings.ReplaceAll(input, ">", "")
 	input = strings.ReplaceAll(input, "<", "")

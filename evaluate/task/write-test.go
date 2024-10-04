@@ -12,19 +12,19 @@ import (
 	evaltask "github.com/symflower/eval-dev-quality/task"
 )
 
-// TaskWriteTests holds the write test task.
-type TaskWriteTests struct {
+// WriteTests holds the write test task.
+type WriteTests struct {
 }
 
-var _ evaltask.Task = (*TaskWriteTests)(nil)
+var _ evaltask.Task = (*WriteTests)(nil)
 
 // Identifier returns the write test task identifier.
-func (t *TaskWriteTests) Identifier() evaltask.Identifier {
+func (t *WriteTests) Identifier() evaltask.Identifier {
 	return IdentifierWriteTests
 }
 
-// TaskWriteTests generates test files for the given implementation file in a repository.
-func (t *TaskWriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
+// Run generates test files for the given implementation file in a repository.
+func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
 	modelCapability, ok := ctx.Model.(model.CapabilityWriteTests)
 	if !ok {
 		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))

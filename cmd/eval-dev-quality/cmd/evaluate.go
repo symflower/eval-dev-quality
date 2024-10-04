@@ -135,7 +135,9 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		if err != nil {
 			command.logger.Panicf("ERROR: %s", err)
 		}
-		configurationFile.Close()
+		if err := configurationFile.Close(); err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
 
 		command.Models = configuration.Models.Selected
 		command.Repositories = configuration.Repositories.Selected
@@ -360,9 +362,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			sort.Strings(command.Repositories)
 		}
 		evaluationContext.RepositoryPaths = command.Repositories
-		for _, r := range command.Repositories {
-			evaluationConfiguration.Repositories.Selected = append(evaluationConfiguration.Repositories.Selected, r)
-		}
+		evaluationConfiguration.Repositories.Selected = append(evaluationConfiguration.Repositories.Selected, command.Repositories...)
 	}
 
 	// Make the resolved selected languages available in the command.
@@ -494,7 +494,11 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	if err != nil {
 		command.logger.Panicf("ERROR: cannot create configuration file: %s", err)
 	}
-	defer configurationFile.Close()
+	defer func() {
+		if err := configurationFile.Close(); err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
+	}()
 	if err := evaluationConfiguration.Write(configurationFile); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
 	}
@@ -773,7 +777,9 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 
 		parallel.Execute(func() {
 			var tmplData bytes.Buffer
-			jobTmpl.Execute(&tmplData, data)
+			if err := jobTmpl.Execute(&tmplData, data); err != nil {
+				command.logger.Panicf("ERROR: %s", err)
+			}
 
 			commandOutput, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
 				Command: kubeCommand,
@@ -825,9 +831,9 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 
 	// Copy data from volume back to host.
 	{
-		storageTmpl, err := template.ParseFiles(filepath.Join("conf", "kube", "storage-access.yml"))
+		storageTemplate, err := template.ParseFiles(filepath.Join("conf", "kube", "storage-access.yml"))
 		if err != nil {
-			return pkgerrors.Wrap(err, "could not create kubernetes storage access template")
+			return pkgerrors.Wrap(err, "could not create Kubernetes storage access template")
 		}
 
 		data := map[string]string{
@@ -835,8 +841,10 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 			"namespace": command.Namespace,
 		}
 
-		var tmplData bytes.Buffer
-		storageTmpl.Execute(&tmplData, data)
+		var storageTemplateData bytes.Buffer
+		if err := storageTemplate.Execute(&storageTemplateData, data); err != nil {
+			return pkgerrors.Wrap(err, "could not execute storate template")
+		}
 
 		// Create the storage access pod.
 		output, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
@@ -846,7 +854,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 				"-f",
 				"-", // apply STDIN
 			},
-			Stdin: tmplData.String(),
+			Stdin: storageTemplateData.String(),
 		})
 		if err != nil {
 			return pkgerrors.WithMessage(pkgerrors.WithStack(err), output)
@@ -862,7 +870,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 				"-l", "app=eval-storage-access",
 				"-o", "custom-columns=:metadata.name",
 			},
-			Stdin: tmplData.String(),
+			Stdin: storageTemplateData.String(),
 		})
 		if err != nil {
 			return pkgerrors.WithMessage(pkgerrors.WithStack(err), output)

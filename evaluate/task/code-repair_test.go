@@ -22,10 +22,10 @@ import (
 	"github.com/zimmski/osutil/bytesutil"
 )
 
-func TestTaskCodeRepairRun(t *testing.T) {
+func TestCodeRepairRun(t *testing.T) {
 	validate := func(t *testing.T, tc *tasktesting.TestCaseTask) {
 		t.Run(tc.Name, func(t *testing.T) {
-			task, err := TaskForIdentifier(IdentifierCodeRepair)
+			task, err := ForIdentifier(IdentifierCodeRepair)
 			require.NoError(t, err)
 			tc.Task = task
 
@@ -392,7 +392,7 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 		Before: func(repositoryPath string) {
 			someFile, err := os.Create(filepath.Join(repositoryPath, "someFile.go"))
 			require.NoError(t, err)
-			someFile.Close()
+			require.NoError(t, someFile.Close())
 		},
 
 		TestdataPath:   filepath.Join("..", "..", "testdata"),
@@ -428,11 +428,11 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 
 				fileA, err := os.Create(filepath.Join(somePackage, "fileA.go"))
 				require.NoError(t, err)
-				fileA.Close()
+				require.NoError(t, fileA.Close())
 
 				fileB, err := os.Create(filepath.Join(somePackage, "fileB.go"))
 				require.NoError(t, err)
-				fileB.Close()
+				require.NoError(t, fileB.Close())
 			},
 
 			TestdataPath:   filepath.Join("..", "..", "testdata"),
@@ -452,7 +452,7 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 
 				file, err := os.Create(filepath.Join(somePackage, "someFile.go"))
 				require.NoError(t, err)
-				defer file.Close()
+				require.NoError(t, file.Close())
 			},
 
 			TestdataPath:   filepath.Join("..", "..", "testdata"),
@@ -472,15 +472,15 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 
 				fileA, err := os.Create(filepath.Join(somePackage, "fileA.go"))
 				require.NoError(t, err)
-				fileA.Close()
+				require.NoError(t, fileA.Close())
 
 				fileATest, err := os.Create(filepath.Join(somePackage, "fileA_test.go"))
 				require.NoError(t, err)
-				fileATest.Close()
+				require.NoError(t, fileATest.Close())
 
 				fileBTest, err := os.Create(filepath.Join(somePackage, "fileB_test.go"))
 				require.NoError(t, err)
-				fileBTest.Close()
+				require.NoError(t, fileBTest.Close())
 			},
 
 			TestdataPath:   filepath.Join("..", "..", "testdata"),
@@ -529,11 +529,11 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 
 				fileA, err := os.Create(filepath.Join(somePackage, "FileA.java"))
 				require.NoError(t, err)
-				fileA.Close()
+				require.NoError(t, fileA.Close())
 
 				fileB, err := os.Create(filepath.Join(somePackage, "FileB.java"))
 				require.NoError(t, err)
-				fileB.Close()
+				require.NoError(t, fileB.Close())
 			},
 
 			TestdataPath:   filepath.Join("..", "..", "testdata"),
@@ -554,7 +554,7 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 
 				fileA, err := os.Create(filepath.Join(somePackage, "FileA.java"))
 				require.NoError(t, err)
-				fileA.Close()
+				require.NoError(t, fileA.Close())
 			},
 
 			TestdataPath:   filepath.Join("..", "..", "testdata"),
@@ -576,15 +576,15 @@ func TestValidateCodeRepairRepository(t *testing.T) {
 
 				fileA, err := os.Create(filepath.Join(sourcePackage, "FileA.java"))
 				require.NoError(t, err)
-				fileA.Close()
+				require.NoError(t, fileA.Close())
 
 				fileATest, err := os.Create(filepath.Join(testPackage, "FileATest.java"))
 				require.NoError(t, err)
-				fileATest.Close()
+				require.NoError(t, fileATest.Close())
 
 				fileBTest, err := os.Create(filepath.Join(testPackage, "FileBTest.java"))
 				require.NoError(t, err)
-				fileBTest.Close()
+				require.NoError(t, fileBTest.Close())
 			},
 
 			TestdataPath:   filepath.Join("..", "..", "testdata"),

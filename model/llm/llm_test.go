@@ -167,7 +167,7 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 				RepositoryPath: repositoryPath,
 				FilePath:       tc.SourceFilePath,
 
-				Arguments: &evaluatetask.TaskArgumentsCodeRepair{
+				Arguments: &evaluatetask.ArgumentsCodeRepair{
 					Mistakes: tc.Mistakes,
 				},
 
@@ -480,7 +480,7 @@ func TestModelTranspile(t *testing.T) {
 			RepositoryPath: repositoryPath,
 			FilePath:       tc.StubFilePath,
 
-			Arguments: &evaluatetask.TaskArgumentsTranspile{
+			Arguments: &evaluatetask.ArgumentsTranspile{
 				OriginLanguage: tc.OriginLanguage,
 				OriginFilePath: tc.OriginFilePath,
 			},

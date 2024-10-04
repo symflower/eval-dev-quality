@@ -299,7 +299,7 @@ func OllamaModels(ollamaURL string) (modelNames []string, err error) {
 
 	ollamaURL, err = url.JoinPath(ollamaURL, "api", "tags")
 	if err != nil {
-		panic(err)
+		return nil, pkgerrors.WithStack(err)
 	}
 	response, err := http.Get(ollamaURL)
 	if err != nil {
@@ -348,7 +348,7 @@ func OllamaPull(logger *log.Logger, binaryPath string, url string, modelName str
 func OllamaLoad(ollamaURL string, modelName string) (err error) {
 	ollamaURL, err = url.JoinPath(ollamaURL, "api", "generate")
 	if err != nil {
-		panic(err)
+		return pkgerrors.WithStack(err)
 	}
 
 	// Send an empty request with negative keep-alive time to load the model and keep it loaded indefinitely. https://github.com/ollama/ollama/blob/main/docs/faq.md#how-do-i-keep-a-model-loaded-in-memory-or-make-it-unload-immediately
@@ -366,7 +366,7 @@ func OllamaLoad(ollamaURL string, modelName string) (err error) {
 func OllamaUnload(ollamaURL string, modelName string) (err error) {
 	ollamaURL, err = url.JoinPath(ollamaURL, "api", "generate")
 	if err != nil {
-		panic(err)
+		return pkgerrors.WithStack(err)
 	}
 
 	// Send an empty request with zero keep-alive time to unload the model. https://github.com/ollama/ollama/blob/main/docs/faq.md#how-do-i-keep-a-model-loaded-in-memory-or-make-it-unload-immediately

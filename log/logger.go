@@ -21,13 +21,20 @@ import (
 type AttributeKey string
 
 const (
-	AttributeKeyArtifact   AttributeKey = "Artifact"
-	AttributeKeyLanguage                = "Language"
-	AttributeKeyModel                   = "Model"
-	AttributeKeyRepository              = "Repository"
-	AttributeKeyResultPath              = "ResultPath"
-	AttributeKeyRun                     = "Run"
-	AttributeKeyTask                    = "Task"
+	// AttributeKeyArtifact holds the key for the "Artifact" attribute.
+	AttributeKeyArtifact = AttributeKey("Artifact")
+	// AttributeKeyLanguage holds the key for the "Language" attribute.
+	AttributeKeyLanguage = AttributeKey("Language")
+	// AttributeKeyModel holds the key for the "Model" attribute.
+	AttributeKeyModel = AttributeKey("Model")
+	// AttributeKeyRepository holds the key for the "Repository" attribute.
+	AttributeKeyRepository = AttributeKey("Repository")
+	// AttributeKeyResultPath holds the key for the "ResultPath" attribute.
+	AttributeKeyResultPath = AttributeKey("ResultPath")
+	// AttributeKeyRun holds the key for the "Run" attribute.
+	AttributeKeyRun = AttributeKey("Run")
+	// AttributeKeyTask holds the key for the "Task" attribute.
+	AttributeKeyTask = AttributeKey("Task")
 )
 
 // Attribute returns a logging attribute.
@@ -39,9 +46,13 @@ func Attribute(key AttributeKey, value any) (attribute slog.Attr) {
 type Flags int
 
 const (
+	// FlagMessageOnly defines to log only the message.
 	FlagMessageOnly = 0
-	FlagDate        = 1 << iota
+	// FlagDate defines to log the date.
+	FlagDate = 1 << iota
+	// FlagTime defines to log the time.
 	FlagTime
+	// FlagStandard defines to log with the standard format.
 	FlagStandard = FlagDate | FlagTime
 )
 
@@ -64,7 +75,9 @@ func CloseOpenLogFiles() {
 	defer openLogFilesMutex.Unlock()
 
 	for _, logFile := range openLogFiles {
-		logFile.Close()
+		if err := logFile.Close(); err != nil {
+			panic(err)
+		}
 	}
 
 	openLogFiles = nil
@@ -274,15 +287,15 @@ func (h *spawningHandler) Handle(ctx context.Context, record slog.Record) (err e
 	}
 
 	if h.flags&FlagDate != 0 {
-		fmt.Fprint(writer, record.Time.Format("2006/01/02"))
-		fmt.Fprint(writer, " ")
+		_, _ = fmt.Fprint(writer, record.Time.Format("2006/01/02"))
+		_, _ = fmt.Fprint(writer, " ")
 	}
 	if h.flags&FlagTime != 0 {
-		fmt.Fprint(writer, record.Time.Format("15:04:05"))
-		fmt.Fprint(writer, " ")
+		_, _ = fmt.Fprint(writer, record.Time.Format("15:04:05"))
+		_, _ = fmt.Fprint(writer, " ")
 	}
 
-	fmt.Fprintln(writer, record.Message)
+	_, _ = fmt.Fprintln(writer, record.Message)
 
 	return nil
 }
@@ -306,13 +319,17 @@ func (h *spawningHandler) WithAttrs(attributes []slog.Attr) slog.Handler {
 		logFilePath := spawner.FilePath(h.attributes)
 		writer, err := newLogWriter(h.writer, logFilePath)
 		if err != nil {
-			fmt.Fprintf(h.writer, "ERROR: cannot create new handler: %s\n", err.Error())
+			_, _ = fmt.Fprintf(h.writer, "ERROR: cannot create new handler: %s\n", err.Error())
 
 			continue
 		}
 
 		logMessage := fmt.Sprintf("Spawning new log file at %s", logFilePath)
-		h.Handle(context.Background(), slog.NewRecord(time.Now(), slog.LevelInfo, logMessage, 0))
+		if err := h.Handle(context.Background(), slog.NewRecord(time.Now(), slog.LevelInfo, logMessage, 0)); err != nil {
+			_, _ = fmt.Fprintf(h.writer, "ERROR: cannot spawn new log file: %s\n", err.Error())
+
+			continue
+		}
 
 		newHandler.writer = writer
 		newHandler.logFileSpawners = slices.Delete(newHandler.logFileSpawners, i, i+1) // The currently triggered log file spawner must not be part of the new handler as it would trigger again and again.

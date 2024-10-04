@@ -29,7 +29,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	os.Stderr.WriteString(fmt.Sprintf("Loaded CSV file with %d records\n", len(records)))
+	if _, err := os.Stderr.WriteString(fmt.Sprintf("Loaded CSV file with %d records\n", len(records))); err != nil {
+		panic(err)
+	}
 
 	// Collect all results and also the maximum scores.
 	scoresPerModelPerRun := map[string][]float64{}

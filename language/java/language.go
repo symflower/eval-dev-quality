@@ -80,8 +80,6 @@ func (l *Language) DefaultTestFileSuffix() string {
 	return "Test.java"
 }
 
-var languageJavaCoverageMatch = regexp.MustCompile(`Total coverage (.+?)%`)
-
 // ExecuteTests invokes the language specific testing on the given repository.
 func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (testResult *language.TestResult, problems []error, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), language.DefaultExecutionTimeout)

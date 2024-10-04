@@ -7,7 +7,6 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
-	"github.com/symflower/eval-dev-quality/language"
 	evallanguage "github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
@@ -79,7 +78,11 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 	if err != nil {
 		ctx.Log.Panicf("ERROR: unable to create evaluation CSV file: %+v", err)
 	}
-	defer evaluationCSVFile.Close()
+	defer func() {
+		if err := evaluationCSVFile.Close(); err != nil {
+			ctx.Log.Panicf("ERROR: cannot close CSV file: %s", err)
+		}
+	}()
 	evaluationFile, err := report.NewEvaluationFile(evaluationCSVFile)
 	if err != nil {
 		ctx.Log.Panicf("ERROR: %+v", err)
@@ -131,7 +134,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 					}
 
 					for _, taskIdentifier := range temporaryRepository.SupportedTasks() {
-						task, err := evaluatetask.TaskForIdentifier(taskIdentifier)
+						task, err := evaluatetask.ForIdentifier(taskIdentifier)
 						if err != nil {
 							logger.Fatal(err)
 						}
@@ -172,7 +175,9 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 								}
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								// Write the task assessment to the evaluation CSV file.
-								evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment)
+								if err := evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment); err != nil {
+									logger.Panicf("ERROR: cannot write evaluation record: %s", err)
+								}
 							}
 						})
 					}
@@ -191,7 +196,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 	// Create temporary repositories for each language so the repository is copied only once per language.
 	temporaryRepositories := map[string]*evaluatetask.Repository{}
 	for _, l := range ctx.Languages {
-		relativeRepositoryPaths, err := language.RepositoriesForLanguage(l, ctx.TestdataPath)
+		relativeRepositoryPaths, err := evallanguage.RepositoriesForLanguage(l, ctx.TestdataPath)
 		if err != nil {
 			ctx.Log.Panicf("ERROR: %s", err)
 		}
@@ -256,7 +261,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 						continue
 					}
 					for _, taskIdentifier := range temporaryRepository.Tasks {
-						task, err := evaluatetask.TaskForIdentifier(taskIdentifier)
+						task, err := evaluatetask.ForIdentifier(taskIdentifier)
 						if err != nil {
 							logger.Fatal(err)
 						}
@@ -291,7 +296,9 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 								}
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								// Write the task assessment to the evaluation CSV file.
-								evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment)
+								if err := evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment); err != nil {
+									logger.Panicf("ERROR: cannot write evaluation record: %s", err)
+								}
 							}
 						})
 					}
