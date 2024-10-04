@@ -37,18 +37,6 @@ var gpt4EvaluationCSVFileContent = bytesutil.StringTrimIndentations(`
 	openrouter/openai/gpt-4,java,java/plain,write-tests,1,12,12,12,12,12,12,12,12,12,12,12
 `)
 
-// validateMarkdownLinks checks if the Markdown report data contains all the links to other relevant report files.
-func validateMarkdownLinks(t *testing.T, data string, modelLogNames []string, logFiles []string) {
-	assert.Contains(t, data, "](./evaluation.csv)")
-
-	for _, logFile := range logFiles {
-		assert.Contains(t, data, logFile)
-	}
-	for _, m := range modelLogNames {
-		assert.Contains(t, data, fmt.Sprintf("](./%s/)", m))
-	}
-}
-
 func TestReportExecute(t *testing.T) {
 	type testCase struct {
 		Name string
@@ -160,8 +148,8 @@ func TestReportExecute(t *testing.T) {
 
 		ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 			"evaluation.csv": nil,
-			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath string, data string) {
-				validateMarkdownLinks(t, data, []string{"openrouter_anthropic_claude-2.0"}, []string{"evaluation.log"})
+			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
+				validateREADME(t, data)
 			},
 			filepath.Join("evaluation.log"): nil,
 			filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
@@ -206,16 +194,8 @@ func TestReportExecute(t *testing.T) {
 			filepath.Join("docs", "v5", "gemma", "evaluation.log"):              nil,
 			filepath.Join("docs", "v5", "openrouter", "gpt4", "evaluation.csv"): nil,
 			filepath.Join("docs", "v5", "openrouter", "gpt4", "evaluation.log"): nil,
-			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath string, data string) {
-				validateMarkdownLinks(t, data, []string{
-					"openrouter_anthropic_claude-2.0",
-					"openrouter_google_gemma-7b-it",
-					"openrouter_openai_gpt-4",
-				}, []string{
-					filepath.Join("claude", "evaluation.log"),
-					filepath.Join("gemma", "evaluation.log"),
-					filepath.Join("gpt4", "evaluation.log"),
-				})
+			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
+				validateREADME(t, data)
 			},
 			filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 				expectedContent := fmt.Sprintf("%s\n%s%s%s", strings.Join(report.EvaluationHeader(), ","), claudeEvaluationCSVFileContent, gemmaEvaluationCSVFileContent, gpt4EvaluationCSVFileContent)
@@ -246,16 +226,8 @@ func TestReportExecute(t *testing.T) {
 			filepath.Join("docs", "v5", "gemma", "evaluation.log"):  nil,
 			filepath.Join("docs", "v5", "gpt4", "evaluation.csv"):   nil,
 			filepath.Join("docs", "v5", "gpt4", "evaluation.log"):   nil,
-			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath string, data string) {
-				validateMarkdownLinks(t, data, []string{
-					"openrouter_anthropic_claude-2.0",
-					"openrouter_google_gemma-7b-it",
-					"openrouter_openai_gpt-4",
-				}, []string{
-					filepath.Join("claude", "evaluation.log"),
-					filepath.Join("gemma", "evaluation.log"),
-					filepath.Join("gpt4", "evaluation.log"),
-				})
+			filepath.Join("result-directory", "README.md"): func(t *testing.T, filePath, data string) {
+				validateREADME(t, data)
 			},
 			filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 				expectedContent := fmt.Sprintf("%s\n%s%s%s", strings.Join(report.EvaluationHeader(), ","), claudeEvaluationCSVFileContent, gemmaEvaluationCSVFileContent, gpt4EvaluationCSVFileContent)

@@ -524,9 +524,8 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		command.logger.Panicf("ERROR: %s", err)
 	}
 
-	assessments, totalScore := evaluate.Evaluate(evaluationContext)
+	assessments := evaluate.Evaluate(evaluationContext)
 
-	assessmentsPerModel := assessments.CollapseByModel()
 	if err := (report.Markdown{
 		DateTime: command.timestamp,
 		Version:  evaluate.Version,
@@ -535,15 +534,13 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		CSVPath:       "./evaluation.csv",
 		LogPaths:      []string{"./evaluation.log"},
 		ModelLogsPath: ".",
-
-		AssessmentPerModel: assessmentsPerModel,
-		TotalScore:         totalScore,
 	}).WriteToFile(filepath.Join(command.ResultPath, "README.md")); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
 	}
 
+	assessmentsPerModel := assessments.CollapseByModel()
 	_ = assessmentsPerModel.WalkByScore(func(model string, assessment metrics.Assessments, score uint64) (err error) {
-		command.logger.Printf("Evaluation score for %q (%q): %s", model, assessment.Category(totalScore).ID, assessment)
+		command.logger.Printf("Evaluation score for %q: %s", model, assessment)
 
 		return nil
 	})

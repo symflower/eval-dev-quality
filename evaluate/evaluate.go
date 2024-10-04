@@ -66,7 +66,7 @@ func (ctx *Context) runsAtModelLevel() uint {
 const RepositoryPlainName = "plain"
 
 // Evaluate runs an evaluation on the given context and returns its results.
-func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uint64) {
+func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	modelSucceededBasicChecksOfLanguage := map[evalmodel.Model]map[evallanguage.Language]bool{}
 	ctx.Log.Printf("Checking that models and languages can be used for evaluation")
@@ -306,21 +306,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore, totalScore uin
 		}
 	}
 
-	// Set the total score to the number of evaluated languages if we are just checking the "plain" repositories since there is only one task to solve per language.
-	isOnlyPlainRepositories := true
-	for _, repositoryPath := range ctx.RepositoryPaths {
-		if filepath.Base(repositoryPath) != RepositoryPlainName {
-			isOnlyPlainRepositories = false
-
-			break
-		}
-	}
-	if isOnlyPlainRepositories {
-		// For every write-test task in the plain repository, each model is also executed with the `symflower fix` which results in double the total results.
-		totalScore = 2 * uint64(len(ctx.Languages)) * uint64(ctx.Runs)
-	}
-
-	return assessments, totalScore
+	return assessments
 }
 
 // withLoadedModel loads the model for the duration of the given task if supported by the model's provider.

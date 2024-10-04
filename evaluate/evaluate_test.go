@@ -121,7 +121,7 @@ func TestEvaluate(t *testing.T) {
 				defer tc.After(t, logger, temporaryPath)
 			}
 
-			assessmentStore, actualTotalScore := Evaluate(tc.Context)
+			assessmentStore := Evaluate(tc.Context)
 
 			var actualAssessments metricstesting.AssessmentTuples
 			require.NoError(t, assessmentStore.Walk(func(m evalmodel.Model, l language.Language, r string, ti task.Identifier, a metrics.Assessments) error {
@@ -137,7 +137,6 @@ func TestEvaluate(t *testing.T) {
 			}))
 
 			assert.Equal(t, tc.ExpectedAssessments.ToMap(), actualAssessments.ToMap())
-			assert.Equal(t, tc.ExpectedTotalScore, actualTotalScore)
 
 			if tc.ExpectedOutputValidate != nil {
 				tc.ExpectedOutputValidate(t, logOutput.String(), temporaryPath)

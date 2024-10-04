@@ -51,7 +51,7 @@ func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language langu
 	allRecords := [][]string{}
 	for _, task := range tasks {
 		assessment := assessmentsPerTask[task]
-		row := append([]string{model.ID(), language.ID(), repositoryName, string(task), strconv.FormatUint(uint64(run), 10), strconv.FormatUint(uint64(assessment.Score()), 10)}, assessment.StringCSV()...)
+		row := append([]string{model.ID(), language.ID(), repositoryName, string(task), strconv.FormatUint(uint64(run), 10)}, assessment.StringCSV()...)
 		allRecords = append(allRecords, row)
 	}
 
@@ -75,7 +75,7 @@ func (e *EvaluationFile) WriteLines(records [][]string) (err error) {
 
 // EvaluationHeader returns the CSV header for the evaluation CSV.
 func EvaluationHeader() (header []string) {
-	return append([]string{"model-id", "language", "repository", "task", "run", "score"}, metrics.AllAssessmentKeysStrings...)
+	return append([]string{"model-id", "language", "repository", "task", "run"}, metrics.AllAssessmentKeysStrings...)
 }
 
 // RecordsFromEvaluationCSVFiles returns all the records from all the given evaluation CSV files.
@@ -106,27 +106,6 @@ func RecordsFromEvaluationCSVFiles(evaluationCSVFilePaths []string) (records [][
 	}
 
 	return records, nil
-}
-
-// RecordsToAssessmentsPerModel converts evaluation records into assessments per model.
-func RecordsToAssessmentsPerModel(records [][]string) (assessmentsPerModel AssessmentPerModel, err error) {
-	assessmentsPerModel = map[string]metrics.Assessments{}
-
-	for _, record := range records {
-		model := record[0]
-		assessment, err := assessmentFromRecord(record[6:])
-		if err != nil {
-			return nil, err
-		}
-
-		if _, ok := assessmentsPerModel[model]; !ok {
-			assessmentsPerModel[model] = assessment
-		} else {
-			assessmentsPerModel[model].Add(assessment)
-		}
-	}
-
-	return assessmentsPerModel, nil
 }
 
 // assessmentFromRecord return the assessments of a record.

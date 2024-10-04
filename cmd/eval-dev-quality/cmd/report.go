@@ -114,10 +114,6 @@ func (command *Report) Execute(args []string) (err error) {
 	}
 
 	// Write markdown reports.
-	assessmentsPerModel, err := report.RecordsToAssessmentsPerModel(records)
-	if err != nil {
-		return err
-	}
 	currentDirectory, err := os.Getwd()
 	if err != nil {
 		command.logger.Panicf("ERROR: %s", err)
@@ -130,8 +126,6 @@ func (command *Report) Execute(args []string) (err error) {
 
 		LogPaths: evaluationLogFiles,
 		CSVPath:  "./evaluation.csv",
-
-		AssessmentPerModel: assessmentsPerModel,
 	}).WriteToFile(filepath.Join(command.ResultPath, "README.md")); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
 	}
