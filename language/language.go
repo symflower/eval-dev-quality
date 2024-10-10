@@ -48,6 +48,11 @@ type Language interface {
 	ExecuteTests(logger *log.Logger, repositoryPath string) (testResult *TestResult, problems []error, err error)
 	// Mistakes builds a repository and returns the list of mistakes found.
 	Mistakes(logger *log.Logger, repositoryPath string) (mistakes []string, err error)
+
+	// SupportsFix reports if the language is supported by "symflower fix".
+	SupportsFix() bool
+	// SupportsTemplate reports if the language is supported by "symflower unit-test-skeleton".
+	SupportsTemplate() bool
 }
 
 // Languages holds a register of all languages.

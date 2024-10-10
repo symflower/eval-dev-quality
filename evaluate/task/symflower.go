@@ -31,6 +31,28 @@ func symflowerFix(logger *log.Logger, repositoryPath string, language language.L
 	return uint64(time.Since(start).Milliseconds()), nil
 }
 
+// symflowerTemplate runs the "symflower uts" command and returns its execution time in milliseconds.
+func symflowerTemplate(logger *log.Logger, repositoryPath string, language language.Language, filePath string) (duration uint64, err error) {
+	start := time.Now()
+
+	_, err = util.CommandWithResult(context.Background(), logger, &util.Command{
+		Command: []string{
+			tools.SymflowerPath, "uts",
+			"--language", language.ID(),
+			"--workspace", repositoryPath,
+			"--test-style", "basic",
+			filePath,
+		},
+
+		Directory: repositoryPath,
+	})
+	if err != nil {
+		return 0, pkgerrors.WithStack(err)
+	}
+
+	return uint64(time.Since(start).Milliseconds()), nil
+}
+
 // ExecuteWithSymflowerFix runs the "symflower fix" command and calculates the new assessments.
 func ExecuteWithSymflowerFix(ctx evaltask.Context, logger *log.Logger, packagePath string) (testResult *language.TestResult, processingTime uint64, problems []error, err error) {
 	// Run "symflower fix"  if the model response fails to execute.

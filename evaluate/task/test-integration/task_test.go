@@ -63,6 +63,26 @@ func TestWriteTestsRun(t *testing.T) {
 				metrics.AssessmentKeyResponseNoExcess:                   1,
 				metrics.AssessmentKeyResponseWithCode:                   1,
 			},
+			evaluatetask.IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
+				metrics.AssessmentKeyResponseCharacterCount:             254,
+				metrics.AssessmentKeyCoverage:                           10,
+				metrics.AssessmentKeyFilesExecuted:                      1,
+				metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
+				metrics.AssessmentKeyResponseNoError:                    1,
+				metrics.AssessmentKeyResponseNoExcess:                   1,
+				metrics.AssessmentKeyResponseWithCode:                   1,
+			},
+			evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
+				metrics.AssessmentKeyResponseCharacterCount:             254,
+				metrics.AssessmentKeyCoverage:                           10,
+				metrics.AssessmentKeyFilesExecuted:                      1,
+				metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
+				metrics.AssessmentKeyResponseNoError:                    1,
+				metrics.AssessmentKeyResponseNoExcess:                   1,
+				metrics.AssessmentKeyResponseWithCode:                   1,
+			},
 		},
 		ValidateLog: func(t *testing.T, data string) {
 			assert.Contains(t, data, "Evaluating model \"symflower/symbolic-execution\"")

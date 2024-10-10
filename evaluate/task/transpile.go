@@ -115,7 +115,7 @@ func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask
 				modelAssessmentsForFile.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
 			}
 
-			if ctx.Language.ID() == "golang" { // Currently we only support Go for "symflower fix".
+			if ctx.Language.SupportsFix() {
 				withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, taskLogger.Logger, filepath.Join(ctx.Repository.DataPath(), packagePath))
 				problems = append(problems, ps...)
 				if err != nil {

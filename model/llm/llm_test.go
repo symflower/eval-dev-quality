@@ -65,6 +65,8 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 				FilePath:       tc.SourceFilePath,
 
 				Logger: logger,
+
+				Arguments: &evaluatetask.ArgumentsWriteTest{},
 			}
 			actualAssessment, actualError := llm.WriteTests(ctx)
 			assert.NoError(t, actualError)
@@ -311,38 +313,128 @@ func TestFormatPromptContext(t *testing.T) {
 		})
 	}
 
-	validate(t, &testCase{
-		Name: "Write Test",
+	t.Run("Write Test", func(t *testing.T) {
+		validate(t, &testCase{
+			Name: "No Template",
 
-		Context: &llmWriteTestSourceFilePromptContext{
-			llmSourceFilePromptContext: llmSourceFilePromptContext{
-				Language: &golang.Language{},
+			Context: &llmWriteTestSourceFilePromptContext{
+				llmSourceFilePromptContext: llmSourceFilePromptContext{
+					Language: &golang.Language{},
 
-				Code: bytesutil.StringTrimIndentations(`
-						package increment
+					Code: bytesutil.StringTrimIndentations(`
+							package increment
 
-						func increment(i int) int
-							return i + 1
-						}
-					`),
-				FilePath:   filepath.Join("path", "to", "increment.go"),
-				ImportPath: "increment",
+							func increment(i int) int
+								return i + 1
+							}
+						`),
+					FilePath:   filepath.Join("path", "to", "increment.go"),
+					ImportPath: "increment",
+				},
 			},
-		},
 
-		ExpectedMessage: bytesutil.StringTrimIndentations(`
-			Given the following Go code file "path/to/increment.go" with package "increment", provide a test file for this code.
-			The tests should produce 100 percent code coverage and must compile.
-			The response must contain only the test code in a fenced code block and nothing else.
+			ExpectedMessage: bytesutil.StringTrimIndentations(`
+				Given the following Go code file "path/to/increment.go" with package "increment", provide a test file for this code.
+				The tests should produce 100 percent code coverage and must compile.
+				The response must contain only the test code in a fenced code block and nothing else.
 
-			` + "```" + `golang
-			package increment
+				` + "```" + `golang
+				package increment
 
-			func increment(i int) int
-				return i + 1
-			}
-			` + "```" + `
-		`),
+				func increment(i int) int
+					return i + 1
+				}
+				` + "```" + `
+			`),
+		})
+
+		validate(t, &testCase{
+			Name: "With Template",
+
+			Context: &llmWriteTestSourceFilePromptContext{
+				llmSourceFilePromptContext: llmSourceFilePromptContext{
+					Language: &golang.Language{},
+
+					Code: bytesutil.StringTrimIndentations(`
+							package increment
+
+							func increment(i int) int
+								return i + 1
+							}
+						`),
+					FilePath:   filepath.Join("path", "to", "increment.go"),
+					ImportPath: "increment",
+				},
+
+				Template: bytesutil.StringTrimIndentations(`
+					package increment
+
+					import (
+						"testing"
+
+						"github.com/stretchr/testify/assert"
+					)
+
+					func TestIncrement(t *testing.T) {
+						type testCase struct {
+							Name string
+
+							I int
+
+							Expected int
+						}
+
+						validate := func(t *testing.T, tc *testCase) {
+							t.Run(tc.Name, func(t *testing.T){
+								assert.Equal(t, tc.Expected, increment(tc.I))
+							})
+						}
+					}
+				`),
+			},
+
+			ExpectedMessage: bytesutil.StringTrimIndentations(`
+				Given the following Go code file "path/to/increment.go" with package "increment", provide a test file for this code.
+				The tests should produce 100 percent code coverage and must compile.
+				The response must contain only the test code in a fenced code block and nothing else.
+
+				` + "```" + `golang
+				package increment
+
+				func increment(i int) int
+					return i + 1
+				}
+				` + "```" + `
+
+				The tests should be based on this template:
+
+				` + "```" + `golang
+				package increment
+
+				import (
+					"testing"
+
+					"github.com/stretchr/testify/assert"
+				)
+
+				func TestIncrement(t *testing.T) {
+					type testCase struct {
+						Name string
+
+						I int
+
+						Expected int
+					}
+
+					validate := func(t *testing.T, tc *testCase) {
+						t.Run(tc.Name, func(t *testing.T){
+							assert.Equal(t, tc.Expected, increment(tc.I))
+						})
+					}
+				}
+				` + "```" + `
+			`),
+		})
 	})
 
 	validate(t, &testCase{
