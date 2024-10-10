@@ -13,7 +13,6 @@ import (
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
-	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/log"
 )
 
@@ -32,19 +31,11 @@ type Markdown struct {
 	LogPaths []string
 	// ModelLogsPath holds the path of the model logs.
 	ModelLogsPath string
-
-	// AssessmentPerModel holds a collection of assessments per model.
-	AssessmentPerModel AssessmentPerModel
-	// TotalScore holds the total reachable score per task.
-	TotalScore uint64
 }
 
 // markdownTemplateContext holds the template for a Markdown report.
 type markdownTemplateContext struct {
 	Markdown
-
-	Categories        []*metrics.AssessmentCategory
-	ModelsPerCategory map[*metrics.AssessmentCategory][]string
 }
 
 // ModelLogName formats a model name to match the logging structure.
@@ -72,37 +63,12 @@ var markdownTemplate = template.Must(template.New("template-report").Parse(bytes
 	## Results
 
 	> Keep in mind that LLMs are nondeterministic. The following results just reflect a current snapshot.
-
-	The results of all models have been divided into the following categories:
-	{{ range $category := .Categories -}}
-	- {{ $category.Name }}: {{ $category.Description }}
-	{{ end }}
-	The following sections list all models with their categories. Detailed scoring can be found [here]({{.CSVPath}}). The complete log of the evaluation with all outputs can be found here:{{ range .LogPaths }}
-	- {{.}}{{ end }}
-
-	{{ range $category := .Categories -}}
-	{{ with $modelNames := index $.ModelsPerCategory $category -}}
-	### Result category "{{ $category.Name }}"
-
-	{{ $category.Description }}
-
-	{{ range $modelName := $modelNames -}}
-	- [` + "`" + `{{ $modelName }}` + "`" + `]({{ $.ModelLogName $modelName }})
-	{{ end }}
-	{{ end }}
-	{{- end -}}
 `)))
 
 // format formats the markdown values in the template to the given writer.
 func (m Markdown) format(writer io.Writer, markdownFileDirectoryPath string) (err error) {
 	templateContext := markdownTemplateContext{
-		Markdown:   m,
-		Categories: metrics.AllAssessmentCategories,
-	}
-	templateContext.ModelsPerCategory = make(map[*metrics.AssessmentCategory][]string, len(metrics.AllAssessmentCategories))
-	for model, assessment := range m.AssessmentPerModel {
-		category := assessment.Category(m.TotalScore)
-		templateContext.ModelsPerCategory[category] = append(templateContext.ModelsPerCategory[category], model)
+		Markdown: m,
 	}
 
 	if err := markdownTemplate.Execute(writer, templateContext); err != nil {

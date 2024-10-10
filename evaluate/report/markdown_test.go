@@ -9,8 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil/bytesutil"
-
-	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 )
 
 func TestMarkdownWriteToFile(t *testing.T) {
@@ -62,19 +60,6 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			## Results
 
 			> Keep in mind that LLMs are nondeterministic. The following results just reflect a current snapshot.
-
-			The results of all models have been divided into the following categories:
-			- category unknown: Models in this category could not be categorized.
-			- response error: Models in this category encountered an error.
-			- no code: Models in this category produced no code.
-			- invalid code: Models in this category produced invalid code.
-			- executable code: Models in this category produced executable code.
-			- statement coverage reached: Models in this category produced code that reached full statement coverage.
-			- no excess response: Models in this category did not respond with more content than requested.
-
-			The following sections list all models with their categories. Detailed scoring can be found [here](./file.csv). The complete log of the evaluation with all outputs can be found here:
-			- ./file.log
-
 		`,
 	})
 
@@ -89,14 +74,6 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			CSVPath:       "./file.csv",
 			LogPaths:      []string{"./file.log"},
 			ModelLogsPath: ".",
-
-			TotalScore: 1,
-			AssessmentPerModel: AssessmentPerModel{
-				"model/response/error": metrics.NewAssessments(),
-				"model/no/code": metrics.Assessments{
-					metrics.AssessmentKeyResponseNoError: 1,
-				},
-			},
 		},
 
 		ExpectedReport: `
@@ -107,31 +84,6 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			## Results
 
 			> Keep in mind that LLMs are nondeterministic. The following results just reflect a current snapshot.
-
-			The results of all models have been divided into the following categories:
-			- category unknown: Models in this category could not be categorized.
-			- response error: Models in this category encountered an error.
-			- no code: Models in this category produced no code.
-			- invalid code: Models in this category produced invalid code.
-			- executable code: Models in this category produced executable code.
-			- statement coverage reached: Models in this category produced code that reached full statement coverage.
-			- no excess response: Models in this category did not respond with more content than requested.
-
-			The following sections list all models with their categories. Detailed scoring can be found [here](./file.csv). The complete log of the evaluation with all outputs can be found here:
-			- ./file.log
-
-			### Result category "response error"
-
-			Models in this category encountered an error.
-
-			- [` + "`model/response/error`" + `](./model_response_error/)
-
-			### Result category "no code"
-
-			Models in this category produced no code.
-
-			- [` + "`model/no/code`" + `](./model_no_code/)
-
 		`,
 	})
 }

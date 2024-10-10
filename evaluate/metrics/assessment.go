@@ -139,7 +139,6 @@ func (a Assessments) String() string {
 	for i, key := range allAssessmentKeys {
 		entries[i] = fmt.Sprintf("%s=%d", key, a[key])
 	}
-	entries = append([]string{fmt.Sprintf("score=%d", a.Score())}, entries...)
 
 	return strings.Join(entries, ", ")
 }

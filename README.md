@@ -128,7 +128,7 @@ DONE 1 tests in 0.348s
 Total coverage 100.000000%
 2024/05/02 10:02:09 Evaluated model "openrouter/meta-llama/llama-3-70b-instruct" using language "java" and repository "java/plain": encountered 0 problems: []
 2024/05/02 10:02:09 Evaluating models and languages
-2024/05/02 10:02:09 Evaluation score for "openrouter/meta-llama/llama-3-70b-instruct" ("code-no-excess"): score=12, coverage=2, files-executed=2, response-no-error=2, response-no-excess=2, response-not-empty=2, response-with-code=2
+2024/05/02 10:02:09 Evaluation score for "openrouter/meta-llama/llama-3-70b-instruct": coverage=2, files-executed=2, response-no-error=2, response-no-excess=2, response-not-empty=2, response-with-code=2
 ````
 
 </details>
