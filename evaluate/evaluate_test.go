@@ -522,11 +522,11 @@ func TestEvaluate(t *testing.T) {
 
 		generateTestsForFilePlainError := errors.New("generateTestsForFile error")
 
-		generateSuccess := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) {
-			mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime).Twice()
+		generateSuccess := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) *mock.Call {
+			return mockedModel.RegisterGenerateSuccess(t, testFiles["plain"].Path, testFiles["plain"].Content, metricstesting.AssessmentsWithProcessingTime)
 		}
-		generateError := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) {
-			mockedModel.RegisterGenerateError(generateTestsForFilePlainError).Twice()
+		generateError := func(mockedModel *modeltesting.MockModelCapabilityWriteTests) *mock.Call {
+			return mockedModel.RegisterGenerateError(generateTestsForFilePlainError)
 		}
 
 		{
@@ -541,13 +541,17 @@ func TestEvaluate(t *testing.T) {
 					// Set up mocks, when test is running.
 					{
 						// Succeed on both "plain" runs.
-						generateSuccess(mockedModel)
-						generateSuccess(mockedModel)
+						generateSuccess(mockedModel).Once() // Without template.
+						generateSuccess(mockedModel).Once() // With template.
+						generateSuccess(mockedModel).Once() // Without template.
+						generateSuccess(mockedModel).Once() // With template.
 
 						// Error on the first run for the "next" repository.
-						generateError(mockedModel)
+						generateError(mockedModel).Once() // Without template.
+						generateError(mockedModel).Once() // With template.
 						// Succeed on the second run for the "next" repository.
-						generateSuccess(mockedModel)
+						generateSuccess(mockedModel).Once() // Without template.
+						generateSuccess(mockedModel).Once() // With template.
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
@@ -682,12 +686,16 @@ func TestEvaluate(t *testing.T) {
 					// Set up mocks, when test is running.
 					{
 						// Succeed on only one "plain" run.
-						generateError(mockedModel)
-						generateSuccess(mockedModel)
+						generateError(mockedModel).Once()   // Without template.
+						generateSuccess(mockedModel).Once() // With template.
+						generateError(mockedModel).Once()   // Without template.
+						generateError(mockedModel).Once()   // With template.
 
 						// Succeed on both "next" runs.
-						generateSuccess(mockedModel)
-						generateSuccess(mockedModel)
+						generateSuccess(mockedModel).Once() // Without template.
+						generateSuccess(mockedModel).Once() // With template.
+						generateSuccess(mockedModel).Once() // Without template.
+						generateSuccess(mockedModel).Once() // With template
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
@@ -763,9 +771,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -774,9 +780,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -823,8 +827,10 @@ func TestEvaluate(t *testing.T) {
 					// Set up mocks, when test is running.
 					{
 						// Error on every "plain" run.
-						generateError(mockedModel)
-						generateError(mockedModel)
+						generateError(mockedModel).Once() // Without template.
+						generateError(mockedModel).Once() // With template.
+						generateError(mockedModel).Once() // Without template.
+						generateError(mockedModel).Once() // With template.
 					}
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
