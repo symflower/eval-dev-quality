@@ -10,4 +10,6 @@
     // Add parameter placeholders when completing a function.
     "usePlaceholders": true,
   },
+  "symflower.lint.onOpen": true,
+  "symflower.lint.onSave": true,
 }
