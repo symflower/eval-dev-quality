@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	evallanguage "github.com/symflower/eval-dev-quality/language"
@@ -168,11 +169,15 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 									ps = append(ps, err)
 								}
 								if len(ps) > 0 {
-									logger.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
 									problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
-								} else {
-									modelSucceededBasicChecksOfLanguage[model][language] = true
 								}
+
+								if succeededPlain(assessment) {
+									modelSucceededBasicChecksOfLanguage[model][language] = true
+								} else {
+									logger.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
+								}
+
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								// Write the task assessment to the evaluation CSV file.
 								if err := evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment); err != nil {
@@ -325,4 +330,15 @@ func withLoadedModel(logger *log.Logger, model evalmodel.Model, modelProvider pr
 	}
 
 	task()
+}
+
+// succeededPlain checks if the assessments attest that the "plain" repository was successfully solved.
+func succeededPlain(assessment map[evaltask.Identifier]metrics.Assessments) bool {
+	if withoutTemplate, ok := assessment[evaluatetask.IdentifierWriteTests]; ok && withoutTemplate[metrics.AssessmentKeyFilesExecuted] > 0 {
+		return true
+	} else if withTemplate, ok := assessment[evaluatetask.IdentifierWriteTestsSymflowerTemplate]; ok && withTemplate[metrics.AssessmentKeyFilesExecuted] > 0 {
+		return true
+	}
+
+	return false
 }
