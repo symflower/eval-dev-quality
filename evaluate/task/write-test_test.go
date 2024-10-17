@@ -393,6 +393,78 @@ func TestWriteTestsRun(t *testing.T) {
 			},
 		})
 	}
+
+	{
+		temporaryDirectoryPath := t.TempDir()
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "java", "spring-plain")
+		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "spring-plain"), repositoryPath))
+		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+		modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "test", "java", "com", "example", "controller", "SomeControllerTest.java"), bytesutil.StringTrimIndentations(`
+			package com.example.controller;
+
+			import org.junit.jupiter.api.*;
+			import org.springframework.beans.factory.annotation.Autowired;
+			import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+			import org.springframework.test.web.servlet.MockMvc;
+			import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+			import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+			import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+			import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+			@WebMvcTest(SomeController.class)
+			public class SomeControllerTest {
+				@Autowired
+				private MockMvc mockMvc;
+
+				@Test
+				public void helloGet() throws Exception {
+					this.mockMvc.perform(get("/helloGet"))
+						.andExpect(status().isOk())
+						.andExpect(view().name("get!"))
+						.andExpect(content().string(""));
+				}
+			}
+		`), metricstesting.AssessmentsWithProcessingTime)
+
+		validate(t, &tasktesting.TestCaseTask{
+			Name: "Spring Boot",
+
+			Model:          modelMock,
+			Language:       &java.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("java", "spring-plain"),
+
+			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+				IdentifierWriteTests: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyCoverage:                      20,
+					metrics.AssessmentKeyResponseNoError:               1,
+				},
+				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyCoverage:                      20,
+					metrics.AssessmentKeyResponseNoError:               1,
+				},
+				IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyCoverage:                      20,
+					metrics.AssessmentKeyResponseNoError:               1,
+				},
+				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyCoverage:                      20,
+					metrics.AssessmentKeyResponseNoError:               1,
+				},
+			},
+			ValidateLog: func(t *testing.T, data string) {
+				assert.Equal(t, 2, strings.Count(data, "Starting SomeControllerTest using Java"), "Expected two successful Spring startup announcements (one bare and one for template)")
+			},
+		})
+	}
 }
 
 func TestValidateWriteTestsRepository(t *testing.T) {
