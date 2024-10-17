@@ -53,6 +53,8 @@ type Repository interface {
 
 	// SupportedTasks returns the list of task identifiers the repository supports.
 	SupportedTasks() (tasks []Identifier)
+	// IsFilePathIgnored checks if the given relative file path is to be ignored when searching for cases.
+	IsFilePathIgnored(filePath string) bool
 
 	// Validate checks it the repository is well-formed.
 	Validate(logger *log.Logger, language language.Language) (err error)
