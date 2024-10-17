@@ -226,6 +226,17 @@ Each repository can contain a configuration file `repository.json` in its root d
 
 For the evaluation of the repository only the specified tasks are executed. If no `repository.json` file exists, all tasks are executed.
 
+Depending on the task, it can be beneficial to exclude parts of the repository from explicit evaluation. To give a concrete example: Spring controller tests can never be executed on their own but need a supporting [`Application` class](https://docs.spring.io/spring-boot/reference/testing/spring-boot-applications.html#testing.spring-boot-applications.using-main). But such a file should never be used itself to prompt models for tests. Therefore, it can be excluded through the `repository.json` configuration:
+
+```json
+{
+  "tasks": ["write-tests"],
+  "ignore": ["src/main/java/com/example/Application.java"]
+}
+```
+
+This `ignore` setting is currently only applicable for generation task `write-tests`.
+
 ## Tasks
 
 ### Task: Test Generation
