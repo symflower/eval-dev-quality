@@ -1,0 +1,4 @@
+{
+  "tasks": ["write-tests"],
+  "ignore": ["src/main/java/com/example/Application.java"]
+}
