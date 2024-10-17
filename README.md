@@ -226,6 +226,18 @@ Each repository can contain a configuration file `repository.json` in its root d
 
 For the evaluation of the repository only the specified tasks are executed. If no `repository.json` file exists, all tasks are executed.
 
+Depending on the task, it can be beneficial to exclude parts of the repository from explicit evaluation. To give a concrete example: Spring controller tests can never be executed on their own but need a supporting [`Application` class](https://docs.spring.io/spring-boot/reference/testing/spring-boot-applications.html#testing.spring-boot-applications.using-main). But [such a file](testdata/java/spring-plain/src/main/java/com/example/Application.java) should never be used itself to prompt models for tests. Therefore, it can be excluded through the `repository.json` configuration:
+
+```json
+{
+  "tasks": ["write-tests"],
+  "ignore": [
+    "src/main/java/com/example/Application.java"
+  ]
+}
+
+This `ignore` setting is currently only respected for the test generation task `write-tests`.
+
 ## Tasks
 
 ### Task: Test Generation
@@ -351,3 +363,4 @@ Therefore, we plan releases in special `Roadmap for vX.Y.Z` issues.
 Such an issue contains a current list of publish-worthy goals that must be met for that release, a `TODO` section with items not planned for the current but a future release, and instructions on how issues / PRs / tasks need to be groomed and what needs to be done for a release to happen.
 
 The issue template for roadmap issues can be found at [`.github/ISSUE_TEMPLATE/roadmap.md`](.github/ISSUE_TEMPLATE/roadmap.md)
+```

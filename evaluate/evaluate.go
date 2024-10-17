@@ -3,12 +3,14 @@ package evaluate
 import (
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	evallanguage "github.com/symflower/eval-dev-quality/language"
+	_ "github.com/symflower/eval-dev-quality/language/golang" // Register language for evaluation.
+	_ "github.com/symflower/eval-dev-quality/language/java"   // Register language for evaluation.
+	_ "github.com/symflower/eval-dev-quality/language/ruby"   // Register language for evaluation.
 	"github.com/symflower/eval-dev-quality/log"
 	evalmodel "github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
@@ -207,7 +209,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 		}
 		for _, repositoryPath := range relativeRepositoryPaths {
 			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
-			if !repositoriesLookup[repositoryPath] || strings.HasSuffix(repositoryPath, RepositoryPlainName) {
+			if (len(ctx.RepositoryPaths) > 0 && !repositoriesLookup[repositoryPath]) || filepath.Base(repositoryPath) == RepositoryPlainName {
 				continue
 			}
 
@@ -254,6 +256,9 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 					continue
 				}
 
+				if temporaryRepository == nil {
+					logger.Panicf("ERROR: no temporary repository initialized for %q", repositoryPath)
+				}
 				logger = logger.With(log.AttributeKeyRepository, repositoryPath)
 				for _, model := range ctx.Models {
 					modelID := model.ID()
