@@ -298,6 +298,41 @@ func TestWriteTestsRun(t *testing.T) {
 			},
 		})
 	}
+
+	{
+		temporaryDirectoryPath := t.TempDir()
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
+		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
+		require.NoError(t, os.WriteFile(filepath.Join(temporaryDirectoryPath, "golang", "plain", "repository.json"), []byte(bytesutil.StringTrimIndentations(`
+			{
+				"tasks": [
+					"write-tests"
+				],
+				"ignore": [
+					"plain.go"
+				]
+			}
+		`)), 0666))
+		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+		validate(t, &tasktesting.TestCaseTask{
+			Name: "Ignore Case",
+
+			Model:          modelMock,
+			Language:       &golang.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("golang", "plain"),
+
+			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+				IdentifierWriteTests:                              metrics.Assessments{},
+				IdentifierWriteTestsSymflowerFix:                  metrics.Assessments{},
+				IdentifierWriteTestsSymflowerTemplate:             metrics.Assessments{},
+				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{},
+			},
+			ValidateLog: func(t *testing.T, data string) {
+				assert.Contains(t, data, "Ignoring file \"plain.go\" (as configured by the repository)")
+			},
+		})
+	}
 }
 
 func TestValidateWriteTestsRepository(t *testing.T) {

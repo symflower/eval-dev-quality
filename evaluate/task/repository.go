@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
@@ -20,7 +21,10 @@ import (
 
 // RepositoryConfiguration holds the configuration of a repository.
 type RepositoryConfiguration struct {
+	// Tasks holds the tasks supported by the repository.
 	Tasks []task.Identifier
+	// IgnorePaths holds the relative paths that should be ignored when searching for cases.
+	IgnorePaths []string `json:"ignore,omitempty"`
 }
 
 // LoadRepositoryConfiguration loads a repository configuration from the given path.
@@ -62,6 +66,19 @@ func (rc *RepositoryConfiguration) validate() (err error) {
 	}
 
 	return nil
+}
+
+// IsFilePathIgnored checks if the given relative file path is to be ignored when searching for cases.
+func (rc *RepositoryConfiguration) IsFilePathIgnored(filePath string) bool {
+	filePath = filepath.Clean(filePath)
+	for _, ignoredFilePath := range rc.IgnorePaths {
+		ignoredFilePath = filepath.Clean(ignoredFilePath)
+		if strings.HasPrefix(filePath, ignoredFilePath) {
+			return true
+		}
+	}
+
+	return false
 }
 
 // Repository holds data about a repository.
