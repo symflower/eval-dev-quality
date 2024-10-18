@@ -335,16 +335,17 @@ func TestWriteTestsRun(t *testing.T) {
 		})
 	}
 
-	{
-		temporaryDirectoryPath := t.TempDir()
-		repositoryPath := filepath.Join(temporaryDirectoryPath, "java", "spring-plain")
-		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "spring-plain"), repositoryPath))
-		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
-		modelMock.RegisterGenerateSuccessValidateContext(t, func(t *testing.T, c model.Context) {
-			args, ok := c.Arguments.(*ArgumentsWriteTest)
-			require.Truef(t, ok, "unexpected type %T", c.Arguments)
-			assert.Equal(t, "JUnit 5 for Spring", args.TestFramework)
-		}, filepath.Join("src", "test", "java", "com", "example", "controller", "SomeControllerTest.java"), bytesutil.StringTrimIndentations(`
+	t.Run("Spring Boot", func(t *testing.T) {
+		{
+			temporaryDirectoryPath := t.TempDir()
+			repositoryPath := filepath.Join(temporaryDirectoryPath, "java", "spring-plain")
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "spring-plain"), repositoryPath))
+			modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+			modelMock.RegisterGenerateSuccessValidateContext(t, func(t *testing.T, c model.Context) {
+				args, ok := c.Arguments.(*ArgumentsWriteTest)
+				require.Truef(t, ok, "unexpected type %T", c.Arguments)
+				assert.Equal(t, "JUnit 5 for Spring", args.TestFramework)
+			}, filepath.Join("src", "test", "java", "com", "example", "controller", "SomeControllerTest.java"), bytesutil.StringTrimIndentations(`
 			package com.example.controller;
 
 			import org.junit.jupiter.api.*;
@@ -371,45 +372,105 @@ func TestWriteTestsRun(t *testing.T) {
 			}
 		`), metricstesting.AssessmentsWithProcessingTime)
 
-		validate(t, &tasktesting.TestCaseTask{
-			Name: "Spring Boot",
+			validate(t, &tasktesting.TestCaseTask{
+				Name: "Spring Boot Test",
 
-			Model:          modelMock,
-			Language:       &java.Language{},
-			TestDataPath:   temporaryDirectoryPath,
-			RepositoryPath: filepath.Join("java", "spring-plain"),
+				Model:          modelMock,
+				Language:       &java.Language{},
+				TestDataPath:   temporaryDirectoryPath,
+				RepositoryPath: filepath.Join("java", "spring-plain"),
 
-			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-				IdentifierWriteTests: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      20,
-					metrics.AssessmentKeyResponseNoError:               1,
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      20,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      20,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      20,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      20,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
 				},
-				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      20,
-					metrics.AssessmentKeyResponseNoError:               1,
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Equal(t, 2, strings.Count(data, "Starting SomeControllerTest using Java"), "Expected two successful Spring startup announcements (one bare and one for template)")
 				},
-				IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      20,
-					metrics.AssessmentKeyResponseNoError:               1,
+			})
+		}
+		{
+			temporaryDirectoryPath := t.TempDir()
+			repositoryPath := filepath.Join(temporaryDirectoryPath, "java", "spring-plain")
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "spring-plain"), repositoryPath))
+			modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+			modelMock.RegisterGenerateSuccessValidateContext(t, func(t *testing.T, c model.Context) {
+				args, ok := c.Arguments.(*ArgumentsWriteTest)
+				require.Truef(t, ok, "unexpected type %T", c.Arguments)
+				assert.Equal(t, "JUnit 5 for Spring", args.TestFramework)
+			}, filepath.Join("src", "test", "java", "com", "example", "controller", "SomeControllerTest.java"), bytesutil.StringTrimIndentations(`
+			package com.example.controller;
+
+			import com.example.controller.SomeController;
+			import org.junit.jupiter.api.Test;
+
+			import static org.junit.jupiter.api.Assertions.assertEquals;
+
+			class SomeControllerTests {
+
+				@Test // Normal JUnit tests instead of Spring Boot.
+				void helloGet() {
+					SomeController controller = new SomeController();
+					String result = controller.helloGet();
+					assertEquals("get!", result);
+				}
+			}
+		`), metricstesting.AssessmentsWithProcessingTime)
+
+			validate(t, &tasktesting.TestCaseTask{
+				Name: "Plain JUnit Test",
+
+				Model:          modelMock,
+				Language:       &java.Language{},
+				TestDataPath:   temporaryDirectoryPath,
+				RepositoryPath: filepath.Join("java", "spring-plain"),
+
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
 				},
-				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      20,
-					metrics.AssessmentKeyResponseNoError:               1,
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Contains(t, data, "Tests run: 1") // Tests are running but they are not Spring Boot.
 				},
-			},
-			ValidateLog: func(t *testing.T, data string) {
-				assert.Equal(t, 2, strings.Count(data, "Starting SomeControllerTest using Java"), "Expected two successful Spring startup announcements (one bare and one for template)")
-			},
-		})
-	}
+			})
+		}
+	})
 }
 
 func TestValidateWriteTestsRepository(t *testing.T) {

@@ -168,7 +168,7 @@ func runModelAndSymflowerFix(ctx evaltask.Context, taskLogger *taskLogger, model
 	problems = append(problems, ps...)
 	if err != nil {
 		problems = append(problems, pkgerrors.WithMessage(err, filePath))
-	} else {
+	} else if ctx.Repository.Configuration().Validation.Execution.Validate(testResult.StdOut) {
 		taskLogger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
 		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
 		modelAssessment.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
@@ -179,7 +179,7 @@ func runModelAndSymflowerFix(ctx evaltask.Context, taskLogger *taskLogger, model
 		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, err)
-		} else {
+		} else if ctx.Repository.Configuration().Validation.Execution.Validate(withSymflowerFixTestResult.StdOut) {
 			ctx.Logger.Printf("with symflower repair: Executes tests with %d coverage objects", withSymflowerFixTestResult.Coverage)
 
 			// Symflower was able to fix a failure so now update the assessment with the improved results.

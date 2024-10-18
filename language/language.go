@@ -125,6 +125,8 @@ type TestResult struct {
 	TestsPass  uint
 
 	Coverage uint64
+
+	StdOut string
 }
 
 // PassingTestsPercentage returns the percentage of passing tests.

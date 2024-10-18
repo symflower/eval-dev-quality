@@ -101,6 +101,8 @@ func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (test
 	testResult = &language.TestResult{
 		TestsTotal: uint(testsTotal),
 		TestsPass:  uint(testsPass),
+
+		StdOut: commandOutput,
 	}
 
 	testResult.Coverage, err = language.CoverageObjectCountOfFile(logger, coverageFilePath)
