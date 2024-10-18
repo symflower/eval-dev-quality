@@ -133,7 +133,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 						r.SetQueryAttempts(ctx.QueryAttempts)
 					}
 
-					for _, taskIdentifier := range temporaryRepository.SupportedTasks() {
+					for _, taskIdentifier := range temporaryRepository.Configuration().Tasks {
 						task, err := evaluatetask.ForIdentifier(taskIdentifier)
 						if err != nil {
 							logger.Fatal(err)

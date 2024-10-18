@@ -231,7 +231,7 @@ func TestRepositoryConfigurationIsFilePathIgnored(t *testing.T) {
 
 	validate := func(t *testing.T, tc *testCase) {
 		t.Run(tc.Name, func(t *testing.T) {
-			actualBool := (&RepositoryConfiguration{
+			actualBool := (&task.RepositoryConfiguration{
 				IgnorePaths: tc.IgnoredPaths,
 			}).IsFilePathIgnored(tc.FilePath)
 

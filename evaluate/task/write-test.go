@@ -59,7 +59,7 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 
 	var maximumReachableFiles uint64
 	for _, filePath := range filePaths {
-		if ctx.Repository.IsFilePathIgnored(filePath) {
+		if ctx.Repository.Configuration().IsFilePathIgnored(filePath) {
 			taskLogger.Printf("Ignoring file %q (as configured by the repository)", filePath)
 
 			continue
