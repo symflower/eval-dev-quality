@@ -24,6 +24,8 @@ var _ evaltask.Task = (*WriteTests)(nil)
 type ArgumentsWriteTest struct {
 	// Template holds the template data to base the tests onto.
 	Template string
+	// TestFramework holds the test framework to use.
+	TestFramework string
 }
 
 // Identifier returns the write test task identifier.
@@ -69,7 +71,9 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 		}
 
-		modelAssessmentFile, withSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, taskLogger, modelCapability, dataPath, filePath, &ArgumentsWriteTest{})
+		modelAssessmentFile, withSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, taskLogger, modelCapability, dataPath, filePath, &ArgumentsWriteTest{
+			TestFramework: ctx.Language.TestFramework(),
+		})
 		problems = append(problems, ps...)
 		if err != nil {
 			return nil, problems, err
@@ -111,7 +115,8 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 		}
 
 		modelTemplateAssessmentFile, templateWithSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, taskLogger, modelCapability, dataPath, filePath, &ArgumentsWriteTest{
-			Template: string(testTemplate),
+			Template:      string(testTemplate),
+			TestFramework: ctx.Language.TestFramework(),
 		})
 		problems = append(problems, ps...)
 		if err != nil {
