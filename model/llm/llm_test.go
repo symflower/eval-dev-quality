@@ -450,11 +450,11 @@ func TestFormatPromptContext(t *testing.T) {
 					ImportPath: "${pkg}",
 				},
 
-				TestFramework: "JUnit 5 for Spring Boot",
+				TestFramework: "JUnit 5 for Spring",
 			},
 
 			ExpectedMessage: bytesutil.StringTrimIndentations(`
-				Given the following Java code file "${path}" with package "${pkg}", provide a test file for this code with JUnit 5 for Spring Boot as a test framework.
+				Given the following Java code file "${path}" with package "${pkg}", provide a test file for this code with JUnit 5 for Spring as a test framework.
 				The tests should produce 100 percent code coverage and must compile.
 				The response must contain only the test code in a fenced code block and nothing else.
 

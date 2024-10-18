@@ -1,4 +1,7 @@
 {
   "tasks": ["write-tests"],
-  "ignore": ["src/main/java/com/example/Application.java"]
+  "ignore": ["src/main/java/com/example/Application.java"],
+  "prompt": {
+    "test-framework": "JUnit 5 for Spring"
+  }
 }

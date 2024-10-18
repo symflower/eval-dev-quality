@@ -17,6 +17,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/language/ruby"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
@@ -339,7 +340,11 @@ func TestWriteTestsRun(t *testing.T) {
 		repositoryPath := filepath.Join(temporaryDirectoryPath, "java", "spring-plain")
 		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "spring-plain"), repositoryPath))
 		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
-		modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "test", "java", "com", "example", "controller", "SomeControllerTest.java"), bytesutil.StringTrimIndentations(`
+		modelMock.RegisterGenerateSuccessValidateContext(t, func(t *testing.T, c model.Context) {
+			args, ok := c.Arguments.(*ArgumentsWriteTest)
+			require.Truef(t, ok, "unexpected type %T", c.Arguments)
+			assert.Equal(t, "JUnit 5 for Spring", args.TestFramework)
+		}, filepath.Join("src", "test", "java", "com", "example", "controller", "SomeControllerTest.java"), bytesutil.StringTrimIndentations(`
 			package com.example.controller;
 
 			import org.junit.jupiter.api.*;
