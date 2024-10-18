@@ -322,12 +322,12 @@ func TestFormatPromptContext(t *testing.T) {
 					Language: &golang.Language{},
 
 					Code: bytesutil.StringTrimIndentations(`
-							package increment
+						package increment
 
-							func increment(i int) int
-								return i + 1
-							}
-						`),
+						func increment(i int) int
+							return i + 1
+						}
+					`),
 					FilePath:   filepath.Join("path", "to", "increment.go"),
 					ImportPath: "increment",
 				},
@@ -356,12 +356,12 @@ func TestFormatPromptContext(t *testing.T) {
 					Language: &golang.Language{},
 
 					Code: bytesutil.StringTrimIndentations(`
-							package increment
+						package increment
 
-							func increment(i int) int
-								return i + 1
-							}
-						`),
+						func increment(i int) int
+							return i + 1
+						}
+					`),
 					FilePath:   filepath.Join("path", "to", "increment.go"),
 					ImportPath: "increment",
 				},
@@ -432,6 +432,34 @@ func TestFormatPromptContext(t *testing.T) {
 						})
 					}
 				}
+				` + "```" + `
+			`),
+		})
+
+		validate(t, &testCase{
+			Name: "Custom test framework",
+
+			Context: &llmWriteTestSourceFilePromptContext{
+				llmSourceFilePromptContext: llmSourceFilePromptContext{
+					Language: &java.Language{},
+
+					Code: bytesutil.StringTrimIndentations(`
+						${code}
+					`),
+					FilePath:   filepath.Join("${path}"),
+					ImportPath: "${pkg}",
+				},
+
+				TestFramework: "JUnit 5 for Spring Boot",
+			},
+
+			ExpectedMessage: bytesutil.StringTrimIndentations(`
+				Given the following Java code file "${path}" with package "${pkg}", provide a test file for this code with JUnit 5 for Spring Boot as a test framework.
+				The tests should produce 100 percent code coverage and must compile.
+				The response must contain only the test code in a fenced code block and nothing else.
+
+				` + "```" + `java
+				${code}
 				` + "```" + `
 			`),
 		})

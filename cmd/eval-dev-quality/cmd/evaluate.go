@@ -36,6 +36,7 @@ import (
 	openaiapi "github.com/symflower/eval-dev-quality/provider/openai-api"
 	_ "github.com/symflower/eval-dev-quality/provider/openrouter" // Register provider.
 	_ "github.com/symflower/eval-dev-quality/provider/symflower"  // Register provider.
+	"github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	"github.com/symflower/eval-dev-quality/util"
 )
@@ -317,7 +318,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				command.logger.Panicf("ERROR: %s", err)
 			}
 			for _, r := range repositories {
-				config, err := evaltask.LoadRepositoryConfiguration(filepath.Join(command.TestdataPath, r))
+				config, err := task.LoadRepositoryConfiguration(filepath.Join(command.TestdataPath, r), evaltask.AllIdentifiers)
 				if err != nil {
 					command.logger.Panicf("ERROR: %s", err)
 				}
