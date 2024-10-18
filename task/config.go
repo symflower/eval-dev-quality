@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
@@ -24,6 +25,17 @@ type RepositoryConfiguration struct {
 		// TestFramework overwrites the language-specific test framework to use.
 		TestFramework string `json:"test-framework,omitempty"`
 	} `json:",omitempty"`
+
+	// Validation holds quality gates for evaluation.
+	Validation struct {
+		Execution RepositoryConfigurationExecution `json:",omitempty"`
+	}
+}
+
+// RepositoryConfigurationExecution execution-related quality gates for evaluation.
+type RepositoryConfigurationExecution struct {
+	// StdOutRE holds a regular expression that must be part of execution standard output.
+	StdOutRE string `json:"stdout,omitempty"`
 }
 
 // RepositoryConfigurationFileName holds the file name for a repository configuration.
@@ -70,6 +82,10 @@ func (rc *RepositoryConfiguration) validate(validTasks []Identifier) (err error)
 		}
 	}
 
+	if _, err := regexp.Compile(rc.Validation.Execution.StdOutRE); err != nil {
+		return pkgerrors.WithMessagef(err, "invalid regular expression %q", rc.Validation.Execution.StdOutRE)
+	}
+
 	return nil
 }
 
@@ -84,4 +100,13 @@ func (rc *RepositoryConfiguration) IsFilePathIgnored(filePath string) bool {
 	}
 
 	return false
+}
+
+// Validate validates execution outcomes against the configured quality gates.
+func (e *RepositoryConfigurationExecution) Validate(stdout string) bool {
+	if e.StdOutRE != "" {
+		return regexp.MustCompile(e.StdOutRE).MatchString(stdout)
+	}
+
+	return true
 }

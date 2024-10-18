@@ -250,6 +250,21 @@ It is possible to configure some model prompt parameters through `repository.jso
 
 This `prompt.test-framework` setting is currently only respected for the test generation task `write-tests`.
 
+When task results are validated, some repositories might require custom logic. For example: generating tests for a Spring Boot project requires ensuring that the tests used an actual Spring context (i.e. Spring Boot was initialized when the tests were executed). Therefore, the `repository.json` supports adding rudimentary custom validation:
+
+```json
+{
+  "tasks": ["write-tests"],
+  "validation": {
+    "execution": {
+      "stdout": "Initializing Spring" // Ensure the string "Initializing Spring" is contained in the execution output.
+    }
+  }
+}
+```
+
+This `validation.execution.stdout` setting is currently only respected for the test generation task `write-tests`.
+
 ## Tasks
 
 ### Task: Test Generation
