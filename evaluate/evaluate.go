@@ -3,7 +3,6 @@ package evaluate
 import (
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
@@ -207,7 +206,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 		}
 		for _, repositoryPath := range relativeRepositoryPaths {
 			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
-			if !repositoriesLookup[repositoryPath] || strings.HasSuffix(repositoryPath, RepositoryPlainName) {
+			if !repositoriesLookup[repositoryPath] || filepath.Base(repositoryPath) == RepositoryPlainName {
 				continue
 			}
 
