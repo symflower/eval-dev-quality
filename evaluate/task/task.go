@@ -10,24 +10,22 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 	evaltask "github.com/symflower/eval-dev-quality/task"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 var (
 	// AllIdentifiers holds all available task identifiers.
 	AllIdentifiers []evaltask.Identifier
-	// LookupIdentifier holds a map of all available task identifiers.
-	LookupIdentifier = map[evaltask.Identifier]bool{}
 )
 
 // registerIdentifier registers the given identifier and makes it available.
 func registerIdentifier(name string) (identifier evaltask.Identifier) {
-	identifier = evaltask.Identifier(name)
-	AllIdentifiers = append(AllIdentifiers, identifier)
-
-	if _, ok := LookupIdentifier[identifier]; ok {
+	if _, ok := util.Set(AllIdentifiers)[identifier]; ok {
 		panic(fmt.Sprintf("task identifier already registered: %s", identifier))
 	}
-	LookupIdentifier[identifier] = true
+
+	identifier = evaltask.Identifier(name)
+	AllIdentifiers = append(AllIdentifiers, identifier)
 
 	return identifier
 }

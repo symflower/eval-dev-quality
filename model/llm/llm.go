@@ -83,11 +83,13 @@ type llmWriteTestSourceFilePromptContext struct {
 
 	// Template holds the template data to base the tests onto.
 	Template string
+	// TestFramework holds the test framework to use.
+	TestFramework string
 }
 
 // llmWriteTestForFilePromptTemplate is the template for generating an LLM test generation prompt.
 var llmWriteTestForFilePromptTemplate = template.Must(template.New("model-llm-write-test-for-file-prompt").Parse(bytesutil.StringTrimIndentations(`
-	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" with package "{{ .ImportPath }}", provide a test file for this code{{ with $testFramework := .Language.TestFramework }} with {{ $testFramework }} as a test framework{{ end }}.
+	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" with package "{{ .ImportPath }}", provide a test file for this code{{ with .TestFramework }} with {{ . }} as a test framework{{ end }}.
 	The tests should produce 100 percent code coverage and must compile.
 	The response must contain only the test code in a fenced code block and nothing else.
 
@@ -211,7 +213,6 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 	if !ok {
 		return nil, pkgerrors.Errorf("unexpected type %T", ctx.Arguments)
 	}
-	templateContent := arguments.Template
 
 	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))
 	if err != nil {
@@ -230,7 +231,8 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 			ImportPath: importPath,
 		},
 
-		Template: templateContent,
+		Template:      arguments.Template,
+		TestFramework: arguments.TestFramework,
 	}).Format()
 	if err != nil {
 		return nil, err

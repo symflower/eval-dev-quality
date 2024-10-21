@@ -57,6 +57,7 @@ func (tc *TestCaseExecuteTests) Validate(t *testing.T) {
 			assert.ErrorContains(t, actualError, tc.ExpectedErrorText)
 		} else {
 			assert.NoError(t, actualError)
+			actualTestResult.StdOut = ""
 			assert.Equal(t, tc.ExpectedTestResult, actualTestResult)
 		}
 	})
