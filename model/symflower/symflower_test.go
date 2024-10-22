@@ -38,7 +38,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		ExpectedAssessment   metrics.Assessments
 		ExpectedCoverage     uint64
 		ExpectedError        error
-		ExpectedErrorHandler func(err error)
+		ExpectedErrorHandler func(t *testing.T, err error)
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -74,7 +74,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, tc.ExpectedError, actualError)
 			} else if tc.ExpectedErrorHandler != nil {
-				tc.ExpectedErrorHandler(actualError)
+				tc.ExpectedErrorHandler(t, actualError)
 			} else {
 				require.NoError(t, actualError)
 
@@ -129,7 +129,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "light"),
 			FilePath:       filepath.Join("src", "main", "java", "com", "eval", "Knapsack.java"),
 
-			ExpectedErrorHandler: func(err error) {
+			ExpectedErrorHandler: func(t *testing.T, err error) {
 				if osutil.IsWindows() {
 					isProcessKilled := strings.Contains(err.Error(), context.DeadlineExceeded.Error()) || strings.Contains(err.Error(), "exit status 1")
 					assert.True(t, err != nil && isProcessKilled)
