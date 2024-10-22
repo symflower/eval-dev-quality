@@ -42,6 +42,7 @@ func (p *Provider) ID() (id string) {
 // Models returns which models are available to be queried via this provider.
 func (p *Provider) Models() (models []model.Model, err error) {
 	return []model.Model{
-		symflower.NewModel(),
+		symflower.NewModelSymbolicExecution(),
+		symflower.NewModelSmartTemplate(),
 	}, nil
 }

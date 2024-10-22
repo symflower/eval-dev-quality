@@ -37,7 +37,7 @@ func TestWriteTestsRun(t *testing.T) {
 	validate(t, &tasktesting.TestCaseTask{
 		Name: "Plain",
 
-		Model:          symflower.NewModel(),
+		Model:          symflower.NewModelSymbolicExecution(),
 		Language:       &golang.Language{},
 		TestDataPath:   filepath.Join("..", "..", "..", "testdata"),
 		RepositoryPath: filepath.Join("golang", "plain"),

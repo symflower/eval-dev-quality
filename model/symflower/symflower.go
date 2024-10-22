@@ -16,26 +16,47 @@ import (
 	"github.com/symflower/eval-dev-quality/util"
 )
 
-// defaultSymbolicExecutionTimeout defines the default symbolic execution timeout.
-var defaultSymbolicExecutionTimeout = time.Duration(10 * time.Minute)
+// defaultSymflowerTimeout defines the default timeout for Symflower models.
+var defaultSymflowerTimeout = time.Duration(10 * time.Minute)
 
 // Model holds a Symflower model using the locally installed CLI.
 type Model struct {
 	// symbolicExecutionTimeout defines the symbolic execution timeout.
 	symbolicExecutionTimeout time.Duration
+
+	// command is the sub-command to use in the Symflower binary.
+	command string
+	// id is the ID of the model.
+	id string
 }
 
-// NewModel returns a Symflower model.
-func NewModel() (model *Model) {
+// NewModelSymbolicExecution returns a symbolic execution Symflower model.
+func NewModelSymbolicExecution() (model *Model) {
+	return NewModelSymbolicExecutionWithTimeout(defaultSymflowerTimeout)
+}
+
+// NewModelSymbolicExecutionWithTimeout returns a symbolic execution Symflower model with a given timeout.
+func NewModelSymbolicExecutionWithTimeout(timeout time.Duration) (model *Model) {
 	return &Model{
-		symbolicExecutionTimeout: defaultSymbolicExecutionTimeout,
+		symbolicExecutionTimeout: timeout,
+
+		command: "unit-tests",
+		id:      "symbolic-execution",
 	}
 }
 
-// NewModelWithTimeout returns a Symflower model with a given timeout.
-func NewModelWithTimeout(timeout time.Duration) (model *Model) {
+// NewModelSmartTemplate returns a smart template Symflower model.
+func NewModelSmartTemplate() (model *Model) {
+	return NewModelSmartTemplateWithTimeout(defaultSymflowerTimeout)
+}
+
+// NewModelSmartTemplateWithTimeout returns a smart template Symflower model with a given timeout.
+func NewModelSmartTemplateWithTimeout(timeout time.Duration) (model *Model) {
 	return &Model{
 		symbolicExecutionTimeout: timeout,
+
+		command: "unit-test-skeletons",
+		id:      "smart-template",
 	}
 }
 
@@ -43,7 +64,7 @@ var _ model.Model = (*Model)(nil)
 
 // ID returns the unique ID of this model.
 func (m *Model) ID() (id string) {
-	return "symflower" + provider.ProviderModelSeparator + "symbolic-execution"
+	return "symflower" + provider.ProviderModelSeparator + m.id
 }
 
 // MetaInformation returns the meta information of a model.
@@ -62,7 +83,7 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 
 	output, err := util.CommandWithResult(ctxWithTimeout, ctx.Logger, &util.Command{
 		Command: []string{
-			tools.SymflowerPath, "unit-tests",
+			tools.SymflowerPath, m.command,
 			"--code-disable-fetch-dependencies",
 			"--workspace", ctx.RepositoryPath,
 			ctx.FilePath,
