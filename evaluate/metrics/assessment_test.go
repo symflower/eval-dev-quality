@@ -237,44 +237,6 @@ func TestAssessmentsEqual(t *testing.T) {
 	})
 }
 
-func TestAssessmentsScore(t *testing.T) {
-	type testCase struct {
-		Name string
-
-		Assessments Assessments
-
-		ExpectedScore uint64
-	}
-
-	validate := func(t *testing.T, tc *testCase) {
-		t.Run(tc.Name, func(t *testing.T) {
-			actualScore := tc.Assessments.Score()
-
-			assert.Equal(t, tc.ExpectedScore, actualScore)
-		})
-	}
-
-	validate(t, &testCase{
-		Name: "Empty Assessment",
-
-		Assessments: NewAssessments(),
-
-		ExpectedScore: uint64(0),
-	})
-
-	validate(t, &testCase{
-		Name: "Values Assessment",
-
-		Assessments: Assessments{
-			AssessmentKeyFilesExecuted:  5,
-			AssessmentKeyCoverage:       4,
-			AssessmentKeyProcessingTime: 200,
-		},
-
-		ExpectedScore: uint64(9),
-	})
-}
-
 func TestCombineModelAndSymflowerFixAssessments(t *testing.T) {
 	type testCase struct {
 		Name string
