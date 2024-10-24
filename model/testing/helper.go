@@ -21,8 +21,16 @@ func NewMockModelNamed(t *testing.T, id string) *MockModel {
 
 // RegisterGenerateSuccess registers a mock call for successful generation.
 func (m *MockCapabilityWriteTests) RegisterGenerateSuccess(t *testing.T, filePath string, fileContent string, assessment metrics.Assessments) *mock.Call {
+	return m.RegisterGenerateSuccessValidateContext(t, nil, filePath, fileContent, assessment)
+}
+
+// RegisterGenerateSuccessValidateContext registers a mock call for successful generation.
+func (m *MockCapabilityWriteTests) RegisterGenerateSuccessValidateContext(t *testing.T, validateContext func(t *testing.T, c model.Context), filePath string, fileContent string, assessment metrics.Assessments) *mock.Call {
 	return m.On("WriteTests", mock.Anything).Return(assessment, nil).Run(func(args mock.Arguments) {
 		ctx, _ := args.Get(0).(model.Context)
+		if validateContext != nil {
+			validateContext(t, ctx)
+		}
 		testFilePath := filepath.Join(ctx.RepositoryPath, filePath)
 		require.NoError(t, os.MkdirAll(filepath.Dir(testFilePath), 0700))
 		require.NoError(t, os.WriteFile(testFilePath, []byte(fileContent), 0600))
