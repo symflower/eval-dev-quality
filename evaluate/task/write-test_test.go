@@ -132,25 +132,25 @@ func TestWriteTestsRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      10,
+						metrics.AssessmentKeyCoverage:                      1,
 					},
 					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      10,
+						metrics.AssessmentKeyCoverage:                      1,
 					},
 					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      10,
+						metrics.AssessmentKeyCoverage:                      1,
 					},
 					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      10,
+						metrics.AssessmentKeyCoverage:                      1,
 					},
 				}
 				validateGo(t, "Model generated correct test", &golang.Language{}, bytesutil.StringTrimIndentations(`
@@ -173,7 +173,7 @@ func TestWriteTestsRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      10,
+						metrics.AssessmentKeyCoverage:                      1,
 					},
 					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -183,7 +183,7 @@ func TestWriteTestsRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      10,
+						metrics.AssessmentKeyCoverage:                      1,
 					},
 				}
 				expectedProblems := []string{
@@ -270,25 +270,25 @@ func TestWriteTestsRun(t *testing.T) {
 				IdentifierWriteTests: metrics.Assessments{
 					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyCoverage:                      1,
 					metrics.AssessmentKeyResponseNoError:               1,
 				},
 				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
 					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyCoverage:                      1,
 					metrics.AssessmentKeyResponseNoError:               1,
 				},
 				IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
 					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyCoverage:                      1,
 					metrics.AssessmentKeyResponseNoError:               1,
 				},
 				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
 					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyCoverage:                      1,
 					metrics.AssessmentKeyResponseNoError:               1,
 				},
 			},

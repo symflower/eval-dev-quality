@@ -104,7 +104,7 @@ func (t *CodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 		testsPassing := testResult.TestsPass
 		taskLogger.Printf("Executes tests with %d tests passing", testsPassing)
 		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
-		modelAssessment.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
+		modelAssessment.AwardMultiple(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
 	}
 
 	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{

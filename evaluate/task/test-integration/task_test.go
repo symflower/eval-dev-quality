@@ -46,7 +46,7 @@ func TestWriteTestsRun(t *testing.T) {
 			evaluatetask.IdentifierWriteTests: metrics.Assessments{
 				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
 				metrics.AssessmentKeyResponseCharacterCount:             254,
-				metrics.AssessmentKeyCoverage:                           10,
+				metrics.AssessmentKeyCoverage:                           1,
 				metrics.AssessmentKeyFilesExecuted:                      1,
 				metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 				metrics.AssessmentKeyResponseNoError:                    1,
@@ -56,7 +56,7 @@ func TestWriteTestsRun(t *testing.T) {
 			evaluatetask.IdentifierWriteTestsSymflowerFix: metrics.Assessments{
 				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
 				metrics.AssessmentKeyResponseCharacterCount:             254,
-				metrics.AssessmentKeyCoverage:                           10,
+				metrics.AssessmentKeyCoverage:                           1,
 				metrics.AssessmentKeyFilesExecuted:                      1,
 				metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 				metrics.AssessmentKeyResponseNoError:                    1,
@@ -66,7 +66,7 @@ func TestWriteTestsRun(t *testing.T) {
 			evaluatetask.IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
 				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
 				metrics.AssessmentKeyResponseCharacterCount:             254,
-				metrics.AssessmentKeyCoverage:                           10,
+				metrics.AssessmentKeyCoverage:                           1,
 				metrics.AssessmentKeyFilesExecuted:                      1,
 				metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 				metrics.AssessmentKeyResponseNoError:                    1,
@@ -76,7 +76,7 @@ func TestWriteTestsRun(t *testing.T) {
 			evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
 				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 254,
 				metrics.AssessmentKeyResponseCharacterCount:             254,
-				metrics.AssessmentKeyCoverage:                           10,
+				metrics.AssessmentKeyCoverage:                           1,
 				metrics.AssessmentKeyFilesExecuted:                      1,
 				metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 				metrics.AssessmentKeyResponseNoError:                    1,
