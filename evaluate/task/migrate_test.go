@@ -96,13 +96,13 @@ func TestMigrateRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyCoverage:                      40,
+						metrics.AssessmentKeyCoverage:                      4,
 					},
 					IdentifierMigrateSymflowerFix: metrics.Assessments{
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyCoverage:                      40,
+						metrics.AssessmentKeyCoverage:                      4,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {

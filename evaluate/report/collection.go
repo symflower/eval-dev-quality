@@ -16,28 +16,6 @@ import (
 // AssessmentPerModel holds a collection of assessments per model id.
 type AssessmentPerModel map[string]metrics.Assessments
 
-// WalkByScore walks the given assessment metrics by their score.
-func (a AssessmentPerModel) WalkByScore(function func(model string, assessment metrics.Assessments, score uint64) error) (err error) {
-	models := maps.Keys(a)
-	sort.Strings(models)
-
-	scores := make(map[string]uint64, len(models))
-	for _, model := range models {
-		scores[model] = a[model].Score()
-	}
-	sort.SliceStable(models, func(i, j int) bool {
-		return scores[models[i]] < scores[models[j]]
-	})
-
-	for _, model := range models {
-		if err := function(model, a[model], scores[model]); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 // AssessmentStore holds a collection of assessments per model per language and per repository.
 type AssessmentStore struct {
 	store map[model.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments

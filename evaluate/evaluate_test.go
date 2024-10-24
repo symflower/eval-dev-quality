@@ -81,7 +81,6 @@ func TestEvaluate(t *testing.T) {
 		Context *Context
 
 		ExpectedAssessments    metricstesting.AssessmentTuples
-		ExpectedTotalScore     uint64
 		ExpectedOutputValidate func(t *testing.T, output string, resultPath string)
 		ExpectedResultFiles    map[string]func(t *testing.T, filePath string, data string)
 	}
@@ -226,7 +225,6 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			ExpectedTotalScore: 2,
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				"evaluation.log": nil,
 				filepath.Join(string(evaluatetask.IdentifierWriteTests), mockedModel.ID(), "golang", "golang", "plain", "evaluation.log"): nil,
@@ -304,7 +302,6 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 				},
-				ExpectedTotalScore: 2,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
@@ -400,7 +397,6 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 				},
-				ExpectedTotalScore: 2,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
@@ -494,7 +490,6 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 				},
-				ExpectedTotalScore: 2,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
@@ -665,7 +660,6 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 				},
-				ExpectedTotalScore: 0,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
@@ -806,7 +800,6 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 				},
-				ExpectedTotalScore: 0,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
@@ -893,7 +886,6 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 				},
-				ExpectedTotalScore: 0,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
@@ -982,7 +974,6 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 				},
-				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
@@ -1074,7 +1065,6 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 				},
-				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
@@ -1195,7 +1185,6 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 				},
-				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
@@ -1299,7 +1288,6 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 				},
-				ExpectedTotalScore: 6,
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
@@ -1385,7 +1373,6 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 			},
-			ExpectedTotalScore: 2,
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				"evaluation.log": nil,
 				filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,

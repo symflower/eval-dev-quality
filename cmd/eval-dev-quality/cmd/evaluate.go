@@ -21,7 +21,6 @@ import (
 	"golang.org/x/exp/maps"
 
 	"github.com/symflower/eval-dev-quality/evaluate"
-	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
 	evaltask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
@@ -540,11 +539,9 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 	}
 
 	assessmentsPerModel := assessments.CollapseByModel()
-	_ = assessmentsPerModel.WalkByScore(func(model string, assessment metrics.Assessments, score uint64) (err error) {
-		command.logger.Printf("Evaluation score for %q: %s", model, assessment)
-
-		return nil
-	})
+	for _, modelID := range maps.Keys(assessmentsPerModel) {
+		command.logger.Printf("Evaluation assessments for %q: %s", modelID, assessmentsPerModel[modelID])
+	}
 
 	return nil
 }
