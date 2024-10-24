@@ -16,10 +16,12 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/avast/retry-go"
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
 	"golang.org/x/exp/maps"
 
+	"github.com/symflower/eval-dev-quality/cmd/eval-dev-quality/cmd/cleanup"
 	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
@@ -580,20 +582,26 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 			return pkgerrors.WithMessage(pkgerrors.WithStack(err), output)
 		}
 
-		// Cleanup volume.
-		defer func() {
-			output, deferErr := util.CommandWithResult(context.Background(), command.logger, &util.Command{
-				Command: []string{
-					"docker",
-					"volume",
-					"rm",
-					volumeName,
-				},
-			})
-			if deferErr != nil {
-				err = errors.Join(err, pkgerrors.WithMessage(pkgerrors.WithStack(deferErr), output))
+		// Remove volume in a global cleanup to ensure it happens even if the user aborts using "Ctrl+C".
+		cleanup.Register(func() {
+			err := retry.Do(func() error {
+				_, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
+					Command: []string{
+						"docker",
+						"volume",
+						"rm",
+						volumeName,
+					},
+				})
+
+				return err
+			}, retry.RetryIf(func(err error) bool {
+				return strings.Contains(err.Error(), "volume is in use")
+			}), retry.Attempts(5), retry.Delay(time.Second))
+			if err != nil {
+				command.logger.Error(fmt.Sprintf("could not cleanup Docker volume: %s", err.Error()))
 			}
-		}()
+		})
 	}
 
 	// Pull the image to ensure using the latest version
