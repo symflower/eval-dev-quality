@@ -2,7 +2,6 @@ package task
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -18,55 +17,9 @@ import (
 	"github.com/symflower/eval-dev-quality/util"
 )
 
-// RepositoryConfiguration holds the configuration of a repository.
-type RepositoryConfiguration struct {
-	Tasks []task.Identifier
-}
-
-// LoadRepositoryConfiguration loads a repository configuration from the given path.
-func LoadRepositoryConfiguration(path string) (config *RepositoryConfiguration, err error) {
-	if osutil.FileExists(path) != nil { // If we don't get a valid file, assume it is a repository directory and target the default configuration file name.
-		path = filepath.Join(path, RepositoryConfigurationFileName)
-	}
-
-	data, err := os.ReadFile(path)
-	if errors.Is(err, os.ErrNotExist) {
-		// Set default configuration.
-		return &RepositoryConfiguration{
-			Tasks: AllIdentifiers,
-		}, nil
-	} else if err != nil {
-		return nil, pkgerrors.Wrap(err, path)
-	}
-
-	config = &RepositoryConfiguration{}
-	if err := json.Unmarshal(data, &config); err != nil {
-		return nil, pkgerrors.Wrap(err, path)
-	} else if err := config.validate(); err != nil {
-		return nil, err
-	}
-
-	return config, nil
-}
-
-// validate validates the configuration.
-func (rc *RepositoryConfiguration) validate() (err error) {
-	if len(rc.Tasks) == 0 {
-		return pkgerrors.Errorf("empty list of tasks in configuration")
-	}
-
-	for _, taskIdentifier := range rc.Tasks {
-		if !LookupIdentifier[taskIdentifier] {
-			return pkgerrors.Errorf("task identifier %q unknown", taskIdentifier)
-		}
-	}
-
-	return nil
-}
-
 // Repository holds data about a repository.
 type Repository struct {
-	RepositoryConfiguration
+	task.RepositoryConfiguration
 
 	// name holds the name of the repository.
 	name string
@@ -76,14 +29,11 @@ type Repository struct {
 
 var _ task.Repository = (*Repository)(nil)
 
-// RepositoryConfigurationFileName holds the file name for a repository configuration.
-const RepositoryConfigurationFileName = "repository.json"
-
 // loadConfiguration loads the configuration from the dedicated configuration file.
 func (r *Repository) loadConfiguration() (err error) {
-	configurationFilePath := filepath.Join(r.dataPath, RepositoryConfigurationFileName)
+	configurationFilePath := filepath.Join(r.dataPath, task.RepositoryConfigurationFileName)
 
-	configuration, err := LoadRepositoryConfiguration(configurationFilePath)
+	configuration, err := task.LoadRepositoryConfiguration(configurationFilePath, AllIdentifiers)
 	if err != nil {
 		return err
 	}
@@ -103,14 +53,9 @@ func (r *Repository) DataPath() (dataPath string) {
 	return r.dataPath
 }
 
-// SupportedTasks returns the list of task identifiers the repository supports.
-func (r *Repository) SupportedTasks() (tasks []task.Identifier) {
-	return r.Tasks
-}
-
 // Validate checks it the repository is well-formed.
 func (r *Repository) Validate(logger *log.Logger, language language.Language) (err error) {
-	for _, taskIdentifier := range r.SupportedTasks() {
+	for _, taskIdentifier := range r.RepositoryConfiguration.Tasks {
 		switch taskIdentifier {
 		case IdentifierCodeRepair:
 			return validateCodeRepairRepository(logger, r.DataPath(), language)
@@ -161,6 +106,11 @@ func (r *Repository) Reset(logger *log.Logger) (err error) {
 	}
 
 	return nil
+}
+
+// Configuration returns the configuration of a repository.
+func (r *Repository) Configuration() *task.RepositoryConfiguration {
+	return &r.RepositoryConfiguration
 }
 
 // TemporaryRepository creates a temporary repository and initializes a git repo in it.
