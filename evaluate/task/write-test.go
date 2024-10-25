@@ -54,6 +54,11 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 		return nil, problems, pkgerrors.WithStack(err)
 	}
 
+	testFramework := ctx.Language.TestFramework()
+	if ctx.Repository.Configuration().Prompt.TestFramework != "" {
+		testFramework = ctx.Repository.Configuration().Prompt.TestFramework
+	}
+
 	modelAssessment := metrics.NewAssessments()
 	withSymflowerFixAssessment := metrics.NewAssessments()
 	withSymflowerTemplateAssessment := metrics.NewAssessments()
@@ -74,7 +79,7 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 		}
 
 		modelAssessmentFile, withSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, taskLogger, modelCapability, dataPath, filePath, &ArgumentsWriteTest{
-			TestFramework: ctx.Language.TestFramework(),
+			TestFramework: testFramework,
 		})
 		problems = append(problems, ps...)
 		if err != nil {
@@ -118,7 +123,7 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 
 		modelTemplateAssessmentFile, templateWithSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, taskLogger, modelCapability, dataPath, filePath, &ArgumentsWriteTest{
 			Template:      string(testTemplate),
-			TestFramework: ctx.Language.TestFramework(),
+			TestFramework: testFramework,
 		})
 		problems = append(problems, ps...)
 		if err != nil {

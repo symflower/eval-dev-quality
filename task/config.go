@@ -18,6 +18,12 @@ type RepositoryConfiguration struct {
 	Tasks []Identifier
 	// IgnorePaths holds the relative paths that should be ignored when searching for cases.
 	IgnorePaths []string `json:"ignore,omitempty"`
+
+	// Prompt holds LLM prompt-related configuration.
+	Prompt struct {
+		// TestFramework overwrites the language-specific test framework to use.
+		TestFramework string `json:"test-framework,omitempty"`
+	} `json:",omitempty"`
 }
 
 // RepositoryConfigurationFileName holds the file name for a repository configuration.

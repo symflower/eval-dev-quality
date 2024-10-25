@@ -237,6 +237,19 @@ Depending on the task, it can be beneficial to exclude parts of the repository f
 
 This `ignore` setting is currently only applicable for generation task `write-tests`.
 
+It is possible to configure some model prompt parameters through `repository.json`:
+
+```json
+{
+  "tasks": ["write-tests"],
+  "prompt": {
+    "test-framework": "JUnit 5 for Spring Boot" // Overwrite the default test framework in the prompt.
+  }
+}
+```
+
+This `prompt.test-framework` setting is currently only applicable for the test generation task `write-tests`.
+
 ## Tasks
 
 ### Task: Test Generation
