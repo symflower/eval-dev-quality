@@ -12,6 +12,7 @@ import (
 	evalmodel "github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
 	evaltask "github.com/symflower/eval-dev-quality/task"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // Context holds an evaluation context.
@@ -190,10 +191,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 		}
 	}
 
-	repositoriesLookup := make(map[string]bool, len(ctx.RepositoryPaths))
-	for _, repositoryPath := range ctx.RepositoryPaths {
-		repositoriesLookup[repositoryPath] = true
-	}
+	repositoriesLookup := util.Set(ctx.RepositoryPaths)
 
 	// Evaluating models and languages.
 	ctx.Log.Printf("Evaluating models and languages")
