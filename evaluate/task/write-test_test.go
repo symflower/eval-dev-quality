@@ -298,6 +298,66 @@ func TestWriteTestsRun(t *testing.T) {
 			},
 		})
 	}
+
+	{
+		temporaryDirectoryPath := t.TempDir()
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
+		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
+		require.NoError(t, os.WriteFile(filepath.Join(temporaryDirectoryPath, "golang", "plain", "empty.go"), []byte(bytesutil.StringTrimIndentations(`
+			package plain
+
+			// There will be no template for an empty file.
+		`)), 0666))
+		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+		modelMock.RegisterGenerateSuccess(t, "empty_test.go", "package plain\n", metricstesting.AssessmentsWithProcessingTime).Once()
+		modelMock.RegisterGenerateSuccess(t, "plain_test.go", bytesutil.StringTrimIndentations(`
+			package plain
+
+			import "testing"
+
+			func TestPlain(t *testing.T) {
+					plain()
+			}
+		`), metricstesting.AssessmentsWithProcessingTime)
+		validate(t, &tasktesting.TestCaseTask{
+			Name: "Keep non-template score if template fails",
+
+			Model:          modelMock,
+			Language:       &golang.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("golang", "plain"),
+
+			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+				IdentifierWriteTests: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyFilesExecuted:                 2,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyFilesExecuted:                 2,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+				IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyFilesExecuted:                 2,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyFilesExecuted:                 2,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+			},
+			ExpectedProblemContains: []string{
+				"reading Symflower template",
+			},
+		})
+	}
 }
 
 func TestValidateWriteTestsRepository(t *testing.T) {

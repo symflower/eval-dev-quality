@@ -93,13 +93,21 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, "generating Symflower template"))
 
+			withSymflowerTemplateAssessment.Add(modelAssessmentFile)
+			withSymflowerTemplateAndFixAssessment.Add(withSymflowerFixAssessmentFile)
+
 			continue
 		}
 
 		testTemplateFilePath := filepath.Join(dataPath, ctx.Language.TestFilePath(dataPath, filePath))
 		testTemplate, err := os.ReadFile(testTemplateFilePath)
 		if err != nil {
-			return nil, nil, pkgerrors.WithMessagef(err, "reading Symflower template from %q", testTemplateFilePath)
+			problems = append(problems, pkgerrors.WithMessagef(err, "reading Symflower template from %q", testTemplateFilePath))
+
+			withSymflowerTemplateAssessment.Add(modelAssessmentFile)
+			withSymflowerTemplateAndFixAssessment.Add(withSymflowerFixAssessmentFile)
+
+			continue
 		}
 
 		modelTemplateAssessmentFile, templateWithSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, taskLogger, modelCapability, dataPath, filePath, &ArgumentsWriteTest{
