@@ -86,19 +86,6 @@ func (a Assessments) Equal(x Assessments) bool {
 	return true
 }
 
-// Merge combines two assessment collections into a new assessment collection and returns the new assessment collection.
-func Merge(a Assessments, b Assessments) (c Assessments) {
-	c = NewAssessments()
-	if a != nil {
-		c.Add(a)
-	}
-	if b != nil {
-		c.Add(b)
-	}
-
-	return c
-}
-
 // Award yields a score point.
 func (a Assessments) Award(key AssessmentKey) {
 	a[key]++
