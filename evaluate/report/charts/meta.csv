@@ -1,0 +1,4 @@
+model-id,model-name,completion,image,prompt,request
+provider/modelA,modelA,0.1,0.2,0.3,0.4
+provider/modelB,modelB,0.01,0.02,0.03,0.04
+provider/modelZ,modelZ,0.001,0.002,0.003,0.004
