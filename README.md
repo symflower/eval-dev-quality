@@ -4,6 +4,8 @@ An evaluation benchmark 📈 and framework to compare and evolve the quality of 
 
 This repository gives developers of LLMs (and other code generation tools) a standardized benchmark and framework to improve real-world usage in the software development domain and provides users of LLMs with metrics and comparisons to check if a given LLM is useful for their tasks.
 
+> If you appreciate our efforts, you can support us by [buying us a coffee](https://symflower.com/en/products/devqualityeval-leaderboard/) and gaining access to the entire dataset of DevQualityEval logs and results.
+
 The latest results are discussed in a deep dive: [OpenAI's o1-preview is the king 👑 of code generation but is super slow and expensive](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.6-o1-preview-is-the-king-of-code-generation-but-is-super-slow-and-expensive/)
 
 ![Scatter plot that shows the best LLMs aligned with their capability on the y-axis to costs with a logarithmic scale on the x-axis of the v0.6 deep dive.](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.6-o1-preview-is-the-king-of-code-generation-but-is-super-slow-and-expensive/images/header.png)
