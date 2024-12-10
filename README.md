@@ -9,7 +9,7 @@ The latest results are discussed in a deep dive: [OpenAI's o1-preview is the kin
 ![Scatter plot that shows the best LLMs aligned with their capability on the y-axis to costs with a logarithmic scale on the x-axis of the v0.6 deep dive.](https://symflower.com/en/company/blog/2024/dev-quality-eval-v0.6-o1-preview-is-the-king-of-code-generation-but-is-super-slow-and-expensive/images/header.png)
 
 > [!TIP]
-**💰🍻 [Buy us 2 beverages](https://symflower.com/en/products/devqualityeval-leaderboard/) to support the DevQualityEval project** and gain access to the entire dataset of DevQualityEval logs and results from the latest benchmark run.
+**💰🍻 [Buy us 2 beverages](https://symflower.com/en/products/devqualityeval-leaderboard/) to support us in extending the DevQualityEval project** and gain access to the entire dataset of DevQualityEval logs and results from the latest benchmark run.
 
 ![Buy us 2 beverages to support the DevQualityEval project](https://symflower.com/img/commonGraphics/cta-devqualityeval-horizontal.svg)
 
