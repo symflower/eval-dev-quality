@@ -15,6 +15,7 @@ packages:
       Model:
       CapabilityWriteTests:
       CapabilityRepairCode:
+      CapabilityMigrate:
       CapabilityTranspile:
   github.com/symflower/eval-dev-quality/provider:
     interfaces:

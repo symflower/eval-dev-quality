@@ -558,6 +558,40 @@ func TestFormatPromptContext(t *testing.T) {
 			` + "```" + `
 		`),
 	})
+	validate(t, &testCase{
+		Name: "Migrate",
+
+		Context: &llmMigrateSourceFilePromptContext{
+			llmSourceFilePromptContext: llmSourceFilePromptContext{
+				Language: &java.Language{},
+
+				Code: bytesutil.StringTrimIndentations(`
+					package com.eval;
+
+					class Foobar {
+						static int foobar(int i) {}
+					}
+				`),
+				FilePath:   "Foobar.java",
+				ImportPath: "com.eval",
+			},
+			TestFramework: "JUnit 5",
+		},
+
+		ExpectedMessage: bytesutil.StringTrimIndentations(`
+			Given the following Java test file "Foobar.java" with package "com.eval", migrate the test file to JUnit 5 as the test framework.
+			The tests should produce 100 percent code coverage and must compile.
+			The response must contain only the test code in a fenced code block and nothing else.
+
+			` + "```" + `java
+			package com.eval;
+
+			class Foobar {
+				static int foobar(int i) {}
+			}
+			` + "```" + `
+		`),
+	})
 }
 
 func TestModelTranspile(t *testing.T) {
@@ -716,5 +750,102 @@ func TestModelTranspile(t *testing.T) {
 			},
 			ExpectedStubFileContent: transpiledFileContent,
 		})
+	})
+}
+
+func TestModelMigrate(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		SetupMock func(t *testing.T, mockedProvider *providertesting.MockQuery)
+
+		Language language.Language
+
+		RepositoryPath string
+		TestFilePath   string
+		TestFramework  string
+
+		ExpectedAssessment          metrics.Assessments
+		ExpectedMigratedFileContent string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		logOutput, logger := log.Buffer()
+		defer func() {
+			if t.Failed() {
+				t.Log(logOutput.String())
+			}
+		}()
+
+		temporaryPath := t.TempDir()
+		repositoryPath := filepath.Join(temporaryPath, filepath.Base(tc.RepositoryPath))
+		require.NoError(t, osutil.CopyTree(tc.RepositoryPath, repositoryPath))
+
+		modelID := "some-model"
+		mock := providertesting.NewMockQuery(t)
+		tc.SetupMock(t, mock)
+		llm := NewModel(mock, modelID)
+
+		ctx := model.Context{
+			Language: tc.Language,
+
+			RepositoryPath: repositoryPath,
+			FilePath:       tc.TestFilePath,
+
+			Arguments: &evaluatetask.ArgumentsMigrate{
+				TestFramework: tc.TestFramework,
+			},
+
+			Logger: logger,
+		}
+
+		actualAssessment, actualError := llm.Migrate(ctx)
+		assert.NoError(t, actualError)
+
+		assert.Equal(t, metricstesting.Clean(tc.ExpectedAssessment), metricstesting.Clean(actualAssessment))
+
+		actualMigratedFileContent, err := os.ReadFile(filepath.Join(repositoryPath, tc.TestFilePath))
+		assert.NoError(t, err)
+
+		assert.Equal(t, strings.TrimSpace(tc.ExpectedMigratedFileContent), string(actualMigratedFileContent))
+	}
+
+	migratedTestFile := bytesutil.StringTrimIndentations(`
+		package com.eval;
+
+		import org.junit.jupiter.api.Test;
+		import static org.junit.jupiter.api.Assertions.assertEquals;
+
+		public class IncrementTest {
+			@Test
+			public void increment() {
+				int i = 1;
+				int expected = 2;
+				int actual = Increment.increment(i);
+
+				assertEquals(expected, actual);
+			}
+		}
+	`)
+
+	validate(t, &testCase{
+		Name: "Increment",
+
+		SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
+			mockedProvider.On("Query", mock.Anything, "some-model", mock.Anything).Return("```\n"+migratedTestFile+"```\n", nil)
+		},
+
+		Language: &java.Language{},
+
+		RepositoryPath: filepath.Join("..", "..", "testdata", "java", "migrate-plain"),
+		TestFilePath:   filepath.Join("src", "test", "java", "com", "eval", "IncrementTest.java"),
+
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyResponseNoExcess:                   1,
+			metrics.AssessmentKeyResponseWithCode:                   1,
+			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 290,
+			metrics.AssessmentKeyResponseCharacterCount:             299,
+		},
+		ExpectedMigratedFileContent: migratedTestFile,
 	})
 }

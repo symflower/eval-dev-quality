@@ -198,6 +198,40 @@ func (ctx *llmTranspileSourceFilePromptContext) Format() (message string, err er
 	return b.String(), nil
 }
 
+// llmMigrateSourceFilePromptContext is the template context for a migration LLM prompt.
+type llmMigrateSourceFilePromptContext struct {
+	// llmSourceFilePromptContext holds the context for a source file prompt.
+	llmSourceFilePromptContext
+
+	// TestFramework defines the target test framework for migration.
+	TestFramework string
+}
+
+// llmMigrateSourceFilePromptTemplate is the template for generating an LLM migration prompt.
+var llmMigrateSourceFilePromptTemplate = template.Must(template.New("model-llm-migration-source-file-prompt").Parse(bytesutil.StringTrimIndentations(`
+	Given the following {{ .Language.Name }} test file "{{ .FilePath }}" with package "{{ .ImportPath }}", migrate the test file to {{ .TestFramework }} as the test framework.
+	The tests should produce 100 percent code coverage and must compile.
+	The response must contain only the test code in a fenced code block and nothing else.
+
+	` + "```" + `{{ .Language.ID }}
+	{{ .Code }}
+	` + "```" + `
+`)))
+
+// Format returns the prompt to migrate a source file.
+func (ctx *llmMigrateSourceFilePromptContext) Format() (message string, err error) {
+	// Use Linux paths even when running the evaluation on Windows to ensure consistency in prompting.
+	ctx.FilePath = filepath.ToSlash(ctx.FilePath)
+	ctx.Code = strings.TrimSpace(ctx.Code)
+
+	var b strings.Builder
+	if err := llmMigrateSourceFilePromptTemplate.Execute(&b, ctx); err != nil {
+		return "", pkgerrors.WithStack(err)
+	}
+
+	return b.String(), nil
+}
+
 var _ model.Model = (*Model)(nil)
 
 // ID returns the unique ID of this model.
@@ -396,6 +430,59 @@ func (m *Model) Transpile(ctx model.Context) (assessment metrics.Assessments, er
 	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(originFileContent))
 
 	err = os.WriteFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath), []byte(originFileContent), 0644)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	return assessment, nil
+}
+
+var _ model.CapabilityMigrate = (*Model)(nil)
+
+// Migrate queries the model to migrate source code.
+func (m *Model) Migrate(ctx model.Context) (assessment metrics.Assessments, err error) {
+	arguments, ok := ctx.Arguments.(*evaluatetask.ArgumentsMigrate)
+	if !ok {
+		return nil, pkgerrors.Errorf("unexpected type %T", ctx.Arguments)
+	}
+
+	data, err := os.ReadFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath))
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+	fileContent := strings.TrimSpace(string(data))
+
+	importPath := ctx.Language.ImportPath(ctx.RepositoryPath, ctx.FilePath)
+
+	request, err := (&llmMigrateSourceFilePromptContext{
+		llmSourceFilePromptContext: llmSourceFilePromptContext{
+			Language: ctx.Language,
+
+			Code:       fileContent,
+			FilePath:   ctx.FilePath,
+			ImportPath: importPath,
+		},
+
+		TestFramework: arguments.TestFramework,
+	}).Format()
+	if err != nil {
+		return nil, err
+	}
+
+	response, duration, err := m.query(ctx.Logger, request)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	assessment, migrationFileContent, err := prompt.ParseResponse(response)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+	assessment[metrics.AssessmentKeyProcessingTime] = uint64(duration.Milliseconds())
+	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(response))
+	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(migrationFileContent))
+
+	err = os.WriteFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath), []byte(migrationFileContent), 0644)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}

@@ -59,6 +59,8 @@ func (r *Repository) Validate(logger *log.Logger, language language.Language) (e
 		switch taskIdentifier {
 		case IdentifierCodeRepair:
 			return validateCodeRepairRepository(logger, r.DataPath(), language)
+		case IdentifierMigrate:
+			return validateMigrateRepository(logger, r.DataPath(), language)
 		case IdentifierTranspile:
 			return validateTranspileRepository(logger, r.DataPath(), language)
 		case IdentifierWriteTests:
