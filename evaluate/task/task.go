@@ -41,6 +41,10 @@ var (
 	IdentifierWriteTestsSymflowerTemplateSymflowerFix = registerIdentifier("write-tests-symflower-template-symflower-fix")
 	// IdentifierCodeRepair holds the identifier for the "code repair" task.
 	IdentifierCodeRepair = registerIdentifier("code-repair")
+	// IdentifierMigrate holds the identifier for the "migrate" task.
+	IdentifierMigrate = registerIdentifier("migrate")
+	// IdentifierMigrateSymflowerFix holds the identifier for the "migrate" task. with the "symflower fix" applied.
+	IdentifierMigrateSymflowerFix = registerIdentifier("migrate-symflower-fix")
 	// IdentifierTranspile holds the identifier for the "transpile" task.
 	IdentifierTranspile = registerIdentifier("transpile")
 	// IdentifierTranspileSymflowerFix holds the identifier for the "transpile" task with the "symflower fix" applied.
@@ -54,6 +58,8 @@ func ForIdentifier(taskIdentifier evaltask.Identifier) (task evaltask.Task, err 
 		return &WriteTests{}, nil
 	case IdentifierCodeRepair:
 		return &CodeRepair{}, nil
+	case IdentifierMigrate:
+		return &Migrate{}, nil
 	case IdentifierTranspile:
 		return &Transpile{}, nil
 	default:
