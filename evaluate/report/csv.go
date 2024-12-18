@@ -3,11 +3,8 @@ package report
 import (
 	"cmp"
 	"encoding/csv"
-	"errors"
 	"io"
-	"os"
 	"slices"
-	"sort"
 	"strconv"
 
 	pkgerrors "github.com/pkg/errors"
@@ -76,106 +73,4 @@ func (e *EvaluationFile) WriteLines(records [][]string) (err error) {
 // EvaluationHeader returns the CSV header for the evaluation CSV.
 func EvaluationHeader() (header []string) {
 	return append([]string{"model-id", "language", "repository", "task", "run"}, metrics.AllAssessmentKeysStrings...)
-}
-
-// RecordsFromEvaluationCSVFiles returns all the records from all the given evaluation CSV files.
-func RecordsFromEvaluationCSVFiles(evaluationCSVFilePaths []string) (records [][]string, err error) {
-	for _, evaluationCSVFilePath := range evaluationCSVFilePaths {
-		file, err := os.Open(evaluationCSVFilePath)
-		if err != nil {
-			return nil, pkgerrors.WithStack(err)
-		}
-		defer func() {
-			if e := file.Close(); e != nil {
-				err = errors.Join(err, pkgerrors.WithStack(e))
-			}
-		}()
-
-		csv := csv.NewReader(file)
-
-		// Ignore the CSV header.
-		if _, err := csv.Read(); err != nil {
-			return nil, pkgerrors.WithStack(err)
-		}
-
-		evaluationRecords, err := csv.ReadAll()
-		if err != nil {
-			return nil, pkgerrors.WithStack(err)
-		}
-		records = append(records, evaluationRecords...)
-	}
-
-	return records, nil
-}
-
-// assessmentFromRecord return the assessments of a record.
-func assessmentFromRecord(assessmentFields []string) (assessments metrics.Assessments, err error) {
-	if len(assessmentFields) != len(metrics.AllAssessmentKeysStrings) {
-		return nil, pkgerrors.Errorf("expected %d assessments, but found %d", len(metrics.AllAssessmentKeysStrings), len(assessmentFields))
-	}
-
-	assessments = metrics.NewAssessments()
-	for i, field := range assessmentFields {
-		assessmentKeyValue, err := strconv.ParseUint(field, 10, 64)
-		if err != nil {
-			return nil, pkgerrors.WithStack(err)
-		}
-		assessments[metrics.AssessmentKey(metrics.AllAssessmentKeysStrings[i])] = assessmentKeyValue
-	}
-
-	return assessments, nil
-}
-
-// MetaInformationRecords converts the models meta information into sorted CSV records.
-func MetaInformationRecords(modelsMetaInformation []*model.MetaInformation) (records [][]string) {
-	records = [][]string{}
-
-	for _, metaInformation := range modelsMetaInformation {
-		records = append(records, []string{
-			metaInformation.ID,
-			metaInformation.Name,
-			strconv.FormatFloat(metaInformation.Pricing.Completion, 'f', -1, 64),
-			strconv.FormatFloat(metaInformation.Pricing.Image, 'f', -1, 64),
-			strconv.FormatFloat(metaInformation.Pricing.Prompt, 'f', -1, 64),
-			strconv.FormatFloat(metaInformation.Pricing.Request, 'f', -1, 64),
-		})
-	}
-	SortRecords(records)
-
-	return records
-}
-
-// WriteMetaInformationRecords writes the meta information records into a CSV file.
-func WriteMetaInformationRecords(writer io.Writer, records [][]string) (err error) {
-	return WriteCSV(writer, []string{"model-id", "model-name", "completion", "image", "prompt", "request"}, records)
-}
-
-// WriteCSV writes a header and records to a CSV file.
-func WriteCSV(writer io.Writer, header []string, records [][]string) (err error) {
-	csv := csv.NewWriter(writer)
-
-	if err := csv.Write(header); err != nil {
-		return pkgerrors.WithStack(err)
-	}
-	if err := csv.WriteAll(records); err != nil {
-		return pkgerrors.WithStack(err)
-	}
-	csv.Flush()
-
-	return nil
-}
-
-// SortRecords sorts CSV records.
-func SortRecords(records [][]string) {
-	sort.Slice(records, func(i, j int) bool {
-		for x := range records[i] {
-			if records[i][x] == records[j][x] {
-				continue
-			}
-
-			return records[i][x] < records[j][x]
-		}
-
-		return false
-	})
 }

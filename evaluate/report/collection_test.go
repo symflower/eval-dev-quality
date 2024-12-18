@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
@@ -177,93 +176,6 @@ func TestAssessmentPerModelPerLanguagePerRepositoryWalk(t *testing.T) {
 			},
 		})
 	}
-}
-
-func TestWalkByScore(t *testing.T) {
-	type testCase struct {
-		Name string
-
-		AssessmentPerModel AssessmentPerModel
-
-		ExpectedModelOrder []string
-		ExpectedScoreOrder []uint64
-	}
-
-	validate := func(t *testing.T, tc *testCase) {
-		t.Run(tc.Name, func(t *testing.T) {
-			require.Equal(t, len(tc.ExpectedModelOrder), len(tc.ExpectedScoreOrder), "expected order needs equal lengths")
-
-			actualModelOrder := make([]string, 0, len(tc.ExpectedModelOrder))
-			actualAssessmentOrder := make([]metrics.Assessments, 0, len(tc.ExpectedModelOrder))
-			actualScoreOrder := make([]uint64, 0, len(tc.ExpectedScoreOrder))
-			assert.NoError(t, tc.AssessmentPerModel.WalkByScore(func(model string, assessment metrics.Assessments, score uint64) (err error) {
-				actualModelOrder = append(actualModelOrder, model)
-				actualAssessmentOrder = append(actualAssessmentOrder, assessment)
-				actualScoreOrder = append(actualScoreOrder, score)
-
-				return nil
-			}))
-
-			assert.Equal(t, tc.ExpectedModelOrder, actualModelOrder)
-			assert.Equal(t, tc.ExpectedScoreOrder, actualScoreOrder)
-			for i, model := range tc.ExpectedModelOrder {
-				assert.Equal(t, tc.AssessmentPerModel[model], actualAssessmentOrder[i])
-			}
-		})
-	}
-
-	validate(t, &testCase{
-		Name: "No Assessment",
-
-		AssessmentPerModel: AssessmentPerModel{},
-
-		ExpectedModelOrder: []string{},
-		ExpectedScoreOrder: []uint64{},
-	})
-
-	validate(t, &testCase{
-		Name: "Single Assessment",
-
-		AssessmentPerModel: AssessmentPerModel{
-			"modelA": metrics.Assessments{
-				metrics.AssessmentKeyFilesExecuted: 1,
-			},
-		},
-
-		ExpectedModelOrder: []string{
-			"modelA",
-		},
-		ExpectedScoreOrder: []uint64{
-			1,
-		},
-	})
-
-	validate(t, &testCase{
-		Name: "Multiple Assessments",
-
-		AssessmentPerModel: AssessmentPerModel{
-			"modelA": metrics.Assessments{
-				metrics.AssessmentKeyFilesExecuted: 1,
-			},
-			"modelB": metrics.Assessments{
-				metrics.AssessmentKeyFilesExecuted: 2,
-			},
-			"modelC": metrics.Assessments{
-				metrics.AssessmentKeyFilesExecuted: 3,
-			},
-		},
-
-		ExpectedModelOrder: []string{
-			"modelA",
-			"modelB",
-			"modelC",
-		},
-		ExpectedScoreOrder: []uint64{
-			1,
-			2,
-			3,
-		},
-	})
 }
 
 func TestAssessmentCollapseByModel(t *testing.T) {

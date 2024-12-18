@@ -76,7 +76,7 @@ func TestCodeRepairRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyTestsPassing:                  40,
+						metrics.AssessmentKeyTestsPassing:                  4,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -140,7 +140,7 @@ func TestCodeRepairRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyTestsPassing:                  80,
+						metrics.AssessmentKeyTestsPassing:                  8,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -195,7 +195,7 @@ func TestCodeRepairRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyTestsPassing:                  30,
+						metrics.AssessmentKeyTestsPassing:                  3,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -261,7 +261,7 @@ func TestCodeRepairRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyTestsPassing:                  60,
+						metrics.AssessmentKeyTestsPassing:                  6,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -310,7 +310,7 @@ func TestCodeRepairRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyTestsPassing:                  30,
+						metrics.AssessmentKeyTestsPassing:                  3,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -369,7 +369,7 @@ func TestCodeRepairRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyTestsPassing:                  60,
+						metrics.AssessmentKeyTestsPassing:                  6,
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {

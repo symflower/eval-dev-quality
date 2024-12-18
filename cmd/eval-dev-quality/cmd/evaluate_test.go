@@ -201,7 +201,7 @@ func TestEvaluateExecute(t *testing.T) {
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 				_ = validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
 					metrics.Assessments{
-						metrics.AssessmentKeyCoverage:                           40,
+						metrics.AssessmentKeyCoverage:                           4,
 						metrics.AssessmentKeyFilesExecuted:                      4,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable:      4,
 						metrics.AssessmentKeyResponseNoError:                    4,
@@ -218,7 +218,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					_ = validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -228,7 +228,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -238,7 +238,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -248,7 +248,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -278,7 +278,7 @@ func TestEvaluateExecute(t *testing.T) {
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 				_ = validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
 					metrics.Assessments{
-						metrics.AssessmentKeyCoverage:                           80,
+						metrics.AssessmentKeyCoverage:                           8,
 						metrics.AssessmentKeyFilesExecuted:                      8,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable:      8,
 						metrics.AssessmentKeyResponseNoError:                    8,
@@ -295,7 +295,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					_ = validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -305,7 +305,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -315,7 +315,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -325,7 +325,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -335,7 +335,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -345,7 +345,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -355,7 +355,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -365,7 +365,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -404,7 +404,7 @@ func TestEvaluateExecute(t *testing.T) {
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 					_ = validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           40,
+							metrics.AssessmentKeyCoverage:                           4,
 							metrics.AssessmentKeyFilesExecuted:                      4,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      4,
 							metrics.AssessmentKeyResponseNoError:                    4,
@@ -421,7 +421,7 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 						_ = validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                           10,
+								metrics.AssessmentKeyCoverage:                           1,
 								metrics.AssessmentKeyFilesExecuted:                      1,
 								metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 								metrics.AssessmentKeyResponseNoError:                    1,
@@ -431,7 +431,7 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseCharacterCount:             254,
 							},
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                           10,
+								metrics.AssessmentKeyCoverage:                           1,
 								metrics.AssessmentKeyFilesExecuted:                      1,
 								metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 								metrics.AssessmentKeyResponseNoError:                    1,
@@ -441,7 +441,7 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseCharacterCount:             254,
 							},
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                           10,
+								metrics.AssessmentKeyCoverage:                           1,
 								metrics.AssessmentKeyFilesExecuted:                      1,
 								metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 								metrics.AssessmentKeyResponseNoError:                    1,
@@ -451,7 +451,7 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseCharacterCount:             254,
 							},
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                           10,
+								metrics.AssessmentKeyCoverage:                           1,
 								metrics.AssessmentKeyFilesExecuted:                      1,
 								metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 								metrics.AssessmentKeyResponseNoError:                    1,
@@ -480,7 +480,7 @@ func TestEvaluateExecute(t *testing.T) {
 				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 					_ = validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           40,
+							metrics.AssessmentKeyCoverage:                           4,
 							metrics.AssessmentKeyFilesExecuted:                      4,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      4,
 							metrics.AssessmentKeyResponseNoError:                    4,
@@ -496,7 +496,7 @@ func TestEvaluateExecute(t *testing.T) {
 					filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 						_ = validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                           10,
+								metrics.AssessmentKeyCoverage:                           1,
 								metrics.AssessmentKeyFilesExecuted:                      1,
 								metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 								metrics.AssessmentKeyResponseNoError:                    1,
@@ -506,7 +506,7 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseCharacterCount:             254,
 							},
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                           10,
+								metrics.AssessmentKeyCoverage:                           1,
 								metrics.AssessmentKeyFilesExecuted:                      1,
 								metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 								metrics.AssessmentKeyResponseNoError:                    1,
@@ -516,7 +516,7 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseCharacterCount:             254,
 							},
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                           10,
+								metrics.AssessmentKeyCoverage:                           1,
 								metrics.AssessmentKeyFilesExecuted:                      1,
 								metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 								metrics.AssessmentKeyResponseNoError:                    1,
@@ -526,7 +526,7 @@ func TestEvaluateExecute(t *testing.T) {
 								metrics.AssessmentKeyResponseCharacterCount:             254,
 							},
 							metrics.Assessments{
-								metrics.AssessmentKeyCoverage:                           10,
+								metrics.AssessmentKeyCoverage:                           1,
 								metrics.AssessmentKeyFilesExecuted:                      1,
 								metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 								metrics.AssessmentKeyResponseNoError:                    1,
@@ -684,7 +684,7 @@ func TestEvaluateExecute(t *testing.T) {
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 				_ = validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
 					metrics.Assessments{
-						metrics.AssessmentKeyCoverage:                           120,
+						metrics.AssessmentKeyCoverage:                           12,
 						metrics.AssessmentKeyFilesExecuted:                      12,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable:      12,
 						metrics.AssessmentKeyResponseNoError:                    12,
@@ -709,7 +709,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 					_ = validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -719,7 +719,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -729,7 +729,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -739,7 +739,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -749,7 +749,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -759,7 +759,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -769,7 +769,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -779,7 +779,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -789,7 +789,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -799,7 +799,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -809,7 +809,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -819,7 +819,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -914,7 +914,7 @@ func TestEvaluateExecute(t *testing.T) {
 			ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
 				_ = validateMetrics(t, extractMetricsLogsMatch, output, []metrics.Assessments{
 					metrics.Assessments{
-						metrics.AssessmentKeyCoverage:                           80,
+						metrics.AssessmentKeyCoverage:                           8,
 						metrics.AssessmentKeyFilesExecuted:                      8,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable:      8,
 						metrics.AssessmentKeyResponseNoError:                    8,
@@ -924,7 +924,7 @@ func TestEvaluateExecute(t *testing.T) {
 						metrics.AssessmentKeyResponseCharacterCount:             1572,
 					},
 					metrics.Assessments{
-						metrics.AssessmentKeyCoverage:                           80,
+						metrics.AssessmentKeyCoverage:                           8,
 						metrics.AssessmentKeyFilesExecuted:                      8,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable:      8,
 						metrics.AssessmentKeyResponseNoError:                    8,
@@ -934,7 +934,7 @@ func TestEvaluateExecute(t *testing.T) {
 						metrics.AssessmentKeyResponseCharacterCount:             1572,
 					},
 					metrics.Assessments{
-						metrics.AssessmentKeyCoverage:                           80,
+						metrics.AssessmentKeyCoverage:                           8,
 						metrics.AssessmentKeyFilesExecuted:                      8,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable:      8,
 						metrics.AssessmentKeyResponseNoError:                    8,
@@ -955,7 +955,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "symflower_symbolic-execution", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					_ = validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -965,7 +965,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -975,7 +975,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -985,7 +985,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -995,7 +995,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1005,7 +1005,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1015,7 +1015,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1025,7 +1025,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1050,7 +1050,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "symflower_symbolic-execution_1", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					_ = validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1060,7 +1060,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1070,7 +1070,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1080,7 +1080,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1090,7 +1090,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1100,7 +1100,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1110,7 +1110,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1120,7 +1120,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1145,7 +1145,7 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "symflower_symbolic-execution_2", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					_ = validateMetrics(t, extractMetricsCSVMatch, data, []metrics.Assessments{
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1155,7 +1155,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1165,7 +1165,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1175,7 +1175,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1185,7 +1185,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             254,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1195,7 +1195,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1205,7 +1205,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
@@ -1215,7 +1215,7 @@ func TestEvaluateExecute(t *testing.T) {
 							metrics.AssessmentKeyResponseCharacterCount:             139,
 						},
 						metrics.Assessments{
-							metrics.AssessmentKeyCoverage:                           10,
+							metrics.AssessmentKeyCoverage:                           1,
 							metrics.AssessmentKeyFilesExecuted:                      1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyResponseNoError:                    1,
