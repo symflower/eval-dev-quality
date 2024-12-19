@@ -41,6 +41,7 @@ func symflowerTemplate(logger *log.Logger, repositoryPath string, language langu
 			"--language", language.ID(),
 			"--workspace", repositoryPath,
 			"--test-style", "basic",
+			"--code-disable-fetch-dependencies",
 			filePath,
 		},
 

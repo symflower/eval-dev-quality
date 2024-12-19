@@ -21,9 +21,8 @@
 			"request": "launch",
 			"mode": "auto",
 			"program": "cmd/eval-dev-quality",
-			"args": [
-				"${input:args}",
-			]
+			"args": "${input:args}",
+			"cwd": "${workspaceFolder}"
 		},
 	],
 	"inputs": [
@@ -54,7 +53,7 @@
 			"command": "memento.promptString",
 			"args": {
 				"id": "args",
-				"description": "Arguments? (Make sure to use absolute paths!)",
+				"description": "Arguments?",
 				"default": "",
 			},
 		},

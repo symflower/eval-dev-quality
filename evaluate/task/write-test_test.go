@@ -17,6 +17,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/language/ruby"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
@@ -298,6 +299,238 @@ func TestWriteTestsRun(t *testing.T) {
 			},
 		})
 	}
+
+	{
+		temporaryDirectoryPath := t.TempDir()
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
+		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
+		require.NoError(t, os.WriteFile(filepath.Join(temporaryDirectoryPath, "golang", "plain", "empty.go"), []byte(bytesutil.StringTrimIndentations(`
+			package plain
+
+			// There will be no template for an empty file.
+		`)), 0666))
+		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+		modelMock.RegisterGenerateSuccess(t, "empty_test.go", "package plain\n", metricstesting.AssessmentsWithProcessingTime).Once()
+		modelMock.RegisterGenerateSuccess(t, "plain_test.go", bytesutil.StringTrimIndentations(`
+			package plain
+
+			import "testing"
+
+			func TestPlain(t *testing.T) {
+					plain()
+			}
+		`), metricstesting.AssessmentsWithProcessingTime)
+		validate(t, &tasktesting.TestCaseTask{
+			Name: "Keep non-template score if template fails",
+
+			Model:          modelMock,
+			Language:       &golang.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("golang", "plain"),
+
+			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+				IdentifierWriteTests: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyFilesExecuted:                 2,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyFilesExecuted:                 2,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+				IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyFilesExecuted:                 2,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+					metrics.AssessmentKeyFilesExecuted:                 2,
+					metrics.AssessmentKeyCoverage:                      10,
+					metrics.AssessmentKeyResponseNoError:               2,
+				},
+			},
+			ExpectedProblemContains: []string{
+				"reading Symflower template",
+			},
+		})
+	}
+
+	{
+		temporaryDirectoryPath := t.TempDir()
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
+		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
+		require.NoError(t, os.WriteFile(filepath.Join(temporaryDirectoryPath, "golang", "plain", "repository.json"), []byte(bytesutil.StringTrimIndentations(`
+			{
+				"tasks": [
+					"write-tests"
+				],
+				"ignore": [
+					"plain.go"
+				]
+			}
+		`)), 0666))
+		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+		validate(t, &tasktesting.TestCaseTask{
+			Name: "Ignore Case",
+
+			Model:          modelMock,
+			Language:       &golang.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("golang", "plain"),
+
+			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+				IdentifierWriteTests:                              metrics.Assessments{},
+				IdentifierWriteTestsSymflowerFix:                  metrics.Assessments{},
+				IdentifierWriteTestsSymflowerTemplate:             metrics.Assessments{},
+				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{},
+			},
+			ValidateLog: func(t *testing.T, data string) {
+				assert.Contains(t, data, "Ignoring file \"plain.go\" (as configured by the repository)")
+			},
+		})
+	}
+
+	t.Run("Spring Boot", func(t *testing.T) {
+		{
+			temporaryDirectoryPath := t.TempDir()
+			repositoryPath := filepath.Join(temporaryDirectoryPath, "java", "spring-plain")
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "spring-plain"), repositoryPath))
+			modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+			modelMock.RegisterGenerateSuccessValidateContext(t, func(t *testing.T, c model.Context) {
+				args, ok := c.Arguments.(*ArgumentsWriteTest)
+				require.Truef(t, ok, "unexpected type %T", c.Arguments)
+				assert.Equal(t, "JUnit 5 for Spring", args.TestFramework)
+			}, filepath.Join("src", "test", "java", "com", "example", "controller", "SomeControllerTest.java"), bytesutil.StringTrimIndentations(`
+			package com.example.controller;
+
+			import org.junit.jupiter.api.*;
+			import org.springframework.beans.factory.annotation.Autowired;
+			import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+			import org.springframework.test.web.servlet.MockMvc;
+			import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+			import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+			import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+			import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+			@WebMvcTest(SomeController.class)
+			public class SomeControllerTest {
+				@Autowired
+				private MockMvc mockMvc;
+
+				@Test
+				public void helloGet() throws Exception {
+					this.mockMvc.perform(get("/helloGet"))
+						.andExpect(status().isOk())
+						.andExpect(view().name("get!"))
+						.andExpect(content().string(""));
+				}
+			}
+		`), metricstesting.AssessmentsWithProcessingTime)
+
+			validate(t, &tasktesting.TestCaseTask{
+				Name: "Spring Boot Test",
+
+				Model:          modelMock,
+				Language:       &java.Language{},
+				TestDataPath:   temporaryDirectoryPath,
+				RepositoryPath: filepath.Join("java", "spring-plain"),
+
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      20,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      20,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      20,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      20,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+				},
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Equal(t, 2, strings.Count(data, "Starting SomeControllerTest using Java"), "Expected two successful Spring startup announcements (one bare and one for template)")
+				},
+			})
+		}
+		{
+			temporaryDirectoryPath := t.TempDir()
+			repositoryPath := filepath.Join(temporaryDirectoryPath, "java", "spring-plain")
+			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "spring-plain"), repositoryPath))
+			modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+			modelMock.RegisterGenerateSuccessValidateContext(t, func(t *testing.T, c model.Context) {
+				args, ok := c.Arguments.(*ArgumentsWriteTest)
+				require.Truef(t, ok, "unexpected type %T", c.Arguments)
+				assert.Equal(t, "JUnit 5 for Spring", args.TestFramework)
+			}, filepath.Join("src", "test", "java", "com", "example", "controller", "SomeControllerTest.java"), bytesutil.StringTrimIndentations(`
+			package com.example.controller;
+
+			import com.example.controller.SomeController;
+			import org.junit.jupiter.api.Test;
+
+			import static org.junit.jupiter.api.Assertions.assertEquals;
+
+			class SomeControllerTests {
+
+				@Test // Normal JUnit tests instead of Spring Boot.
+				void helloGet() {
+					SomeController controller = new SomeController();
+					String result = controller.helloGet();
+					assertEquals("get!", result);
+				}
+			}
+		`), metricstesting.AssessmentsWithProcessingTime)
+
+			validate(t, &tasktesting.TestCaseTask{
+				Name: "Plain JUnit Test",
+
+				Model:          modelMock,
+				Language:       &java.Language{},
+				TestDataPath:   temporaryDirectoryPath,
+				RepositoryPath: filepath.Join("java", "spring-plain"),
+
+				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+				},
+				ValidateLog: func(t *testing.T, data string) {
+					assert.Contains(t, data, "Tests run: 1") // Tests are running but they are not Spring Boot.
+				},
+			})
+		}
+	})
 }
 
 func TestValidateWriteTestsRepository(t *testing.T) {

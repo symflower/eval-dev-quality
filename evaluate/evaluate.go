@@ -3,7 +3,6 @@ package evaluate
 import (
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/evaluate/report"
@@ -13,6 +12,7 @@ import (
 	evalmodel "github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
 	evaltask "github.com/symflower/eval-dev-quality/task"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // Context holds an evaluation context.
@@ -134,7 +134,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 						r.SetQueryAttempts(ctx.QueryAttempts)
 					}
 
-					for _, taskIdentifier := range temporaryRepository.SupportedTasks() {
+					for _, taskIdentifier := range temporaryRepository.Configuration().Tasks {
 						task, err := evaluatetask.ForIdentifier(taskIdentifier)
 						if err != nil {
 							logger.Fatal(err)
@@ -191,10 +191,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 		}
 	}
 
-	repositoriesLookup := make(map[string]bool, len(ctx.RepositoryPaths))
-	for _, repositoryPath := range ctx.RepositoryPaths {
-		repositoriesLookup[repositoryPath] = true
-	}
+	repositoriesLookup := util.Set(ctx.RepositoryPaths)
 
 	// Evaluating models and languages.
 	ctx.Log.Printf("Evaluating models and languages")
@@ -207,7 +204,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 		}
 		for _, repositoryPath := range relativeRepositoryPaths {
 			// Do not include "plain" repositories in this step of the evaluation, because they have been checked with the common check before.
-			if !repositoriesLookup[repositoryPath] || strings.HasSuffix(repositoryPath, RepositoryPlainName) {
+			if !repositoriesLookup[repositoryPath] || filepath.Base(repositoryPath) == RepositoryPlainName {
 				continue
 			}
 

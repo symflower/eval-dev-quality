@@ -35,10 +35,11 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		RepositoryChange func(t *testing.T, repositoryPath string)
 		FilePath         string
 
-		ExpectedAssessment   metrics.Assessments
-		ExpectedCoverage     uint64
-		ExpectedError        error
-		ExpectedErrorHandler func(err error)
+		ExpectedAssessment      metrics.Assessments
+		ExpectedCoverage        uint64
+		ExpectedError           error
+		ExpectedErrorHandler    func(t *testing.T, err error)
+		ExpectedProblemsHandler func(t *testing.T, problems []error)
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -59,7 +60,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			}
 
 			if tc.Model == nil {
-				tc.Model = NewModel()
+				tc.Model = NewModelSymbolicExecution()
 			}
 			ctx := model.Context{
 				Language: tc.Language,
@@ -74,14 +75,18 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			if tc.ExpectedError != nil {
 				assert.ErrorIs(t, tc.ExpectedError, actualError)
 			} else if tc.ExpectedErrorHandler != nil {
-				tc.ExpectedErrorHandler(actualError)
+				tc.ExpectedErrorHandler(t, actualError)
 			} else {
 				require.NoError(t, actualError)
 
 				assert.Equal(t, metricstesting.Clean(tc.ExpectedAssessment), metricstesting.Clean(actualAssessment))
 				actualTestResult, actualProblems, err := tc.Language.ExecuteTests(logger, repositoryPath)
 				require.NoError(t, err)
-				require.Empty(t, actualProblems)
+				if tc.ExpectedProblemsHandler != nil {
+					tc.ExpectedProblemsHandler(t, actualProblems)
+				} else {
+					require.Empty(t, actualProblems)
+				}
 				assert.Equal(t, tc.ExpectedCoverage, actualTestResult.Coverage)
 			}
 		})
@@ -123,13 +128,13 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		validate(t, &testCase{
 			Name: "Timeout",
 
-			Model:    NewModelWithTimeout(time.Duration(1 * time.Millisecond)),
+			Model:    NewModelSymbolicExecutionWithTimeout(time.Duration(1 * time.Millisecond)),
 			Language: &java.Language{},
 
 			RepositoryPath: filepath.Join("..", "..", "testdata", "java", "light"),
 			FilePath:       filepath.Join("src", "main", "java", "com", "eval", "Knapsack.java"),
 
-			ExpectedErrorHandler: func(err error) {
+			ExpectedErrorHandler: func(t *testing.T, err error) {
 				if osutil.IsWindows() {
 					isProcessKilled := strings.Contains(err.Error(), context.DeadlineExceeded.Error()) || strings.Contains(err.Error(), "exit status 1")
 					assert.True(t, err != nil && isProcessKilled)
@@ -138,6 +143,27 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 				}
 			},
 		})
+	})
+	validate(t, &testCase{
+		Name: "Smart Template",
+
+		Language: &golang.Language{},
+		Model:    NewModelSmartTemplate(),
+
+		RepositoryPath: filepath.Join("..", "..", "testdata", "golang", "light"),
+		FilePath:       "simpleIfElse.go",
+
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 389,
+			metrics.AssessmentKeyResponseCharacterCount:             389,
+			metrics.AssessmentKeyResponseNoExcess:                   1,
+			metrics.AssessmentKeyResponseWithCode:                   1,
+		},
+		ExpectedCoverage: 2,
+		ExpectedProblemsHandler: func(t *testing.T, problems []error) {
+			require.Len(t, problems, 1)
+			assert.Contains(t, problems[0].Error(), "DONE 2 tests, 2 failures") // Sub-tests count as tests as well, and we have one "t.Run" within the generated "validate" function.
+		},
 	})
 }
 

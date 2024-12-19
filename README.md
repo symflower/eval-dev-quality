@@ -231,6 +231,45 @@ Each repository can contain a configuration file `repository.json` in its root d
 
 For the evaluation of the repository only the specified tasks are executed. If no `repository.json` file exists, all tasks are executed.
 
+Depending on the task, it can be beneficial to exclude parts of the repository from explicit evaluation. To give a concrete example: Spring controller tests can never be executed on their own but need a supporting [`Application` class](https://docs.spring.io/spring-boot/reference/testing/spring-boot-applications.html#testing.spring-boot-applications.using-main). But [such a file](testdata/java/spring-plain/src/main/java/com/example/Application.java) should never be used itself to prompt models for tests. Therefore, it can be excluded through the `repository.json` configuration:
+
+```json
+{
+  "tasks": ["write-tests"],
+  "ignore": ["src/main/java/com/example/Application.java"]
+}
+```
+
+This `ignore` setting is currently only applicable for generation task `write-tests`.
+
+It is possible to configure some model prompt parameters through `repository.json`:
+
+```json
+{
+  "tasks": ["write-tests"],
+  "prompt": {
+    "test-framework": "JUnit 5 for Spring Boot" // Overwrite the default test framework in the prompt.
+  }
+}
+```
+
+This `prompt.test-framework` setting is currently only applicable for the test generation task `write-tests`.
+
+When task results are validated, some repositories might require custom logic. For example: generating tests for a Spring Boot project requires ensuring that the tests used an actual Spring context (i.e. Spring Boot was initialized when the tests were executed). Therefore, the `repository.json` supports adding rudimentary custom validation:
+
+```json
+{
+  "tasks": ["write-tests"],
+  "validation": {
+    "execution": {
+      "stdout": "Initializing Spring" // Ensure the string "Initializing Spring" is contained in the execution output.
+    }
+  }
+}
+```
+
+This `validation.execution.stdout` setting is currently only applicable for the test generation task `write-tests`.
+
 ## Tasks
 
 ### Task: Test Generation
