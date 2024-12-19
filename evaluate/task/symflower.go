@@ -5,8 +5,10 @@ import (
 	"time"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/tools"
 	"github.com/symflower/eval-dev-quality/util"
@@ -71,4 +73,49 @@ func ExecuteWithSymflowerFix(ctx evaltask.Context, logger *log.Logger, packagePa
 	}
 
 	return testResult, duration, problems, nil
+}
+
+func runModelAndSymflowerFix(ctx evaltask.Context, modelCtx model.Context, runModel func(model.Context) (metrics.Assessments, error)) (modelAssessment metrics.Assessments, withSymflowerFixAssessment metrics.Assessments, problems []error, err error) {
+	modelAssessment = metrics.NewAssessments()
+	withSymflowerFixAssessment = modelAssessment // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until we successfully applied "symflower fix".
+
+	assessments, err := runModel(modelCtx)
+	if err != nil {
+		return nil, nil, append(problems, pkgerrors.WithMessage(err, modelCtx.FilePath)), nil
+	}
+	if assessments[metrics.AssessmentKeyProcessingTime] == 0 {
+		return nil, nil, problems, pkgerrors.Errorf("no model response time measurement present for %q at repository %q", ctx.Model.ID(), ctx.Repository.Name())
+	}
+	modelAssessment.Add(assessments)
+	modelAssessment.Award(metrics.AssessmentKeyResponseNoError)
+
+	testResult, ps, err := ctx.Language.ExecuteTests(modelCtx.Logger, modelCtx.RepositoryPath)
+	problems = append(problems, ps...)
+	if err != nil {
+		problems = append(problems, pkgerrors.WithMessage(err, modelCtx.FilePath))
+	} else if ctx.Repository.Configuration().Validation.Execution.Validate(testResult.StdOut) {
+		modelCtx.Logger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
+		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
+		modelAssessment.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
+	}
+
+	if ctx.Language.SupportsFix() {
+		withSymflowerFixTestResult, processingTime, ps, err := ExecuteWithSymflowerFix(ctx, modelCtx.Logger, ctx.Repository.DataPath())
+		problems = append(problems, ps...)
+		if err != nil {
+			problems = append(problems, err)
+		} else if ctx.Repository.Configuration().Validation.Execution.Validate(withSymflowerFixTestResult.StdOut) {
+			ctx.Logger.Printf("with symflower repair: Executes tests with %d coverage objects", withSymflowerFixTestResult.Coverage)
+
+			// Symflower was able to fix a failure so now update the assessment with the improved results.
+			withSymflowerFix := metrics.NewAssessments()
+			withSymflowerFix[metrics.AssessmentKeyProcessingTime] = processingTime
+			withSymflowerFix.Award(metrics.AssessmentKeyFilesExecuted)
+			withSymflowerFix.AwardPoints(metrics.AssessmentKeyCoverage, withSymflowerFixTestResult.Coverage)
+
+			withSymflowerFixAssessment = metrics.CombineWithSymflowerFixAssessments(modelAssessment, withSymflowerFix)
+		}
+	}
+
+	return modelAssessment, withSymflowerFixAssessment, problems, nil
 }
