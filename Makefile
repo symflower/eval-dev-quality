@@ -57,6 +57,7 @@ install-tools: # Install tools that are required for running the evaluation.
 install-tools-linting: # Install tools that are used for linting.
 	go install -v github.com/kisielk/errcheck@v1.7.0
 	go install -v github.com/mgechev/revive@v1.4.0
+	go install -v golang.org/x/tools/cmd/deadcode@v0.16.1
 	go install -v honnef.co/go/tools/cmd/staticcheck@2024.1.1
 .PHONY: install-tools-linting
 
@@ -74,6 +75,7 @@ lint: # Check repository.
 	go vet ./...
 	revive -config $(ROOT_DIR)/conf/language/golang/revive.toml -set_exit_status ./...
 	staticcheck ./...
+	go run scripts/deadcode/main.go
 .PHONY: lint
 
 lint-build-ci: generate # Check artifacts.
