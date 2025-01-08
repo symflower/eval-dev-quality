@@ -14,6 +14,12 @@ type CapabilityRepairCode interface {
 	RepairCode(ctx Context) (assessments metrics.Assessments, err error)
 }
 
+// CapabilityMigrate defines the capability of a model to migrate code.
+type CapabilityMigrate interface {
+	// Migrate queries the model to migrate source code.
+	Migrate(ctx Context) (assessments metrics.Assessments, err error)
+}
+
 // CapabilityTranspile defines the capability of a model to transpile code.
 type CapabilityTranspile interface {
 	// Transpile queries the model to transpile source code to another language.

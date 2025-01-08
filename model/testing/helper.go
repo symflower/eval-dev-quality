@@ -50,6 +50,14 @@ func (m *MockCapabilityRepairCode) RegisterGenerateSuccess(t *testing.T, filePat
 	})
 }
 
+// RegisterGenerateSuccess registers a mock call for successful generation.
+func (m *MockCapabilityMigrate) RegisterGenerateSuccess(t *testing.T, filePath string, fileContent string, assessment metrics.Assessments) *mock.Call {
+	return m.On("Migrate", mock.Anything).Return(assessment, nil).Run(func(args mock.Arguments) {
+		ctx, _ := args.Get(0).(model.Context)
+		require.NoError(t, os.WriteFile(filepath.Join(ctx.RepositoryPath, filePath), []byte(fileContent), 0600))
+	})
+}
+
 // RegisterGenerateError registers a mock call that errors on generation.
 func (m *MockCapabilityRepairCode) RegisterGenerateError(err error) *mock.Call {
 	return m.On("RepairCode", mock.Anything).Return(nil, err)
@@ -91,6 +99,20 @@ func NewMockCapabilityRepairCodeNamed(t *testing.T, id string) *MockModelCapabil
 	return &MockModelCapabilityRepairCode{
 		MockModel:                NewMockModelNamed(t, id),
 		MockCapabilityRepairCode: NewMockCapabilityRepairCode(t),
+	}
+}
+
+// MockModelCapabilityMigrate holds a mock implementing the "Model" and the "CapabilityMigrate" interface.
+type MockModelCapabilityMigrate struct {
+	*MockModel
+	*MockCapabilityMigrate
+}
+
+// NewMockCapabilityMigrateNamed returns a new named mocked model.
+func NewMockCapabilityMigrateNamed(t *testing.T, id string) *MockModelCapabilityMigrate {
+	return &MockModelCapabilityMigrate{
+		MockModel:             NewMockModelNamed(t, id),
+		MockCapabilityMigrate: NewMockCapabilityMigrate(t),
 	}
 }
 
