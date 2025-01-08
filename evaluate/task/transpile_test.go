@@ -80,13 +80,13 @@ func TestTranspileRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  80,
+						metrics.AssessmentKeyTestsPassing:                  8,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyResponseNoError:               2,
 					},
 					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  80,
+						metrics.AssessmentKeyTestsPassing:                  8,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyResponseNoError:               2,
@@ -149,13 +149,13 @@ func TestTranspileRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  200,
+						metrics.AssessmentKeyTestsPassing:                  20,
 						metrics.AssessmentKeyFilesExecuted:                 4,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
 						metrics.AssessmentKeyResponseNoError:               4,
 					},
 					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  200,
+						metrics.AssessmentKeyTestsPassing:                  20,
 						metrics.AssessmentKeyFilesExecuted:                 4,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
 						metrics.AssessmentKeyResponseNoError:               4,
@@ -212,13 +212,13 @@ func TestTranspileRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  60,
+						metrics.AssessmentKeyTestsPassing:                  6,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyResponseNoError:               2,
 					},
 					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  60,
+						metrics.AssessmentKeyTestsPassing:                  6,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyResponseNoError:               2,
@@ -283,13 +283,13 @@ func TestTranspileRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  160,
+						metrics.AssessmentKeyTestsPassing:                  16,
 						metrics.AssessmentKeyFilesExecuted:                 4,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
 						metrics.AssessmentKeyResponseNoError:               4,
 					},
 					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  160,
+						metrics.AssessmentKeyTestsPassing:                  16,
 						metrics.AssessmentKeyFilesExecuted:                 4,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
 						metrics.AssessmentKeyResponseNoError:               4,
@@ -343,7 +343,7 @@ func TestTranspileRun(t *testing.T) {
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 					},
 					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  80,
+						metrics.AssessmentKeyTestsPassing:                  8,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyResponseNoError:               2,
@@ -412,13 +412,13 @@ func TestTranspileRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  60,
+						metrics.AssessmentKeyTestsPassing:                  6,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyResponseNoError:               2,
 					},
 					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  60,
+						metrics.AssessmentKeyTestsPassing:                  6,
 						metrics.AssessmentKeyFilesExecuted:                 2,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 						metrics.AssessmentKeyResponseNoError:               2,
@@ -475,13 +475,13 @@ func TestTranspileRun(t *testing.T) {
 
 				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  160,
+						metrics.AssessmentKeyTestsPassing:                  16,
 						metrics.AssessmentKeyFilesExecuted:                 4,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
 						metrics.AssessmentKeyResponseNoError:               4,
 					},
 					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  160,
+						metrics.AssessmentKeyTestsPassing:                  16,
 						metrics.AssessmentKeyFilesExecuted:                 4,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
 						metrics.AssessmentKeyResponseNoError:               4,
@@ -534,13 +534,13 @@ func TestTranspileRun(t *testing.T) {
 
 			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
 				IdentifierTranspile: metrics.Assessments{
-					metrics.AssessmentKeyTestsPassing:                  40,
+					metrics.AssessmentKeyTestsPassing:                  4,
 					metrics.AssessmentKeyFilesExecuted:                 1,
 					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 					metrics.AssessmentKeyResponseNoError:               2,
 				},
 				IdentifierTranspileSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyTestsPassing:                  40,
+					metrics.AssessmentKeyTestsPassing:                  4,
 					metrics.AssessmentKeyFilesExecuted:                 1,
 					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
 					metrics.AssessmentKeyResponseNoError:               2,

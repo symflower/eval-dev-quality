@@ -112,7 +112,7 @@ func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask
 				testsPassing := testResult.TestsPass
 				taskLogger.Printf("Executes tests with %d tests passing", testsPassing)
 				modelAssessmentsForFile.Award(metrics.AssessmentKeyFilesExecuted)
-				modelAssessmentsForFile.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
+				modelAssessmentsForFile.AwardMultiple(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
 			}
 
 			if ctx.Language.SupportsFix() {
@@ -128,7 +128,7 @@ func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask
 					withSymflowerFixAssessments := metrics.NewAssessments()
 					withSymflowerFixAssessments[metrics.AssessmentKeyProcessingTime] = processingTime
 					withSymflowerFixAssessments.Award(metrics.AssessmentKeyFilesExecuted)
-					withSymflowerFixAssessments.AwardPoints(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
+					withSymflowerFixAssessments.AwardMultiple(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
 
 					withSymflowerAssessmentsForFile = metrics.CombineWithSymflowerFixAssessments(modelAssessmentsForFile, withSymflowerFixAssessments)
 				}

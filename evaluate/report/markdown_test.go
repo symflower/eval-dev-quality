@@ -46,10 +46,6 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			DateTime: testTime,
 			Version:  "1234",
 			Revision: "abcd",
-
-			CSVPath:       "./file.csv",
-			LogPaths:      []string{"./file.log"},
-			ModelLogsPath: ".",
 		},
 
 		ExpectedReport: `
@@ -70,10 +66,6 @@ func TestMarkdownWriteToFile(t *testing.T) {
 			DateTime: testTime,
 			Version:  "1234",
 			Revision: "abcd",
-
-			CSVPath:       "./file.csv",
-			LogPaths:      []string{"./file.log"},
-			ModelLogsPath: ".",
 		},
 
 		ExpectedReport: `

@@ -96,7 +96,7 @@ func runModelAndSymflowerFix(ctx evaltask.Context, modelCtx model.Context, runMo
 	} else if ctx.Repository.Configuration().Validation.Execution.Validate(testResult.StdOut) {
 		modelCtx.Logger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
 		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
-		modelAssessment.AwardPoints(metrics.AssessmentKeyCoverage, testResult.Coverage)
+		modelAssessment.AwardMultiple(metrics.AssessmentKeyCoverage, testResult.Coverage)
 	}
 
 	if ctx.Language.SupportsFix() {
@@ -111,7 +111,7 @@ func runModelAndSymflowerFix(ctx evaltask.Context, modelCtx model.Context, runMo
 			withSymflowerFix := metrics.NewAssessments()
 			withSymflowerFix[metrics.AssessmentKeyProcessingTime] = processingTime
 			withSymflowerFix.Award(metrics.AssessmentKeyFilesExecuted)
-			withSymflowerFix.AwardPoints(metrics.AssessmentKeyCoverage, withSymflowerFixTestResult.Coverage)
+			withSymflowerFix.AwardMultiple(metrics.AssessmentKeyCoverage, withSymflowerFixTestResult.Coverage)
 
 			withSymflowerFixAssessment = metrics.CombineWithSymflowerFixAssessments(modelAssessment, withSymflowerFix)
 		}
