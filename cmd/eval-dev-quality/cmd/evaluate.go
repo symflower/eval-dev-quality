@@ -530,10 +530,6 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		DateTime: command.timestamp,
 		Version:  evaluate.Version,
 		Revision: evaluate.Revision,
-
-		CSVPath:       "./evaluation.csv",
-		LogPaths:      []string{"./evaluation.log"},
-		ModelLogsPath: ".",
 	}).WriteToFile(filepath.Join(command.ResultPath, "README.md")); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
 	}

@@ -5,15 +5,11 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 	"text/template"
 	"time"
 
 	pkgerrors "github.com/pkg/errors"
-	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
-
-	"github.com/symflower/eval-dev-quality/log"
 )
 
 // Markdown holds the values for exporting a Markdown report.
@@ -24,34 +20,11 @@ type Markdown struct {
 	Version string
 	// Revision holds the Git revision of the evaluation tool.
 	Revision string
-
-	// CSVPath holds the path of detailed CSV results.
-	CSVPath string
-	// LogPaths holds the path of detailed logs.
-	LogPaths []string
-	// ModelLogsPath holds the path of the model logs.
-	ModelLogsPath string
 }
 
 // markdownTemplateContext holds the template for a Markdown report.
 type markdownTemplateContext struct {
 	Markdown
-}
-
-// ModelLogName formats a model name to match the logging structure.
-func (c markdownTemplateContext) ModelLogName(modelName string) string {
-	modelPath := filepath.Join(c.ModelLogsPath, log.CleanModelNameForFileSystem(modelName)) + string(os.PathSeparator)
-	if !filepath.IsAbs(modelPath) {
-		// Ensure we reference the models relative to the Markdown file itself.
-		modelPath = "." + string(os.PathSeparator) + modelPath
-	}
-
-	if osutil.IsWindows() {
-		// Markdown should be able to handle "/" for file paths.
-		modelPath = strings.ReplaceAll(modelPath, "\\", "/")
-	}
-
-	return modelPath
 }
 
 // markdownTemplate holds the template for a Markdown report.
