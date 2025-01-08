@@ -4,8 +4,6 @@ import (
 	"maps"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
-	"github.com/symflower/eval-dev-quality/language"
-	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/task"
 )
 
@@ -54,8 +52,8 @@ var AssessmentsWithProcessingTime = metrics.Assessments{
 
 // AssessmentTuple holds all parameters uniquely defining to which run an assessment belongs to.
 type AssessmentTuple struct {
-	Model          model.Model
-	Language       language.Language
+	Model          string
+	Language       string
 	RepositoryPath string
 	Task           task.Identifier
 	Assessment     metrics.Assessments
@@ -65,12 +63,12 @@ type AssessmentTuple struct {
 type AssessmentTuples []*AssessmentTuple
 
 // ToMap converts a list of assessment tuples to a mapping.
-func (at AssessmentTuples) ToMap() (lookup map[model.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments) {
-	lookup = map[model.Model]map[language.Language]map[string]map[task.Identifier]metrics.Assessments{}
+func (at AssessmentTuples) ToMap() (lookup map[string]map[string]map[string]map[task.Identifier]metrics.Assessments) {
+	lookup = map[string]map[string]map[string]map[task.Identifier]metrics.Assessments{}
 	for _, t := range at {
 		perLanguageLookup, ok := lookup[t.Model]
 		if !ok {
-			perLanguageLookup = map[language.Language]map[string]map[task.Identifier]metrics.Assessments{}
+			perLanguageLookup = map[string]map[string]map[task.Identifier]metrics.Assessments{}
 			lookup[t.Model] = perLanguageLookup
 		}
 

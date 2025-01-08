@@ -125,8 +125,8 @@ func TestEvaluate(t *testing.T) {
 			var actualAssessments metricstesting.AssessmentTuples
 			require.NoError(t, assessmentStore.Walk(func(m evalmodel.Model, l language.Language, r string, ti task.Identifier, a metrics.Assessments) error {
 				actualAssessments = append(actualAssessments, &metricstesting.AssessmentTuple{
-					Model:          m,
-					Language:       l,
+					Model:          m.ID(),
+					Language:       l.ID(),
 					RepositoryPath: r,
 					Task:           ti,
 					Assessment:     metricstesting.Clean(a),
@@ -189,8 +189,8 @@ func TestEvaluate(t *testing.T) {
 
 			ExpectedAssessments: []*metricstesting.AssessmentTuple{
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
 					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: metrics.Assessments{
@@ -198,8 +198,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 					Assessment: metrics.Assessments{
@@ -207,8 +207,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 					Assessment: metrics.Assessments{
@@ -216,8 +216,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 					Assessment: metrics.Assessments{
@@ -265,8 +265,8 @@ func TestEvaluate(t *testing.T) {
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: metrics.Assessments{
@@ -274,8 +274,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: metrics.Assessments{
@@ -283,8 +283,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: metrics.Assessments{
@@ -293,8 +293,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: metrics.Assessments{
@@ -349,8 +349,8 @@ func TestEvaluate(t *testing.T) {
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -361,8 +361,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -373,8 +373,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -385,8 +385,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -442,8 +442,8 @@ func TestEvaluate(t *testing.T) {
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -454,8 +454,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -466,8 +466,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -478,8 +478,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -573,8 +573,8 @@ func TestEvaluate(t *testing.T) {
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -584,8 +584,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -595,8 +595,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -605,8 +605,8 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					}, &metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -616,8 +616,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -627,8 +627,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -638,8 +638,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -649,8 +649,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -716,8 +716,8 @@ func TestEvaluate(t *testing.T) {
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -727,8 +727,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -738,8 +738,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -749,8 +749,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -760,8 +760,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -769,8 +769,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -778,8 +778,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -789,8 +789,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -850,8 +850,8 @@ func TestEvaluate(t *testing.T) {
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -859,8 +859,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -868,8 +868,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -877,8 +877,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -930,8 +930,8 @@ func TestEvaluate(t *testing.T) {
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -941,8 +941,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -952,8 +952,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -963,8 +963,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1021,8 +1021,8 @@ func TestEvaluate(t *testing.T) {
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1032,8 +1032,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1043,8 +1043,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1054,8 +1054,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1141,8 +1141,8 @@ func TestEvaluate(t *testing.T) {
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1152,8 +1152,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1163,8 +1163,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1174,8 +1174,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1244,8 +1244,8 @@ func TestEvaluate(t *testing.T) {
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1255,8 +1255,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1266,8 +1266,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1277,8 +1277,8 @@ func TestEvaluate(t *testing.T) {
 						},
 					},
 					&metricstesting.AssessmentTuple{
-						Model:          mockedModel,
-						Language:       languageGolang,
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
@@ -1329,8 +1329,8 @@ func TestEvaluate(t *testing.T) {
 
 			ExpectedAssessments: []*metricstesting.AssessmentTuple{
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
 					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1340,8 +1340,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1351,8 +1351,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1362,8 +1362,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1419,8 +1419,8 @@ func TestEvaluate(t *testing.T) {
 
 			ExpectedAssessments: []*metricstesting.AssessmentTuple{
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathPlain,
 					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1430,8 +1430,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathPlain,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1441,8 +1441,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathPlain,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1452,8 +1452,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathPlain,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1463,8 +1463,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathSomePlain,
 					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1474,8 +1474,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathSomePlain,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1485,8 +1485,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathSomePlain,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 					Assessment: map[metrics.AssessmentKey]uint64{
@@ -1496,8 +1496,8 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				&metricstesting.AssessmentTuple{
-					Model:          mockedModel,
-					Language:       languageGolang,
+					Model:          mockedModel.ID(),
+					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathSomePlain,
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
