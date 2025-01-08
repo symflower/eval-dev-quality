@@ -67,12 +67,11 @@ func (ctx *Context) runsAtModelLevel() uint {
 const RepositoryPlainName = "plain"
 
 // Evaluate runs an evaluation on the given context and returns its results.
-func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
+func Evaluate(ctx *Context) {
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	modelSucceededBasicChecksOfLanguage := map[evalmodel.Model]map[evallanguage.Language]bool{}
 	ctx.Log.Printf("Checking that models and languages can be used for evaluation")
-	// Ensure we report metrics for every model even if they are excluded.
-	assessments = report.NewAssessmentStore()
+
 	problemsPerModel := map[string][]error{}
 	// Write the evaluation CSV header so it's only written once.
 	evaluationCSVFile, err := os.OpenFile(filepath.Join(ctx.ResultPath, "evaluation.csv"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -178,7 +177,6 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 									logger.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
 								}
 
-								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								// Write the task assessment to the evaluation CSV file.
 								if err := evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment); err != nil {
 									logger.Panicf("ERROR: cannot write evaluation record: %s", err)
@@ -296,7 +294,6 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 									logger.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
 								}
 
-								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								// Write the task assessment to the evaluation CSV file.
 								if err := evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment); err != nil {
 									logger.Panicf("ERROR: cannot write evaluation record: %s", err)
@@ -308,8 +305,6 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 			}
 		}
 	}
-
-	return assessments
 }
 
 // withLoadedModel loads the model for the duration of the given task if supported by the model's provider.

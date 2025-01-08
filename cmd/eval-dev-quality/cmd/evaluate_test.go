@@ -6,10 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"sort"
-	"strconv"
 	"strings"
 	"testing"
 
@@ -21,6 +19,7 @@ import (
 	"github.com/symflower/eval-dev-quality/evaluate"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
+	reporttesting "github.com/symflower/eval-dev-quality/evaluate/report/testing"
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
@@ -31,47 +30,18 @@ import (
 	"github.com/symflower/eval-dev-quality/util"
 )
 
-func atoiUint64(t *testing.T, s string) uint64 {
-	value, err := strconv.ParseUint(s, 10, 64)
-	assert.NoErrorf(t, err, "parsing unsigned integer from: %q", s)
-
-	return uint64(value)
-}
-
-// extractMetricsCSVMatch is a regular expression to extract metrics from CSV rows.
-var extractMetricsCSVMatch = regexp.MustCompile(`\d+,(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`)
-
-// extractMetrics extracts multiple assessment metrics from the given string according to a given regular expression.
-func extractMetrics(t *testing.T, data string) (assessments []metrics.Assessments) {
-	matches := extractMetricsCSVMatch.FindAllStringSubmatch(data, -1)
-
-	for _, match := range matches {
-		assessments = append(assessments, metrics.Assessments{
-			metrics.AssessmentKeyCoverage:                           atoiUint64(t, match[1]),
-			metrics.AssessmentKeyFilesExecuted:                      atoiUint64(t, match[2]),
-			metrics.AssessmentKeyFilesExecutedMaximumReachable:      atoiUint64(t, match[3]),
-			metrics.AssessmentKeyGenerateTestsForFileCharacterCount: atoiUint64(t, match[4]),
-			metrics.AssessmentKeyProcessingTime:                     atoiUint64(t, match[5]),
-			metrics.AssessmentKeyResponseCharacterCount:             atoiUint64(t, match[6]),
-			metrics.AssessmentKeyResponseNoError:                    atoiUint64(t, match[7]),
-			metrics.AssessmentKeyResponseNoExcess:                   atoiUint64(t, match[8]),
-			metrics.AssessmentKeyResponseWithCode:                   atoiUint64(t, match[9]),
-		})
+func validateMetrics(t *testing.T, csvData string, expectedAssessments []metrics.Assessments) (actual []metrics.Assessments) {
+	actualAssessmentTuples := reporttesting.ParseMetrics(t, csvData)
+	actual = make([]metrics.Assessments, len(actualAssessmentTuples))
+	for i, tuple := range actualAssessmentTuples {
+		assert.Greater(t, tuple.Assessment[metrics.AssessmentKeyProcessingTime], uint64(0))
+		actual[i] = tuple.Assessment
 	}
 
-	return assessments
-}
+	require.Equal(t, len(expectedAssessments), len(actual), "expected and actual assessment length")
+	assert.Equal(t, metricstesting.CleanSlice(expectedAssessments), metricstesting.CleanSlice(actual))
 
-func validateMetrics(t *testing.T, data string, expectedAssessments []metrics.Assessments) (actual []metrics.Assessments) {
-	actualAssessments := extractMetrics(t, data)
-	for _, assessment := range actualAssessments {
-		assert.Greater(t, assessment[metrics.AssessmentKeyProcessingTime], uint64(0))
-	}
-
-	require.Equal(t, len(expectedAssessments), len(actualAssessments), "expected and actual assessment length")
-	assert.Equal(t, metricstesting.CleanSlice(expectedAssessments), metricstesting.CleanSlice(actualAssessments))
-
-	return actualAssessments
+	return actual
 }
 
 func validateREADME(t *testing.T, data string) {
@@ -518,12 +488,12 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", "config.json"): nil,
 						filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 							// Since the model is non-deterministic, we can only assert that the model did at least not error.
-							m := extractMetrics(t, data)
+							m := reporttesting.ParseMetrics(t, data)
 							if assert.Len(t, m, 4) {
-								assert.EqualValues(t, 1, m[0][metrics.AssessmentKeyResponseNoError])
-								assert.EqualValues(t, 1, m[1][metrics.AssessmentKeyResponseNoError])
-								assert.EqualValues(t, 1, m[2][metrics.AssessmentKeyResponseNoError])
-								assert.EqualValues(t, 1, m[3][metrics.AssessmentKeyResponseNoError])
+								assert.EqualValues(t, 1, m[0].Assessment[metrics.AssessmentKeyResponseNoError])
+								assert.EqualValues(t, 1, m[1].Assessment[metrics.AssessmentKeyResponseNoError])
+								assert.EqualValues(t, 1, m[2].Assessment[metrics.AssessmentKeyResponseNoError])
+								assert.EqualValues(t, 1, m[3].Assessment[metrics.AssessmentKeyResponseNoError])
 							}
 						},
 						filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath, data string) {
@@ -598,12 +568,12 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", "config.json"): nil,
 						filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 							// Since the model is non-deterministic, we can only assert that the model did at least not error.
-							m := extractMetrics(t, data)
+							m := reporttesting.ParseMetrics(t, data)
 							if assert.Len(t, m, 4) {
-								assert.EqualValues(t, 1, m[0][metrics.AssessmentKeyResponseNoError])
-								assert.EqualValues(t, 1, m[1][metrics.AssessmentKeyResponseNoError])
-								assert.EqualValues(t, 1, m[2][metrics.AssessmentKeyResponseNoError])
-								assert.EqualValues(t, 1, m[3][metrics.AssessmentKeyResponseNoError])
+								assert.EqualValues(t, 1, m[0].Assessment[metrics.AssessmentKeyResponseNoError])
+								assert.EqualValues(t, 1, m[1].Assessment[metrics.AssessmentKeyResponseNoError])
+								assert.EqualValues(t, 1, m[2].Assessment[metrics.AssessmentKeyResponseNoError])
+								assert.EqualValues(t, 1, m[3].Assessment[metrics.AssessmentKeyResponseNoError])
 							}
 						},
 						filepath.Join("result-directory", "evaluation.log"): nil,

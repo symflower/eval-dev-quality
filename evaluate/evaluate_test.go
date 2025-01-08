@@ -18,6 +18,7 @@ import (
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
+	reporttesting "github.com/symflower/eval-dev-quality/evaluate/report/testing"
 	evaluatetask "github.com/symflower/eval-dev-quality/evaluate/task"
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
@@ -27,7 +28,6 @@ import (
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	"github.com/symflower/eval-dev-quality/provider"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
-	"github.com/symflower/eval-dev-quality/task"
 )
 
 var (
@@ -120,22 +120,16 @@ func TestEvaluate(t *testing.T) {
 				defer tc.After(t, logger, temporaryPath)
 			}
 
-			assessmentStore := Evaluate(tc.Context)
+			Evaluate(tc.Context)
 
-			var actualAssessments metricstesting.AssessmentTuples
-			require.NoError(t, assessmentStore.Walk(func(m evalmodel.Model, l language.Language, r string, ti task.Identifier, a metrics.Assessments) error {
-				actualAssessments = append(actualAssessments, &metricstesting.AssessmentTuple{
-					Model:          m.ID(),
-					Language:       l.ID(),
-					RepositoryPath: r,
-					Task:           ti,
-					Assessment:     metricstesting.Clean(a),
-				})
+			csvData, err := os.ReadFile(filepath.Join(tc.Context.ResultPath, "evaluation.csv"))
+			require.NoError(t, err)
+			actualAssessmentTuples := reporttesting.ParseMetrics(t, string(csvData))
+			for _, assessment := range actualAssessmentTuples {
+				assessment.Assessment = metricstesting.Clean(assessment.Assessment)
+			}
 
-				return nil
-			}))
-
-			assert.Equal(t, tc.ExpectedAssessments.ToMap(), actualAssessments.ToMap())
+			assert.Equal(t, tc.ExpectedAssessments, actualAssessmentTuples)
 
 			if tc.ExpectedOutputValidate != nil {
 				tc.ExpectedOutputValidate(t, logOutput.String(), temporaryPath)
@@ -575,11 +569,134 @@ func TestEvaluate(t *testing.T) {
 					&metricstesting.AssessmentTuple{
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					}, &metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
@@ -590,7 +707,7 @@ func TestEvaluate(t *testing.T) {
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
@@ -601,7 +718,7 @@ func TestEvaluate(t *testing.T) {
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					}, &metricstesting.AssessmentTuple{
@@ -611,52 +728,8 @@ func TestEvaluate(t *testing.T) {
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
-						},
-					},
-					&metricstesting.AssessmentTuple{
-						Model:          mockedModel.ID(),
-						Language:       languageGolang.ID(),
-						RepositoryPath: repositoryPlainPath,
-						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-						},
-					},
-					&metricstesting.AssessmentTuple{
-						Model:          mockedModel.ID(),
-						Language:       languageGolang.ID(),
-						RepositoryPath: repositoryPlainPath,
-						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-						},
-					},
-					&metricstesting.AssessmentTuple{
-						Model:          mockedModel.ID(),
-						Language:       languageGolang.ID(),
-						RepositoryPath: repositoryPlainPath,
-						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-						},
-					},
-					&metricstesting.AssessmentTuple{
-						Model:          mockedModel.ID(),
-						Language:       languageGolang.ID(),
-						RepositoryPath: repositoryPlainPath,
-						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
 						},
 					},
 				},
@@ -718,54 +791,10 @@ func TestEvaluate(t *testing.T) {
 					&metricstesting.AssessmentTuple{
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
-						RepositoryPath: repositoryNextPath,
-						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-						},
-					},
-					&metricstesting.AssessmentTuple{
-						Model:          mockedModel.ID(),
-						Language:       languageGolang.ID(),
-						RepositoryPath: repositoryNextPath,
-						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-						},
-					},
-					&metricstesting.AssessmentTuple{
-						Model:          mockedModel.ID(),
-						Language:       languageGolang.ID(),
-						RepositoryPath: repositoryNextPath,
-						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-						},
-					},
-					&metricstesting.AssessmentTuple{
-						Model:          mockedModel.ID(),
-						Language:       languageGolang.ID(),
-						RepositoryPath: repositoryNextPath,
-						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
-						},
-					},
-					&metricstesting.AssessmentTuple{
-						Model:          mockedModel.ID(),
-						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -774,7 +803,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -784,7 +813,7 @@ func TestEvaluate(t *testing.T) {
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
@@ -795,7 +824,131 @@ func TestEvaluate(t *testing.T) {
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryNextPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
@@ -855,7 +1008,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -864,7 +1017,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -873,7 +1026,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -882,7 +1035,43 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPlainPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
 				},
@@ -935,9 +1124,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -946,9 +1135,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -957,9 +1146,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -968,9 +1157,97 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 				},
@@ -1026,9 +1303,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -1037,9 +1314,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -1048,9 +1325,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -1059,9 +1336,97 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 				},
@@ -1146,9 +1511,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -1157,9 +1522,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -1168,9 +1533,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -1179,9 +1544,97 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 				},
@@ -1249,9 +1702,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -1260,9 +1713,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -1271,9 +1724,9 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -1282,9 +1735,97 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
-							metrics.AssessmentKeyFilesExecuted:                 3,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
-							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTests,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+					},
+					&metricstesting.AssessmentTuple{
+						Model:          mockedModel.ID(),
+						Language:       languageGolang.ID(),
+						RepositoryPath: repositoryPath,
+						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
+						Assessment: map[metrics.AssessmentKey]uint64{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
 						},
 					},
 				},

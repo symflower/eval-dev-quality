@@ -524,7 +524,7 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		command.logger.Panicf("ERROR: %s", err)
 	}
 
-	_ = evaluate.Evaluate(evaluationContext)
+	evaluate.Evaluate(evaluationContext)
 
 	if err := (report.Markdown{
 		DateTime: command.timestamp,
