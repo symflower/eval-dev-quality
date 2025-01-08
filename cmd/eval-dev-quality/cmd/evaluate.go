@@ -524,7 +524,7 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		command.logger.Panicf("ERROR: %s", err)
 	}
 
-	assessments := evaluate.Evaluate(evaluationContext)
+	evaluate.Evaluate(evaluationContext)
 
 	if err := (report.Markdown{
 		DateTime: command.timestamp,
@@ -532,11 +532,6 @@ func (command *Evaluate) evaluateLocal(evaluationContext *evaluate.Context) (err
 		Revision: evaluate.Revision,
 	}).WriteToFile(filepath.Join(command.ResultPath, "README.md")); err != nil {
 		command.logger.Panicf("ERROR: %s", err)
-	}
-
-	assessmentsPerModel := assessments.CollapseByModel()
-	for _, modelID := range maps.Keys(assessmentsPerModel) {
-		command.logger.Printf("Evaluation assessments for %q: %s", modelID, assessmentsPerModel[modelID])
 	}
 
 	return nil
