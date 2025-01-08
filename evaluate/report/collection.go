@@ -91,18 +91,3 @@ func (a *AssessmentStore) Walk(function func(m model.Model, l language.Language,
 
 	return nil
 }
-
-// CollapseByModel returns all assessments aggregated per model ID.
-func (a *AssessmentStore) CollapseByModel() AssessmentPerModel {
-	perModel := make(AssessmentPerModel, len(a.store))
-	for _, m := range maps.Keys(a.store) {
-		perModel[m.ID()] = metrics.NewAssessments()
-	}
-	_ = a.Walk(func(m model.Model, l language.Language, r string, t task.Identifier, a metrics.Assessments) (err error) {
-		perModel[m.ID()].Add(a)
-
-		return nil
-	})
-
-	return perModel
-}

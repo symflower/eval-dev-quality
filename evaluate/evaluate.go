@@ -295,6 +295,7 @@ func Evaluate(ctx *Context) (assessments *report.AssessmentStore) {
 								if err != nil {
 									logger.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
 								}
+
 								assessments.AddAssessmentPerTask(model, language, repositoryPath, assessment)
 								// Write the task assessment to the evaluation CSV file.
 								if err := evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment); err != nil {
