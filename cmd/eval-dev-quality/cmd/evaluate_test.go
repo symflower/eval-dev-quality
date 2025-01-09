@@ -460,11 +460,10 @@ func TestEvaluateExecute(t *testing.T) {
 					"--tokens", "openrouter:",
 				},
 
-				ExpectedOutputValidate: func(t *testing.T, output, resultPath string) {
-					assert.Contains(t, output, "Skipping unavailable provider \"openrouter\"")
-				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					filepath.Join("result-directory", "evaluation.log"): nil,
+					filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath string, data string) {
+						assert.Contains(t, data, "Skipping unavailable provider \"openrouter\"")
+					},
 				},
 				ExpectedPanicContains: "ERROR: model openrouter/auto does not exist",
 			})

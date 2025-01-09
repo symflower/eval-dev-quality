@@ -1252,17 +1252,16 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					"evaluation.log": nil,
+					"evaluation.log": func(t *testing.T, filePath string, data string) {
+						assert.Contains(t, data, "Run 1/3")
+						assert.Contains(t, data, "Run 2/3")
+						assert.Contains(t, data, "Run 3/3")
+						assert.NotRegexp(t, `Run \d+/\d+ for model`, data)
+
+						assert.Equal(t, 1, strings.Count(data, "Creating temporary repository"), "create only one temporary repository")
+					},
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
 					"evaluation.csv": nil,
-				},
-				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-					assert.Contains(t, output, "Run 1/3")
-					assert.Contains(t, output, "Run 2/3")
-					assert.Contains(t, output, "Run 3/3")
-					assert.NotRegexp(t, `Run \d+/\d+ for model`, output)
-
-					assert.Equal(t, 1, strings.Count(output, "Creating temporary repository"), "create only one temporary repository")
 				},
 			})
 		}
@@ -1431,17 +1430,16 @@ func TestEvaluate(t *testing.T) {
 					},
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
-					"evaluation.log": nil,
-					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
+					"evaluation.log": func(t *testing.T, filePath string, data string) {
+						assert.Equal(t, 1, strings.Count(data, "Creating temporary repository"), "create only one temporary repository")
+					},
+					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath string, data string) {
+						assert.Contains(t, data, "Run 1/3 for model")
+						assert.Contains(t, data, "Run 2/3 for model")
+						assert.Contains(t, data, "Run 3/3 for model")
+						assert.NotRegexp(t, `Run \d+/\d+$`, data)
+					},
 					"evaluation.csv": nil,
-				},
-				ExpectedOutputValidate: func(t *testing.T, output string, resultPath string) {
-					assert.Contains(t, output, "Run 1/3 for model")
-					assert.Contains(t, output, "Run 2/3 for model")
-					assert.Contains(t, output, "Run 3/3 for model")
-					assert.NotRegexp(t, `Run \d+/\d+$`, output)
-
-					assert.Equal(t, 1, strings.Count(output, "Creating temporary repository"), "create only one temporary repository")
 				},
 			})
 		}

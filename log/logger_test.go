@@ -81,7 +81,6 @@ func TestLoggerWith(t *testing.T) {
 
 		ExpectedLogOutput: `
 			Spawning new log file at $TEMPORARY_PATH/evaluation.log
-			Every log file
 		`,
 		ExpectedFiles: map[string]string{
 			"evaluation.log": `

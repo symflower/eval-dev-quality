@@ -194,7 +194,7 @@ func STDOUT() (logger *Logger) {
 	return newLoggerWithWriter(os.Stdout, FlagStandard)
 }
 
-// newLogWriter returns a logger that writes to a file and to the parent logger at the same time.
+// newLogWriter returns a logger that writes to a file.
 func newLogWriter(parent io.Writer, filePath string) (writer io.Writer, err error) {
 	file, err := openLogFile(filePath)
 	if err != nil {
@@ -202,9 +202,7 @@ func newLogWriter(parent io.Writer, filePath string) (writer io.Writer, err erro
 	}
 	addOpenLogFile(file)
 
-	writer = io.MultiWriter(parent, file)
-
-	return writer, nil
+	return file, nil
 }
 
 // openLogFile opens the given file and creates it if necessary.
