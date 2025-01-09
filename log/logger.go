@@ -153,13 +153,6 @@ func (l *Logger) Fatal(v ...any) {
 	//revive:enable:deep-exit
 }
 
-// Writer returns a writer for writing to the logging output destination.
-func (l *Logger) Writer() (writer io.Writer) {
-	return &handlerWriter{
-		handler: l.Handler(),
-	}
-}
-
 // Buffer returns a logger that writes to a buffer.
 func Buffer() (buffer *bytesutil.SynchronizedBuffer, logger *Logger) {
 	buffer = new(bytesutil.SynchronizedBuffer)
@@ -343,27 +336,6 @@ func (h *spawningHandler) WithAttrs(attributes []slog.Attr) slog.Handler {
 // WithGroup returns a new Handler with the given group appended to the receiver's existing groups.
 func (h *spawningHandler) WithGroup(string) slog.Handler {
 	return h
-}
-
-// handlerWriter is an io.Writer that calls a Handler.
-type handlerWriter struct {
-	handler slog.Handler
-}
-
-var _ io.Writer = (*handlerWriter)(nil)
-
-// Write writes the given bytes to the underlying data stream.
-func (w *handlerWriter) Write(buffer []byte) (int, error) {
-	// Remove final newline.
-	originalLength := len(buffer) // Report that the entire buf was written.
-	if len(buffer) > 0 && buffer[len(buffer)-1] == '\n' {
-		buffer = buffer[:len(buffer)-1]
-	}
-
-	var pc uintptr
-	record := slog.NewRecord(time.Now(), slog.LevelInfo, string(buffer), pc)
-
-	return originalLength, w.handler.Handle(context.Background(), record)
 }
 
 var defaultLogFileSpawners = []logFileSpawner{

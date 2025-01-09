@@ -3,7 +3,6 @@ package util
 import (
 	"bytes"
 	"context"
-	"io"
 	"os/exec"
 	"reflect"
 	"strings"
@@ -35,6 +34,10 @@ func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command
 	logger.Printf("$ %s", strings.Join(command.Command, " "))
 
 	var writer bytesutil.SynchronizedBuffer
+	defer func() {
+		logger.Info(writer.String())
+	}()
+
 	c := exec.CommandContext(ctx, command.Command[0], command.Command[1:]...)
 	if command.Directory != "" {
 		c.Dir = command.Directory
@@ -51,7 +54,7 @@ func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command
 	if command.Stdin != "" {
 		c.Stdin = bytes.NewBufferString(command.Stdin)
 	}
-	c.Stdout = io.MultiWriter(logger.Writer(), &writer)
+	c.Stdout = &writer
 	c.Stderr = c.Stdout
 
 	c.WaitDelay = 3 * time.Second // Some binaries do not like to be killed, e.g. "ollama", so we kill them after some time automatically.
