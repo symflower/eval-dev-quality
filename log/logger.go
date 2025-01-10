@@ -21,8 +21,6 @@ import (
 type AttributeKey string
 
 const (
-	// AttributeKeyArtifact holds the key for the "Artifact" attribute.
-	AttributeKeyArtifact = AttributeKey("Artifact")
 	// AttributeKeyLanguage holds the key for the "Language" attribute.
 	AttributeKeyLanguage = AttributeKey("Language")
 	// AttributeKeyModel holds the key for the "Model" attribute.
@@ -31,8 +29,6 @@ const (
 	AttributeKeyRepository = AttributeKey("Repository")
 	// AttributeKeyResultPath holds the key for the "ResultPath" attribute.
 	AttributeKeyResultPath = AttributeKey("ResultPath")
-	// AttributeKeyRun holds the key for the "Run" attribute.
-	AttributeKeyRun = AttributeKey("Run")
 	// AttributeKeyTask holds the key for the "Task" attribute.
 	AttributeKeyTask = AttributeKey("Task")
 )
@@ -305,29 +301,6 @@ var defaultLogFileSpawners = []handlerSpawner{
 			taskIdentifier := attributes[AttributeKeyTask]
 
 			return createFileHandlerForParent(parent, filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, "evaluation.log")), nil
-		},
-	},
-	handlerSpawner{
-		NeededAttributes: []AttributeKey{
-			AttributeKeyResultPath,
-
-			AttributeKeyArtifact,
-			AttributeKeyLanguage,
-			AttributeKeyModel,
-			AttributeKeyRepository,
-			AttributeKeyRun,
-			AttributeKeyTask,
-		},
-		Spawn: func(parent slog.Handler, attributes map[AttributeKey]string) (slog.Handler, error) {
-			resultPath := attributes[AttributeKeyResultPath]
-			modelID := attributes[AttributeKeyModel]
-			languageID := attributes[AttributeKeyLanguage]
-			repositoryName := attributes[AttributeKeyRepository]
-			taskIdentifier := attributes[AttributeKeyTask]
-			run := attributes[AttributeKeyRun]
-			artifact := attributes[AttributeKeyArtifact]
-
-			return createFileHandlerForParent(parent, filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, fmt.Sprintf("%s-%s.log", artifact, run))), nil
 		},
 	},
 }

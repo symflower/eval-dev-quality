@@ -111,8 +111,6 @@ func Evaluate(ctx *Context) {
 				logger.Info("starting run", "count", rl+1, "total", ctx.Runs)
 			}
 
-			logger := logger.With(log.AttributeKeyRun, rl+1)
-
 			for _, language := range ctx.Languages {
 				logger := logger.With(log.AttributeKeyLanguage, language.ID())
 
@@ -223,8 +221,6 @@ func Evaluate(ctx *Context) {
 		if ctx.Runs > 1 && !ctx.RunsSequential {
 			logger.Info("starting run", "count", rl+1, "total", ctx.Runs)
 		}
-
-		logger := logger.With(log.AttributeKeyRun, rl+1)
 
 		for _, language := range ctx.Languages {
 			languageID := language.ID()

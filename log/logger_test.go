@@ -149,38 +149,6 @@ func TestLogger(t *testing.T) {
 				filepath.Join("taskA", "modelA", "languageA", "repositoryB", "evaluation.log"): nil,
 			},
 		})
-
-		t.Run("Artifacts", func(t *testing.T) {
-			validate(t, &testCase{
-				Name: "Response",
-
-				Do: func(logger *Logger, temporaryPath string) {
-					logger = logger.With(AttributeKeyResultPath, temporaryPath)
-					logger = logger.With(AttributeKeyLanguage, "languageA")
-					logger = logger.With(AttributeKeyModel, "modelA")
-					logger = logger.With(AttributeKeyRepository, "repositoryA")
-					logger = logger.With(AttributeKeyTask, "taskA")
-					logger = logger.With(AttributeKeyRun, "1")
-
-					logger.Info("artifact-content", Attribute(AttributeKeyArtifact, "response"))
-					logger.Info("no-artifact-content")
-				},
-
-				ExpectedLogOutputContains: []string{
-					"no-artifact-content",
-					"artifact-content",
-				},
-				ExpectedFilesContain: map[string][]string{
-					"evaluation.log": nil,
-					filepath.Join("taskA", "modelA", "languageA", "repositoryA", "evaluation.log"): []string{
-						"no-artifact-content",
-					},
-					filepath.Join("taskA", "modelA", "languageA", "repositoryA", "response-1.log"): []string{
-						"artifact-content",
-					},
-				},
-			})
-		})
 	})
 
 	t.Run("Text", func(t *testing.T) {

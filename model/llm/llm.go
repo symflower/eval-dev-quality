@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/avast/retry-go"
+	"github.com/google/uuid"
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil/bytesutil"
 
@@ -298,14 +299,15 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 func (m *Model) query(logger *log.Logger, request string) (response string, duration time.Duration, err error) {
 	if err := retry.Do(
 		func() error {
-			logger.Info("querying model", "model", m.ID(), "prompt", string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
+			id := uuid.NewString
+			logger.Info("querying model", "model", m.ID(), "id", id, "prompt", string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
 			start := time.Now()
 			response, err = m.provider.Query(context.Background(), m.model, request)
 			if err != nil {
 				return err
 			}
 			duration = time.Since(start)
-			logger.Info("model responded", "model", m.ID(), "duration", duration.Milliseconds(), "response", string(bytesutil.PrefixLines([]byte(response), []byte("\t"))), log.Attribute(log.AttributeKeyArtifact, "response"))
+			logger.Info("model responded", "model", m.ID(), "id", id, "duration", duration.Milliseconds(), "response", string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
 
 			return nil
 		},
