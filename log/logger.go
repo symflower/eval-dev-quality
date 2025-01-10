@@ -196,6 +196,7 @@ func (h *spawningHandler) Clone() (clone *spawningHandler) {
 }
 
 var _ slog.Handler = (*spawningHandler)(nil)
+var _ subHandler = (*spawningHandler)(nil)
 
 // Enabled reports whether the handler handles records at the given level.
 func (h *spawningHandler) Enabled(ctx context.Context, level slog.Level) bool {
@@ -246,7 +247,7 @@ func (h *spawningHandler) spawnIfNecessary(attributes map[AttributeKey]string) s
 			continue
 		}
 
-		child, err := spawner.Spawn(attributes)
+		child, err := spawner.Spawn(h, attributes)
 		if err != nil {
 			logToHandler(h.handler, slog.LevelError, "ERROR: cannot create new handler: %s", err)
 
@@ -271,18 +272,20 @@ func (h *spawningHandler) WithGroup(group string) slog.Handler {
 	return h
 }
 
+// Handlers returns the sub-handlers of the handler.
+func (h *spawningHandler) Handlers() []slog.Handler {
+	return []slog.Handler{h.handler}
+}
+
+// defaultLogFileSpawners holds the default file spawners.
+// REMARK Each spawner checks if the parent handler already logs to a "plainTextHandler" and attaches the spawned handler to that handler as well.
 var defaultLogFileSpawners = []handlerSpawner{
 	handlerSpawner{
 		NeededAttributes: []AttributeKey{
 			AttributeKeyResultPath,
 		},
-		Spawn: func(attributes map[AttributeKey]string) (slog.Handler, error) {
-			file, err := openLogFile(filepath.Join(attributes[AttributeKeyResultPath], "evaluation.log"))
-			if err != nil {
-				return nil, err
-			}
-
-			return slog.NewJSONHandler(file, nil), nil
+		Spawn: func(parent slog.Handler, attributes map[AttributeKey]string) (slog.Handler, error) {
+			return createFileHandlerForParent(parent, filepath.Join(attributes[AttributeKeyResultPath], "evaluation.log")), nil
 		},
 	},
 	handlerSpawner{
@@ -294,19 +297,14 @@ var defaultLogFileSpawners = []handlerSpawner{
 			AttributeKeyRepository,
 			AttributeKeyTask,
 		},
-		Spawn: func(attributes map[AttributeKey]string) (slog.Handler, error) {
+		Spawn: func(parent slog.Handler, attributes map[AttributeKey]string) (slog.Handler, error) {
 			resultPath := attributes[AttributeKeyResultPath]
 			modelID := attributes[AttributeKeyModel]
 			languageID := attributes[AttributeKeyLanguage]
 			repositoryName := attributes[AttributeKeyRepository]
 			taskIdentifier := attributes[AttributeKeyTask]
 
-			file, err := openLogFile(filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, "evaluation.log"))
-			if err != nil {
-				return nil, err
-			}
-
-			return slog.NewJSONHandler(file, nil), nil
+			return createFileHandlerForParent(parent, filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, "evaluation.log")), nil
 		},
 	},
 	handlerSpawner{
@@ -320,7 +318,7 @@ var defaultLogFileSpawners = []handlerSpawner{
 			AttributeKeyRun,
 			AttributeKeyTask,
 		},
-		Spawn: func(attributes map[AttributeKey]string) (slog.Handler, error) {
+		Spawn: func(parent slog.Handler, attributes map[AttributeKey]string) (slog.Handler, error) {
 			resultPath := attributes[AttributeKeyResultPath]
 			modelID := attributes[AttributeKeyModel]
 			languageID := attributes[AttributeKeyLanguage]
@@ -329,12 +327,7 @@ var defaultLogFileSpawners = []handlerSpawner{
 			run := attributes[AttributeKeyRun]
 			artifact := attributes[AttributeKeyArtifact]
 
-			file, err := openLogFile(filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, fmt.Sprintf("%s-%s.log", artifact, run)))
-			if err != nil {
-				return nil, err
-			}
-
-			return slog.NewJSONHandler(file, nil), nil
+			return createFileHandlerForParent(parent, filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, fmt.Sprintf("%s-%s.log", artifact, run))), nil
 		},
 	},
 }
@@ -344,7 +337,7 @@ type handlerSpawner struct {
 	// NeededAttributes holds the list of attributes that need to be set in order to spawn a new handler.
 	NeededAttributes []AttributeKey
 	// Spawn is called if all needed attributes are set and returns the new handler.
-	Spawn func(attributes map[AttributeKey]string) (slog.Handler, error)
+	Spawn func(parent slog.Handler, attributes map[AttributeKey]string) (slog.Handler, error)
 }
 
 // NeedsSpawn returns if a new log file has to be spawned.
@@ -356,6 +349,28 @@ func (s handlerSpawner) NeedsSpawn(attributes map[AttributeKey]string) bool {
 	}
 
 	return true
+}
+
+// createFileHandlerForParent creates a JSON handler for logging into a file.
+// REMARK The returned handler may also delegate to any "plainTextHandler", that the parent is already delegating to.
+func createFileHandlerForParent(parent slog.Handler, fileName string) slog.Handler {
+	file, err := openLogFile(fileName)
+	if err != nil {
+		return nil
+	}
+
+	var handler slog.Handler = slog.NewJSONHandler(file, nil)
+	if plainTextHandlers := getHandlerFromChain(parent, isPlainTextHandler); plainTextHandlers != nil {
+		handler = newMultiHandler(append(plainTextHandlers, handler)...)
+	}
+
+	return handler
+}
+
+func isPlainTextHandler(handler slog.Handler) bool {
+	_, ok := handler.(*plainTextHandler)
+
+	return ok
 }
 
 // plainTextHandler wraps a normal TextHandler with the ability to print plain text if no timestamp, log level and program counter are provided.

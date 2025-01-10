@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
-	"github.com/zimmski/osutil/bytesutil"
 )
 
 func TestLogger(t *testing.T) {
@@ -18,7 +17,7 @@ func TestLogger(t *testing.T) {
 
 		Do func(logger *Logger, temporaryPath string)
 
-		ExpectedLogOutputContains string
+		ExpectedLogOutputContains []string
 		ExpectedFilesContain      map[string][]string
 	}
 
@@ -61,8 +60,9 @@ func TestLogger(t *testing.T) {
 			sort.Strings(expectedResultFiles)
 			assert.Equal(t, expectedResultFiles, actualResultFiles)
 
-			expectedLogOutput := bytesutil.StringTrimIndentations(tc.ExpectedLogOutputContains)
-			assert.Contains(t, logOutput.String(), expectedLogOutput)
+			for _, expectedLogOutput := range tc.ExpectedLogOutputContains {
+				assert.Contains(t, logOutput.String(), expectedLogOutput)
+			}
 		})
 	}
 
@@ -76,6 +76,7 @@ func TestLogger(t *testing.T) {
 				logger.Info("log-file-content")
 			},
 
+			ExpectedLogOutputContains: []string{"log-file-content"},
 			ExpectedFilesContain: map[string][]string{
 				"evaluation.log": []string{
 					"log-file-content",
@@ -95,6 +96,7 @@ func TestLogger(t *testing.T) {
 				logger.Info("log-file-content")
 			},
 
+			ExpectedLogOutputContains: []string{"log-file-content"},
 			ExpectedFilesContain: map[string][]string{
 				"evaluation.log": nil,
 				filepath.Join("taskA", "modelA", "languageA", "repositoryA", "evaluation.log"): []string{
@@ -164,6 +166,10 @@ func TestLogger(t *testing.T) {
 					logger.Info("no-artifact-content")
 				},
 
+				ExpectedLogOutputContains: []string{
+					"no-artifact-content",
+					"artifact-content",
+				},
 				ExpectedFilesContain: map[string][]string{
 					"evaluation.log": nil,
 					filepath.Join("taskA", "modelA", "languageA", "repositoryA", "evaluation.log"): []string{
@@ -185,9 +191,7 @@ func TestLogger(t *testing.T) {
 				logger.Info("log-message")
 			},
 
-			ExpectedLogOutputContains: `
-				level=INFO msg=log-message
-			`,
+			ExpectedLogOutputContains: []string{"level=INFO msg=log-message"},
 		})
 		validate(t, &testCase{
 			Name: "Without meta info",
@@ -196,9 +200,7 @@ func TestLogger(t *testing.T) {
 				logger.PrintfWithoutMeta("log-message\n")
 			},
 
-			ExpectedLogOutputContains: `
-				log-message
-			`,
+			ExpectedLogOutputContains: []string{"log-message"},
 		})
 	})
 }
