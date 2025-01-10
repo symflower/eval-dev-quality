@@ -42,20 +42,6 @@ func Attribute(key AttributeKey, value any) (attribute slog.Attr) {
 	return slog.Any(string(key), value)
 }
 
-// Flags defines how log messages should be printed.
-type Flags int
-
-const (
-	// FlagMessageOnly defines to log only the message.
-	FlagMessageOnly = 0
-	// FlagDate defines to log the date.
-	FlagDate = 1 << iota
-	// FlagTime defines to log the time.
-	FlagTime
-	// FlagStandard defines to log with the standard format.
-	FlagStandard = FlagDate | FlagTime
-)
-
 var (
 	// openLogFiles holds the files that were opened by some logger.
 	openLogFiles      []*os.File
@@ -83,27 +69,30 @@ func CloseOpenLogFiles() {
 	openLogFiles = nil
 }
 
+// openLogFile opens the given file and creates it if necessary.
+func openLogFile(filePath string) (file *os.File, err error) {
+	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	file, err = os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	addOpenLogFile(file)
+
+	return file, nil
+}
+
 // Logger holds a logger to log to.
 type Logger struct {
 	*slog.Logger
 }
 
-// newLoggerWithWriter instantiate a logger with a writer.
-func newLoggerWithWriter(writer io.Writer, flags Flags) *Logger {
-	handler := newSpawningHandler(writer, flags)
-	handler.logFileSpawners = defaultLogFileSpawners
-
+func newLoggerWithHandler(handler slog.Handler) *Logger {
 	return &Logger{
-		Logger: slog.New(handler),
-	}
-}
-
-// SetFlags sets the flags defining how log messages should be printed.
-func (l *Logger) SetFlags(flags Flags) {
-	if spawningHandler, ok := l.Handler().(*spawningHandler); ok {
-		spawningHandler.flags = flags
-	} else {
-		l.Error("Could not set flags of handler")
+		Logger: slog.New(newSpawningHandler(handler, defaultLogFileSpawners)),
 	}
 }
 
@@ -112,6 +101,13 @@ func (l *Logger) With(key AttributeKey, value any) *Logger {
 	return &Logger{
 		Logger: l.Logger.With(string(key), value),
 	}
+}
+
+// PrintfWithoutMeta prints a message without any timestamp, log level or origin program counter.
+func (l *Logger) PrintfWithoutMeta(message string, args ...any) {
+	// If time, level and PC use default values any Handler should ignore these fields (https://pkg.go.dev/log/slog#Handler).
+	record := slog.NewRecord(time.Time{}, slog.LevelInfo, fmt.Sprintf(message, args...), 0)
+	_ = l.Logger.Handler().Handle(context.Background(), record)
 }
 
 // Print logs the given message at the "info" level.
@@ -156,7 +152,7 @@ func (l *Logger) Fatal(v ...any) {
 // Buffer returns a logger that writes to a buffer.
 func Buffer() (buffer *bytesutil.SynchronizedBuffer, logger *Logger) {
 	buffer = new(bytesutil.SynchronizedBuffer)
-	logger = newLoggerWithWriter(buffer, FlagStandard)
+	logger = newLoggerWithHandler(newPlainTextHandler(buffer))
 
 	return buffer, logger
 }
@@ -177,77 +173,47 @@ func File(path string) (logger *Logger, loggerClose func(), err error) {
 		}
 	}
 
-	logger = newLoggerWithWriter(file, FlagStandard)
+	logger = newLoggerWithHandler(slog.NewJSONHandler(file, nil))
 
 	return logger, loggerClose, nil
 }
 
 // STDOUT returns a logger that writes to STDOUT.
 func STDOUT() (logger *Logger) {
-	return newLoggerWithWriter(os.Stdout, FlagStandard)
+	return newLoggerWithHandler(newPlainTextHandler(os.Stdout))
 }
 
-// newLogWriter returns a logger that writes to a file.
-func newLogWriter(parent io.Writer, filePath string) (writer io.Writer, err error) {
-	file, err := openLogFile(filePath)
-	if err != nil {
-		return nil, err
-	}
-	addOpenLogFile(file)
-
-	return file, nil
-}
-
-// openLogFile opens the given file and creates it if necessary.
-func openLogFile(filePath string) (file *os.File, err error) {
-	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-
-	file, err = os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-
-	return file, nil
-}
-
-// spawningHandler is a structural logging handler which spawns a new log file if one of the given log file spawners triggers.
+// spawningHandler is a structural logging handler which spawns a new handler on "WithAttrs" if one of the given spawners triggers.
 type spawningHandler struct {
-	// writer holds the writer to write the output.
-	writer io.Writer
+	// handler holds the handler to forward the records to.
+	handler slog.Handler
 
-	// attributes holds the attributes handed to the logger.
+	// attributes holds the attributes already handed to the logger.
 	attributes map[AttributeKey]string
 
 	// logFileSpawners holds the spawners responsible for spawning a new log file.
-	logFileSpawners []logFileSpawner
-
-	// flags holds the flags deciding which fields are logged.
-	flags Flags
+	logFileSpawners []handlerSpawner
 }
 
 // newSpawningHandler returns a new spawning handler.
-func newSpawningHandler(writer io.Writer, flags Flags) *spawningHandler {
+func newSpawningHandler(handler slog.Handler, spawners []handlerSpawner) *spawningHandler {
 	return &spawningHandler{
-		writer: writer,
+		handler: handler,
 
 		attributes: map[AttributeKey]string{},
 
-		flags: flags,
+		logFileSpawners: spawners,
 	}
 }
 
 // Clone returns a copy of the object.
 func (h *spawningHandler) Clone() (clone *spawningHandler) {
 	return &spawningHandler{
-		writer: h.writer,
+		handler: h.handler,
 
 		attributes: maps.Clone(h.attributes),
 
 		logFileSpawners: slices.Clone(h.logFileSpawners),
-
-		flags: h.flags,
 	}
 }
 
@@ -260,94 +226,88 @@ func (h *spawningHandler) Enabled(ctx context.Context, level slog.Level) bool {
 
 // Handle handles the Record.
 func (h *spawningHandler) Handle(ctx context.Context, record slog.Record) (err error) {
-	writer := h.writer
-	attributes := maps.Clone(h.attributes)
+	// The record might contain temporary attributes so merge them with the static attributes of the handler.
+	temporaryAttributes := maps.Clone(h.attributes)
 	record.Attrs(func(attribute slog.Attr) bool {
-		attributes[AttributeKey(attribute.Key)] = attribute.Value.String()
+		temporaryAttributes[AttributeKey(attribute.Key)] = attribute.Value.String()
 
 		return true
 	})
-	for _, spawner := range artifactLogFileSpawners {
-		if !spawner.NeedsSpawn(attributes) {
-			continue
-		}
 
-		logFilePath := spawner.FilePath(attributes)
-		writer, err = newLogWriter(writer, logFilePath)
-		if err != nil {
-			return err
-		}
+	if newHandler := h.spawnIfNecessary(temporaryAttributes); newHandler != nil {
+		return newHandler.Handle(ctx, record)
 	}
 
-	if h.flags&FlagDate != 0 {
-		_, _ = fmt.Fprint(writer, record.Time.Format("2006/01/02"))
-		_, _ = fmt.Fprint(writer, " ")
-	}
-	if h.flags&FlagTime != 0 {
-		_, _ = fmt.Fprint(writer, record.Time.Format("15:04:05"))
-		_, _ = fmt.Fprint(writer, " ")
-	}
-
-	_, _ = fmt.Fprintln(writer, record.Message)
-
-	return nil
+	return h.handler.Handle(ctx, record)
 }
 
 // WithAttrs returns a new Handler whose attributes consist of both the receiver's attributes and the arguments.
 // The Handler owns the slice: it may retain, modify or discard it.
 func (h *spawningHandler) WithAttrs(attributes []slog.Attr) slog.Handler {
-	// Collect attributes.
+	// Collect new attributes and merge them with the already existing attributes of the handler.
+	combinedAttributes := maps.Clone(h.attributes)
 	for _, attribute := range attributes {
-		h.attributes[AttributeKey(attribute.Key)] = attribute.Value.String()
+		combinedAttributes[AttributeKey(attribute.Key)] = attribute.Value.String()
 	}
 
-	newHandler := h.Clone()
-
-	// Check if we need to spawn a new log file.
-	for i, spawner := range h.logFileSpawners {
-		if !spawner.NeedsSpawn(h.attributes) {
-			continue
-		}
-
-		logFilePath := spawner.FilePath(h.attributes)
-		writer, err := newLogWriter(h.writer, logFilePath)
-		if err != nil {
-			_, _ = fmt.Fprintf(h.writer, "ERROR: cannot create new handler: %s\n", err.Error())
-
-			continue
-		}
-
-		logMessage := fmt.Sprintf("Spawning new log file at %s", logFilePath)
-		if err := h.Handle(context.Background(), slog.NewRecord(time.Now(), slog.LevelInfo, logMessage, 0)); err != nil {
-			_, _ = fmt.Fprintf(h.writer, "ERROR: cannot spawn new log file: %s\n", err.Error())
-
-			continue
-		}
-
-		newHandler.writer = writer
-		newHandler.logFileSpawners = slices.Delete(newHandler.logFileSpawners, i, i+1) // The currently triggered log file spawner must not be part of the new handler as it would trigger again and again.
-
+	if newHandler := h.spawnIfNecessary(combinedAttributes); newHandler != nil {
 		return newHandler
 	}
+
+	// We cannot modify the handler itself but must return a new instance.
+	newHandler := h.Clone()
+	newHandler.attributes = combinedAttributes
 
 	return newHandler
 }
 
+// spawnIfNecessary checks if the given attributes trigger the creation of a new handler and returns it with the given attributes set.
+func (h *spawningHandler) spawnIfNecessary(attributes map[AttributeKey]string) slog.Handler {
+	for i, spawner := range h.logFileSpawners {
+		if !spawner.NeedsSpawn(attributes) {
+			continue
+		}
+
+		child, err := spawner.Spawn(attributes)
+		if err != nil {
+			logToHandler(h.handler, slog.LevelError, "ERROR: cannot create new handler: %s", err)
+
+			continue
+		}
+
+		newHandler := h.Clone()
+		newHandler.handler = child
+		newHandler.attributes = attributes
+		newHandler.logFileSpawners = slices.Delete(newHandler.logFileSpawners, i, i+1) // The currently triggered spawner must not be part of the new handler as it would trigger again and again.
+
+		return newHandler
+	}
+
+	return nil
+}
+
 // WithGroup returns a new Handler with the given group appended to the receiver's existing groups.
-func (h *spawningHandler) WithGroup(string) slog.Handler {
+func (h *spawningHandler) WithGroup(group string) slog.Handler {
+	logToHandler(h.handler, slog.LevelWarn, "Groups are unsupported %q", group)
+
 	return h
 }
 
-var defaultLogFileSpawners = []logFileSpawner{
-	logFileSpawner{
+var defaultLogFileSpawners = []handlerSpawner{
+	handlerSpawner{
 		NeededAttributes: []AttributeKey{
 			AttributeKeyResultPath,
 		},
-		FilePath: func(attributes map[AttributeKey]string) string {
-			return filepath.Join(attributes[AttributeKeyResultPath], "evaluation.log")
+		Spawn: func(attributes map[AttributeKey]string) (slog.Handler, error) {
+			file, err := openLogFile(filepath.Join(attributes[AttributeKeyResultPath], "evaluation.log"))
+			if err != nil {
+				return nil, err
+			}
+
+			return slog.NewJSONHandler(file, nil), nil
 		},
 	},
-	logFileSpawner{
+	handlerSpawner{
 		NeededAttributes: []AttributeKey{
 			AttributeKeyResultPath,
 
@@ -356,20 +316,22 @@ var defaultLogFileSpawners = []logFileSpawner{
 			AttributeKeyRepository,
 			AttributeKeyTask,
 		},
-		FilePath: func(attributes map[AttributeKey]string) string {
+		Spawn: func(attributes map[AttributeKey]string) (slog.Handler, error) {
 			resultPath := attributes[AttributeKeyResultPath]
 			modelID := attributes[AttributeKeyModel]
 			languageID := attributes[AttributeKeyLanguage]
 			repositoryName := attributes[AttributeKeyRepository]
 			taskIdentifier := attributes[AttributeKeyTask]
 
-			return filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, "evaluation.log")
+			file, err := openLogFile(filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, "evaluation.log"))
+			if err != nil {
+				return nil, err
+			}
+
+			return slog.NewJSONHandler(file, nil), nil
 		},
 	},
-}
-
-var artifactLogFileSpawners = []logFileSpawner{
-	logFileSpawner{
+	handlerSpawner{
 		NeededAttributes: []AttributeKey{
 			AttributeKeyResultPath,
 
@@ -380,7 +342,7 @@ var artifactLogFileSpawners = []logFileSpawner{
 			AttributeKeyRun,
 			AttributeKeyTask,
 		},
-		FilePath: func(attributes map[AttributeKey]string) string {
+		Spawn: func(attributes map[AttributeKey]string) (slog.Handler, error) {
 			resultPath := attributes[AttributeKeyResultPath]
 			modelID := attributes[AttributeKeyModel]
 			languageID := attributes[AttributeKeyLanguage]
@@ -389,21 +351,26 @@ var artifactLogFileSpawners = []logFileSpawner{
 			run := attributes[AttributeKeyRun]
 			artifact := attributes[AttributeKeyArtifact]
 
-			return filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, fmt.Sprintf("%s-%s.log", artifact, run))
+			file, err := openLogFile(filepath.Join(resultPath, taskIdentifier, CleanModelNameForFileSystem(modelID), languageID, repositoryName, fmt.Sprintf("%s-%s.log", artifact, run)))
+			if err != nil {
+				return nil, err
+			}
+
+			return slog.NewJSONHandler(file, nil), nil
 		},
 	},
 }
 
-// logFileSpawner defines when a new log file is spawned.
-type logFileSpawner struct {
-	// NeededAttributes holds the list of attributes that need to be set in order to spawn a new log file.
+// handlerSpawner defines when a new handler is spawned.
+type handlerSpawner struct {
+	// NeededAttributes holds the list of attributes that need to be set in order to spawn a new handler.
 	NeededAttributes []AttributeKey
-	// FilePath is called if all needed attributes are set and returns the file path for the new log file.
-	FilePath func(attributes map[AttributeKey]string) string
+	// Spawn is called if all needed attributes are set and returns the new handler.
+	Spawn func(attributes map[AttributeKey]string) (slog.Handler, error)
 }
 
 // NeedsSpawn returns if a new log file has to be spawned.
-func (s logFileSpawner) NeedsSpawn(attributes map[AttributeKey]string) bool {
+func (s handlerSpawner) NeedsSpawn(attributes map[AttributeKey]string) bool {
 	for _, attributeKey := range s.NeededAttributes {
 		if value := attributes[attributeKey]; value == "" {
 			return false
@@ -411,6 +378,59 @@ func (s logFileSpawner) NeedsSpawn(attributes map[AttributeKey]string) bool {
 	}
 
 	return true
+}
+
+// plainTextHandler wraps a normal TextHandler with the ability to print plain text if no timestamp, log level and program counter are provided.
+type plainTextHandler struct {
+	handler slog.Handler
+	writer  io.Writer
+}
+
+func newPlainTextHandler(writer io.Writer) slog.Handler {
+	return &plainTextHandler{
+		handler: slog.NewTextHandler(writer, nil),
+		writer:  writer,
+	}
+}
+
+// Enabled implements slog.Handler.
+func (p *plainTextHandler) Enabled(context.Context, slog.Level) bool {
+	return true
+}
+
+// Handle implements slog.Handler.
+func (p *plainTextHandler) Handle(ctx context.Context, record slog.Record) error {
+	// The default "TextHandler" would still print `msg=...` but we just print the message as a whole.
+	if record.Time.IsZero() && record.Level == slog.LevelInfo && record.PC == 0 {
+		_, err := p.writer.Write([]byte(record.Message))
+
+		return err
+	}
+
+	return p.handler.Handle(ctx, record)
+}
+
+// WithAttrs implements slog.Handler.
+func (p *plainTextHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return &plainTextHandler{
+		handler: p.handler.WithAttrs(attrs),
+		writer:  p.writer,
+	}
+}
+
+// WithGroup implements slog.Handler.
+func (p *plainTextHandler) WithGroup(name string) slog.Handler {
+	return &plainTextHandler{
+		handler: p.handler.WithGroup(name),
+		writer:  p.writer,
+	}
+}
+
+var _ slog.Handler = (*plainTextHandler)(nil)
+
+// logToHandler logs directly to a handler to communicate logging-internal events.
+func logToHandler(handler slog.Handler, level slog.Level, message string, args ...any) {
+	_ = handler.Handle(context.Background(), slog.NewRecord(time.Now(), level, fmt.Sprintf(message, args...), 0))
 }
 
 var cleanModelNameForFileSystemReplacer = strings.NewReplacer(

@@ -31,11 +31,9 @@ type Command struct {
 
 // CommandWithResult executes a command and returns its output, while printing the same output to the given logger.
 func CommandWithResult(ctx context.Context, logger *log.Logger, command *Command) (output string, err error) {
-	logger.Printf("$ %s", strings.Join(command.Command, " "))
-
 	var writer bytesutil.SynchronizedBuffer
 	defer func() {
-		logger.Info(writer.String())
+		logger.Info("command execution", "command", strings.Join(command.Command, " "), "output", writer.String())
 	}()
 
 	c := exec.CommandContext(ctx, command.Command[0], command.Command[1:]...)

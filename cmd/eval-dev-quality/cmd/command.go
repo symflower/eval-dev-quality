@@ -49,10 +49,9 @@ func Execute(logger *log.Logger, arguments []string) {
 		logger.Panicf("Could not parse arguments: %+v", err)
 	}
 	if parser.Active == nil {
-		logger.SetFlags(log.FlagMessageOnly)
 		var sb strings.Builder
 		parser.WriteHelp(&sb)
-		logger.Info(sb.String())
+		logger.PrintfWithoutMeta(sb.String())
 	}
 }
 
