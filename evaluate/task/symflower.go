@@ -59,7 +59,7 @@ func symflowerTemplate(logger *log.Logger, repositoryPath string, language langu
 // ExecuteWithSymflowerFix runs the "symflower fix" command and calculates the new assessments.
 func ExecuteWithSymflowerFix(ctx evaltask.Context, logger *log.Logger, packagePath string) (testResult *language.TestResult, processingTime uint64, problems []error, err error) {
 	// Run "symflower fix"  if the model response fails to execute.
-	logger.Print("model response alone failed execution, attempting to fix with \"symflower fix \"")
+	logger.Info("model response alone failed execution, attempting to fix with \"symflower fix \"")
 
 	duration, err := symflowerFix(logger, packagePath, ctx.Language)
 	if err != nil {
@@ -94,7 +94,7 @@ func runModelAndSymflowerFix(ctx evaltask.Context, modelCtx model.Context, runMo
 	if err != nil {
 		problems = append(problems, pkgerrors.WithMessage(err, modelCtx.FilePath))
 	} else if ctx.Repository.Configuration().Validation.Execution.Validate(testResult.StdOut) {
-		modelCtx.Logger.Printf("Executes tests with %d coverage objects", testResult.Coverage)
+		modelCtx.Logger.Info("executed tests", "coverage", testResult.Coverage, "symflower-fix", false)
 		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
 		modelAssessment.AwardMultiple(metrics.AssessmentKeyCoverage, testResult.Coverage)
 	}
@@ -105,7 +105,7 @@ func runModelAndSymflowerFix(ctx evaltask.Context, modelCtx model.Context, runMo
 		if err != nil {
 			problems = append(problems, err)
 		} else if ctx.Repository.Configuration().Validation.Execution.Validate(withSymflowerFixTestResult.StdOut) {
-			ctx.Logger.Printf("with symflower repair: Executes tests with %d coverage objects", withSymflowerFixTestResult.Coverage)
+			ctx.Logger.Info("executed tests", "coverage", withSymflowerFixTestResult.Coverage, "symflower-fix", true)
 
 			// Symflower was able to fix a failure so now update the assessment with the improved results.
 			withSymflowerFix := metrics.NewAssessments()

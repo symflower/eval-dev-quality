@@ -118,7 +118,7 @@ func (*Ollama) Install(logger *log.Logger, installPath string) (err error) {
 
 	ollamaDownloadURL := "https://github.com/ollama/ollama/releases/download/v" + ollamaVersion + "/ollama-linux-" + architectureIdentifier
 	ollamaInstallPath := filepath.Join(installPath, "ollama")
-	logger.Printf("Install \"ollama\" to %s from %s", ollamaInstallPath, ollamaDownloadURL)
+	logger.Info("installing \"ollama\"", "path", ollamaInstallPath, "url", ollamaDownloadURL)
 	if err := osutil.DownloadFileWithProgress(ollamaDownloadURL, ollamaInstallPath); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot download to %s from %s", ollamaInstallPath, ollamaDownloadURL)))
 	}
@@ -231,7 +231,7 @@ func OllamaStart(logger *log.Logger, binaryPath string, url string) (shutdown fu
 
 	// Check if the URL has already a running service.
 	if err := OllamaCheck(url); err == nil {
-		logger.Printf("Reusing existing Ollama service on %q", url)
+		logger.Info("reusing existing Ollama service", "url", url)
 
 		ollamaProcessStateAdd(url, nil)
 
@@ -244,7 +244,7 @@ func OllamaStart(logger *log.Logger, binaryPath string, url string) (shutdown fu
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	logger.Printf("Starting new Ollama service on %q using %s", url, binaryPath)
+	logger.Info("starting new Ollama service", "url", url, "path", binaryPath)
 
 	var serverError error
 	var serverWaitGroup sync.WaitGroup
@@ -262,7 +262,7 @@ func OllamaStart(logger *log.Logger, binaryPath string, url string) (shutdown fu
 				"OLLAMA_HOST": url,
 			},
 		}); err != nil && !strings.Contains(err.Error(), "killed") {
-			logger.Printf("could not start Ollama service: %s\n%s", err, output)
+			logger.Error("could not start Ollama service", "error", err, "command-output", output)
 			serverError = pkgerrors.WithStack(pkgerrors.WithMessage(err, output))
 		}
 	}()

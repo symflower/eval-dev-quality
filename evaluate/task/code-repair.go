@@ -102,7 +102,7 @@ func (t *CodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 			continue
 		}
 		testsPassing := testResult.TestsPass
-		taskLogger.Printf("Executes tests with %d tests passing", testsPassing)
+		taskLogger.Info("Executed tests", "passing", testsPassing)
 		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
 		modelAssessment.AwardMultiple(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
 	}
@@ -133,7 +133,7 @@ func (t *CodeRepair) unpackCodeRepairPackage(ctx evaltask.Context, fileLogger *l
 
 // validateCodeRepairRepository checks if the repository for the "code-repair" task is well-formed.
 func validateCodeRepairRepository(logger *log.Logger, repositoryPath string, language language.Language) (err error) {
-	logger.Printf("validating repository %q", repositoryPath)
+	logger.Info("validating repository", "path", repositoryPath)
 
 	packagePaths, err := repositoryOnlyHasPackages(repositoryPath)
 	if err != nil {

@@ -70,7 +70,7 @@ const RepositoryPlainName = "plain"
 func Evaluate(ctx *Context) {
 	// Check that models and languages can be evaluated by executing the "plain" repositories.
 	modelSucceededBasicChecksOfLanguage := map[evalmodel.Model]map[evallanguage.Language]bool{}
-	ctx.Log.Printf("Checking that models and languages can be used for evaluation")
+	ctx.Log.Info("checking that models and languages can be used for evaluation")
 
 	problemsPerModel := map[string][]error{}
 	// Write the evaluation CSV header so it's only written once.
@@ -108,7 +108,7 @@ func Evaluate(ctx *Context) {
 		logger := ctx.Log
 		for rl := uint(0); rl < ctx.runsAtLanguageLevel(); rl++ {
 			if ctx.Runs > 1 && !ctx.RunsSequential {
-				logger.Printf("Run %d/%d", rl+1, ctx.Runs)
+				logger.Info("starting run", "count", rl+1, "total", ctx.Runs)
 			}
 
 			logger := logger.With(log.AttributeKeyRun, rl+1)
@@ -136,7 +136,7 @@ func Evaluate(ctx *Context) {
 					for _, taskIdentifier := range temporaryRepository.Configuration().Tasks {
 						task, err := evaluatetask.ForIdentifier(taskIdentifier)
 						if err != nil {
-							logger.Fatal(err)
+							logger.Fatalf(err)
 						}
 
 						logger := logger.With(log.AttributeKeyTask, taskIdentifier)
@@ -144,7 +144,7 @@ func Evaluate(ctx *Context) {
 							for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
 								var runCount uint
 								if ctx.Runs > 1 && ctx.RunsSequential {
-									logger.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+									logger.Info("starting run", "count", rm+1, "total", ctx.Runs, "model", modelID)
 									runCount = rm + 1
 								} else {
 									runCount = rl + 1
@@ -174,7 +174,7 @@ func Evaluate(ctx *Context) {
 								if succeededPlain(assessment) {
 									modelSucceededBasicChecksOfLanguage[model][language] = true
 								} else {
-									logger.Printf("Model %q was not able to solve the %q repository for language %q: %+v", modelID, repositoryPath, languageID, ps)
+									logger.Info("model was not able to solve repository", "model", modelID, "repository", repositoryPath, "language", languageID, "problems", ps)
 								}
 
 								// Write the task assessment to the evaluation CSV file.
@@ -192,7 +192,7 @@ func Evaluate(ctx *Context) {
 	repositoriesLookup := util.Set(ctx.RepositoryPaths)
 
 	// Evaluating models and languages.
-	ctx.Log.Printf("Evaluating models and languages")
+	ctx.Log.Info("evaluating models and languages")
 	// Create temporary repositories for each language so the repository is copied only once per language.
 	temporaryRepositories := map[string]*evaluatetask.Repository{}
 	for _, l := range ctx.Languages {
@@ -221,7 +221,7 @@ func Evaluate(ctx *Context) {
 	logger := ctx.Log
 	for rl := uint(0); rl < ctx.runsAtLanguageLevel(); rl++ {
 		if ctx.Runs > 1 && !ctx.RunsSequential {
-			logger.Printf("Run %d/%d", rl+1, ctx.Runs)
+			logger.Info("starting run", "count", rl+1, "total", ctx.Runs)
 		}
 
 		logger := logger.With(log.AttributeKeyRun, rl+1)
@@ -255,21 +255,21 @@ func Evaluate(ctx *Context) {
 					logger := logger.With(log.AttributeKeyModel, modelID)
 
 					if !ctx.NoDisqualification && !modelSucceededBasicChecksOfLanguage[model][language] {
-						logger.Printf("Excluding model %q for language %q cause it did not succeed basic checks", model.ID(), language.ID())
+						logger.Warn("excluding model cause it did not succeed basic checks", "model", model.ID(), "language", language.ID())
 
 						continue
 					}
 					for _, taskIdentifier := range temporaryRepository.Tasks {
 						task, err := evaluatetask.ForIdentifier(taskIdentifier)
 						if err != nil {
-							logger.Fatal(err)
+							logger.Fatalf(err)
 						}
 						logger := logger.With(log.AttributeKeyTask, taskIdentifier)
 						withLoadedModel(logger, model, ctx.ProviderForModel[model], func() {
 							for rm := uint(0); rm < ctx.runsAtModelLevel(); rm++ {
 								var runCount uint
 								if ctx.Runs > 1 && ctx.RunsSequential {
-									logger.Printf("Run %d/%d for model %q", rm+1, ctx.Runs, modelID)
+									logger.Info("starting run", "count", rm+1, "total", ctx.Runs, "model", modelID)
 									runCount = rm + 1
 								} else {
 									runCount = rl + 1
@@ -291,7 +291,7 @@ func Evaluate(ctx *Context) {
 								assessment, ps, err := task.Run(taskContext)
 								problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 								if err != nil {
-									logger.Printf("ERROR: Model %q encountered a hard error for language %q, repository %q: %+v", modelID, languageID, repositoryPath, err)
+									logger.Error("model encountered a hard error", "model", modelID, "language", languageID, "repository", repositoryPath, "error", err)
 								}
 
 								// Write the task assessment to the evaluation CSV file.
@@ -310,12 +310,12 @@ func Evaluate(ctx *Context) {
 // withLoadedModel loads the model for the duration of the given task if supported by the model's provider.
 func withLoadedModel(logger *log.Logger, model evalmodel.Model, modelProvider provider.Provider, task func()) {
 	if loader, ok := modelProvider.(provider.Loader); ok {
-		logger.Printf("preloading model %q", model.ID())
+		logger.Info("preloading model", "model", model.ID())
 		if err := loader.Load(model.ID()); err != nil {
 			logger.Panicf("ERROR: could not load model %q with provider %q", model.ID(), modelProvider.ID())
 		}
 		defer func() {
-			logger.Printf("unloading model %q", model.ID())
+			logger.Info("unloading model", "model", model.ID())
 			if err := loader.Unload(model.ID()); err != nil {
 				logger.Panicf("ERROR: could not unload model %q with provider %q", model.ID(), modelProvider.ID())
 			}

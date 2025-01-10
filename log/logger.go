@@ -110,21 +110,6 @@ func (l *Logger) PrintfWithoutMeta(message string, args ...any) {
 	_ = l.Logger.Handler().Handle(context.Background(), record)
 }
 
-// Print logs the given message at the "info" level.
-func (l *Logger) Print(message string) {
-	l.Logger.Info(message)
-}
-
-// Printf logs the given message at the "info" level.
-func (l *Logger) Printf(format string, args ...any) {
-	l.Logger.Info(fmt.Sprintf(format, args...))
-}
-
-// PrintWith logs the given message at the "info" level.
-func (l *Logger) PrintWith(message string, args ...any) {
-	l.Logger.Info(message, args...)
-}
-
 // Panicf is equivalent to "Printf" followed by a panic.
 func (l *Logger) Panicf(format string, args ...any) {
 	message := fmt.Sprintf(format, args...)
@@ -133,15 +118,8 @@ func (l *Logger) Panicf(format string, args ...any) {
 	panic(message)
 }
 
-// Panic is equivalent to "Print" followed by a panic.
-func (l *Logger) Panic(message string) {
-	l.Logger.Info(message)
-
-	panic(message)
-}
-
-// Fatal is equivalent to "Print" followed by a "os.Exit(1)".
-func (l *Logger) Fatal(v ...any) {
+// Fatalf is equivalent to "Print" followed by a "os.Exit(1)".
+func (l *Logger) Fatalf(v ...any) {
 	l.Logger.Info(fmt.Sprint(v...))
 
 	//revive:disable:deep-exit

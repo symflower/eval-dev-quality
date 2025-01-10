@@ -67,7 +67,7 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 	var maximumReachableFiles uint64
 	for _, filePath := range filePaths {
 		if ctx.Repository.Configuration().IsFilePathIgnored(filePath) {
-			taskLogger.Printf("Ignoring file %q (as configured by the repository)", filePath)
+			taskLogger.Info("ignoring file (as configured by the repository)", "path", filePath)
 
 			continue
 		}
@@ -160,7 +160,7 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 
 // validateWriteTestsRepository checks if the repository for the "write-tests" task is well-formed.
 func validateWriteTestsRepository(logger *log.Logger, repositoryPath string, language language.Language) (err error) {
-	logger.Printf("validating repository %q", repositoryPath)
+	logger.Info("validating repository", "path", repositoryPath)
 
 	files, err := language.Files(logger, repositoryPath)
 	if err != nil {

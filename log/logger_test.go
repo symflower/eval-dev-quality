@@ -160,8 +160,8 @@ func TestLogger(t *testing.T) {
 					logger = logger.With(AttributeKeyTask, "taskA")
 					logger = logger.With(AttributeKeyRun, "1")
 
-					logger.PrintWith("artifact-content", Attribute(AttributeKeyArtifact, "response"))
-					logger.Print("no-artifact-content")
+					logger.Info("artifact-content", Attribute(AttributeKeyArtifact, "response"))
+					logger.Info("no-artifact-content")
 				},
 
 				ExpectedFilesContain: map[string][]string{

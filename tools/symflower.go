@@ -117,7 +117,7 @@ func (*symflower) Install(logger *log.Logger, installPath string) (err error) {
 
 	symflowerDownloadURL := "https://download.symflower.com/local/v" + SymflowerVersionRequired + "/symflower-" + osIdentifier + "-" + architectureIdentifier + osutil.BinaryExtension()
 	symflowerInstallPath := filepath.Join(installPath, "symflower"+osutil.BinaryExtension())
-	logger.Printf("Install \"symflower\" to %s from %s", symflowerInstallPath, symflowerDownloadURL)
+	logger.Info("installing \"symflower\"", "path", symflowerInstallPath, "url", symflowerDownloadURL)
 	if err := osutil.DownloadFileWithProgress(symflowerDownloadURL, symflowerInstallPath); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot download to %s from %s", symflowerInstallPath, symflowerDownloadURL)))
 	}

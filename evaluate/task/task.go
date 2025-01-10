@@ -83,14 +83,14 @@ func newTaskLogger(ctx evaltask.Context, task evaltask.Task) (logging *taskLogge
 	}
 
 	logging.Logger = ctx.Logger
-	logging.Logger.Printf("Evaluating model %q on task %q using language %q and repository %q", ctx.Model.ID(), task.Identifier(), ctx.Language.ID(), ctx.Repository.Name())
+	logging.Logger.Info("evaluating model", "model", ctx.Model.ID(), "task", task.Identifier(), "language", ctx.Language.ID(), "repository", ctx.Repository.Name())
 
 	return logging, nil
 }
 
 // finalizeLogging finalizes the logging.
 func (t *taskLogger) finalize(problems []error) {
-	t.Logger.Printf("Evaluated model %q on task %q using language %q and repository %q: encountered %d problems: %+v", t.ctx.Model.ID(), t.task.Identifier(), t.ctx.Language.ID(), t.ctx.Repository.Name(), len(problems), problems)
+	t.Logger.Info("evaluated model", "model", t.ctx.Model.ID(), "task", t.task.Identifier(), "language", t.ctx.Language.ID(), "repository", t.ctx.Repository.Name(), "problems", problems)
 }
 
 // packageSourceFile returns the source file of a package.

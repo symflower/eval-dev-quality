@@ -2,7 +2,6 @@ package llm
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -299,14 +298,14 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 func (m *Model) query(logger *log.Logger, request string) (response string, duration time.Duration, err error) {
 	if err := retry.Do(
 		func() error {
-			logger.Printf("Querying model %q with:\n%s", m.ID(), string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
+			logger.Info("querying model", "model", m.ID(), "prompt", string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
 			start := time.Now()
 			response, err = m.provider.Query(context.Background(), m.model, request)
 			if err != nil {
 				return err
 			}
 			duration = time.Since(start)
-			logger.PrintWith(fmt.Sprintf("Model %q responded (%d ms) with:\n%s", m.ID(), duration.Milliseconds(), string(bytesutil.PrefixLines([]byte(response), []byte("\t")))), log.Attribute(log.AttributeKeyArtifact, "response"))
+			logger.Info("model responded", "model", m.ID(), "duration", duration.Milliseconds(), "response", string(bytesutil.PrefixLines([]byte(response), []byte("\t"))), log.Attribute(log.AttributeKeyArtifact, "response"))
 
 			return nil
 		},
@@ -315,7 +314,7 @@ func (m *Model) query(logger *log.Logger, request string) (response string, dura
 		retry.DelayType(retry.BackOffDelay),
 		retry.LastErrorOnly(true),
 		retry.OnRetry(func(n uint, err error) {
-			logger.Printf("Attempt %d/%d: %s", n+1, m.queryAttempts, err)
+			logger.Info("query retry", "count", n+1, "total", m.queryAttempts, "error", err)
 		}),
 	); err != nil {
 		return "", 0, err

@@ -110,7 +110,7 @@ func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask
 				problems = append(problems, pkgerrors.WithMessage(err, originFilePath))
 			} else {
 				testsPassing := testResult.TestsPass
-				taskLogger.Printf("Executes tests with %d tests passing", testsPassing)
+				taskLogger.Info("executed tests", "passing", testsPassing, "symflower-fix", false)
 				modelAssessmentsForFile.Award(metrics.AssessmentKeyFilesExecuted)
 				modelAssessmentsForFile.AwardMultiple(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
 			}
@@ -122,7 +122,7 @@ func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask
 					problems = append(problems, err)
 				} else {
 					testsPassing := withSymflowerFixTestResult.TestsPass
-					taskLogger.Printf("with symflower repair: Executes tests with %d tests passing", testsPassing)
+					taskLogger.Info("executed tests", "passing", testsPassing, "symflower-fix", true)
 
 					// Symflower was able to fix a failure so now update the assessment with the improved results.
 					withSymflowerFixAssessments := metrics.NewAssessments()
@@ -175,7 +175,7 @@ func (t *Transpile) unpackTranspilerPackage(ctx evaltask.Context, logger *log.Lo
 
 // validateTranspileRepository checks if the repository for the "transpile" task is well-formed.
 func validateTranspileRepository(logger *log.Logger, repositoryPath string, destinationLanguage language.Language) (err error) {
-	logger.Printf("validating repository %q", repositoryPath)
+	logger.Info("validating repository", "path", repositoryPath)
 
 	packagePaths, err := repositoryOnlyHasPackages(repositoryPath)
 	if err != nil {
