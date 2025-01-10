@@ -36,7 +36,7 @@ func ValidateInstallTool(t *testing.T, tool Tool) {
 		logOutput, logger := log.Buffer()
 		require.NoError(t, InstallTool(logger, tool, temporaryPath))
 
-		require.Contains(t, logOutput.String(), fmt.Sprintf(`Install %q to`, tool.ID()))
+		require.Contains(t, logOutput.String(), fmt.Sprintf(`msg="installing tool" tool=%s`, tool.ID()))
 		toolPath, err := exec.LookPath(tool.BinaryName())
 		require.NoError(t, err)
 		require.NotEmpty(t, toolPath)
@@ -46,7 +46,7 @@ func ValidateInstallTool(t *testing.T, tool Tool) {
 		logOutput, logger := log.Buffer()
 		require.NoError(t, InstallTool(logger, tool, temporaryPath))
 
-		require.NotContains(t, logOutput.String(), fmt.Sprintf(`Install %q to`, tool.ID()))
+		require.NotContains(t, logOutput.String(), fmt.Sprintf(`msg="installing tool" tool=%s`, tool.ID()))
 		toolPath, err := exec.LookPath(tool.BinaryName())
 		require.NoError(t, err)
 		require.NotEmpty(t, toolPath)

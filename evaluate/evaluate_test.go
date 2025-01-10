@@ -394,7 +394,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "Attempt 1/3: "+ErrEmptyResponseFromModel.Error())
+						assert.Contains(t, data, "\"msg\":\"query retry\",\"count\":1,\"total\":3,\"error\":\""+ErrEmptyResponseFromModel.Error())
 					},
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "response-1.log"): nil,
 					"evaluation.csv": nil,
@@ -1253,12 +1253,12 @@ func TestEvaluate(t *testing.T) {
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": func(t *testing.T, filePath string, data string) {
-						assert.Contains(t, data, "Run 1/3")
-						assert.Contains(t, data, "Run 2/3")
-						assert.Contains(t, data, "Run 3/3")
-						assert.NotRegexp(t, `Run \d+/\d+ for model`, data)
+						assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":1,\"total\":3}")
+						assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":2,\"total\":3}")
+						assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":3,\"total\":3}")
+						assert.NotRegexp(t, `\\\"msg\\\":\\\"starting run\\\",\\\"count\\\":\d+,\\\"total\\\":\d+,`, data)
 
-						assert.Equal(t, 1, strings.Count(data, "Creating temporary repository"), "create only one temporary repository")
+						assert.Equal(t, 1, strings.Count(data, "creating temporary repository"), "create only one temporary repository")
 					},
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
 					"evaluation.csv": nil,
@@ -1431,13 +1431,13 @@ func TestEvaluate(t *testing.T) {
 				},
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": func(t *testing.T, filePath string, data string) {
-						assert.Equal(t, 1, strings.Count(data, "Creating temporary repository"), "create only one temporary repository")
+						assert.Equal(t, 1, strings.Count(data, "creating temporary repository"), "create only one temporary repository")
 					},
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath string, data string) {
-						assert.Contains(t, data, "Run 1/3 for model")
-						assert.Contains(t, data, "Run 2/3 for model")
-						assert.Contains(t, data, "Run 3/3 for model")
-						assert.NotRegexp(t, `Run \d+/\d+$`, data)
+						assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":1,\"total\":3,")
+						assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":2,\"total\":3,")
+						assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":3,\"total\":3,")
+						assert.NotRegexp(t, `\\\"msg\\\":\\\"starting run\\\",\\\"count\\\":\d+,\\\"total\\\":\d+\}`, data)
 					},
 					"evaluation.csv": nil,
 				},

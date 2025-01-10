@@ -314,10 +314,10 @@ func TestEvaluateExecute(t *testing.T) {
 					validateREADME(t, data)
 				},
 				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Contains(t, data, "coverage objects: [{")
+					assert.Contains(t, data, "\"msg\":\"coverage objects\",\"objects\":\"[{")
 				},
 				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Contains(t, data, "coverage objects: [{")
+					assert.Contains(t, data, "\"msg\":\"coverage objects\",\"objects\":\"[{")
 				},
 			},
 		})
@@ -462,7 +462,7 @@ func TestEvaluateExecute(t *testing.T) {
 
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath string, data string) {
-						assert.Contains(t, data, "Skipping unavailable provider \"openrouter\"")
+						assert.Contains(t, data, "\"msg\":\"skipping unavailable provider\",\"provider\":\"openrouter\"")
 					},
 				},
 				ExpectedPanicContains: "ERROR: model openrouter/auto does not exist",
@@ -495,16 +495,16 @@ func TestEvaluateExecute(t *testing.T) {
 								assert.EqualValues(t, 1, m[3].Assessment[metrics.AssessmentKeyResponseNoError])
 							}
 						},
-						filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath, data string) {
+						filepath.Join("result-directory", "evaluation.log"): nil,
+						filepath.Join("result-directory", "README.md"):      nil,
+						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
 							assert.Contains(t, data, "preloading model")
 							assert.Contains(t, data, "unloading model")
 						},
-						filepath.Join("result-directory", "README.md"): nil,
-						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "evaluation.log"): nil,
 						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "ollama_"+log.CleanModelNameForFileSystem(providertesting.OllamaTestModel), "golang", "golang", "plain", "response-1.log"): nil,
 					},
 					ExpectedOutputValidate: func(t *testing.T, output, resultPath string) {
-						assert.Contains(t, output, `Starting services for provider "ollama"`)
+						assert.Contains(t, output, "msg=\"starting services for provider\" provider=ollama")
 					},
 				})
 			}
@@ -526,7 +526,7 @@ func TestEvaluateExecute(t *testing.T) {
 						filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): nil,
 					},
 					ExpectedOutputValidate: func(t *testing.T, output, resultPath string) {
-						assert.NotContains(t, output, `Starting services for provider "ollama"`)
+						assert.NotContains(t, output, "msg=\"starting services for provider\" provider=ollama")
 					},
 				})
 			}
@@ -730,13 +730,13 @@ func TestEvaluateExecute(t *testing.T) {
 					})
 				},
 				filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Contains(t, data, "Run 1/3")
-					assert.Contains(t, data, "Run 2/3")
-					assert.Contains(t, data, "Run 3/3")
+					assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":1,\"total\":3}")
+					assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":2,\"total\":3}")
+					assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":3,\"total\":3}")
 				},
 				filepath.Join("result-directory", "README.md"): nil,
 				filepath.Join("result-directory", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Equal(t, 3, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+					assert.Equal(t, 3, strings.Count(data, "\"msg\":\"evaluating model\",\"model\":\"symflower/symbolic-execution\""))
 				},
 			},
 		})
@@ -903,10 +903,10 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "symflower_symbolic-execution", "evaluation.log"): nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution", "README.md"):      nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+					assert.Equal(t, 1, strings.Count(data, "\"msg\":\"evaluating model\",\"model\":\"symflower/symbolic-execution\""))
 				},
 				filepath.Join("result-directory", "symflower_symbolic-execution", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+					assert.Equal(t, 1, strings.Count(data, "\"msg\":\"evaluating model\",\"model\":\"symflower/symbolic-execution\""))
 				},
 
 				// Parallel run 2
@@ -998,10 +998,10 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "symflower_symbolic-execution_1", "evaluation.log"): nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution_1", "README.md"):      nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution_1", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+					assert.Equal(t, 1, strings.Count(data, "\"msg\":\"evaluating model\",\"model\":\"symflower/symbolic-execution\""))
 				},
 				filepath.Join("result-directory", "symflower_symbolic-execution_1", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+					assert.Equal(t, 1, strings.Count(data, "\"msg\":\"evaluating model\",\"model\":\"symflower/symbolic-execution\""))
 				},
 
 				// Parallel run 3
@@ -1093,10 +1093,10 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "symflower_symbolic-execution_2", "evaluation.log"): nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution_2", "README.md"):      nil,
 				filepath.Join("result-directory", "symflower_symbolic-execution_2", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+					assert.Equal(t, 1, strings.Count(data, "\"msg\":\"evaluating model\",\"model\":\"symflower/symbolic-execution\""))
 				},
 				filepath.Join("result-directory", "symflower_symbolic-execution_2", string(evaluatetask.IdentifierWriteTests), "symflower_symbolic-execution", "java", "java", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Equal(t, 1, strings.Count(data, `Evaluating model "symflower/symbolic-execution"`))
+					assert.Equal(t, 1, strings.Count(data, "\"msg\":\"evaluating model\",\"model\":\"symflower/symbolic-execution\""))
 				},
 			},
 		})
@@ -1135,7 +1135,7 @@ func TestEvaluateExecute(t *testing.T) {
 					require.FileExists(t, symflowerLogFilePath)
 					data, err := os.ReadFile(symflowerLogFilePath)
 					require.NoError(t, err)
-					assert.Contains(t, string(data), `Evaluating model "symflower/symbolic-execution"`)
+					assert.Contains(t, string(data), "\"msg\":\"evaluating model\",\"model\":\"symflower/symbolic-execution\"")
 				},
 			})
 		}
