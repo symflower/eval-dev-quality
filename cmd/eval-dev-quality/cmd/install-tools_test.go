@@ -49,7 +49,7 @@ func TestInstallTools(t *testing.T) {
 				})
 
 				for _, toolName := range tc.ExpectedInstalledToolNames {
-					require.Contains(t, logOutput.String(), fmt.Sprintf(`Install %q to`, toolName))
+					require.Contains(t, logOutput.String(), fmt.Sprintf("msg=\"installing tool\" tool=%s", toolName))
 					toolPath, err := exec.LookPath(toolName)
 					require.NoError(t, err)
 					require.NotEmpty(t, toolPath)
@@ -64,7 +64,7 @@ func TestInstallTools(t *testing.T) {
 				})
 
 				for _, toolName := range tc.ExpectedInstalledToolNames {
-					require.NotContains(t, logOutput.String(), fmt.Sprintf(`Install %q to`, toolName))
+					require.NotContains(t, logOutput.String(), fmt.Sprintf("msg=\"installing tool\" tool=%s", toolName))
 					toolPath, err := exec.LookPath(toolName)
 					require.NoError(t, err)
 					require.NotEmpty(t, toolPath)

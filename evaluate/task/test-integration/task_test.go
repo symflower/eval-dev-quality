@@ -85,10 +85,10 @@ func TestWriteTestsRun(t *testing.T) {
 			},
 		},
 		ValidateLog: func(t *testing.T, data string) {
-			assert.Contains(t, data, "Evaluating model \"symflower/symbolic-execution\"")
+			assert.Contains(t, data, "msg=\"evaluating model\" model=symflower/symbolic-execution")
 			assert.Contains(t, data, "Generated 1 test")
 			assert.Contains(t, data, "PASS: TestSymflowerPlain")
-			assert.Contains(t, data, "Evaluated model \"symflower/symbolic-execution\"")
+			assert.Contains(t, data, "msg=\"evaluated model\" model=symflower/symbolic-execution")
 		},
 	})
 }

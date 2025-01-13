@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"strings"
+
 	"github.com/jessevdk/go-flags"
 	"github.com/symflower/eval-dev-quality/log"
 )
@@ -47,8 +49,9 @@ func Execute(logger *log.Logger, arguments []string) {
 		logger.Panicf("Could not parse arguments: %+v", err)
 	}
 	if parser.Active == nil {
-		logger.SetFlags(log.FlagMessageOnly)
-		parser.WriteHelp(logger.Writer())
+		var sb strings.Builder
+		parser.WriteHelp(&sb)
+		logger.PrintfWithoutMeta(sb.String())
 	}
 }
 

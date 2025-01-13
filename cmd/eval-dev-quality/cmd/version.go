@@ -24,8 +24,8 @@ func (command *Version) Execute(args []string) (err error) {
 	if revision == "" {
 		revision = "development"
 	}
-	command.logger.SetFlags(log.FlagMessageOnly) // Remove the timestamp and everything from the log output while still being able to test it.
-	command.logger.Printf("eval-dev-quality version %s - revision %s", evaluate.Version, revision)
+
+	command.logger.PrintfWithoutMeta("eval-dev-quality version %s - revision %s\n", evaluate.Version, revision)
 
 	return nil
 }

@@ -72,7 +72,7 @@ func TestProviderStart(t *testing.T) {
 		Name: "Startup",
 
 		ValidateLogs: func(t *testing.T, output string) {
-			assert.Contains(t, output, "Starting new Ollama service on")
+			assert.Contains(t, output, "starting new Ollama service")
 			assert.NotContains(t, output, "could not start Ollama service")
 		},
 	})
@@ -89,7 +89,7 @@ func TestProviderStart(t *testing.T) {
 		},
 
 		ValidateLogs: func(t *testing.T, output string) {
-			assert.Contains(t, output, "Reusing existing Ollama service on")
+			assert.Contains(t, output, "reusing existing Ollama service")
 		},
 	})
 }

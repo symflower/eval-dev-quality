@@ -31,7 +31,7 @@ func CoverageObjectCountOfFile(logger *log.Logger, coverageFilePath string) (cov
 	}
 
 	// Log coverage objects.
-	logger.Printf("coverage objects: %s", string(coverageFile))
+	logger.Info("coverage objects", "objects", string(coverageFile))
 
 	var coverageData []CoverageBlockUnfolded
 	if err := json.Unmarshal(coverageFile, &coverageData); err != nil {

@@ -93,7 +93,7 @@ func TestWriteTestsRun(t *testing.T) {
 				"exit status 1",                  // Symflower fix not applicable (overwrote template).
 			},
 			ValidateLog: func(t *testing.T, data string) {
-				assert.Equal(t, 1, strings.Count(data, "Evaluating model \"mocked-model\""))
+				assert.Equal(t, 1, strings.Count(data, "msg=\"evaluating model\" model=mocked-model"))
 				assert.Equal(t, 4, strings.Count(data, "PASS: TestCaseB")) // Bare model result, with fix, with template, with template and fix.
 			},
 		})
@@ -120,7 +120,7 @@ func TestWriteTestsRun(t *testing.T) {
 					ExpectedRepositoryAssessment: expectedAssessments,
 					ExpectedProblemContains:      expectedProblems,
 					ValidateLog: func(t *testing.T, data string) {
-						assert.Contains(t, data, "Evaluating model \"mocked-model\"")
+						assert.Contains(t, data, "msg=\"evaluating model\" model=mocked-model")
 						if assertTestsPass {
 							assert.Contains(t, data, "PASS: TestPlain")
 						}
@@ -295,7 +295,7 @@ func TestWriteTestsRun(t *testing.T) {
 			},
 			ExpectedProblemContains: nil,
 			ValidateLog: func(t *testing.T, data string) {
-				assert.Contains(t, data, "Evaluating model \"mocked-model\"")
+				assert.Contains(t, data, "msg=\"evaluating model\" model=mocked-model")
 			},
 		})
 	}
@@ -390,7 +390,7 @@ func TestWriteTestsRun(t *testing.T) {
 				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{},
 			},
 			ValidateLog: func(t *testing.T, data string) {
-				assert.Contains(t, data, "Ignoring file \"plain.go\" (as configured by the repository)")
+				assert.Contains(t, data, "msg=\"ignoring file (as configured by the repository)\" path=plain.go")
 			},
 		})
 	}

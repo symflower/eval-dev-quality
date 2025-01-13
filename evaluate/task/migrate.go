@@ -69,7 +69,7 @@ func (t *Migrate) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.I
 	var maximumReachableFiles uint64
 	for _, testFilePath := range testFilesPath {
 		if ctx.Repository.Configuration().IsFilePathIgnored(testFilePath) {
-			taskLogger.Printf("Ignoring file %q (as configured by the repository)", testFilePath)
+			taskLogger.Info("ignoring file (as configured by the repository)", "path", testFilePath)
 
 			continue
 		}
@@ -134,7 +134,7 @@ func clearRepositoryForMigration(language language.Language, repositoryPath stri
 
 // validateTranspileRepository checks if the repository for the "transpile" task is well-formed.
 func validateMigrateRepository(logger *log.Logger, repositoryPath string, language language.Language) (err error) {
-	logger.Printf("validating repository %q", repositoryPath)
+	logger.Info("validating repository", "path", repositoryPath)
 
 	filePaths, err := language.Files(logger, repositoryPath)
 	if err != nil {

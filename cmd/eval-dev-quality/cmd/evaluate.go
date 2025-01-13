@@ -182,16 +182,16 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 		if command.Runtime == "docker" {
 			if _, err := exec.LookPath("docker"); err != nil {
-				command.logger.Panic("docker runtime could not be found")
+				command.logger.Panicf("docker runtime could not be found")
 			}
 		}
 
 		if command.Parallel != 1 && command.Runtime == "local" {
-			command.logger.Panic("the 'parallel' parameter can't be used with local execution")
+			command.logger.Panicf("the 'parallel' parameter can't be used with local execution")
 		}
 
 		if command.Parallel == 0 {
-			command.logger.Panic("the 'parallel' parameter has to be greater then zero")
+			command.logger.Panicf("the 'parallel' parameter has to be greater then zero")
 		}
 
 		if command.RuntimeImage == "" {
@@ -199,7 +199,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 
 		if command.Runtime == "kubernetes" && command.Namespace == "" {
-			command.logger.Panic("the namespace parameter can't be empty when using the kubernetes runtime")
+			command.logger.Panicf("the namespace parameter can't be empty when using the kubernetes runtime")
 		}
 
 		evaluationContext.NoDisqualification = command.NoDisqualification
@@ -218,7 +218,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 		command.ResultPath = uniqueResultPath
 		evaluationContext.ResultPath = uniqueResultPath
-		command.logger.Printf("Writing results to %s", command.ResultPath)
+		command.logger.Info("configured results directory", "path", command.ResultPath)
 	}
 
 	// Initialize logging within result directory.
@@ -343,7 +343,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 					commandRepositories[r] = true
 					commandRepositoriesLanguages[languageIDOfRepository] = true
 				} else {
-					command.logger.Printf("Excluded repository %s because its language %q is not enabled for this evaluation", r, languageIDOfRepository)
+					command.logger.Info("excluded repository because its language is not enabled for this evaluation", "repository", r, "language", languageIDOfRepository)
 				}
 			}
 			for languageID := range languagesSelected {
@@ -354,7 +354,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 						return l == languageID
 					})
 					delete(languagesSelected, languageID)
-					command.logger.Printf("Excluded language %q because it is not part of the selected repositories", languageID)
+					command.logger.Info("excluded language because it is not part of the selected repositories", "language", languageID)
 				}
 			}
 
@@ -398,7 +398,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		modelsSelected := map[string]model.Model{}
 		evaluationContext.ProviderForModel = map[model.Model]provider.Provider{}
 		for _, p := range providersSelected {
-			command.logger.Printf("Checking provider %q for models", p.ID())
+			command.logger.Info("querying provider models", "provider", p.ID())
 
 			if t, ok := p.(provider.InjectToken); ok {
 				token, ok := command.ProviderTokens[p.ID()]
@@ -407,14 +407,14 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				}
 			}
 			if err := p.Available(command.logger); err != nil {
-				command.logger.Printf("Skipping unavailable provider %q cause: %s", p.ID(), err)
+				command.logger.Warn("skipping unavailable provider", "provider", p.ID(), "error", err)
 
 				continue
 			}
 
 			// Start services of providers.
 			if service, ok := p.(provider.Service); ok {
-				command.logger.Printf("Starting services for provider %q", p.ID())
+				command.logger.Info("starting services for provider", "provider", p.ID())
 				shutdown, err := service.Start(command.logger)
 				if err != nil {
 					command.logger.Panicf("ERROR: could not start services for provider %q: %s", p, err)
@@ -424,7 +424,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 			// Check if a provider has the ability to pull models and do so if necessary.
 			if puller, ok := p.(provider.Puller); ok {
-				command.logger.Printf("Pulling available models for provider %q", p.ID())
+				command.logger.Info("pulling available models for provider", "provider", p.ID())
 				for _, modelID := range command.Models {
 					if strings.HasPrefix(modelID, p.ID()) {
 						if err := puller.Pull(command.logger, modelID); err != nil {
@@ -485,9 +485,9 @@ func (command *Evaluate) Execute(args []string) (err error) {
 	evaluationContext, evaluationConfiguration, cleanup := command.Initialize(args)
 	defer cleanup()
 	if evaluationContext == nil {
-		command.logger.Panic("ERROR: empty evaluation context")
+		command.logger.Panicf("ERROR: empty evaluation context")
 	} else if evaluationConfiguration == nil {
-		command.logger.Panic("ERROR: empty evaluation configuration")
+		command.logger.Panicf("ERROR: empty evaluation configuration")
 	}
 
 	configurationFile, err := os.Create(filepath.Join(evaluationContext.ResultPath, "config.json"))
@@ -587,7 +587,7 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 
 	// Pull the image to ensure using the latest version
 	{
-		ctx.Log.Printf("Try pulling %s", command.RuntimeImage)
+		ctx.Log.Info("pulling latest version", "image", command.RuntimeImage)
 		cmd := []string{
 			"docker",
 			"pull",
@@ -638,7 +638,7 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 				Command: cmd,
 			})
 			if err != nil {
-				command.logger.Printf("ERROR: %s", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+				command.logger.Error("docker evaluation failed", "error", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
 
 				return
 			}
@@ -771,7 +771,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 				Stdin:   tmplData.String(),
 			})
 			if err != nil {
-				command.logger.Printf("ERROR: %s", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+				command.logger.Error("kubernetes evaluation failed", "error", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
 
 				return
 			}
@@ -789,7 +789,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 				},
 			})
 			if err != nil {
-				command.logger.Printf("ERROR: %s", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+				command.logger.Error("kubernetes evaluation failed", "error", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
 
 				return
 			}
@@ -806,7 +806,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 				},
 			})
 			if err != nil {
-				command.logger.Printf("ERROR: %s", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+				command.logger.Error("kubernetes evaluation failed", "error", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
 
 				return
 			}

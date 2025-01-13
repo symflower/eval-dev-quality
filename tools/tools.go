@@ -54,7 +54,7 @@ func InstallAll(logger *log.Logger, installPath string) (err error) {
 		if err := InstallTool(logger, tool, installPath); err != nil {
 			// Log if a tool is not supported by the operating system, but do not fail as it is not a necessary tool.
 			if pkgerrors.Is(err, ErrUnsupportedOperatingSystem) {
-				logger.Printf("WARNING: tool %s is not supported by the operating system", tool.ID())
+				logger.Warn("tool is not supported by the operating system", "tool", tool.ID())
 
 				continue
 			}

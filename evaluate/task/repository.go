@@ -138,7 +138,7 @@ func TemporaryRepository(logger *log.Logger, testDataPath string, repositoryPath
 	if err := osutil.CopyTree(repositoryPathAbsolute, temporaryRepositoryPath); err != nil {
 		return nil, cleanup, pkgerrors.WithStack(err)
 	}
-	logger.Printf("Creating temporary repository for %q within %q", repositoryPathRelative, temporaryRepositoryPath)
+	logger.Info("creating temporary repository", "repository", repositoryPathRelative, "path", temporaryRepositoryPath)
 
 	// Add a default git configuration.
 	if err := os.MkdirAll(filepath.Join(temporaryRepositoryPath, ".git"), 0700); err != nil {
