@@ -80,6 +80,9 @@ Release version of this roadmap issue:
         - [ ] Update payment logic with new Google Drive folder of the evaluation
         - [ ] Update payment link in this README
         - [ ] Update payment link on symflower.com (except for the one deep dive that mentions exactly these results)
+    - [ ] Create an issue in the company tracker for Markus to announce the new deep dive on Twitter and LinkedIn
+-   [ ] Close this issue
+-   [ ] Close the current milestone
 -   [ ] Announce release
 -   [ ] Eat cake 🎂
 
