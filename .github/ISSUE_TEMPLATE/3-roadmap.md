@@ -75,6 +75,11 @@ Release version of this roadmap issue:
         -   [ ] Update "latest DevQualityEval deep dive" mentions
         -   [ ] Update DevQualityEval blog series lists with new entries
         -   [ ] Update LLM blog series lists with new entries
+    - [ ] Update payment process for supporting DevQualityEval
+        - [ ] New Stripe payment link for this version
+        - [ ] Update payment logic with new Google Drive folder of the evaluation
+        - [ ] Update payment link in this README
+        - [ ] Update payment link on symflower.com (except for the one deep dive that mentions exactly these results)
 -   [ ] Announce release
 -   [ ] Eat cake 🎂
 
