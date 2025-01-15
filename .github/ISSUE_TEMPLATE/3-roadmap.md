@@ -69,8 +69,8 @@ Release version of this roadmap issue:
     -   [ ] Update repository link with blog post link
     -   [ ] https://github.com/symflower/eval-dev-quality/discussions
         -   [ ] Remove the previous announcements
-        -   [ ] Add a "Deep dive: $blog-post-title" announcement for the blog post
-        -   [ ] Add a "v$version: $summary-of-highlights" announcement for the release
+        -   [ ] Add a "Deep dive: $blog-post-title" announcement for the blog post, unpin all others and pin this one
+        -   [ ] Add a "v$version: $summary-of-highlights" announcement for the release, unpin all others and pin this one
     -   [ ] symflower.com
         -   [ ] Update "latest DevQualityEval deep dive" mentions
         -   [ ] Update DevQualityEval blog series lists with new entries
