@@ -24,7 +24,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	if _, err = f.WriteString(osutil.EnvironmentPathIdentifier + "=" + strings.Join([]string{installPath, os.Getenv(osutil.EnvironmentPathIdentifier)}, string(os.PathListSeparator))); err != nil {
+	if _, err = f.WriteString(osutil.EnvironmentPathIdentifier + "=" + strings.Join([]string{installPath, os.Getenv(osutil.EnvironmentPathIdentifier)}, string(os.PathListSeparator)) + osutil.LineEnding); err != nil {
 		panic(err)
 	}
 }

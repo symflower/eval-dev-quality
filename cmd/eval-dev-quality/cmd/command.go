@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"encoding/base64"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/jessevdk/go-flags"
@@ -24,6 +27,28 @@ func Execute(logger *log.Logger, arguments []string) {
 
 	// Print the help, when there is no active command.
 	parser.SubcommandsOptional = true
+
+	// Cache Symflower's license file if we receive its data and the license file path is not yet set. This is helpful in a container environment where most likely only a environment variable is set.
+	licenseData := os.Getenv("SYMFLOWER_INTERNAL_LICENSE_FILE")
+	if licenseData != "" && os.Getenv("SYMFLOWER_INTERNAL_LICENSE_FILE_PATH") == "" {
+		homePath, err := os.UserHomeDir()
+		if err != nil {
+			panic(err)
+		}
+		licensePath := filepath.Join(homePath, ".symflower-license")
+		logger.Info("write license to", "path", licensePath)
+		if decoded, err := base64.StdEncoding.DecodeString(licenseData); err == nil {
+			licenseData = string(decoded)
+		}
+		if err := os.WriteFile(licensePath, []byte(licenseData), 0600); err != nil {
+			panic(err)
+		}
+
+		// Forward the path of the license file for future steps of the job.
+		if err := os.Setenv("SYMFLOWER_INTERNAL_LICENSE_FILE_PATH", licensePath); err != nil {
+			panic(err)
+		}
+	}
 
 	parser.CommandHandler = func(command flags.Commander, args []string) (err error) {
 		if command == nil {
