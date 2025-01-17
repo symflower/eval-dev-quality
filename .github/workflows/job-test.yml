@@ -5,6 +5,10 @@ on:
         required: true
         type: string
 
+env:
+  SYMFLOWER_INTERNAL_LICENSE_FILE: ${{ secrets.SYMFLOWER_INTERNAL_LICENSE_FILE }}
+  SYMFLOWER_LICENSE_KEY: ${{ secrets.SYMFLOWER_LICENSE_KEY }}
+
 jobs:
   test:
     runs-on: ${{ inputs.os }}
@@ -39,6 +43,11 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "<>"
+        shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
+
+      - name: Install Symflower license
+        run: |
+          go run scripts/gitlab-ci-symflower-license/main.go
         shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
 
       - name: Build

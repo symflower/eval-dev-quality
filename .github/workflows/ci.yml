@@ -18,6 +18,7 @@ jobs:
     needs:
       - docker
       - lint
+    secrets: inherit
     strategy:
       fail-fast: false # Run the whole matrix for maximum information. No matter if we fail with one job early.
       matrix:

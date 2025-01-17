@@ -610,6 +610,8 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 			"docker",
 			"run",
 			"-e", "PROVIDER_TOKEN",
+			"-e", "SYMFLOWER_INTERNAL_LICENSE_FILE",
+			"-e", "SYMFLOWER_LICENSE_KEY",
 			"-v", volumeName + ":/app/evaluation",
 			"--rm", // automatically remove container after it finished
 			command.RuntimeImage,
