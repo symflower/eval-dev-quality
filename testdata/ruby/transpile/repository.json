@@ -1,5 +1,27 @@
 {
-	"tasks": [
-		"transpile"
-	]
+  "tasks": ["transpile"],
+  "scores": {
+    "transpile": {
+      "balancedBrackets": {
+        "tests-passing": 5,
+        "files-executed-maximum-reachable": 2
+      },
+      "binarySearch": {
+        "tests-passing": 5,
+        "files-executed-maximum-reachable": 2
+      },
+      "cascadingIfElse": {
+        "tests-passing": 3,
+        "files-executed-maximum-reachable": 2
+      },
+      "pascalsTriangle": {
+        "tests-passing": 4,
+        "files-executed-maximum-reachable": 2
+      },
+      "sort": {
+        "tests-passing": 5,
+        "files-executed-maximum-reachable": 2
+      }
+    }
+  }
 }

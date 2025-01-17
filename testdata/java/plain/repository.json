@@ -1,5 +1,11 @@
 {
-	"tasks": [
-		"write-tests"
-	]
+  "tasks": ["write-tests"],
+  "scores": {
+    "write-tests": {
+      "src/main/java/com/eval/Plain.java": {
+        "coverage": 1,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
 }

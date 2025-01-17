@@ -9,27 +9,39 @@ import (
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
-	"github.com/symflower/eval-dev-quality/util"
 	"github.com/zimmski/osutil"
+
+	"github.com/symflower/eval-dev-quality/evaluate/metrics"
+	"github.com/symflower/eval-dev-quality/util"
 )
 
 // RepositoryConfiguration holds the configuration of a repository.
 type RepositoryConfiguration struct {
 	// Tasks holds the tasks supported by the repository.
-	Tasks []Identifier
+	Tasks []Identifier `json:"tasks"`
 	// IgnorePaths holds the relative paths that should be ignored when searching for cases.
 	IgnorePaths []string `json:"ignore,omitempty"`
 
 	// Prompt holds LLM prompt-related configuration.
-	Prompt struct {
-		// TestFramework overwrites the language-specific test framework to use.
-		TestFramework string `json:"test-framework,omitempty"`
-	} `json:",omitempty"`
+	Prompt RepositoryConfigurationPrompt `json:"prompt,omitempty"`
 
 	// Validation holds quality gates for evaluation.
-	Validation struct {
-		Execution RepositoryConfigurationExecution `json:",omitempty"`
-	}
+	Validation RepositoryConfigurationValidation `json:"validation,omitempty"`
+
+	// MaxScores holds the maximum scores per task type, case and metric for this repository.
+	MaxScores map[Identifier]map[string]map[metrics.AssessmentKey]uint64 `json:"scores,omitempty"`
+}
+
+// RepositoryConfigurationPrompt holds LLM prompt-related configuration.
+type RepositoryConfigurationPrompt struct {
+	// TestFramework overwrites the language-specific test framework to use.
+	TestFramework string `json:"test-framework,omitempty"`
+}
+
+// RepositoryConfigurationValidation holds quality gates for evaluation.
+type RepositoryConfigurationValidation struct {
+	// Execution holds execution-related validation.
+	Execution RepositoryConfigurationExecution `json:"execution,omitempty"`
 }
 
 // RepositoryConfigurationExecution execution-related quality gates for evaluation.
@@ -65,6 +77,16 @@ func LoadRepositoryConfiguration(path string, defaultTasks []Identifier) (config
 	}
 
 	return config, nil
+}
+
+// Write stores the configuration on the given path.
+func (rc *RepositoryConfiguration) Write(path string) (err error) {
+	data, err := json.Marshal(rc)
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(path, data, 0666)
 }
 
 // validate validates the configuration.

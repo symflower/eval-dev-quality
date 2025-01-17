@@ -1,5 +1,99 @@
 {
-	"tasks": [
-		"write-tests"
-	]
+  "tasks": ["write-tests"],
+  "scores": {
+    "write-tests": {
+      "lib/balanced_brackets.rb": {
+        "coverage": 11,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/binary_search.rb": {
+        "coverage": 12,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/call_loop_conditions_often_enough.rb": {
+        "coverage": 8,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/cascading_if_else.rb": {
+        "coverage": 6,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/collatz_calculator.rb": {
+        "coverage": 9,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/conditions_and.rb": {
+        "coverage": 4,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/equilibrium_indices.rb": {
+        "coverage": 11,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/for_loop.rb": {
+        "coverage": 7,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/jacobi_symbol.rb": {
+        "coverage": 20,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/klarner_rado_sequence.rb": {
+        "coverage": 14,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/knapsack.rb": {
+        "coverage": 21,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/largest_proper_divisor.rb": {
+        "coverage": 11,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/magic_square_odd.rb": {
+        "coverage": 23,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/match_bytes.rb": {
+        "coverage": 10,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/pascals_triangle.rb": {
+        "coverage": 11,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/phone_number.rb": {
+        "coverage": 12,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/simple_if_else.rb": {
+        "coverage": 4,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/simple_switch_with_return.rb": {
+        "coverage": 4,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/sort.rb": {
+        "coverage": 5,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/type_array_access.rb": {
+        "coverage": 4,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/type_array_consecutive_access.rb": {
+        "coverage": 7,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/type_array_multidimensional_array_length.rb": {
+        "coverage": 6,
+        "files-executed-maximum-reachable": 1
+      },
+      "lib/validate_date.rb": {
+        "coverage": 17,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
 }

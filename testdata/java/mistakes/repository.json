@@ -1,5 +1,27 @@
 {
-	"tasks": [
-		"code-repair"
-	]
+  "tasks": ["code-repair"],
+  "scores": {
+    "code-repair": {
+      "importMissing": {
+        "tests-passing": 2,
+        "files-executed-maximum-reachable": 1
+      },
+      "openingBracketMissing": {
+        "tests-passing": 3,
+        "files-executed-maximum-reachable": 1
+      },
+      "syntaxErrorTypeMissing": {
+        "tests-passing": 3,
+        "files-executed-maximum-reachable": 1
+      },
+      "typeUnknown": {
+        "tests-passing": 3,
+        "files-executed-maximum-reachable": 1
+      },
+      "variableUnknown": {
+        "tests-passing": 3,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
 }
