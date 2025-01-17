@@ -69,12 +69,20 @@ Release version of this roadmap issue:
     -   [ ] Update repository link with blog post link
     -   [ ] https://github.com/symflower/eval-dev-quality/discussions
         -   [ ] Remove the previous announcements
-        -   [ ] Add a "Deep dive: $blog-post-title" announcement for the blog post
-        -   [ ] Add a "v$version: $summary-of-highlights" announcement for the release
+        -   [ ] Add a "Deep dive: $blog-post-title" announcement for the blog post, unpin all others and pin this one
+        -   [ ] Add a "v$version: $summary-of-highlights" announcement for the release, unpin all others and pin this one
     -   [ ] symflower.com
         -   [ ] Update "latest DevQualityEval deep dive" mentions
         -   [ ] Update DevQualityEval blog series lists with new entries
         -   [ ] Update LLM blog series lists with new entries
+    - [ ] Update payment process for supporting DevQualityEval
+        - [ ] New Stripe payment link for this version
+        - [ ] Update payment logic with new Google Drive folder of the evaluation
+        - [ ] Update payment link in this README
+        - [ ] Update payment link on symflower.com (except for the one deep dive that mentions exactly these results)
+    - [ ] Create an issue in the company tracker for Markus to announce the new deep dive on Twitter and LinkedIn
+-   [ ] Close this issue
+-   [ ] Close the current milestone
 -   [ ] Announce release
 -   [ ] Eat cake 🎂
 
