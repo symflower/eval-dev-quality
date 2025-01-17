@@ -99,7 +99,7 @@ func (*symflower) RequiredVersion() string {
 }
 
 // Install installs the tool's binary to the given install path.
-func (*symflower) Install(logger *log.Logger, installPath string) (err error) {
+func (tool *symflower) Install(logger *log.Logger, installPath string) (err error) {
 	osIdentifier := runtime.GOOS
 	var architectureIdentifier string
 	switch a := runtime.GOARCH; a {
@@ -116,7 +116,7 @@ func (*symflower) Install(logger *log.Logger, installPath string) (err error) {
 	}
 
 	symflowerDownloadURL := "https://download.symflower.com/local/v" + SymflowerVersionRequired + "/symflower-" + osIdentifier + "-" + architectureIdentifier + osutil.BinaryExtension()
-	symflowerInstallPath := filepath.Join(installPath, "symflower"+osutil.BinaryExtension())
+	symflowerInstallPath := filepath.Join(installPath, tool.BinaryName())
 	logger.Info("installing \"symflower\"", "path", symflowerInstallPath, "url", symflowerDownloadURL)
 	if err := osutil.DownloadFileWithProgress(symflowerDownloadURL, symflowerInstallPath); err != nil {
 		return pkgerrors.WithStack(pkgerrors.WithMessage(err, fmt.Sprintf("cannot download to %s from %s", symflowerInstallPath, symflowerDownloadURL)))

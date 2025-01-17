@@ -121,5 +121,16 @@ func InstallTool(logger *log.Logger, tool Tool, installPath string) (err error) 
 		return err
 	}
 
+	// Check that tool is working.
+	binaryPath := filepath.Join(installPath, tool.BinaryName())
+	logger.Info(
+		"check tool is working",
+		"tool", tool.ID(),
+		"path", binaryPath,
+	)
+	if err := tool.CheckVersion(logger, binaryPath); err != nil {
+		return err
+	}
+
 	return nil
 }
