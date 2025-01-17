@@ -47,7 +47,7 @@ jobs:
 
       - name: Install Symflower license
         run: |
-          go run scripts/gitlab-ci-symflower-license/main.go
+          go run scripts/github-ci-symflower-license/main.go
         shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
 
       - name: Build
@@ -62,7 +62,7 @@ jobs:
       - name: Install testing tools
         run: |
           make install-tools-testing
-          go run scripts/gitlab-ci/main.go
+          go run scripts/github-ci/main.go
         shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
 
       - name: Lint Build

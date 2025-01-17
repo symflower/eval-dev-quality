@@ -1,0 +1,36 @@
+on:
+  workflow_call:
+    inputs:
+      container:
+        default: eval-dev-quality
+        type: string
+      organization:
+        default: symflower
+        type: string
+
+jobs:
+  delete_branch_container_versions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete branch container versions
+        uses: vlaurin/action-ghcr-prune@v0.6.0
+        with:
+          container: ${{ inputs.container }}
+          keep-tags-regexes: |
+            ^[1-9]\d*\.\d+.\d+$
+          keep-younger-than: 14 # In days.
+          organization: ${{ inputs.organization }}
+          prune-tags-regexes: |
+            ^.+$
+          token: ${{ github.token }}
+  delete_untagged_container_versions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete untagged container versions
+        uses: vlaurin/action-ghcr-prune@v0.6.0
+        with:
+          container: ${{ inputs.container }}
+          keep-younger-than: 1 # In days.
+          organization: ${{ inputs.organization }}
+          prune-untagged: true
+          token: ${{ github.token }}

@@ -7,16 +7,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  docker:
-    name: 'Run docker image building'
-    uses: ./.github/workflows/job-docker.yml
+  container-build:
+    name: 'Build container images'
+    uses: ./.github/workflows/job-container-image-build.yml
+  container-cleanup:
+    name: 'Clean up container images'
+    uses: ./.github/workflows/job-container-image-cleanup.yml
   lint:
     name: 'Lint the repository'
     uses: ./.github/workflows/job-lint.yml
   test:
     name: 'Run tests and lint artifacts'
     needs:
-      - docker
+      - container-build
       - lint
     secrets: inherit
     strategy:
