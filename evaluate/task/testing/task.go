@@ -15,6 +15,7 @@ import (
 	"github.com/symflower/eval-dev-quality/model"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/zimmski/osutil"
+	"golang.org/x/exp/maps"
 )
 
 // TestCaseTask holds a test case for a task.
@@ -27,7 +28,7 @@ type TestCaseTask struct {
 	TestDataPath   string
 	RepositoryPath string
 
-	ExpectedRepositoryAssessment map[evaltask.Identifier]metrics.Assessments
+	ExpectedRepositoryAssessment map[string]map[evaltask.Identifier]metrics.Assessments
 	ExpectedResultFiles          map[string]func(t *testing.T, filePath string, data string)
 	ExpectedProblemContains      []string
 	ExpectedError                error
@@ -61,7 +62,14 @@ func (tc *TestCaseTask) Validate(t *testing.T, createRepository createRepository
 	}
 	actualRepositoryAssessment, actualProblems, actualErr := tc.Task.Run(taskContext)
 
-	assert.Equal(t, metricstesting.CleanMap(tc.ExpectedRepositoryAssessment), metricstesting.CleanMap(actualRepositoryAssessment))
+	for _, caseName := range maps.Keys(tc.ExpectedRepositoryAssessment) {
+		tc.ExpectedRepositoryAssessment[caseName] = metricstesting.CleanMap(tc.ExpectedRepositoryAssessment[caseName])
+	}
+	for _, caseName := range maps.Keys(actualRepositoryAssessment) {
+		actualRepositoryAssessment[caseName] = metricstesting.CleanMap(actualRepositoryAssessment[caseName])
+	}
+
+	assert.Equal(t, tc.ExpectedRepositoryAssessment, actualRepositoryAssessment)
 
 	if assert.Equal(t, len(tc.ExpectedProblemContains), len(actualProblems), "problems count") {
 		for i, expectedProblem := range tc.ExpectedProblemContains {

@@ -91,18 +91,34 @@ func TestMigrateRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "migrate-plain"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierMigrate: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyCoverage:                      4,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					filepath.Join("src", "test", "java", "com", "eval", "DecrementTest.java"): {
+						IdentifierMigrate: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyCoverage:                      2,
+						},
+						IdentifierMigrateSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyCoverage:                      2,
+						},
 					},
-					IdentifierMigrateSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyCoverage:                      4,
+					filepath.Join("src", "test", "java", "com", "eval", "IncrementTest.java"): {
+						IdentifierMigrate: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyCoverage:                      2,
+						},
+						IdentifierMigrateSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyCoverage:                      2,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {

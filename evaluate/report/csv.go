@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"io"
 	"slices"
+	"sort"
 	"strconv"
 
 	pkgerrors "github.com/pkg/errors"
@@ -39,17 +40,24 @@ func NewEvaluationFile(writer io.Writer) (evaluationFile *EvaluationFile, err er
 }
 
 // WriteEvaluationRecord writes the assessments of a task into the evaluation CSV.
-func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language language.Language, repositoryName string, run uint, assessmentsPerTask map[task.Identifier]metrics.Assessments) (err error) {
-	tasks := maps.Keys(assessmentsPerTask)
-	slices.SortStableFunc(tasks, func(a, b task.Identifier) int {
-		return cmp.Compare(a, b)
-	})
-
+func (e *EvaluationFile) WriteEvaluationRecord(model model.Model, language language.Language, repositoryName string, run uint, assessmentsPerCasePerTask map[string]map[task.Identifier]metrics.Assessments) (err error) {
 	allRecords := [][]string{}
-	for _, task := range tasks {
-		assessment := assessmentsPerTask[task]
-		row := append([]string{model.ID(), language.ID(), repositoryName, string(task), strconv.FormatUint(uint64(run), 10)}, assessment.StringCSV()...)
-		allRecords = append(allRecords, row)
+
+	cases := maps.Keys(assessmentsPerCasePerTask)
+	sort.Strings(cases)
+	for _, caseName := range cases {
+		assessmentsPerTask := assessmentsPerCasePerTask[caseName]
+
+		tasks := maps.Keys(assessmentsPerTask)
+		slices.SortStableFunc(tasks, func(a, b task.Identifier) int {
+			return cmp.Compare(a, b)
+		})
+
+		for _, task := range tasks {
+			assessment := assessmentsPerTask[task]
+			row := append([]string{model.ID(), language.ID(), repositoryName, caseName, string(task), strconv.FormatUint(uint64(run), 10)}, assessment.StringCSV()...)
+			allRecords = append(allRecords, row)
+		}
 	}
 
 	return e.WriteLines(allRecords)
@@ -72,5 +80,5 @@ func (e *EvaluationFile) WriteLines(records [][]string) (err error) {
 
 // EvaluationHeader returns the CSV header for the evaluation CSV.
 func EvaluationHeader() (header []string) {
-	return append([]string{"model-id", "language", "repository", "task", "run"}, metrics.AllAssessmentKeysStrings...)
+	return append([]string{"model-id", "language", "repository", "case", "task", "run"}, metrics.AllAssessmentKeysStrings...)
 }

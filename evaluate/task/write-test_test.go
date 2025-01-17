@@ -63,27 +63,51 @@ func TestWriteTestsRun(t *testing.T) {
 			TestDataPath:   temporaryDirectoryPath,
 			RepositoryPath: filepath.Join("golang", "plain"),
 
-			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-				IdentifierWriteTests: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					metrics.AssessmentKeyResponseNoError:               2,
+			ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+				"caseA.go": {
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 0,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 0,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					// With the template there would be coverage but it is overwritten.
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 0,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 0,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
 				},
-				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					metrics.AssessmentKeyResponseNoError:               2,
-				},
-				// With the template there would be coverage but it is overwritten.
-				IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					metrics.AssessmentKeyResponseNoError:               2,
-				},
-				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					metrics.AssessmentKeyResponseNoError:               2,
+				"caseB.go": {
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
 				},
 			},
 			ExpectedProblemContains: []string{
@@ -101,7 +125,7 @@ func TestWriteTestsRun(t *testing.T) {
 
 	t.Run("Symflower Fix", func(t *testing.T) {
 		t.Run("Go", func(t *testing.T) {
-			validateGo := func(t *testing.T, testName string, language language.Language, testFileContent string, expectedAssessments map[evaltask.Identifier]metrics.Assessments, expectedProblems []string, assertTestsPass bool) {
+			validateGo := func(t *testing.T, testName string, language language.Language, testFileContent string, expectedAssessments map[string]map[evaltask.Identifier]metrics.Assessments, expectedProblems []string, assertTestsPass bool) {
 				temporaryDirectoryPath := t.TempDir()
 				repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
 				require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
@@ -128,30 +152,32 @@ func TestWriteTestsRun(t *testing.T) {
 				})
 			}
 			{
-				expectedAssessments := map[evaltask.Identifier]metrics.Assessments{
-					IdentifierWriteTests: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      1,
-					},
-					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      1,
-					},
-					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      1,
-					},
-					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      1,
+				expectedAssessments := map[string]map[evaltask.Identifier]metrics.Assessments{
+					"plain.go": {
+						IdentifierWriteTests: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyCoverage:                      1,
+						},
+						IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyCoverage:                      1,
+						},
+						IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyCoverage:                      1,
+						},
+						IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyCoverage:                      1,
+						},
 					},
 				}
 				validateGo(t, "Model generated correct test", &golang.Language{}, bytesutil.StringTrimIndentations(`
@@ -165,26 +191,28 @@ func TestWriteTestsRun(t *testing.T) {
 				`), expectedAssessments, nil, true)
 			}
 			{
-				expectedAssessments := map[evaltask.Identifier]metrics.Assessments{
-					IdentifierWriteTests: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      1,
-					},
-					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyCoverage:                      1,
+				expectedAssessments := map[string]map[evaltask.Identifier]metrics.Assessments{
+					"plain.go": {
+						IdentifierWriteTests: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyCoverage:                      1,
+						},
+						IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyCoverage:                      1,
+						},
 					},
 				}
 				expectedProblems := []string{
@@ -205,22 +233,24 @@ func TestWriteTestsRun(t *testing.T) {
 				`), expectedAssessments, expectedProblems, true)
 			}
 			{
-				expectedAssessments := map[evaltask.Identifier]metrics.Assessments{
-					IdentifierWriteTests: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
+				expectedAssessments := map[string]map[evaltask.Identifier]metrics.Assessments{
+					"plain.go": {
+						IdentifierWriteTests: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
 					},
 				}
 				expectedProblems := []string{
@@ -267,30 +297,32 @@ func TestWriteTestsRun(t *testing.T) {
 			TestDataPath:   temporaryDirectoryPath,
 			RepositoryPath: filepath.Join("ruby", "plain"),
 
-			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-				IdentifierWriteTests: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      1,
-					metrics.AssessmentKeyResponseNoError:               1,
-				},
-				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      1,
-					metrics.AssessmentKeyResponseNoError:               1,
-				},
-				IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      1,
-					metrics.AssessmentKeyResponseNoError:               1,
-				},
-				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyCoverage:                      1,
-					metrics.AssessmentKeyResponseNoError:               1,
+			ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+				filepath.Join("lib", "plain.rb"): {
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
 				},
 			},
 			ExpectedProblemContains: nil,
@@ -328,30 +360,58 @@ func TestWriteTestsRun(t *testing.T) {
 			TestDataPath:   temporaryDirectoryPath,
 			RepositoryPath: filepath.Join("golang", "plain"),
 
-			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-				IdentifierWriteTests: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					metrics.AssessmentKeyFilesExecuted:                 2,
-					metrics.AssessmentKeyCoverage:                      1,
-					metrics.AssessmentKeyResponseNoError:               2,
+			ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+				"empty.go": {
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      0,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      0,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      0,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      0,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
 				},
-				IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					metrics.AssessmentKeyFilesExecuted:                 2,
-					metrics.AssessmentKeyCoverage:                      1,
-					metrics.AssessmentKeyResponseNoError:               2,
-				},
-				IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					metrics.AssessmentKeyFilesExecuted:                 2,
-					metrics.AssessmentKeyCoverage:                      1,
-					metrics.AssessmentKeyResponseNoError:               2,
-				},
-				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					metrics.AssessmentKeyFilesExecuted:                 2,
-					metrics.AssessmentKeyCoverage:                      1,
-					metrics.AssessmentKeyResponseNoError:               2,
+				"plain.go": {
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyCoverage:                      1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
 				},
 			},
 			ExpectedProblemContains: []string{
@@ -383,12 +443,7 @@ func TestWriteTestsRun(t *testing.T) {
 			TestDataPath:   temporaryDirectoryPath,
 			RepositoryPath: filepath.Join("golang", "plain"),
 
-			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-				IdentifierWriteTests:                              metrics.Assessments{},
-				IdentifierWriteTestsSymflowerFix:                  metrics.Assessments{},
-				IdentifierWriteTestsSymflowerTemplate:             metrics.Assessments{},
-				IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{},
-			},
+			ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{},
 			ValidateLog: func(t *testing.T, data string) {
 				assert.Contains(t, data, "msg=\"ignoring file (as configured by the repository)\" path=plain.go")
 			},
@@ -440,30 +495,32 @@ func TestWriteTestsRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "spring-plain"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierWriteTests: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyCoverage:                      2,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyCoverage:                      2,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyCoverage:                      2,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyCoverage:                      2,
-						metrics.AssessmentKeyResponseNoError:               1,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					filepath.Join("src", "main", "java", "com", "example", "controller", "SomeController.java"): {
+						IdentifierWriteTests: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyCoverage:                      2,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyCoverage:                      2,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyCoverage:                      2,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyCoverage:                      2,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -507,22 +564,24 @@ func TestWriteTestsRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "spring-plain"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierWriteTests: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-					},
-					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					filepath.Join("src", "main", "java", "com", "example", "controller", "SomeController.java"): {
+						IdentifierWriteTests: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
+						IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {

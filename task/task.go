@@ -41,7 +41,7 @@ type Task interface {
 	Identifier() (identifier Identifier)
 
 	// Run runs a task in a given repository.
-	Run(ctx Context) (assessments map[Identifier]metrics.Assessments, problems []error, err error)
+	Run(ctx Context) (assessments map[string]map[Identifier]metrics.Assessments, problems []error, err error)
 }
 
 // Repository defines a repository to be evaluated.

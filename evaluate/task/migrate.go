@@ -32,7 +32,7 @@ func (t *Migrate) Identifier() evaltask.Identifier {
 }
 
 // Run migrates code and runs the generated tests to check if the migration was successful.
-func (t *Migrate) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
+func (t *Migrate) Run(ctx evaltask.Context) (repositoryAssessment map[string]map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
 	modelCapability, ok := ctx.Model.(model.CapabilityMigrate)
 	if !ok {
 		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
@@ -63,17 +63,22 @@ func (t *Migrate) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.I
 		testFramework = ctx.Repository.Configuration().Prompt.TestFramework
 	}
 
-	modelAssessment := metrics.NewAssessments()
-	withSymflowerFixAssessment := metrics.NewAssessments()
-
-	var maximumReachableFiles uint64
+	repositoryAssessment = map[string]map[evaltask.Identifier]metrics.Assessments{}
 	for _, testFilePath := range testFilesPath {
 		if ctx.Repository.Configuration().IsFilePathIgnored(testFilePath) {
 			taskLogger.Info("ignoring file (as configured by the repository)", "path", testFilePath)
 
 			continue
 		}
-		maximumReachableFiles++
+
+		modelAssessment := metrics.NewAssessments()
+		modelAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = 1
+		withSymflowerFixAssessment := metrics.NewAssessments()
+		withSymflowerFixAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = 1
+		repositoryAssessment[testFilePath] = map[evaltask.Identifier]metrics.Assessments{
+			IdentifierMigrate:             modelAssessment,
+			IdentifierMigrateSymflowerFix: withSymflowerFixAssessment,
+		}
 
 		if err := ctx.Repository.Reset(ctx.Logger); err != nil {
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
@@ -104,14 +109,6 @@ func (t *Migrate) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.I
 
 		modelAssessment.Add(modelAssessmentFile)
 		withSymflowerFixAssessment.Add(withSymflowerFixAssessmentFile)
-	}
-
-	modelAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
-	withSymflowerFixAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
-
-	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{
-		IdentifierMigrate:             modelAssessment,
-		IdentifierMigrateSymflowerFix: withSymflowerFixAssessment,
 	}
 
 	return repositoryAssessment, problems, nil

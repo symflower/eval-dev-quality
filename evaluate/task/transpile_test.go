@@ -78,18 +78,20 @@ func TestTranspileRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "transpile"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  8,
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
-					},
-					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  8,
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"cascadingIfElse": {
+						IdentifierTranspile: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  8,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
+						IdentifierTranspileSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  8,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -147,18 +149,34 @@ func TestTranspileRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "transpile"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  20,
-						metrics.AssessmentKeyFilesExecuted:                 4,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
-						metrics.AssessmentKeyResponseNoError:               4,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"cascadingIfElse": {
+						IdentifierTranspile: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  8,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
+						IdentifierTranspileSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  8,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
 					},
-					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  20,
-						metrics.AssessmentKeyFilesExecuted:                 4,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
-						metrics.AssessmentKeyResponseNoError:               4,
+					"isSorted": {
+						IdentifierTranspile: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  12,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
+						IdentifierTranspileSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  12,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -210,18 +228,20 @@ func TestTranspileRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "transpile"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  6,
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
-					},
-					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  6,
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"cascadingIfElse": {
+						IdentifierTranspile: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  6,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
+						IdentifierTranspileSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  6,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -281,18 +301,34 @@ func TestTranspileRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "transpile"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  16,
-						metrics.AssessmentKeyFilesExecuted:                 4,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
-						metrics.AssessmentKeyResponseNoError:               4,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"cascadingIfElse": {
+						IdentifierTranspile: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  6,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
+						IdentifierTranspileSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  6,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
 					},
-					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  16,
-						metrics.AssessmentKeyFilesExecuted:                 4,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
-						metrics.AssessmentKeyResponseNoError:               4,
+					"isSorted": {
+						IdentifierTranspile: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  10,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
+						IdentifierTranspileSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  10,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -336,17 +372,19 @@ func TestTranspileRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "transpile"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  0,
-						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					},
-					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  8,
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"cascadingIfElse": {
+						IdentifierTranspile: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  0,
+							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+						},
+						IdentifierTranspileSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  8,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
 					},
 				},
 				ExpectedProblemContains: []string{
@@ -410,18 +448,20 @@ func TestTranspileRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("ruby", "transpile"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  6,
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
-					},
-					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  6,
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"cascadingIfElse": {
+						IdentifierTranspile: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  6,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
+						IdentifierTranspileSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  6,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -473,18 +513,34 @@ func TestTranspileRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("ruby", "transpile"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  16,
-						metrics.AssessmentKeyFilesExecuted:                 4,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
-						metrics.AssessmentKeyResponseNoError:               4,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"cascadingIfElse": {
+						IdentifierTranspile: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  6,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
+						IdentifierTranspileSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  6,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
 					},
-					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  16,
-						metrics.AssessmentKeyFilesExecuted:                 4,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 4,
-						metrics.AssessmentKeyResponseNoError:               4,
+					"isSorted": {
+						IdentifierTranspile: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  10,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
+						IdentifierTranspileSymflowerFix: metrics.Assessments{
+							metrics.AssessmentKeyTestsPassing:                  10,
+							metrics.AssessmentKeyFilesExecuted:                 2,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               2,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -532,18 +588,20 @@ func TestTranspileRun(t *testing.T) {
 			TestDataPath:   temporaryDirectoryPath,
 			RepositoryPath: filepath.Join("golang", "transpile"),
 
-			ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-				IdentifierTranspile: metrics.Assessments{
-					metrics.AssessmentKeyTestsPassing:                  4,
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					metrics.AssessmentKeyResponseNoError:               2,
-				},
-				IdentifierTranspileSymflowerFix: metrics.Assessments{
-					metrics.AssessmentKeyTestsPassing:                  4,
-					metrics.AssessmentKeyFilesExecuted:                 1,
-					metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-					metrics.AssessmentKeyResponseNoError:               2,
+			ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+				"cascadingIfElse": {
+					IdentifierTranspile: metrics.Assessments{
+						metrics.AssessmentKeyTestsPassing:                  4,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+						metrics.AssessmentKeyResponseNoError:               2,
+					},
+					IdentifierTranspileSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyTestsPassing:                  4,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+						metrics.AssessmentKeyResponseNoError:               2,
+					},
 				},
 			},
 			ExpectedProblemContains: []string{

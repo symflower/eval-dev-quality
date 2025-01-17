@@ -24,7 +24,7 @@ func TestNewEvaluationFile(t *testing.T) {
 	require.NoError(t, err)
 
 	expectedEvaluationFileContent := bytesutil.StringTrimIndentations(`
-		model-id,language,repository,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing
+		model-id,language,repository,case,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing
 	`)
 
 	assert.Equal(t, expectedEvaluationFileContent, string(actualEvaluationFileContent))
@@ -34,7 +34,7 @@ func TestWriteEvaluationRecord(t *testing.T) {
 	type testCase struct {
 		Name string
 
-		Assessments map[task.Identifier]metrics.Assessments
+		Assessments map[string]map[task.Identifier]metrics.Assessments
 
 		ExpectedCSV string
 	}
@@ -58,37 +58,41 @@ func TestWriteEvaluationRecord(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Single task with empty assessments",
 
-		Assessments: map[task.Identifier]metrics.Assessments{
-			evaluatetask.IdentifierWriteTests: metrics.NewAssessments(),
+		Assessments: map[string]map[task.Identifier]metrics.Assessments{
+			"plain.go": {
+				evaluatetask.IdentifierWriteTests: metrics.NewAssessments(),
+			},
 		},
 
 		ExpectedCSV: `
-			model-id,language,repository,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing
-			mocked-model,golang,golang/plain,write-tests,1,0,0,0,0,0,0,0,0,0,0
+			model-id,language,repository,case,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing
+			mocked-model,golang,golang/plain,plain.go,write-tests,1,0,0,0,0,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
 		Name: "Multiple tasks with assessments",
 
-		Assessments: map[task.Identifier]metrics.Assessments{
-			evaluatetask.IdentifierWriteTests: metrics.Assessments{
-				metrics.AssessmentKeyFilesExecuted:                 1,
-				metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-				metrics.AssessmentKeyResponseNoError:               1,
-				metrics.AssessmentKeyCoverage:                      0,
-			},
-			evaluatetask.IdentifierWriteTestsSymflowerFix: metrics.Assessments{
-				metrics.AssessmentKeyFilesExecuted:                 1,
-				metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-				metrics.AssessmentKeyResponseNoError:               1,
-				metrics.AssessmentKeyCoverage:                      10,
+		Assessments: map[string]map[task.Identifier]metrics.Assessments{
+			"plain.go": {
+				evaluatetask.IdentifierWriteTests: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+					metrics.AssessmentKeyResponseNoError:               1,
+					metrics.AssessmentKeyCoverage:                      0,
+				},
+				evaluatetask.IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+					metrics.AssessmentKeyFilesExecuted:                 1,
+					metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+					metrics.AssessmentKeyResponseNoError:               1,
+					metrics.AssessmentKeyCoverage:                      10,
+				},
 			},
 		},
 
 		ExpectedCSV: `
-			model-id,language,repository,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing
-			mocked-model,golang,golang/plain,write-tests,1,0,1,1,0,0,0,1,0,0,0
-			mocked-model,golang,golang/plain,write-tests-symflower-fix,1,10,1,1,0,0,0,1,0,0,0
+			model-id,language,repository,case,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing
+			mocked-model,golang,golang/plain,plain.go,write-tests,1,0,1,1,0,0,0,1,0,0,0
+			mocked-model,golang,golang/plain,plain.go,write-tests-symflower-fix,1,10,1,1,0,0,0,1,0,0,0
 		`,
 	})
 }

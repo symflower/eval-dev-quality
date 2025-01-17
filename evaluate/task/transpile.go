@@ -34,7 +34,7 @@ func (t *Transpile) Identifier() evaltask.Identifier {
 }
 
 // Run transpiles code between languages and runs predefined tests to check if the transpilation was successful.
-func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
+func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[string]map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
 	modelCapability, ok := ctx.Model.(model.CapabilityTranspile)
 	if !ok {
 		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
@@ -59,18 +59,23 @@ func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask
 		}
 	}
 
-	modelAssessments := metrics.NewAssessments()
-	withSymflowerAssessments := metrics.NewAssessments()
-
-	maximumReachableFiles := uint64(len(packagePaths) * (len(language.Languages) - 1)) // Transpile repositories contain sub-tasks to transpile from every other supported language minus the one we are transpiling to.
-	modelAssessments[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
-	withSymflowerAssessments[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
-
+	repositoryAssessment = map[string]map[evaltask.Identifier]metrics.Assessments{}
 	for _, packagePath := range packagePaths {
 		originFilePathsWithLanguage, stubFilePath, err := t.unpackTranspilerPackage(ctx, taskLogger.Logger, packagePath)
 		if err != nil {
 			return nil, nil, err
 		}
+
+		modelAssessments := metrics.NewAssessments()
+		withSymflowerAssessments := metrics.NewAssessments()
+		maximumReachableFiles := uint64(len(language.Languages) - 1) // Transpile repositories contain sub-tasks to transpile from every other supported language minus the one we are transpiling to.
+		modelAssessments[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
+		withSymflowerAssessments[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
+		repositoryAssessment[packagePath] = map[evaltask.Identifier]metrics.Assessments{
+			IdentifierTranspile:             modelAssessments,
+			IdentifierTranspileSymflowerFix: withSymflowerAssessments,
+		}
+
 		for originFilePath, originLanguage := range originFilePathsWithLanguage {
 			modelAssessmentsForFile := metrics.NewAssessments()
 			withSymflowerAssessmentsForFile := modelAssessmentsForFile // The symflower assessment tracks how the model result can be improved in case of a failure, so just link to the model assessment until we successfully applied "symflower fix".
@@ -137,11 +142,6 @@ func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask
 			modelAssessments.Add(modelAssessmentsForFile)
 			withSymflowerAssessments.Add(withSymflowerAssessmentsForFile)
 		}
-	}
-
-	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{
-		IdentifierTranspile:             modelAssessments,
-		IdentifierTranspileSymflowerFix: withSymflowerAssessments,
 	}
 
 	return repositoryAssessment, problems, nil

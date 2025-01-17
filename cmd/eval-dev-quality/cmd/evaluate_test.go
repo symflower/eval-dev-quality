@@ -597,12 +597,12 @@ func TestEvaluateExecute(t *testing.T) {
 				filepath.Join("result-directory", "config.json"): nil,
 				filepath.Join("result-directory", "evaluation.csv"): func(t *testing.T, filePath, data string) {
 					// Check if the runs are written to the CSV file.
-					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests,1")
-					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests,2")
-					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests,3")
-					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests-symflower-fix,1")
-					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests-symflower-fix,2")
-					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",write-tests-symflower-fix,3")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",plain.go,write-tests,1")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",plain.go,write-tests,2")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",plain.go,write-tests,3")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",plain.go,write-tests-symflower-fix,1")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",plain.go,write-tests-symflower-fix,2")
+					assert.Contains(t, data, "golang,"+filepath.Join("golang", "plain")+",plain.go,write-tests-symflower-fix,3")
 
 					_ = validateMetrics(t, data, []metrics.Assessments{
 						metrics.Assessments{

@@ -19,7 +19,7 @@ func atoiUint64(t *testing.T, s string) uint64 {
 }
 
 // extractMetricsCSVMatch is a regular expression to extract metrics from CSV rows.
-var extractMetricsCSVMatch = regexp.MustCompile(`(\S+),(\S+),(\S+),(\S+),\d+,(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`)
+var extractMetricsCSVMatch = regexp.MustCompile(`(\S+),(\S+),(\S+),(\S+),(\S+),\d+,(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`)
 
 // ParseMetrics extracts multiple assessment metrics from the given string.
 func ParseMetrics(t *testing.T, data string) (assessments metricstesting.AssessmentTuples) {
@@ -30,17 +30,18 @@ func ParseMetrics(t *testing.T, data string) (assessments metricstesting.Assessm
 			Model:          match[1],
 			Language:       match[2],
 			RepositoryPath: match[3],
-			Task:           task.Identifier(match[4]),
+			Case:           match[4],
+			Task:           task.Identifier(match[5]),
 			Assessment: metrics.Assessments{
-				metrics.AssessmentKeyCoverage:                           atoiUint64(t, match[5]),
-				metrics.AssessmentKeyFilesExecuted:                      atoiUint64(t, match[6]),
-				metrics.AssessmentKeyFilesExecutedMaximumReachable:      atoiUint64(t, match[7]),
-				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: atoiUint64(t, match[8]),
-				metrics.AssessmentKeyProcessingTime:                     atoiUint64(t, match[9]),
-				metrics.AssessmentKeyResponseCharacterCount:             atoiUint64(t, match[10]),
-				metrics.AssessmentKeyResponseNoError:                    atoiUint64(t, match[11]),
-				metrics.AssessmentKeyResponseNoExcess:                   atoiUint64(t, match[12]),
-				metrics.AssessmentKeyResponseWithCode:                   atoiUint64(t, match[13]),
+				metrics.AssessmentKeyCoverage:                           atoiUint64(t, match[6]),
+				metrics.AssessmentKeyFilesExecuted:                      atoiUint64(t, match[7]),
+				metrics.AssessmentKeyFilesExecutedMaximumReachable:      atoiUint64(t, match[8]),
+				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: atoiUint64(t, match[9]),
+				metrics.AssessmentKeyProcessingTime:                     atoiUint64(t, match[10]),
+				metrics.AssessmentKeyResponseCharacterCount:             atoiUint64(t, match[11]),
+				metrics.AssessmentKeyResponseNoError:                    atoiUint64(t, match[12]),
+				metrics.AssessmentKeyResponseNoExcess:                   atoiUint64(t, match[13]),
+				metrics.AssessmentKeyResponseWithCode:                   atoiUint64(t, match[14]),
 			},
 		})
 	}
