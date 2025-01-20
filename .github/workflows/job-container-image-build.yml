@@ -28,8 +28,9 @@ jobs:
           images: |
             ghcr.io/symflower/eval-dev-quality
           tags: |
-            type=raw,value={{ sha }}
             type=raw,value={{ branch }}
+            type=raw,value={{ sha }}
+            type=raw,value={{ tag }}
             type=raw,value=latest,enable={{ is_default_branch }}
 
       - name: Build and push
