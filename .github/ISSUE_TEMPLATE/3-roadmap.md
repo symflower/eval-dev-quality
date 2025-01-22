@@ -6,26 +6,34 @@ labels: roadmap
 assignees: zimmski
 ---
 
-Tasks/Goals:
+# Highlights :star2:
+
+-   TODO Define highlights of this release.
+
+# Changes :bulb:
 
 -   [ ] Development & Management 🛠️
-    -   [ ] TODO what and why as goal
+    -   [ ] TODO Change with what and why as goal.
 -   [ ] Documentation 📚
-    -   [ ] TODO what and why as goal
+    -   [ ] TODO Change with what and why as goal.
 -   [ ] Evaluation ⏱️
-    -   [ ] TODO what and why as goal
+    -   [ ] TODO Change with what and why as goal.
 -   [ ] Models 🤖
-    -   [ ] TODO what and why as goal
+    -   [ ] TODO Change with what and why as goal.
 -   [ ] Reports & Metrics 🗒️
-    -   [ ] TODO what and why as goal
+    -   [ ] TODO Change with what and why as goal.
 -   [ ] Operating Systems 🖥️
-    -   [ ] TODO what and why as goal
+    -   [ ] TODO Change with what and why as goal.
 -   [ ] Tools 🧰
-    -   [ ] TODO what and why as goal
+    -   [ ] TODO Change with what and why as goal.
 -   [ ] Tasks 🔢
-    -   [ ] TODO what and why as goal
+    -   [ ] TODO Change with what and why as goal.
 -   [ ] Closed PR / not-implemented issue 🚫
     -   [ ] TODO what and why with reason
+
+# Details :mag:
+
+-   [ ] TODO Take details from automatic release description of GitHub.
 
 Release version of this roadmap issue:
 
