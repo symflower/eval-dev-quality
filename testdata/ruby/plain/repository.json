@@ -1,5 +1,11 @@
 {
-	"tasks": [
-		"write-tests"
-	]
+  "tasks": ["write-tests"],
+  "scores": {
+    "write-tests": {
+      "lib/plain.rb": {
+        "coverage": 1,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
 }

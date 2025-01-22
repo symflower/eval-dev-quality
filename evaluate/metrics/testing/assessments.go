@@ -55,6 +55,7 @@ type AssessmentTuple struct {
 	Model          string
 	Language       string
 	RepositoryPath string
+	Case           string
 	Task           task.Identifier
 	Assessment     metrics.Assessments
 }

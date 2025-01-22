@@ -33,7 +33,7 @@ func (t *CodeRepair) Identifier() evaltask.Identifier {
 
 // Run performs source code repairing in a repository with compilation errors.
 // This task requires the repository to consist of multiple packages, with each containing one faulty implementation file and a corresponding test file.
-func (t *CodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
+func (t *CodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[string]map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
 	modelCapability, ok := ctx.Model.(model.CapabilityRepairCode)
 	if !ok {
 		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
@@ -54,18 +54,23 @@ func (t *CodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 	}
 	for _, file := range files {
 		if file.IsDir() && !strings.HasPrefix(file.Name(), ".") { // Ignore hidden directories.
-			packagePaths = append(packagePaths, filepath.Join(ctx.Repository.DataPath(), file.Name()))
+			packagePaths = append(packagePaths, file.Name())
 		}
 	}
 
-	modelAssessment := metrics.NewAssessments()
-	modelAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = uint64(len(packagePaths))
+	repositoryAssessment = map[string]map[evaltask.Identifier]metrics.Assessments{}
 	for _, packagePath := range packagePaths {
+		modelAssessment := metrics.NewAssessments()
+		modelAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = 1
+		repositoryAssessment[packagePath] = map[evaltask.Identifier]metrics.Assessments{
+			IdentifierCodeRepair: modelAssessment,
+		}
+
 		if err := ctx.Repository.Reset(ctx.Logger); err != nil {
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 		}
 
-		sourceFile, mistakes, err := t.unpackCodeRepairPackage(ctx, taskLogger.Logger, packagePath)
+		sourceFile, mistakes, err := t.unpackCodeRepairPackage(ctx, taskLogger.Logger, filepath.Join(ctx.Repository.DataPath(), packagePath))
 		if err != nil {
 			return nil, nil, err
 		}
@@ -73,7 +78,7 @@ func (t *CodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 		modelContext := model.Context{
 			Language: ctx.Language,
 
-			RepositoryPath: packagePath,
+			RepositoryPath: filepath.Join(ctx.Repository.DataPath(), packagePath),
 			FilePath:       sourceFile,
 
 			Arguments: &ArgumentsCodeRepair{
@@ -94,7 +99,7 @@ func (t *CodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 		modelAssessment.Add(assessments)
 		modelAssessment.Award(metrics.AssessmentKeyResponseNoError)
 
-		testResult, ps, err := ctx.Language.ExecuteTests(taskLogger.Logger, packagePath)
+		testResult, ps, err := ctx.Language.ExecuteTests(taskLogger.Logger, filepath.Join(ctx.Repository.DataPath(), packagePath))
 		problems = append(problems, ps...)
 		if err != nil {
 			problems = append(problems, pkgerrors.WithMessage(err, sourceFile))
@@ -105,10 +110,6 @@ func (t *CodeRepair) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 		taskLogger.Info("Executed tests", "passing", testsPassing)
 		modelAssessment.Award(metrics.AssessmentKeyFilesExecuted)
 		modelAssessment.AwardMultiple(metrics.AssessmentKeyTestsPassing, uint64(testsPassing))
-	}
-
-	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{
-		IdentifierCodeRepair: modelAssessment,
 	}
 
 	return repositoryAssessment, problems, nil

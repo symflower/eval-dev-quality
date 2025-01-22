@@ -1,5 +1,99 @@
 {
-	"tasks": [
-		"write-tests"
-	]
+  "tasks": ["write-tests"],
+  "scores": {
+    "write-tests": {
+      "balancedBrackets.go": {
+        "coverage": 5,
+        "files-executed-maximum-reachable": 1
+      },
+      "binarySearch.go": {
+        "coverage": 4,
+        "files-executed-maximum-reachable": 1
+      },
+      "callLoopConditionsOftenEnough.go": {
+        "coverage": 4,
+        "files-executed-maximum-reachable": 1
+      },
+      "cascadingIfElse.go": {
+        "coverage": 3,
+        "files-executed-maximum-reachable": 1
+      },
+      "collatzCalculator.go": {
+        "coverage": 6,
+        "files-executed-maximum-reachable": 1
+      },
+      "conditionsAnd.go": {
+        "coverage": 2,
+        "files-executed-maximum-reachable": 1
+      },
+      "equilibriumIndices.go": {
+        "coverage": 4,
+        "files-executed-maximum-reachable": 1
+      },
+      "forLoop.go": {
+        "coverage": 3,
+        "files-executed-maximum-reachable": 1
+      },
+      "jacobiSymbol.go": {
+        "coverage": 6,
+        "files-executed-maximum-reachable": 1
+      },
+      "klarnerRadoSequence.go": {
+        "coverage": 3,
+        "files-executed-maximum-reachable": 1
+      },
+      "knapsack.go": {
+        "coverage": 5,
+        "files-executed-maximum-reachable": 1
+      },
+      "largestProperDivisor.go": {
+        "coverage": 4,
+        "files-executed-maximum-reachable": 1
+      },
+      "magicSquareOdd.go": {
+        "coverage": 8,
+        "files-executed-maximum-reachable": 1
+      },
+      "matchBytes.go": {
+        "coverage": 2,
+        "files-executed-maximum-reachable": 1
+      },
+      "pascalsTriangle.go": {
+        "coverage": 4,
+        "files-executed-maximum-reachable": 1
+      },
+      "phoneNumber.go": {
+        "coverage": 5,
+        "files-executed-maximum-reachable": 1
+      },
+      "simpleIfElse.go": {
+        "coverage": 2,
+        "files-executed-maximum-reachable": 1
+      },
+      "simpleSwitchWithReturn.go": {
+        "coverage": 3,
+        "files-executed-maximum-reachable": 1
+      },
+      "sort.go": {
+        "coverage": 2,
+        "files-executed-maximum-reachable": 1
+      },
+      "typeArrayAccess.go": {
+        "coverage": 2,
+        "files-executed-maximum-reachable": 1
+      },
+      "typeArrayConsecutiveAccess.go": {
+        "coverage": 3,
+        "files-executed-maximum-reachable": 1
+      },
+      "typeArrayMultidimensionalArrayLength.go": {
+        "coverage": 3,
+        "files-executed-maximum-reachable": 1
+      },
+      "validateDate.go": {
+        "coverage": 7,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
 }

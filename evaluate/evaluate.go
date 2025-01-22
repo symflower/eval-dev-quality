@@ -13,6 +13,7 @@ import (
 	"github.com/symflower/eval-dev-quality/provider"
 	evaltask "github.com/symflower/eval-dev-quality/task"
 	"github.com/symflower/eval-dev-quality/util"
+	"golang.org/x/exp/maps"
 )
 
 // Context holds an evaluation context.
@@ -322,7 +323,12 @@ func withLoadedModel(logger *log.Logger, model evalmodel.Model, modelProvider pr
 }
 
 // succeededPlain checks if the assessments attest that the "plain" repository was successfully solved.
-func succeededPlain(assessment map[evaltask.Identifier]metrics.Assessments) bool {
+func succeededPlain(assessmentPerCase map[string]map[evaltask.Identifier]metrics.Assessments) bool {
+	if len(assessmentPerCase) != 1 { // The "plain" repository only has one case.
+		return false
+	}
+	assessment := assessmentPerCase[maps.Keys(assessmentPerCase)[0]]
+
 	if withoutTemplate, ok := assessment[evaluatetask.IdentifierWriteTests]; ok && withoutTemplate[metrics.AssessmentKeyFilesExecuted] > 0 {
 		return true
 	} else if withTemplate, ok := assessment[evaluatetask.IdentifierWriteTestsSymflowerTemplate]; ok && withTemplate[metrics.AssessmentKeyFilesExecuted] > 0 {

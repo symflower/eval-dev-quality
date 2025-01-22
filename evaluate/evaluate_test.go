@@ -186,6 +186,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -195,6 +196,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -204,6 +206,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -213,6 +216,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 					Assessment: metrics.Assessments{
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -262,6 +266,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: metrics.Assessments{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -271,6 +276,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: metrics.Assessments{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -280,6 +286,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: metrics.Assessments{
 
@@ -290,6 +297,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: metrics.Assessments{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -346,6 +354,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
@@ -358,6 +367,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
@@ -370,6 +380,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
@@ -382,6 +393,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
@@ -438,6 +450,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
@@ -450,6 +463,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
@@ -462,6 +476,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
@@ -474,6 +489,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
@@ -568,6 +584,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -579,6 +596,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -590,6 +608,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -601,6 +620,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -612,6 +632,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -623,6 +644,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -634,6 +656,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -645,6 +668,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -656,6 +680,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -665,6 +690,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -674,6 +700,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -682,6 +709,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -691,6 +719,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -702,6 +731,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -713,6 +743,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -723,6 +754,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -790,6 +822,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -799,6 +832,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -808,6 +842,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -819,6 +854,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -830,6 +866,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -839,6 +876,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -848,6 +886,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -857,6 +896,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -866,6 +906,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -877,6 +918,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -888,6 +930,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -899,6 +942,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -910,6 +954,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -921,6 +966,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -932,6 +978,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -943,6 +990,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryNextPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1004,6 +1052,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -1013,6 +1062,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -1022,6 +1072,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -1031,6 +1082,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -1040,6 +1092,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -1049,6 +1102,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -1058,6 +1112,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -1067,6 +1122,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPlainPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
@@ -1120,6 +1176,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1131,6 +1188,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1142,6 +1200,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1153,6 +1212,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1164,6 +1224,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1175,6 +1236,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1186,6 +1248,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1197,6 +1260,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1208,6 +1272,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1219,6 +1284,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1230,6 +1296,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1241,6 +1308,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1298,6 +1366,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1309,6 +1378,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1320,6 +1390,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1331,6 +1402,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1342,6 +1414,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1353,6 +1426,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1364,6 +1438,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1375,6 +1450,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1386,6 +1462,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1397,6 +1474,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1408,6 +1486,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1419,6 +1498,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1505,6 +1585,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1516,6 +1597,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1527,6 +1609,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1538,6 +1621,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1549,6 +1633,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1560,6 +1645,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1571,6 +1657,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1582,6 +1669,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1593,6 +1681,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1604,6 +1693,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1615,6 +1705,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1626,6 +1717,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1696,6 +1788,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1707,6 +1800,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1718,6 +1812,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1729,6 +1824,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1740,6 +1836,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1751,6 +1848,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1762,6 +1860,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1773,6 +1872,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1784,6 +1884,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1795,6 +1896,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1806,6 +1908,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1817,6 +1920,7 @@ func TestEvaluate(t *testing.T) {
 						Model:          mockedModel.ID(),
 						Language:       languageGolang.ID(),
 						RepositoryPath: repositoryPath,
+						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 						Assessment: map[metrics.AssessmentKey]uint64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1869,6 +1973,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1880,6 +1985,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1891,6 +1997,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1902,6 +2009,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPath,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1959,6 +2067,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathPlain,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1970,6 +2079,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathPlain,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1981,6 +2091,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathPlain,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -1992,6 +2103,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathPlain,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -2003,6 +2115,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathSomePlain,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTests,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -2014,6 +2127,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathSomePlain,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -2025,6 +2139,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathSomePlain,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
@@ -2036,6 +2151,7 @@ func TestEvaluate(t *testing.T) {
 					Model:          mockedModel.ID(),
 					Language:       languageGolang.ID(),
 					RepositoryPath: repositoryPathSomePlain,
+					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
 					Assessment: map[metrics.AssessmentKey]uint64{
 						metrics.AssessmentKeyFilesExecuted:                 1,

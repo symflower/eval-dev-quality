@@ -34,7 +34,7 @@ func (t *WriteTests) Identifier() evaltask.Identifier {
 }
 
 // Run generates test files for the given implementation file in a repository.
-func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
+func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[string]map[evaltask.Identifier]metrics.Assessments, problems []error, err error) {
 	modelCapability, ok := ctx.Model.(model.CapabilityWriteTests)
 	if !ok {
 		return nil, nil, pkgerrors.Wrap(evaltask.ErrTaskUnsupportedByModel, fmt.Sprintf("%q does not support %q", ctx.Model.ID(), string(t.Identifier())))
@@ -59,19 +59,28 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 		testFramework = ctx.Repository.Configuration().Prompt.TestFramework
 	}
 
-	modelAssessment := metrics.NewAssessments()
-	withSymflowerFixAssessment := metrics.NewAssessments()
-	withSymflowerTemplateAssessment := metrics.NewAssessments()
-	withSymflowerTemplateAndFixAssessment := metrics.NewAssessments()
-
-	var maximumReachableFiles uint64
+	repositoryAssessment = map[string]map[evaltask.Identifier]metrics.Assessments{}
 	for _, filePath := range filePaths {
 		if ctx.Repository.Configuration().IsFilePathIgnored(filePath) {
 			taskLogger.Info("ignoring file (as configured by the repository)", "path", filePath)
 
 			continue
 		}
-		maximumReachableFiles++
+
+		modelAssessment := metrics.NewAssessments()
+		modelAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = 1
+		withSymflowerFixAssessment := metrics.NewAssessments()
+		withSymflowerFixAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = 1
+		withSymflowerTemplateAssessment := metrics.NewAssessments()
+		withSymflowerTemplateAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = 1
+		withSymflowerTemplateAndFixAssessment := metrics.NewAssessments()
+		withSymflowerTemplateAndFixAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = 1
+		repositoryAssessment[filePath] = map[evaltask.Identifier]metrics.Assessments{
+			IdentifierWriteTests:                              modelAssessment,
+			IdentifierWriteTestsSymflowerFix:                  withSymflowerFixAssessment,
+			IdentifierWriteTestsSymflowerTemplate:             withSymflowerTemplateAssessment,
+			IdentifierWriteTestsSymflowerTemplateSymflowerFix: withSymflowerTemplateAndFixAssessment,
+		}
 
 		// Handle this task case without a template.
 		if err := ctx.Repository.Reset(ctx.Logger); err != nil {
@@ -141,18 +150,6 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[evaltas
 
 		withSymflowerTemplateAssessment.Add(modelTemplateAssessmentFile)
 		withSymflowerTemplateAndFixAssessment.Add(templateWithSymflowerFixAssessmentFile)
-	}
-
-	modelAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
-	withSymflowerFixAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
-	withSymflowerTemplateAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
-	withSymflowerTemplateAndFixAssessment[metrics.AssessmentKeyFilesExecutedMaximumReachable] = maximumReachableFiles
-
-	repositoryAssessment = map[evaltask.Identifier]metrics.Assessments{
-		IdentifierWriteTests:                              modelAssessment,
-		IdentifierWriteTestsSymflowerFix:                  withSymflowerFixAssessment,
-		IdentifierWriteTestsSymflowerTemplate:             withSymflowerTemplateAssessment,
-		IdentifierWriteTestsSymflowerTemplateSymflowerFix: withSymflowerTemplateAndFixAssessment,
 	}
 
 	return repositoryAssessment, problems, nil

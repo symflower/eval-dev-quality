@@ -1,5 +1,11 @@
 {
-	"tasks": [
-		"write-tests"
-	]
+  "tasks": ["write-tests"],
+  "scores": {
+    "write-tests": {
+      "plain.go": {
+        "coverage": 1,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
 }

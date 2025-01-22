@@ -71,12 +71,14 @@ func TestCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyTestsPassing:                  4,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"openingBracketMissing": {
+						IdentifierCodeRepair: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyTestsPassing:                  4,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -135,12 +137,22 @@ func TestCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("golang", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyTestsPassing:                  8,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"openingBracketMissing": {
+						IdentifierCodeRepair: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyTestsPassing:                  4,
+						},
+					},
+					"typeUnknown": {
+						IdentifierCodeRepair: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyTestsPassing:                  4,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -190,12 +202,14 @@ func TestCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyTestsPassing:                  3,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"openingBracketMissing": {
+						IdentifierCodeRepair: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyTestsPassing:                  3,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -256,12 +270,22 @@ func TestCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("java", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyTestsPassing:                  6,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"openingBracketMissing": {
+						IdentifierCodeRepair: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyTestsPassing:                  3,
+						},
+					},
+					"typeUnknown": {
+						IdentifierCodeRepair: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyTestsPassing:                  3,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -305,12 +329,14 @@ func TestCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("ruby", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
-						metrics.AssessmentKeyResponseNoError:               1,
-						metrics.AssessmentKeyTestsPassing:                  3,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"argumentMissing": {
+						IdentifierCodeRepair: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyTestsPassing:                  3,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
@@ -364,12 +390,22 @@ func TestCodeRepairRun(t *testing.T) {
 				TestDataPath:   temporaryDirectoryPath,
 				RepositoryPath: filepath.Join("ruby", "mistakes"),
 
-				ExpectedRepositoryAssessment: map[evaltask.Identifier]metrics.Assessments{
-					IdentifierCodeRepair: metrics.Assessments{
-						metrics.AssessmentKeyFilesExecuted:                 2,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
-						metrics.AssessmentKeyTestsPassing:                  6,
+				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+					"argumentMissing": {
+						IdentifierCodeRepair: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyTestsPassing:                  3,
+						},
+					},
+					"typeUnknown": {
+						IdentifierCodeRepair: metrics.Assessments{
+							metrics.AssessmentKeyFilesExecuted:                 1,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+							metrics.AssessmentKeyResponseNoError:               1,
+							metrics.AssessmentKeyTestsPassing:                  3,
+						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {

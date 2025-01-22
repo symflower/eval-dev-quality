@@ -1,5 +1,99 @@
 {
-	"tasks": [
-		"write-tests"
-	]
+  "tasks": ["write-tests"],
+  "scores": {
+    "write-tests": {
+      "src/main/java/com/eval/BalancedBrackets.java": {
+        "coverage": 14,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/BinarySearch.java": {
+        "coverage": 15,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/CallLoopConditionsOftenEnough.java": {
+        "coverage": 13,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/CascadingIfElse.java": {
+        "coverage": 8,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/CollatzCalculator.java": {
+        "coverage": 13,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/ConditionsAnd.java": {
+        "coverage": 5,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/EqulibriumIndices.java": {
+        "coverage": 14,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/ForLoop.java": {
+        "coverage": 9,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/JacobiSymbol.java": {
+        "coverage": 26,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/KlarnerRadoSequence.java": {
+        "coverage": 18,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/Knapsack.java": {
+        "coverage": 21,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/LargestProperDivisor.java": {
+        "coverage": 13,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/MagicSquareOdd.java": {
+        "coverage": 28,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/MatchBytes.java": {
+        "coverage": 13,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/PascalsTriangle.java": {
+        "coverage": 14,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/PhoneNumber.java": {
+        "coverage": 16,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/SimpleIfElse.java": {
+        "coverage": 5,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/SimpleSwitchWithReturn.java": {
+        "coverage": 6,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/Sort.java": {
+        "coverage": 6,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/TypeArrayAccess.java": {
+        "coverage": 5,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/TypeArrayConsecutiveAccess.java": {
+        "coverage": 9,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/TypeArrayMultidimensionalArrayLength.java": {
+        "coverage": 8,
+        "files-executed-maximum-reachable": 1
+      },
+      "src/main/java/com/eval/ValidDate.java": {
+        "coverage": 25,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
 }
