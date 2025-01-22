@@ -55,10 +55,10 @@ Release version of this roadmap issue:
 -   [ ] Write the release notes:
     -   [ ] Use the tasks that are already there for the release note outline
     -   [ ] Add highlighted features based on the done tasks, sort by how many users would use the feature
--   [ ] Do the release
-    -   [ ] Update the release version string in `evaluate/version.go`
-    -   [ ] With the release notes
-    -   [ ] Set as latest release
+-   [ ] Do the release for version X.Y.Z with a new major, minor or bugfix version
+    -   [ ] Execute `go run scripts/eval-dev-quality-release/main.go X.Y.Z`
+    -   [ ] Do release notes for version
+    -   [ ] Set release as latest release
 -   [ ] Prepare the next roadmap
     -   [ ] Create a milestone for the next release
     -   [ ] Create a new roadmap issue for the next release
@@ -75,12 +75,12 @@ Release version of this roadmap issue:
         -   [ ] Update "latest DevQualityEval deep dive" mentions
         -   [ ] Update DevQualityEval blog series lists with new entries
         -   [ ] Update LLM blog series lists with new entries
-    - [ ] Update payment process for supporting DevQualityEval
-        - [ ] New Stripe payment link for this version
-        - [ ] Update payment logic with new Google Drive folder of the evaluation
-        - [ ] Update payment link in this README
-        - [ ] Update payment link on symflower.com (except for the one deep dive that mentions exactly these results)
-    - [ ] Create an issue in the company tracker for Markus to announce the new deep dive on Twitter and LinkedIn
+    -   [ ] Update payment process for supporting DevQualityEval
+        -   [ ] New Stripe payment link for this version
+        -   [ ] Update payment logic with new Google Drive folder of the evaluation
+        -   [ ] Update payment link in this README
+        -   [ ] Update payment link on symflower.com (except for the one deep dive that mentions exactly these results)
+    -   [ ] Create an issue in the company tracker for Markus to announce the new deep dive on Twitter and LinkedIn
 -   [ ] Close this issue
 -   [ ] Close the current milestone
 -   [ ] Announce release
