@@ -10,7 +10,7 @@ require (
 	github.com/sashabaranov/go-openai v1.20.4
 	github.com/stretchr/testify v1.9.0
 	github.com/symflower/lockfile v0.0.0-20240419143922-aa3b60940c84
-	github.com/zimmski/osutil v1.2.0
+	github.com/zimmski/osutil v1.3.0
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8
 	golang.org/x/mod v0.16.0
 	gonum.org/v1/gonum v0.15.0 // WORKAROUND v0.15.1 is only supported for Go 1.22+ so explicitly use v0.15.0 to stick with our older Go version.
