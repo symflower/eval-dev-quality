@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
+	"github.com/avast/retry-go"
 	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
@@ -73,38 +75,68 @@ func (r *Repository) Validate(logger *log.Logger, language language.Language) (e
 
 // Reset resets a repository back to its "initial" commit.
 func (r *Repository) Reset(logger *log.Logger) (err error) {
-	out, err := util.CommandWithResult(context.Background(), logger, &util.Command{
-		Command: []string{
-			"git",
-			"clean",
-			"-df",
-		},
+	retryAttempts := uint(3)
 
-		Directory: r.dataPath,
-		Env: map[string]string{ // Overwrite the global and system configs to point to the default one.
-			"GIT_CONFIG_GLOBAL": filepath.Join(r.dataPath, ".git", "config"),
-			"GIT_CONFIG_SYSTEM": filepath.Join(r.dataPath, ".git", "config"),
+	if err := retry.Do(
+		func() error {
+			out, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+				Command: []string{
+					"git",
+					"clean",
+					"-df",
+				},
+
+				Directory: r.dataPath,
+				Env: map[string]string{ // Overwrite the global and system configs to point to the default one.
+					"GIT_CONFIG_GLOBAL": filepath.Join(r.dataPath, ".git", "config"),
+					"GIT_CONFIG_SYSTEM": filepath.Join(r.dataPath, ".git", "config"),
+				},
+			})
+			if err != nil {
+				return pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to clean git repository", out)))
+			}
+
+			return nil
 		},
-	})
-	if err != nil {
-		return pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to clean git repository", out)))
+		retry.Attempts(retryAttempts),
+		retry.Delay(5*time.Second),
+		retry.DelayType(retry.BackOffDelay),
+		retry.LastErrorOnly(true),
+		retry.OnRetry(func(n uint, err error) {
+			logger.Info("git clean retry", "count", n+1, "total", retryAttempts, "error", err)
+		})); err != nil {
+		return err
 	}
 
-	out, err = util.CommandWithResult(context.Background(), logger, &util.Command{
-		Command: []string{
-			"git",
-			"restore",
-			".",
-		},
+	if err := retry.Do(
+		func() error {
+			out, err := util.CommandWithResult(context.Background(), logger, &util.Command{
+				Command: []string{
+					"git",
+					"restore",
+					".",
+				},
 
-		Directory: r.dataPath,
-		Env: map[string]string{ // Overwrite the global and system configs to point to the default one.
-			"GIT_CONFIG_GLOBAL": filepath.Join(r.dataPath, ".git", "config"),
-			"GIT_CONFIG_SYSTEM": filepath.Join(r.dataPath, ".git", "config"),
+				Directory: r.dataPath,
+				Env: map[string]string{ // Overwrite the global and system configs to point to the default one.
+					"GIT_CONFIG_GLOBAL": filepath.Join(r.dataPath, ".git", "config"),
+					"GIT_CONFIG_SYSTEM": filepath.Join(r.dataPath, ".git", "config"),
+				},
+			})
+			if err != nil {
+				return pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to clean git repository", out)))
+			}
+
+			return nil
 		},
-	})
-	if err != nil {
-		return pkgerrors.WithStack(pkgerrors.Wrap(err, fmt.Sprintf("%s - %s", "unable to clean git repository", out)))
+		retry.Attempts(retryAttempts),
+		retry.Delay(5*time.Second),
+		retry.DelayType(retry.BackOffDelay),
+		retry.LastErrorOnly(true),
+		retry.OnRetry(func(n uint, err error) {
+			logger.Info("git restore retry", "count", n+1, "total", retryAttempts, "error", err)
+		})); err != nil {
+		return err
 	}
 
 	return nil
