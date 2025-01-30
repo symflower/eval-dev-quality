@@ -3,23 +3,23 @@
   "scores": {
     "transpile": {
       "balancedBrackets": {
-        "tests-passing": 6,
+        "tests-passing": 12,
         "files-executed-maximum-reachable": 2
       },
       "binarySearch": {
-        "tests-passing": 6,
+        "tests-passing": 12,
         "files-executed-maximum-reachable": 2
       },
       "cascadingIfElse": {
-        "tests-passing": 4,
+        "tests-passing": 8,
         "files-executed-maximum-reachable": 2
       },
       "isSorted": {
-        "tests-passing": 6,
+        "tests-passing": 12,
         "files-executed-maximum-reachable": 2
       },
       "pascalsTriangle": {
-        "tests-passing": 5,
+        "tests-passing": 10,
         "files-executed-maximum-reachable": 2
       }
     }
