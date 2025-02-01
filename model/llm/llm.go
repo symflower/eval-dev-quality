@@ -29,6 +29,8 @@ type Model struct {
 	// model holds the identifier for the LLM model.
 	model string
 
+	// attributes holds query attributes.
+	attributes map[string]string
 	// queryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	queryAttempts uint
 
@@ -37,13 +39,15 @@ type Model struct {
 }
 
 // NewModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
-func NewModel(provider provider.Query, modelIdentifier string) *Model {
-	return &Model{
+func NewModel(provider provider.Query, modelIDWithAttributes string) (llmModel *Model) {
+	llmModel = &Model{
 		provider: provider,
-		model:    modelIdentifier,
 
 		queryAttempts: 1,
 	}
+	llmModel.model, llmModel.attributes = model.ParseModelID(modelIDWithAttributes)
+
+	return llmModel
 }
 
 // NewModelWithMetaInformation returns a LLM model with meta information corresponding to the given identifier which is queried via the given provider.
@@ -56,6 +60,11 @@ func NewModelWithMetaInformation(provider provider.Query, modelIdentifier string
 
 		metaInformation: metaInformation,
 	}
+}
+
+// Attributes returns query attributes.
+func (m *Model) Attributes() (attributes map[string]string) {
+	return m.attributes
 }
 
 // MetaInformation returns the meta information of a model.
@@ -302,7 +311,7 @@ func (m *Model) query(logger *log.Logger, request string) (response string, dura
 			id := uuid.NewString
 			logger.Info("querying model", "model", m.ID(), "id", id, "prompt", string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
 			start := time.Now()
-			response, err = m.provider.Query(context.Background(), m.model, request)
+			response, err = m.provider.Query(context.Background(), m, request)
 			if err != nil {
 				return err
 			}

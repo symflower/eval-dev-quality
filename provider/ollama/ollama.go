@@ -81,11 +81,11 @@ func (p *Provider) Models() (models []model.Model, err error) {
 var _ provider.Query = (*Provider)(nil)
 
 // Query queries the provider with the given model name.
-func (p *Provider) Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error) {
+func (p *Provider) Query(ctx context.Context, model model.Model, promptText string) (response string, err error) {
 	client := p.client()
-	modelIdentifier = strings.TrimPrefix(modelIdentifier, p.ID()+provider.ProviderModelSeparator)
+	modelIdentifier := strings.TrimPrefix(model.ID(), p.ID()+provider.ProviderModelSeparator)
 
-	return openaiapi.QueryOpenAIAPIModel(ctx, client, modelIdentifier, promptText)
+	return openaiapi.QueryOpenAIAPIModel(ctx, client, modelIdentifier, model.Attributes(), promptText)
 }
 
 // client returns a new client with the current configuration.

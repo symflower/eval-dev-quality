@@ -67,6 +67,11 @@ func (m *Model) ID() (id string) {
 	return "symflower" + provider.ProviderModelSeparator + m.id
 }
 
+// Attributes returns query attributes.
+func (m *Model) Attributes() (attributes map[string]string) {
+	return nil
+}
+
 // MetaInformation returns the meta information of a model.
 func (m *Model) MetaInformation() (metaInformation *model.MetaInformation) {
 	return nil
