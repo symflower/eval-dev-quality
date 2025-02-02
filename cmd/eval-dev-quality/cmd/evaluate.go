@@ -426,10 +426,12 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			if puller, ok := p.(provider.Puller); ok {
 				command.logger.Info("pulling available models for provider", "provider", p.ID())
 				for _, modelID := range command.Models {
-					if strings.HasPrefix(modelID, p.ID()) {
-						if err := puller.Pull(command.logger, modelID); err != nil {
-							command.logger.Panicf("ERROR: could not pull model %q: %s", modelID, err)
-						}
+					if !strings.HasPrefix(modelID, p.ID()) { // TODO Move this into `NewModel` to validate that a model belongs to a provider.
+						panic(fmt.Errorf("model %s does not belong to provider %s", modelID, p.ID()))
+					}
+
+					if err := puller.Pull(command.logger, modelID); err != nil {
+						command.logger.Panicf("ERROR: could not pull model %q: %s", modelID, err)
 					}
 				}
 			}
