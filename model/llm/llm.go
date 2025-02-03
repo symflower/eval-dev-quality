@@ -26,8 +26,8 @@ import (
 type Model struct {
 	// provider is the client to query the LLM model.
 	provider provider.Query
-	// model holds the identifier for the LLM model.
-	model string
+	// modelID holds the identifier for the LLM modelID.
+	modelID string
 
 	// attributes holds query attributes.
 	attributes map[string]string
@@ -45,7 +45,7 @@ func NewModel(provider provider.Query, modelIDWithAttributes string) (llmModel *
 
 		queryAttempts: 1,
 	}
-	llmModel.model, llmModel.attributes = model.ParseModelID(modelIDWithAttributes)
+	llmModel.modelID, llmModel.attributes = model.ParseModelID(modelIDWithAttributes)
 
 	return llmModel
 }
@@ -54,7 +54,7 @@ func NewModel(provider provider.Query, modelIDWithAttributes string) (llmModel *
 func NewModelWithMetaInformation(provider provider.Query, modelIdentifier string, metaInformation *model.MetaInformation) *Model {
 	return &Model{
 		provider: provider,
-		model:    modelIdentifier,
+		modelID:  modelIdentifier,
 
 		queryAttempts: 1,
 
@@ -245,7 +245,7 @@ var _ model.Model = (*Model)(nil)
 
 // ID returns the unique ID of this model.
 func (m *Model) ID() (id string) {
-	return m.model
+	return m.modelID
 }
 
 var _ model.CapabilityWriteTests = (*Model)(nil)
