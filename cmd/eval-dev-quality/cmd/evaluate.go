@@ -372,7 +372,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 	}
 
 	// Gather models.
-	serviceShutdown := []func() (err error){}
+	var serviceShutdown []func() (err error)
 	{
 		// Check which providers are needed for the evaluation.
 		providersSelected := map[string]provider.Provider{}
@@ -615,7 +615,7 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 			"-e", "SYMFLOWER_INTERNAL_LICENSE_FILE",
 			"-e", "SYMFLOWER_LICENSE_KEY",
 			"-v", volumeName + ":/app/evaluation",
-			"--rm", // automatically remove container after it finished
+			"--rm", // Automatically remove container after it finished.
 			command.RuntimeImage,
 		}
 
@@ -708,7 +708,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 	// Define a regex to replace all non alphanumeric characters and "-".
 	kubeNameRegex := regexp.MustCompile(`[^a-zA-Z0-9-]+`)
 
-	jobTmpl, err := template.ParseFiles(filepath.Join("conf", "kube", "job.yml"))
+	kubernetesJobTemplate, err := template.ParseFiles(filepath.Join("conf", "kube", "job.yml"))
 	if err != nil {
 		return pkgerrors.Wrap(err, "could not create kubernetes job template")
 	}
@@ -737,7 +737,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 			"kubectl",
 			"apply",
 			"-f",
-			"-", // apply STDIN
+			"-", // Apply STDIN.
 		}
 
 		// Commands for the evaluation to run inside the container.
@@ -765,14 +765,14 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 		}
 
 		parallel.Execute(func() {
-			var tmplData bytes.Buffer
-			if err := jobTmpl.Execute(&tmplData, data); err != nil {
+			var kubernetesJobData bytes.Buffer
+			if err := kubernetesJobTemplate.Execute(&kubernetesJobData, data); err != nil {
 				command.logger.Panicf("ERROR: %s", err)
 			}
 
 			commandOutput, err := util.CommandWithResult(context.Background(), command.logger, &util.Command{
 				Command: kubeCommand,
-				Stdin:   tmplData.String(),
+				Stdin:   kubernetesJobData.String(),
 			})
 			if err != nil {
 				command.logger.Error("kubernetes evaluation failed", "error", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
@@ -841,7 +841,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 				"kubectl",
 				"apply",
 				"-f",
-				"-", // apply STDIN
+				"-", // Apply STDIN.
 			},
 			Stdin: storageTemplateData.String(),
 		})
