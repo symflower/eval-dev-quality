@@ -24,9 +24,11 @@ import (
 
 // Model represents a LLM model accessed via a provider.
 type Model struct {
+	// id holds the full identifier, including the provider and attributes.
+	id string
 	// provider is the client to query the LLM model.
 	provider provider.Query
-	// modelID holds the identifier for the LLM modelID.
+	// modelID holds the identifier for the LLM model.
 	modelID string
 
 	// attributes holds query attributes.
@@ -41,6 +43,7 @@ type Model struct {
 // NewModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
 func NewModel(provider provider.Query, modelIDWithAttributes string) (llmModel *Model) {
 	llmModel = &Model{
+		id:       modelIDWithAttributes,
 		provider: provider,
 
 		queryAttempts: 1,
@@ -53,6 +56,7 @@ func NewModel(provider provider.Query, modelIDWithAttributes string) (llmModel *
 // NewModelWithMetaInformation returns a LLM model with meta information corresponding to the given identifier which is queried via the given provider.
 func NewModelWithMetaInformation(provider provider.Query, modelIdentifier string, metaInformation *model.MetaInformation) *Model {
 	return &Model{
+		id:       modelIdentifier,
 		provider: provider,
 		modelID:  modelIdentifier,
 
@@ -60,6 +64,18 @@ func NewModelWithMetaInformation(provider provider.Query, modelIdentifier string
 
 		metaInformation: metaInformation,
 	}
+}
+
+var _ model.Model = (*Model)(nil)
+
+// ID returns full identifier, including the provider and attributes.
+func (m *Model) ID() (id string) {
+	return m.id
+}
+
+// ModelID returns the unique identifier of this model.
+func (m *Model) ModelID() (modelID string) {
+	return m.modelID
 }
 
 // Attributes returns query attributes.
@@ -239,13 +255,6 @@ func (ctx *llmMigrateSourceFilePromptContext) Format() (message string, err erro
 	}
 
 	return b.String(), nil
-}
-
-var _ model.Model = (*Model)(nil)
-
-// ID returns the unique ID of this model.
-func (m *Model) ID() (id string) {
-	return m.modelID
 }
 
 var _ model.CapabilityWriteTests = (*Model)(nil)

@@ -9,8 +9,10 @@ import (
 
 // Model defines a model that can be queried for generations.
 type Model interface {
-	// ID returns the unique ID of this model.
+	// ID returns full identifier, including the provider and attributes.
 	ID() (id string)
+	// ModelID returns the unique identifier of this model.
+	ModelID() (modelID string)
 
 	// Attributes returns query attributes.
 	Attributes() (attributes map[string]string)

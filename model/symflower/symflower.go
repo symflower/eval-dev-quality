@@ -62,8 +62,13 @@ func NewModelSmartTemplateWithTimeout(timeout time.Duration) (model *Model) {
 
 var _ model.Model = (*Model)(nil)
 
-// ID returns the unique ID of this model.
+// ID returns full identifier, including the provider and attributes.
 func (m *Model) ID() (id string) {
+	return "symflower" + provider.ProviderModelSeparator + m.id
+}
+
+// ModelID returns the unique identifier of this model.
+func (m *Model) ModelID() (modelID string) {
 	return "symflower" + provider.ProviderModelSeparator + m.id
 }
 

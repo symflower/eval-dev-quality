@@ -140,7 +140,7 @@ var _ provider.Query = (*Provider)(nil)
 // Query queries the provider with the given model name.
 func (p *Provider) Query(ctx context.Context, model model.Model, promptText string) (response string, err error) {
 	client := p.client()
-	modelIdentifier := strings.TrimPrefix(model.ID(), p.ID()+provider.ProviderModelSeparator)
+	modelIdentifier := strings.TrimPrefix(model.ModelID(), p.ID()+provider.ProviderModelSeparator)
 
 	return openaiapi.QueryOpenAIAPIModel(ctx, client, modelIdentifier, model.Attributes(), promptText)
 }
