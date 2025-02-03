@@ -832,7 +832,7 @@ func (command *Evaluate) evaluateKubernetes(ctx *evaluate.Context) (err error) {
 
 		var storageTemplateData bytes.Buffer
 		if err := storageTemplate.Execute(&storageTemplateData, data); err != nil {
-			return pkgerrors.Wrap(err, "could not execute storate template")
+			return pkgerrors.Wrap(err, "could not execute storage template")
 		}
 
 		// Create the storage access pod.
