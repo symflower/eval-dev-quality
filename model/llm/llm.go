@@ -73,9 +73,19 @@ func (m *Model) ID() (id string) {
 	return m.id
 }
 
-// ModelID returns the unique identifier of this model.
+// ModelID returns the unique identifier of this model with its provider.
 func (m *Model) ModelID() (modelID string) {
 	return m.modelID
+}
+
+// ModelIDWithoutProvider returns the unique identifier of this model without its provider.
+func (m *Model) ModelIDWithoutProvider() (modelID string) {
+	_, modelID, ok := strings.Cut(m.modelID, provider.ProviderModelSeparator)
+	if !ok {
+		panic(m.modelID)
+	}
+
+	return modelID
 }
 
 // Attributes returns query attributes.

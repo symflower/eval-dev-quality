@@ -11,8 +11,10 @@ import (
 type Model interface {
 	// ID returns full identifier, including the provider and attributes.
 	ID() (id string)
-	// ModelID returns the unique identifier of this model.
+	// ModelID returns the unique identifier of this model with its provider.
 	ModelID() (modelID string)
+	// ModelIDWithoutProvider returns the unique identifier of this model without its provider.
+	ModelIDWithoutProvider() (modelID string)
 
 	// Attributes returns query attributes.
 	Attributes() (attributes map[string]string)

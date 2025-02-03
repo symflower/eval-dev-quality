@@ -67,9 +67,14 @@ func (m *Model) ID() (id string) {
 	return "symflower" + provider.ProviderModelSeparator + m.id
 }
 
-// ModelID returns the unique identifier of this model.
+// ModelID returns the unique identifier of this model with its provider.
 func (m *Model) ModelID() (modelID string) {
 	return "symflower" + provider.ProviderModelSeparator + m.id
+}
+
+// ModelIDWithoutProvider returns the unique identifier of this model without its provider.
+func (m *Model) ModelIDWithoutProvider() (modelID string) {
+	return m.id
 }
 
 // Attributes returns query attributes.

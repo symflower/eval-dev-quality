@@ -88,6 +88,24 @@ func (_m *MockModel) ModelID() string {
 	return r0
 }
 
+// ModelIDWithoutProvider provides a mock function with given fields:
+func (_m *MockModel) ModelIDWithoutProvider() string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for ModelIDWithoutProvider")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
 // NewMockModel creates a new instance of MockModel. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockModel(t interface {
