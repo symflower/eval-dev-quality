@@ -265,36 +265,6 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		return evaluationContext, evaluationConfiguration, func() {}
 	}
 
-	// Register custom OpenAI API providers and models.
-	{
-		customProviders := map[string]*openaiapi.Provider{}
-		for providerID, providerURL := range command.ProviderUrls {
-			if !strings.HasPrefix(providerID, "custom-") {
-				continue
-			}
-
-			p := openaiapi.NewProvider(providerID, providerURL)
-			provider.Register(p)
-			customProviders[providerID] = p
-		}
-		for _, model := range command.Models {
-			if !strings.HasPrefix(model, "custom-") {
-				continue
-			}
-
-			providerID, _, ok := strings.Cut(model, provider.ProviderModelSeparator)
-			if !ok {
-				command.logger.Panicf("ERROR: cannot split %q into provider and model name by %q", model, provider.ProviderModelSeparator)
-			}
-			modelProvider, ok := customProviders[providerID]
-			if !ok {
-				command.logger.Panicf("ERROR: unknown custom provider %q for model %q", providerID, model)
-			}
-
-			modelProvider.AddModel(llm.NewModel(modelProvider, model))
-		}
-	}
-
 	// Ensure the "testdata" path exists and make it absolute.
 	{
 		if err := osutil.DirExists(command.TestdataPath); err != nil {
@@ -369,6 +339,36 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 	evaluationContext.Languages = make([]language.Language, len(command.Languages))
 	for i, languageID := range command.Languages {
 		evaluationContext.Languages[i] = languagesSelected[languageID]
+	}
+
+	// Register custom OpenAI API providers and models.
+	{
+		customProviders := map[string]*openaiapi.Provider{}
+		for providerID, providerURL := range command.ProviderUrls {
+			if !strings.HasPrefix(providerID, "custom-") {
+				continue
+			}
+
+			p := openaiapi.NewProvider(providerID, providerURL)
+			provider.Register(p)
+			customProviders[providerID] = p
+		}
+		for _, model := range command.ModelIDsWithAttributes {
+			if !strings.HasPrefix(model, "custom-") {
+				continue
+			}
+
+			providerID, _, ok := strings.Cut(model, provider.ProviderModelSeparator)
+			if !ok {
+				command.logger.Panicf("ERROR: cannot split %q into provider and model name by %q", model, provider.ProviderModelSeparator)
+			}
+			modelProvider, ok := customProviders[providerID]
+			if !ok {
+				command.logger.Panicf("ERROR: unknown custom provider %q for model %q", providerID, model)
+			}
+
+			modelProvider.AddModel(llm.NewModel(modelProvider, model))
+		}
 	}
 
 	// Gather models.
