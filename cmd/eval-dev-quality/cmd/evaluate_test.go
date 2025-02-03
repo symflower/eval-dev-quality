@@ -462,10 +462,10 @@ func TestEvaluateExecute(t *testing.T) {
 
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					filepath.Join("result-directory", "evaluation.log"): func(t *testing.T, filePath string, data string) {
-						assert.Contains(t, data, "\"msg\":\"skipping unavailable provider\",\"provider\":\"openrouter\"")
+						assert.Contains(t, data, `"msg":"skipping provider because it is not available","error":"missing access token","provider":"openrouter"`)
 					},
 				},
-				ExpectedPanicContains: "ERROR: model openrouter/auto does not exist",
+				ExpectedPanicContains: `ERROR: cannot find provider "openrouter"`,
 			})
 		})
 		t.Run("Ollama", func(t *testing.T) {
@@ -1271,13 +1271,17 @@ func TestEvaluateInitialize(t *testing.T) {
 	// makeValidCommand is a helper to abstract all the default values that have to be set to make a command valid.
 	makeValidCommand := func(modify func(command *Evaluate)) *Evaluate {
 		c := &Evaluate{
+			ModelIDsWithProviderAndAttributes: []string{"symflower/smart-template"},
+			QueryAttempts:                     1,
+
+			ResultPath:   filepath.Join("$TEMP_PATH", "result-directory"),
+			TestdataPath: filepath.Join("..", "..", "..", "testdata"),
+
 			ExecutionTimeout: 1,
-			Parallel:         1,
-			QueryAttempts:    1,
-			ResultPath:       filepath.Join("$TEMP_PATH", "result-directory"),
 			Runs:             1,
-			Runtime:          "local",
-			TestdataPath:     filepath.Join("..", "..", "..", "testdata"),
+
+			Runtime:  "local",
+			Parallel: 1,
 		}
 
 		if modify != nil {
@@ -1325,10 +1329,14 @@ func TestEvaluateInitialize(t *testing.T) {
 
 		Command: makeValidCommand(func(command *Evaluate) {
 			command.ModelIDsWithProviderAndAttributes = []string{}
+			command.ProviderTokens = map[string]string{
+				"openrouter": "fake-token",
+			}
 		}),
 
 		// Could also select arbitrary Ollama or new Openrouter models so sanity check that at least symflower is there.
 		ValidateCommand: func(t *testing.T, command *Evaluate) {
+			assert.Contains(t, command.ModelIDsWithProviderAndAttributes, "symflower/smart-template")
 			assert.Contains(t, command.ModelIDsWithProviderAndAttributes, "symflower/symbolic-execution")
 		},
 		ValidateContext: func(t *testing.T, context *evaluate.Context) {
@@ -1448,6 +1456,7 @@ func TestEvaluateInitialize(t *testing.T) {
 
 		Command: makeValidCommand(func(command *Evaluate) {
 			command.Configuration = "config.json"
+			command.ModelIDsWithProviderAndAttributes = nil
 		}),
 
 		ValidateCommand: func(t *testing.T, command *Evaluate) {
@@ -1513,7 +1522,7 @@ func TestEvaluateInitialize(t *testing.T) {
 		}
 
 		validate(t, &testCase{
-			Name: "Parallel parameter hast to be greater then zero",
+			Name: "Parallel parameter has to be greater then zero",
 
 			Command: makeValidCommand(func(command *Evaluate) {
 				command.Runtime = "docker"

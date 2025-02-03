@@ -100,7 +100,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		Name: "Simple",
 
 		SetupMock: func(mockedProvider *providertesting.MockQuery) {
-			mockedProvider.On("Query", mock.Anything, "model-id", promptMessage).Return(bytesutil.StringTrimIndentations(`
+			mockedProvider.On("Query", mock.Anything, mock.Anything, promptMessage).Return(bytesutil.StringTrimIndentations(`
 					`+"```"+`
 					package native
 
@@ -191,7 +191,7 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 			Name: "Opening bracket is missing",
 
 			SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
-				mockedProvider.On("Query", mock.Anything, "some-model", mock.Anything).Return(bytesutil.StringTrimIndentations(`
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(bytesutil.StringTrimIndentations(`
 					`+"```"+`
 					package openingBracketMissing
 					func openingBracketMissing(x int) int {
@@ -240,7 +240,7 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 			Name: "Opening bracket is missing",
 
 			SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
-				mockedProvider.On("Query", mock.Anything, "some-model", mock.Anything).Return(bytesutil.StringTrimIndentations(`
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(bytesutil.StringTrimIndentations(`
 					`+"```"+`
 					package com.eval;
 					public class OpeningBracketMissing {
@@ -682,7 +682,7 @@ func TestModelTranspile(t *testing.T) {
 			Name: "Binary search",
 
 			SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
-				mockedProvider.On("Query", mock.Anything, "some-model", mock.Anything).Return("```\n"+transpiledFileContent+"```\n", nil)
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("```\n"+transpiledFileContent+"```\n", nil)
 			},
 
 			Language:       &golang.Language{},
@@ -729,10 +729,10 @@ func TestModelTranspile(t *testing.T) {
 			}
 		`)
 		validate(t, &testCase{
-			Name: "Binary Search",
+			Name: "Binary search",
 
 			SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
-				mockedProvider.On("Query", mock.Anything, "some-model", mock.Anything).Return("```\n"+transpiledFileContent+"```\n", nil)
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("```\n"+transpiledFileContent+"```\n", nil)
 			},
 
 			Language:       &java.Language{},
@@ -832,7 +832,7 @@ func TestModelMigrate(t *testing.T) {
 		Name: "Increment",
 
 		SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
-			mockedProvider.On("Query", mock.Anything, "some-model", mock.Anything).Return("```\n"+migratedTestFile+"```\n", nil)
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("```\n"+migratedTestFile+"```\n", nil)
 		},
 
 		Language: &java.Language{},

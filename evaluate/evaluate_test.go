@@ -244,7 +244,7 @@ func TestEvaluate(t *testing.T) {
 
 				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 					// Set up mocks, when test is running.
-					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("", ErrEmptyResponseFromModel)
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("", ErrEmptyResponseFromModel)
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
 					mockedQuery.AssertNumberOfCalls(t, "Query", 2)
@@ -325,10 +325,10 @@ func TestEvaluate(t *testing.T) {
 
 				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 					// Set up mocks, when test is running.
-					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("", ErrEmptyResponseFromModel).Once()
-					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("model-response", nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
-					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("", ErrEmptyResponseFromModel).Once()
-					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("model-response", nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("", ErrEmptyResponseFromModel).Once()
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("model-response", nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("", ErrEmptyResponseFromModel).Once()
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("model-response", nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
 					mockedQuery.AssertNumberOfCalls(t, "Query", 4)
@@ -424,7 +424,7 @@ func TestEvaluate(t *testing.T) {
 
 				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 					// Set up mocks, when test is running.
-					mockedQuery.On("Query", mock.Anything, mockedModelID, mock.Anything).Return("model-response", nil).After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("model-response", nil).After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
 					mockedQuery.AssertNumberOfCalls(t, "Query", 2)
