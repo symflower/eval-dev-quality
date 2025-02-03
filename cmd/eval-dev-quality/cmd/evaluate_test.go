@@ -1324,12 +1324,12 @@ func TestEvaluateInitialize(t *testing.T) {
 		Name: "Selecting no model defaults to all",
 
 		Command: makeValidCommand(func(command *Evaluate) {
-			command.Models = []string{}
+			command.ModelIDsWithProviderAndAttributes = []string{}
 		}),
 
 		// Could also select arbitrary Ollama or new Openrouter models so sanity check that at least symflower is there.
 		ValidateCommand: func(t *testing.T, command *Evaluate) {
-			assert.Contains(t, command.Models, "symflower/symbolic-execution")
+			assert.Contains(t, command.ModelIDsWithProviderAndAttributes, "symflower/symbolic-execution")
 		},
 		ValidateContext: func(t *testing.T, context *evaluate.Context) {
 			modelIDs := make([]string, len(context.Models))
@@ -1453,7 +1453,7 @@ func TestEvaluateInitialize(t *testing.T) {
 		ValidateCommand: func(t *testing.T, command *Evaluate) {
 			assert.Equal(t, []string{
 				"symflower/symbolic-execution",
-			}, command.Models)
+			}, command.ModelIDsWithProviderAndAttributes)
 			assert.Equal(t, []string{
 				filepath.Join("golang", "plain"),
 				filepath.Join("java", "plain"),

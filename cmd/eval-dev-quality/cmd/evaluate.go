@@ -53,8 +53,8 @@ type Evaluate struct {
 
 	// Languages determines which language should be used for the evaluation, or empty if all languages should be used.
 	Languages []string `long:"language" description:"Evaluate with this language. By default all languages are used."`
-	// Models determines which models should be used for the evaluation, or empty if all models should be used.
-	Models []string `long:"model" description:"Evaluate with this model. By default all models are used."`
+	// ModelIDsWithProviderAndAttributes determines which models should be used for the evaluation, or empty if all models should be used.
+	ModelIDsWithProviderAndAttributes []string `long:"model" description:"Evaluate with this model. By default all models are used."`
 	// ProviderTokens holds all API tokens for the providers.
 	ProviderTokens map[string]string `long:"tokens" description:"API tokens for model providers (of the form '$provider:$token'). When using the environment variable, separate multiple definitions with ','." env:"PROVIDER_TOKEN" env-delim:","`
 	// ProviderUrls holds all custom inference endpoint urls for the providers.
@@ -123,7 +123,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			command.logger.Panicf("the configuration file is not supported in containerized runtimes")
 		}
 
-		if len(command.Models) > 0 || len(command.Repositories) > 0 {
+		if len(command.ModelIDsWithProviderAndAttributes) > 0 || len(command.Repositories) > 0 {
 			command.logger.Panicf("do not provide models and repositories when loading a configuration file")
 		}
 
@@ -139,7 +139,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			command.logger.Panicf("ERROR: %s", err)
 		}
 
-		command.Models = configuration.Models.Selected
+		command.ModelIDsWithProviderAndAttributes = configuration.Models.Selected
 		command.Repositories = configuration.Repositories.Selected
 	}
 
@@ -258,7 +258,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 	// In a containerized runtime we check the availability of the testdata, repositories and models/providers inside the container.
 	if command.Runtime != "local" {
 		// Copy the models over.
-		for _, modelID := range command.Models {
+		for _, modelID := range command.ModelIDsWithProviderAndAttributes {
 			evaluationContext.Models = append(evaluationContext.Models, llm.NewModel(nil, modelID))
 		}
 
@@ -376,10 +376,10 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 	{
 		// Check which providers are needed for the evaluation.
 		providersSelected := map[string]provider.Provider{}
-		if len(command.Models) == 0 {
+		if len(command.ModelIDsWithAttributes) == 0 {
 			providersSelected = provider.Providers
 		} else {
-			for _, model := range command.Models {
+			for _, model := range command.ModelIDsWithAttributes {
 				p := strings.SplitN(model, provider.ProviderModelSeparator, 2)[0]
 
 				if _, ok := providersSelected[p]; ok {
@@ -425,7 +425,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			// Check if a provider has the ability to pull models and do so if necessary.
 			if puller, ok := p.(provider.Puller); ok {
 				command.logger.Info("pulling available models for provider", "provider", p.ID())
-				for _, modelID := range command.Models {
+				for _, modelID := range command.ModelIDsWithAttributes {
 					if !strings.HasPrefix(modelID, p.ID()) { // TODO Move this into `NewModel` to validate that a model belongs to a provider.
 						panic(fmt.Errorf("model %s does not belong to provider %s", modelID, p.ID()))
 					}
@@ -449,23 +449,23 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 		modelIDs := maps.Keys(models)
 		sort.Strings(modelIDs)
-		if len(command.Models) == 0 {
-			command.Models = modelIDs
+		if len(command.ModelIDsWithAttributes) == 0 {
+			command.ModelIDsWithAttributes = modelIDs
 		} else {
-			for _, modelID := range command.Models {
+			for _, modelID := range command.ModelIDsWithAttributes {
 				if _, ok := models[modelID]; !ok {
 					command.logger.Panicf("ERROR: model %s does not exist. Valid models are: %s", modelID, strings.Join(modelIDs, ", "))
 				}
 			}
 		}
-		sort.Strings(command.Models)
-		for _, modelID := range command.Models {
+		sort.Strings(command.ModelIDsWithAttributes)
+		for _, modelID := range command.ModelIDsWithAttributes {
 			modelsSelected[modelID] = models[modelID]
 		}
 
 		// Make the resolved selected models available in the command.
-		evaluationContext.Models = make([]model.Model, len(command.Models))
-		for i, modelID := range command.Models {
+		evaluationContext.Models = make([]model.Model, len(command.ModelIDsWithAttributes))
+		for i, modelID := range command.ModelIDsWithAttributes {
 			evaluationContext.Models[i] = modelsSelected[modelID]
 			evaluationConfiguration.Models.Selected = append(evaluationConfiguration.Models.Selected, modelID)
 		}
