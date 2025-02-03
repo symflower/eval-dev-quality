@@ -24,11 +24,15 @@ import (
 
 // Model represents a LLM model accessed via a provider.
 type Model struct {
+	// id holds the full identifier, including the provider and attributes.
+	id string
 	// provider is the client to query the LLM model.
 	provider provider.Query
-	// model holds the identifier for the LLM model.
-	model string
+	// modelID holds the identifier for the LLM model.
+	modelID string
 
+	// attributes holds query attributes.
+	attributes map[string]string
 	// queryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	queryAttempts uint
 
@@ -37,25 +41,56 @@ type Model struct {
 }
 
 // NewModel returns an LLM model corresponding to the given identifier which is queried via the given provider.
-func NewModel(provider provider.Query, modelIdentifier string) *Model {
-	return &Model{
+func NewModel(provider provider.Query, modelIDWithAttributes string) (llmModel *Model) {
+	llmModel = &Model{
+		id:       modelIDWithAttributes,
 		provider: provider,
-		model:    modelIdentifier,
 
 		queryAttempts: 1,
 	}
+	llmModel.modelID, llmModel.attributes = model.ParseModelID(modelIDWithAttributes)
+
+	return llmModel
 }
 
 // NewModelWithMetaInformation returns a LLM model with meta information corresponding to the given identifier which is queried via the given provider.
 func NewModelWithMetaInformation(provider provider.Query, modelIdentifier string, metaInformation *model.MetaInformation) *Model {
 	return &Model{
+		id:       modelIdentifier,
 		provider: provider,
-		model:    modelIdentifier,
+		modelID:  modelIdentifier,
 
 		queryAttempts: 1,
 
 		metaInformation: metaInformation,
 	}
+}
+
+var _ model.Model = (*Model)(nil)
+
+// ID returns full identifier, including the provider and attributes.
+func (m *Model) ID() (id string) {
+	return m.id
+}
+
+// ModelID returns the unique identifier of this model with its provider.
+func (m *Model) ModelID() (modelID string) {
+	return m.modelID
+}
+
+// ModelIDWithoutProvider returns the unique identifier of this model without its provider.
+func (m *Model) ModelIDWithoutProvider() (modelID string) {
+	_, modelID, ok := strings.Cut(m.modelID, provider.ProviderModelSeparator)
+	if !ok {
+		panic(m.modelID)
+	}
+
+	return modelID
+}
+
+// Attributes returns query attributes.
+func (m *Model) Attributes() (attributes map[string]string) {
+	return m.attributes
 }
 
 // MetaInformation returns the meta information of a model.
@@ -232,13 +267,6 @@ func (ctx *llmMigrateSourceFilePromptContext) Format() (message string, err erro
 	return b.String(), nil
 }
 
-var _ model.Model = (*Model)(nil)
-
-// ID returns the unique ID of this model.
-func (m *Model) ID() (id string) {
-	return m.model
-}
-
 var _ model.CapabilityWriteTests = (*Model)(nil)
 
 // WriteTests generates test files for the given implementation file in a repository.
@@ -302,7 +330,7 @@ func (m *Model) query(logger *log.Logger, request string) (response string, dura
 			id := uuid.NewString
 			logger.Info("querying model", "model", m.ID(), "id", id, "prompt", string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
 			start := time.Now()
-			response, err = m.provider.Query(context.Background(), m.model, request)
+			response, err = m.provider.Query(context.Background(), m, request)
 			if err != nil {
 				return err
 			}

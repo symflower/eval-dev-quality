@@ -12,6 +12,26 @@ type MockModel struct {
 	mock.Mock
 }
 
+// Attributes provides a mock function with given fields:
+func (_m *MockModel) Attributes() map[string]string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for Attributes")
+	}
+
+	var r0 map[string]string
+	if rf, ok := ret.Get(0).(func() map[string]string); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(map[string]string)
+		}
+	}
+
+	return r0
+}
+
 // ID provides a mock function with given fields:
 func (_m *MockModel) ID() string {
 	ret := _m.Called()
@@ -45,6 +65,42 @@ func (_m *MockModel) MetaInformation() *model.MetaInformation {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*model.MetaInformation)
 		}
+	}
+
+	return r0
+}
+
+// ModelID provides a mock function with given fields:
+func (_m *MockModel) ModelID() string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for ModelID")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// ModelIDWithoutProvider provides a mock function with given fields:
+func (_m *MockModel) ModelIDWithoutProvider() string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for ModelIDWithoutProvider")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
 	}
 
 	return r0

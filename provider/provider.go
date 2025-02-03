@@ -45,7 +45,7 @@ type InjectToken interface {
 // Query is a provider that allows to query a model directly.
 type Query interface {
 	// Query queries the provider with the given model name.
-	Query(ctx context.Context, modelIdentifier string, promptText string) (response string, err error)
+	Query(ctx context.Context, model model.Model, promptText string) (response string, err error)
 }
 
 // Service is a provider that requires background services.

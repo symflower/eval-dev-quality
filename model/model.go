@@ -1,22 +1,45 @@
 package model
 
 import (
+	"strings"
+
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
 )
 
 // Model defines a model that can be queried for generations.
 type Model interface {
-	// ID returns the unique ID of this model.
+	// ID returns full identifier, including the provider and attributes.
 	ID() (id string)
+	// ModelID returns the unique identifier of this model with its provider.
+	ModelID() (modelID string)
+	// ModelIDWithoutProvider returns the unique identifier of this model without its provider.
+	ModelIDWithoutProvider() (modelID string)
+
+	// Attributes returns query attributes.
+	Attributes() (attributes map[string]string)
 
 	// MetaInformation returns the meta information of a model.
 	MetaInformation() *MetaInformation
 }
 
+// ParseModelID takes a packaged model ID with optional attributes and converts it into its model ID and optional attributes.
+func ParseModelID(modelIDWithAttributes string) (modelID string, attributes map[string]string) {
+	ms := strings.Split(modelIDWithAttributes, "@")
+	if len(ms) > 1 {
+		attributes = map[string]string{}
+		for i := 1; i < len(ms); i++ {
+			as := strings.Split(ms[i], "=")
+			attributes[as[0]] = as[1]
+		}
+	}
+
+	return ms[0], attributes
+}
+
 // MetaInformation holds a model.
 type MetaInformation struct {
-	// ID holds the model id.
+	// ID holds the model ID.
 	ID string `json:"id"`
 	// Name holds the model name.
 	Name string `json:"name"`
