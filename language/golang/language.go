@@ -140,6 +140,9 @@ func parseSymflowerTestOutput(data string) (testsTotal int, testsPass int, err e
 		}
 	}
 	testsPass = testsTotal - testsFail
+	if testsPass < 0 { // Go does not count tests on syntax errors, but marks it as a failing test. This results in total tests 0 minus failing tess 1, hence, -1. Passing tests should be always >=0.
+		testsPass = 0
+	}
 
 	return testsTotal, testsPass, nil
 }

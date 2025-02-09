@@ -59,7 +59,7 @@ func symflowerTemplate(logger *log.Logger, repositoryPath string, language langu
 // ExecuteWithSymflowerFix runs the "symflower fix" command and calculates the new assessments.
 func ExecuteWithSymflowerFix(ctx evaltask.Context, logger *log.Logger, packagePath string) (testResult *language.TestResult, processingTime uint64, problems []error, err error) {
 	// Run "symflower fix"  if the model response fails to execute.
-	logger.Info("model response alone failed execution, attempting to fix with \"symflower fix \"")
+	logger.Info("model response alone failed execution, attempting to fix with \"symflower fix\"")
 
 	duration, err := symflowerFix(logger, packagePath, ctx.Language)
 	if err != nil {
