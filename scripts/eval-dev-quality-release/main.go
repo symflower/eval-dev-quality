@@ -54,7 +54,10 @@ func main() {
 		},
 	})
 	if err != nil {
-		logger.Info("cannot update repository to the latest commits: %+v", err)
+		logger.Warn(
+			"cannot update repository to the latest commits:",
+			"error", err,
+		)
 	}
 
 	logger.Info("check that version is newer than current version")

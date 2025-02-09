@@ -31,7 +31,10 @@ func main() {
 		},
 	})
 	if err != nil {
-		panic([]any{err, logBuffer.String()})
+		fmt.Println(output)
+		fmt.Println(logBuffer.String())
+
+		panic(err)
 	}
 
 	var matches []string
