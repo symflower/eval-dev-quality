@@ -57,7 +57,7 @@ install-tools: # Install tools that are required for running the evaluation.
 install-tools-linting: # Install tools that are used for linting.
 	go install -v github.com/kisielk/errcheck@v1.7.0
 	go install -v github.com/mgechev/revive@v1.4.0
-	go install -v golang.org/x/tools/cmd/deadcode@v0.16.1
+	go install -v golang.org/x/tools/cmd/deadcode@v0.27.1-0.20241219162658-575221bfbda3 # Aligned with version `gopls/v0.17.1`.
 	go install -v honnef.co/go/tools/cmd/staticcheck@2024.1.1
 .PHONY: install-tools-linting
 

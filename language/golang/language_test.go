@@ -305,4 +305,27 @@ func TestParseSymflowerTestOutput(t *testing.T) {
 		ExpectedTestsTotal: 6,
 		ExpectedTestsPass:  4,
 	})
+	validate(t, &testCase{
+		Name: "Tests with syntax error in implementation (Go >=1.23)",
+
+		Data: `
+			# cascadingIfElse [cascadingIfElse.test]
+			./cascadingIfElse.go:3:8: "strings" imported and not used
+			FAIL    cascadingIfElse [build failed]
+
+			=== Failed
+			=== FAIL: .  (0.00s)
+			FAIL    cascadingIfElse [build failed]
+
+			=== Errors
+			./cascadingIfElse.go:3:8: "strings" imported and not used
+
+			DONE 0 tests, 1 failure, 1 error in 0.117s
+			Give us your feedback and let us know how we can improve Symflower at hello@symflower.com or https://github.com/symflower/symflower. Thanks so much for your help!
+			ERROR: execution failed: exit status 1
+		`,
+
+		ExpectedTestsTotal: 0,
+		ExpectedTestsPass:  0,
+	})
 }

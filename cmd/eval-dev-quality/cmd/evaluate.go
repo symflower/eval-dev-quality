@@ -629,7 +629,10 @@ func (command *Evaluate) evaluateDocker(ctx *evaluate.Context) (err error) {
 			Command: cmd,
 		})
 		if err != nil {
-			ctx.Log.Error("ERROR: Unable to pull image", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput))
+			ctx.Log.Error(
+				"ERROR: unable to pull image",
+				"error", pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput),
+			)
 		}
 	}
 

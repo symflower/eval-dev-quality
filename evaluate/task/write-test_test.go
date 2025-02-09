@@ -44,7 +44,7 @@ func TestWriteTestsRun(t *testing.T) {
 
 		repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
 		require.NoError(t, os.MkdirAll(repositoryPath, 0700))
-		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "go.mod"), []byte("module plain\n\ngo 1.21.5"), 0600))
+		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "go.mod"), []byte("module plain\n\ngo 1.23.6"), 0600))
 		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "caseA.go"), []byte("package plain\n\nfunc caseA(){}"), 0600))
 		require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "caseB.go"), []byte("package plain\n\nfunc caseB(){}"), 0600))
 
