@@ -73,6 +73,8 @@ Release version of this roadmap issue:
         -   [ ] Models with extended context windows (usually denoted by `-1234K` suffix)
     -   [ ] Always prefer fine tuned (`-instruct`, `-chat`) models over a plain base model
 -   [ ] Blog post containing evaluation results, new features and learnings
+    -   [ ] Copy the template: doc/devqualityeval/template-deep-dive.md in the company symflower.com repository
+    -   [ ] Write out the blog post content as described in the template
     -   [ ] Update README with blog post link and new header image
     -   [ ] Update repository link with blog post link
     -   [ ] https://github.com/symflower/eval-dev-quality/discussions
