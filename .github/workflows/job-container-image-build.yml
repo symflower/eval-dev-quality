@@ -42,3 +42,22 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  test:
+    runs-on: ubuntu-latest
+    needs: docker
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run tests from Docker image
+        run: |
+          output=$(docker run -v ./docs:/app/svg --user $(id -u):1000 --rm ghcr.io/symflower/eval-dev-quality:${GITHUB_SHA::7} svgexport /app/svg/cta.svg /app/svg/cta.png)
+
+          expected="/app/svg/cta.svg /app/svg/cta.png png 100% 1x 0:0:1920:400 1920:400"
+          if [ "$output" == "$expected" ]; then
+            exit 0
+          else
+            exit 1
+          fi
