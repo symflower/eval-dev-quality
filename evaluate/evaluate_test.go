@@ -1167,6 +1167,7 @@ func TestEvaluate(t *testing.T) {
 						repositoryPath,
 					},
 
+					RunIDOffset:    10,
 					Runs:           3,
 					RunsSequential: false,
 				},
@@ -1327,7 +1328,13 @@ func TestEvaluate(t *testing.T) {
 						assert.Equal(t, 1, strings.Count(data, "creating temporary repository"), "create only one temporary repository")
 					},
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
-					"evaluation.csv": nil,
+					"evaluation.csv": func(t *testing.T, filePath string, data string) {
+						lines := strings.Split(data, "\n")
+						assert.Equal(t, "model-id,language,repository,case,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing", lines[0])
+						assert.Equal(t, "mocked-generation-model,golang,golang/plain,plain.go,write-tests,11,0,1,1,0,1,0,1,0,0,0", lines[1])
+						assert.Equal(t, "mocked-generation-model,golang,golang/plain,plain.go,write-tests,12,0,1,1,0,1,0,1,0,0,0", lines[5])
+						assert.Equal(t, "mocked-generation-model,golang,golang/plain,plain.go,write-tests,13,0,1,1,0,1,0,1,0,0,0", lines[9])
+					},
 				},
 			})
 		}
@@ -1357,6 +1364,7 @@ func TestEvaluate(t *testing.T) {
 						repositoryPath,
 					},
 
+					RunIDOffset:    20,
 					Runs:           3,
 					RunsSequential: true,
 				},
@@ -1517,7 +1525,13 @@ func TestEvaluate(t *testing.T) {
 						assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":3,\"total\":3,")
 						assert.NotRegexp(t, `\\\"msg\\\":\\\"starting run\\\",\\\"count\\\":\d+,\\\"total\\\":\d+\}`, data)
 					},
-					"evaluation.csv": nil,
+					"evaluation.csv": func(t *testing.T, filePath string, data string) {
+						lines := strings.Split(data, "\n")
+						assert.Equal(t, "model-id,language,repository,case,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing", lines[0])
+						assert.Equal(t, "mocked-generation-model,golang,golang/plain,plain.go,write-tests,21,0,1,1,0,1,0,1,0,0,0", lines[1])
+						assert.Equal(t, "mocked-generation-model,golang,golang/plain,plain.go,write-tests,22,0,1,1,0,1,0,1,0,0,0", lines[5])
+						assert.Equal(t, "mocked-generation-model,golang,golang/plain,plain.go,write-tests,23,0,1,1,0,1,0,1,0,0,0", lines[9])
+					},
 				},
 			})
 		}
