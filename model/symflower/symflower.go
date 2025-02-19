@@ -82,9 +82,20 @@ func (m *Model) Attributes() (attributes map[string]string) {
 	return nil
 }
 
+// SetAttributes sets the given attributes.
+func (m *Model) SetAttributes(attributes map[string]string) {
+}
+
 // MetaInformation returns the meta information of a model.
 func (m *Model) MetaInformation() (metaInformation *model.MetaInformation) {
 	return nil
+}
+
+// Clone returns a copy of the model.
+func (m *Model) Clone() (clone model.Model) {
+	model := *m
+
+	return &model
 }
 
 var _ model.CapabilityWriteTests = (*Model)(nil)

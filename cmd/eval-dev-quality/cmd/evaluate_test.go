@@ -1479,6 +1479,44 @@ func TestEvaluateInitialize(t *testing.T) {
 		},
 	})
 	validate(t, &testCase{
+		Name: "Model with attributes",
+
+		Command: makeValidCommand(func(command *Evaluate) {
+			command.ModelIDsWithProviderAndAttributes = []string{
+				"openrouter/openai/o3-mini@reasoning_effort=low",
+				"openrouter/openai/o3-mini@reasoning_effort=high",
+			}
+			command.ProviderTokens = map[string]string{
+				"openrouter": "fake-token",
+			}
+		}),
+
+		ValidateContext: func(t *testing.T, context *evaluate.Context) {
+			assert.Len(t, context.Models, 2)
+
+			assert.Equal(t, "openrouter/openai/o3-mini@reasoning_effort=high", context.Models[0].ID())
+			assert.Equal(t, "openrouter/openai/o3-mini", context.Models[0].ModelID())
+			expectedAttributes := map[string]string{
+				"reasoning_effort": "high",
+			}
+			assert.Equal(t, expectedAttributes, context.Models[0].Attributes())
+
+			assert.Equal(t, "openrouter/openai/o3-mini@reasoning_effort=low", context.Models[1].ID())
+			assert.Equal(t, "openrouter/openai/o3-mini", context.Models[1].ModelID())
+			expectedAttributes = map[string]string{
+				"reasoning_effort": "low",
+			}
+			assert.Equal(t, expectedAttributes, context.Models[1].Attributes())
+		},
+		ValidateConfiguration: func(t *testing.T, config *EvaluationConfiguration) {
+			expectedSelected := []string{
+				"openrouter/openai/o3-mini@reasoning_effort=high",
+				"openrouter/openai/o3-mini@reasoning_effort=low",
+			}
+			assert.Equal(t, expectedSelected, config.Models.Selected)
+		},
+	})
+	validate(t, &testCase{
 		Name: "Local runtime does not allow parallel parameter",
 
 		Command: makeValidCommand(func(command *Evaluate) {

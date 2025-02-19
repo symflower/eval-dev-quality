@@ -70,7 +70,12 @@ var _ model.Model = (*Model)(nil)
 
 // ID returns full identifier, including the provider and attributes.
 func (m *Model) ID() (id string) {
-	return m.id
+	attributeString := ""
+	for key, value := range m.attributes {
+		attributeString += "@" + key + "=" + value
+	}
+
+	return m.id + attributeString
 }
 
 // ModelID returns the unique identifier of this model with its provider.
@@ -93,9 +98,21 @@ func (m *Model) Attributes() (attributes map[string]string) {
 	return m.attributes
 }
 
+// SetAttributes sets the given attributes.
+func (m *Model) SetAttributes(attributes map[string]string) {
+	m.attributes = attributes
+}
+
 // MetaInformation returns the meta information of a model.
 func (m *Model) MetaInformation() (metaInformation *model.MetaInformation) {
 	return m.metaInformation
+}
+
+// Clone returns a copy of the model.
+func (m *Model) Clone() (clone model.Model) {
+	model := *m
+
+	return &model
 }
 
 // llmSourceFilePromptContext is the base template context for an LLM generation prompt.

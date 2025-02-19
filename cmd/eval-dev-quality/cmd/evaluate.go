@@ -447,7 +447,8 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				command.logger.Panicf("ERROR: cannot split %q into provider and model name by %q", modelIDsWithProviderAndAttributes, provider.ProviderModelSeparator)
 			}
 
-			modelID, _ := model.ParseModelID(modelIDsWithAttributes)
+			modelID, attributes := model.ParseModelID(modelIDsWithAttributes)
+			modelIDWithProvider := providerID + provider.ProviderModelSeparator + modelID
 
 			p, ok := providers[providerID]
 			if !ok {
@@ -460,18 +461,18 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				}
 
 				// TODO If a model has not been pulled before, it was not available for at least the "Ollama" provider. Make this cleaner, we should not rebuild every time.
-				if _, ok := models[modelIDsWithProviderAndAttributes]; !ok {
+				if _, ok := models[modelIDWithProvider]; !ok {
 					ms, err := p.Models()
 					if err != nil {
 						command.logger.Panicf("ERROR: could not query models for provider %q: %s", p.ID(), err)
 					}
 					for _, m := range ms {
-						if _, ok := models[m.ID()]; ok {
+						if _, ok := models[m.ModelID()]; ok {
 							continue
 						}
 
-						models[m.ID()] = m
-						evaluationConfiguration.Models.Available = append(evaluationConfiguration.Models.Available, m.ID())
+						models[m.ModelID()] = m
+						evaluationConfiguration.Models.Available = append(evaluationConfiguration.Models.Available, m.ModelID())
 					}
 					modelIDs = maps.Keys(models)
 					sort.Strings(modelIDs)
@@ -489,9 +490,17 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				pc.AddModel(m)
 			} else {
 				var ok bool
-				m, ok = models[modelIDsWithProviderAndAttributes]
+				m, ok = models[modelIDWithProvider]
 				if !ok {
 					command.logger.Panicf("ERROR: model %q does not exist for provider %q. Valid models are: %s", modelIDsWithProviderAndAttributes, providerID, strings.Join(modelIDs, ", "))
+				}
+
+				// If a model with attributes is requested, we add the base model plus attributes as new model to our list.
+				if len(attributes) > 0 {
+					modelWithAttributes := m.Clone()
+					modelWithAttributes.SetAttributes(attributes)
+					models[modelWithAttributes.ID()] = modelWithAttributes
+					m = modelWithAttributes
 				}
 			}
 			evaluationContext.Models = append(evaluationContext.Models, m)
