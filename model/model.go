@@ -18,9 +18,14 @@ type Model interface {
 
 	// Attributes returns query attributes.
 	Attributes() (attributes map[string]string)
+	// SetAttributes sets the given attributes.
+	SetAttributes(attributes map[string]string)
 
 	// MetaInformation returns the meta information of a model.
 	MetaInformation() *MetaInformation
+
+	// Clone returns a copy of the model.
+	Clone() (clone Model)
 }
 
 // ParseModelID takes a packaged model ID with optional attributes and converts it into its model ID and optional attributes.
