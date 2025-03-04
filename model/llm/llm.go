@@ -339,7 +339,7 @@ func (m *Model) query(logger *log.Logger, request string) (queryResult *provider
 				return err
 			}
 			duration = time.Since(start)
-			logger.Info("model responded", "model", m.ID(), "id", id, "duration", duration.Milliseconds(), "response", string(bytesutil.PrefixLines([]byte(queryResult.Message), []byte("\t"))))
+			logger.Info("model responded", "model", m.ID(), "id", id, "duration", duration.Milliseconds(), "response-id", queryResult.ResponseID, "token-input", queryResult.Usage.PromptTokens, "token-output", queryResult.Usage.CompletionTokens, "response", string(bytesutil.PrefixLines([]byte(queryResult.Message), []byte("\t"))))
 
 			return nil
 		},

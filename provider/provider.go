@@ -46,6 +46,8 @@ type InjectToken interface {
 
 // QueryResult holds the result of a query.
 type QueryResult struct {
+	// ResponseID holds the response ID.
+	ResponseID string
 	// Message holds the response message.
 	Message string
 	// Duration holds the duration of the result.
