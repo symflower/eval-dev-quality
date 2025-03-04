@@ -20,6 +20,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
+	"github.com/symflower/eval-dev-quality/provider"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
 )
 
@@ -100,13 +101,16 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		Name: "Simple",
 
 		SetupMock: func(mockedProvider *providertesting.MockQuery) {
-			mockedProvider.On("Query", mock.Anything, mock.Anything, promptMessage).Return(bytesutil.StringTrimIndentations(`
-					`+"```"+`
-					package native
+			queryResult := &provider.QueryResult{
+				Message: bytesutil.StringTrimIndentations(`
+				` + "```" + `
+				package native
 
-					func TestMain() {}
-					`+"```"+`
-				`), nil)
+				func TestMain() {}
+				` + "```" + `
+			`),
+			}
+			mockedProvider.On("Query", mock.Anything, mock.Anything, promptMessage).Return(queryResult, nil)
 		},
 
 		Language:          &golang.Language{},
@@ -191,20 +195,23 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 			Name: "Opening bracket is missing",
 
 			SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
-				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(bytesutil.StringTrimIndentations(`
-					`+"```"+`
-					package openingBracketMissing
-					func openingBracketMissing(x int) int {
-						if x > 0 {
-							return 1
+				queryResult := &provider.QueryResult{
+					Message: bytesutil.StringTrimIndentations(`
+						` + "```" + `
+						package openingBracketMissing
+						func openingBracketMissing(x int) int {
+							if x > 0 {
+								return 1
+							}
+							if x < 0 {
+								return -1
+							}
+							return 0
 						}
-						if x < 0 {
-							return -1
-						}
-						return 0
-					}
-					`+"```"+`
-				`), nil)
+						` + "```" + `
+					`),
+				}
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
 			},
 
 			Language:       &golang.Language{},
@@ -240,22 +247,25 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 			Name: "Opening bracket is missing",
 
 			SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
-				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(bytesutil.StringTrimIndentations(`
-					`+"```"+`
-					package com.eval;
-					public class OpeningBracketMissing {
-						public static int openingBracketMissing(int x) {
-							if (x > 0) {
-								return 1;
+				queryResult := &provider.QueryResult{
+					Message: bytesutil.StringTrimIndentations(`
+						` + "```" + `
+						package com.eval;
+						public class OpeningBracketMissing {
+							public static int openingBracketMissing(int x) {
+								if (x > 0) {
+									return 1;
+								}
+								if (x < 0) {
+									return -1;
+								}
+								return 0;
 							}
-							if (x < 0) {
-								return -1;
-							}
-							return 0;
 						}
-					}
-					`+"```"+`
-				`), nil)
+						` + "```" + `
+					`),
+				}
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
 			},
 
 			Language:       &java.Language{},
@@ -682,7 +692,10 @@ func TestModelTranspile(t *testing.T) {
 			Name: "Binary search",
 
 			SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
-				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("```\n"+transpiledFileContent+"```\n", nil)
+				queryResult := &provider.QueryResult{
+					Message: "```\n" + transpiledFileContent + "```\n",
+				}
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
 			},
 
 			Language:       &golang.Language{},
@@ -732,7 +745,10 @@ func TestModelTranspile(t *testing.T) {
 			Name: "Binary search",
 
 			SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
-				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("```\n"+transpiledFileContent+"```\n", nil)
+				queryResult := &provider.QueryResult{
+					Message: "```\n" + transpiledFileContent + "```\n",
+				}
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
 			},
 
 			Language:       &java.Language{},
@@ -832,7 +848,10 @@ func TestModelMigrate(t *testing.T) {
 		Name: "Increment",
 
 		SetupMock: func(t *testing.T, mockedProvider *providertesting.MockQuery) {
-			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("```\n"+migratedTestFile+"```\n", nil)
+			queryResult := &provider.QueryResult{
+				Message: "```\n" + migratedTestFile + "```\n",
+			}
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
 		},
 
 		Language: &java.Language{},

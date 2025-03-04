@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"time"
 
 	pkgerrors "github.com/pkg/errors"
 
@@ -42,10 +43,18 @@ type InjectToken interface {
 	SetToken(token string)
 }
 
+// QueryResult holds the result of a query.
+type QueryResult struct {
+	// Message holds the response message.
+	Message string
+	// Duration holds the duration of the result.
+	Duration time.Duration
+}
+
 // Query is a provider that allows to query a model directly.
 type Query interface {
 	// Query queries the provider with the given model name.
-	Query(ctx context.Context, model model.Model, promptText string) (response string, err error)
+	Query(ctx context.Context, model model.Model, promptText string) (result *QueryResult, err error)
 }
 
 // Service is a provider that requires background services.

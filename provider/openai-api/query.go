@@ -6,10 +6,11 @@ import (
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/sashabaranov/go-openai"
+	"github.com/symflower/eval-dev-quality/provider"
 )
 
 // QueryOpenAIAPIModel queries an OpenAI API model.
-func QueryOpenAIAPIModel(ctx context.Context, client *openai.Client, modelIdentifier string, attributes map[string]string, promptText string) (response string, err error) {
+func QueryOpenAIAPIModel(ctx context.Context, client *openai.Client, modelIdentifier string, attributes map[string]string, promptText string) (result *provider.QueryResult, err error) {
 	apiRequest := openai.ChatCompletionRequest{
 		Model: modelIdentifier,
 		Messages: []openai.ChatCompletionMessage{
@@ -31,10 +32,12 @@ func QueryOpenAIAPIModel(ctx context.Context, client *openai.Client, modelIdenti
 		apiRequest,
 	)
 	if err != nil {
-		return "", pkgerrors.WithStack(err)
+		return nil, pkgerrors.WithStack(err)
 	} else if len(apiResponse.Choices) == 0 {
-		return "", pkgerrors.WithStack(fmt.Errorf("empty LLM %q response: %+v", modelIdentifier, apiResponse))
+		return nil, pkgerrors.WithStack(fmt.Errorf("empty LLM %q response: %+v", modelIdentifier, apiResponse))
 	}
 
-	return apiResponse.Choices[0].Message.Content, nil
+	return &provider.QueryResult{
+		Message: apiResponse.Choices[0].Message.Content,
+	}, nil
 }
