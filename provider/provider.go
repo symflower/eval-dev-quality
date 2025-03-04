@@ -5,6 +5,7 @@ import (
 	"time"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/sashabaranov/go-openai"
 
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
@@ -49,6 +50,8 @@ type QueryResult struct {
 	Message string
 	// Duration holds the duration of the result.
 	Duration time.Duration
+	// Usage holds the usage metrics of the query.
+	Usage openai.Usage
 }
 
 // Query is a provider that allows to query a model directly.

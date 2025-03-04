@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/sashabaranov/go-openai"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -428,6 +429,10 @@ func TestEvaluate(t *testing.T) {
 				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 					queryResult := &provider.QueryResult{
 						Message: "model-response",
+						Usage: openai.Usage{
+							PromptTokens:     123,
+							CompletionTokens: 456,
+						},
 					}
 					// Set up mocks, when test is running.
 					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil).After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
@@ -463,6 +468,8 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
 							metrics.AssessmentKeyResponseNoError:                    1,
+							metrics.AssessmentKeyTokenInput:                         123,
+							metrics.AssessmentKeyTokenOutput:                        456,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -476,6 +483,8 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
 							metrics.AssessmentKeyResponseNoError:                    1,
+							metrics.AssessmentKeyTokenInput:                         123,
+							metrics.AssessmentKeyTokenOutput:                        456,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -489,6 +498,8 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
 							metrics.AssessmentKeyResponseNoError:                    1,
+							metrics.AssessmentKeyTokenInput:                         123,
+							metrics.AssessmentKeyTokenOutput:                        456,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -502,6 +513,8 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
 							metrics.AssessmentKeyResponseNoError:                    1,
+							metrics.AssessmentKeyTokenInput:                         123,
+							metrics.AssessmentKeyTokenOutput:                        456,
 						},
 					},
 				},

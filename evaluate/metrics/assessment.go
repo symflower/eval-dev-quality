@@ -11,8 +11,8 @@ import (
 type AssessmentKey string
 
 var (
-	// allAssessmentKeys holds all registered assessment keys.
-	allAssessmentKeys []AssessmentKey
+	// AllAssessmentKeys holds all registered assessment keys.
+	AllAssessmentKeys []AssessmentKey
 	// AllAssessmentKeysStrings returns all registered assessment keys as strings.
 	AllAssessmentKeysStrings []string
 )
@@ -22,7 +22,7 @@ func RegisterAssessmentKey(key string) AssessmentKey {
 	assessment := AssessmentKey(key)
 	i := sort.SearchStrings(AllAssessmentKeysStrings, key)
 
-	allAssessmentKeys = slices.Insert(allAssessmentKeys, i, assessment)
+	AllAssessmentKeys = slices.Insert(AllAssessmentKeys, i, assessment)
 	AllAssessmentKeysStrings = slices.Insert(AllAssessmentKeysStrings, i, key)
 
 	return assessment
@@ -54,6 +54,11 @@ var (
 	// AssessmentKeyResponseNoExcess indicates that a model did not produce more content as requested.
 	// TODO Infer if a model produced "too much" code. https://github.com/symflower/eval-dev-quality/issues/44
 	AssessmentKeyResponseNoExcess = RegisterAssessmentKey("response-no-excess")
+
+	// AssessmentKeyTokenInput collects the number of input token.
+	AssessmentKeyTokenInput = RegisterAssessmentKey("token-input")
+	// AssessmentKeyTokenOutput collects the number of output token.
+	AssessmentKeyTokenOutput = RegisterAssessmentKey("token-output")
 )
 
 // Assessments holds a collection of numerical assessment metrics.
@@ -77,7 +82,7 @@ func (a Assessments) Equal(x Assessments) bool {
 		return a == nil && x == nil
 	}
 
-	for _, key := range allAssessmentKeys {
+	for _, key := range AllAssessmentKeys {
 		if a[key] != x[key] {
 			return false
 		}
@@ -101,9 +106,9 @@ func (a Assessments) String() string {
 	if a == nil {
 		a = NewAssessments()
 	}
-	entries := make([]string, len(allAssessmentKeys))
+	entries := make([]string, len(AllAssessmentKeys))
 
-	for i, key := range allAssessmentKeys {
+	for i, key := range AllAssessmentKeys {
 		entries[i] = fmt.Sprintf("%s=%d", key, a[key])
 	}
 
@@ -116,8 +121,8 @@ func (a Assessments) StringCSV() (row []string) {
 		a = NewAssessments()
 	}
 
-	row = make([]string, len(allAssessmentKeys))
-	for i, key := range allAssessmentKeys {
+	row = make([]string, len(AllAssessmentKeys))
+	for i, key := range AllAssessmentKeys {
 		row[i] = fmt.Sprintf("%d", a[key])
 	}
 

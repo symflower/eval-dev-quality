@@ -39,5 +39,6 @@ func QueryOpenAIAPIModel(ctx context.Context, client *openai.Client, modelIdenti
 
 	return &provider.QueryResult{
 		Message: apiResponse.Choices[0].Message.Content,
+		Usage:   apiResponse.Usage,
 	}, nil
 }
