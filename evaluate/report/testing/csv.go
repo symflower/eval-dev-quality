@@ -1,8 +1,8 @@
 package testing
 
 import (
-	"regexp"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,32 +18,29 @@ func atoiUint64(t *testing.T, s string) uint64 {
 	return uint64(value)
 }
 
-// extractMetricsCSVMatch is a regular expression to extract metrics from CSV rows.
-var extractMetricsCSVMatch = regexp.MustCompile(`(\S+),(\S+),(\S+),(\S+),(\S+),\d+,(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)`)
-
 // ParseMetrics extracts multiple assessment metrics from the given string.
 func ParseMetrics(t *testing.T, data string) (assessments metricstesting.AssessmentTuples) {
-	matches := extractMetricsCSVMatch.FindAllStringSubmatch(data, -1)
+	lines := strings.Split(strings.TrimSpace(data), "\n")
+	if len(lines) < 2 {
+		return assessments
+	}
 
-	for _, match := range matches {
-		assessments = append(assessments, &metricstesting.AssessmentTuple{
-			Model:          match[1],
-			Language:       match[2],
-			RepositoryPath: match[3],
-			Case:           match[4],
-			Task:           task.Identifier(match[5]),
-			Assessment: metrics.Assessments{
-				metrics.AssessmentKeyCoverage:                           atoiUint64(t, match[6]),
-				metrics.AssessmentKeyFilesExecuted:                      atoiUint64(t, match[7]),
-				metrics.AssessmentKeyFilesExecutedMaximumReachable:      atoiUint64(t, match[8]),
-				metrics.AssessmentKeyGenerateTestsForFileCharacterCount: atoiUint64(t, match[9]),
-				metrics.AssessmentKeyProcessingTime:                     atoiUint64(t, match[10]),
-				metrics.AssessmentKeyResponseCharacterCount:             atoiUint64(t, match[11]),
-				metrics.AssessmentKeyResponseNoError:                    atoiUint64(t, match[12]),
-				metrics.AssessmentKeyResponseNoExcess:                   atoiUint64(t, match[13]),
-				metrics.AssessmentKeyResponseWithCode:                   atoiUint64(t, match[14]),
-			},
-		})
+	for _, line := range lines[1:] {
+		cells := strings.Split(line, ",")
+
+		tuple := &metricstesting.AssessmentTuple{
+			Model:          cells[0],
+			Language:       cells[1],
+			RepositoryPath: cells[2],
+			Case:           cells[3],
+			Task:           task.Identifier(cells[4]),
+			Assessment:     metrics.Assessments{},
+		}
+		for i, key := range metrics.AllAssessmentKeys {
+			tuple.Assessment[key] = atoiUint64(t, cells[i+6])
+		}
+
+		assessments = append(assessments, tuple)
 	}
 
 	return assessments

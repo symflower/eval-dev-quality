@@ -2,8 +2,10 @@ package provider
 
 import (
 	"context"
+	"time"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/sashabaranov/go-openai"
 
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
@@ -42,10 +44,22 @@ type InjectToken interface {
 	SetToken(token string)
 }
 
+// QueryResult holds the result of a query.
+type QueryResult struct {
+	// ResponseID holds the response ID.
+	ResponseID string
+	// Message holds the response message.
+	Message string
+	// Duration holds the duration of the result.
+	Duration time.Duration
+	// Usage holds the usage metrics of the query.
+	Usage openai.Usage
+}
+
 // Query is a provider that allows to query a model directly.
 type Query interface {
 	// Query queries the provider with the given model name.
-	Query(ctx context.Context, model model.Model, promptText string) (response string, err error)
+	Query(ctx context.Context, model model.Model, promptText string) (result *QueryResult, err error)
 }
 
 // Service is a provider that requires background services.

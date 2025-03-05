@@ -317,42 +317,29 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 		return nil, err
 	}
 
-	response, duration, err := m.query(ctx.Logger, request)
+	queryResult, err := m.query(ctx.Logger, request)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	assessment, testContent, err := prompt.ParseResponse(response)
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-	assessment[metrics.AssessmentKeyProcessingTime] = uint64(duration.Milliseconds())
-	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(response))
-	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(testContent))
+	filePath := filepath.Join(ctx.RepositoryPath, ctx.Language.TestFilePath(ctx.RepositoryPath, ctx.FilePath))
 
-	testFilePath := ctx.Language.TestFilePath(ctx.RepositoryPath, ctx.FilePath)
-	if err := os.MkdirAll(filepath.Join(ctx.RepositoryPath, filepath.Dir(testFilePath)), 0755); err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-	if err := os.WriteFile(filepath.Join(ctx.RepositoryPath, testFilePath), []byte(testContent), 0644); err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-
-	return assessment, nil
+	return handleQueryResult(queryResult, filePath)
 }
 
-func (m *Model) query(logger *log.Logger, request string) (response string, duration time.Duration, err error) {
+func (m *Model) query(logger *log.Logger, request string) (queryResult *provider.QueryResult, err error) {
+	var duration time.Duration
 	if err := retry.Do(
 		func() error {
 			id := uuid.NewString
 			logger.Info("querying model", "model", m.ID(), "id", id, "prompt", string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
 			start := time.Now()
-			response, err = m.provider.Query(context.Background(), m, request)
+			queryResult, err = m.provider.Query(context.Background(), m, request)
 			if err != nil {
 				return err
 			}
 			duration = time.Since(start)
-			logger.Info("model responded", "model", m.ID(), "id", id, "duration", duration.Milliseconds(), "response", string(bytesutil.PrefixLines([]byte(response), []byte("\t"))))
+			logger.Info("model responded", "model", m.ID(), "id", id, "duration", duration.Milliseconds(), "response-id", queryResult.ResponseID, "token-input", queryResult.Usage.PromptTokens, "token-output", queryResult.Usage.CompletionTokens, "response", string(bytesutil.PrefixLines([]byte(queryResult.Message), []byte("\t"))))
 
 			return nil
 		},
@@ -364,10 +351,12 @@ func (m *Model) query(logger *log.Logger, request string) (response string, dura
 			logger.Info("query retry", "count", n+1, "total", m.queryAttempts, "error", err)
 		}),
 	); err != nil {
-		return "", 0, err
+		return nil, err
 	}
 
-	return response, duration, nil
+	queryResult.Duration = duration
+
+	return queryResult, nil
 }
 
 var _ model.CapabilityRepairCode = (*Model)(nil)
@@ -402,25 +391,12 @@ func (m *Model) RepairCode(ctx model.Context) (assessment metrics.Assessments, e
 		return nil, err
 	}
 
-	response, duration, err := m.query(ctx.Logger, request)
+	queryResult, err := m.query(ctx.Logger, request)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	assessment, sourceFileContent, err := prompt.ParseResponse(response)
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-	assessment[metrics.AssessmentKeyProcessingTime] = uint64(duration.Milliseconds())
-	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(response))
-	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(sourceFileContent))
-
-	err = os.WriteFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath), []byte(sourceFileContent), 0644)
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-
-	return assessment, nil
+	return handleQueryResult(queryResult, filepath.Join(ctx.RepositoryPath, ctx.FilePath))
 }
 
 var _ model.CapabilityTranspile = (*Model)(nil)
@@ -462,25 +438,12 @@ func (m *Model) Transpile(ctx model.Context) (assessment metrics.Assessments, er
 		return nil, err
 	}
 
-	response, duration, err := m.query(ctx.Logger, request)
+	queryResult, err := m.query(ctx.Logger, request)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	assessment, originFileContent, err = prompt.ParseResponse(response)
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-	assessment[metrics.AssessmentKeyProcessingTime] = uint64(duration.Milliseconds())
-	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(response))
-	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(originFileContent))
-
-	err = os.WriteFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath), []byte(originFileContent), 0644)
-	if err != nil {
-		return nil, pkgerrors.WithStack(err)
-	}
-
-	return assessment, nil
+	return handleQueryResult(queryResult, filepath.Join(ctx.RepositoryPath, ctx.FilePath))
 }
 
 var _ model.CapabilityMigrate = (*Model)(nil)
@@ -515,21 +478,29 @@ func (m *Model) Migrate(ctx model.Context) (assessment metrics.Assessments, err 
 		return nil, err
 	}
 
-	response, duration, err := m.query(ctx.Logger, request)
+	queryResult, err := m.query(ctx.Logger, request)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	assessment, migrationFileContent, err := prompt.ParseResponse(response)
+	return handleQueryResult(queryResult, filepath.Join(ctx.RepositoryPath, ctx.FilePath))
+}
+
+func handleQueryResult(queryResult *provider.QueryResult, filePathAbsolute string) (assessment metrics.Assessments, err error) {
+	assessment, sourceFileContent, err := prompt.ParseResponse(queryResult.Message)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
-	assessment[metrics.AssessmentKeyProcessingTime] = uint64(duration.Milliseconds())
-	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(response))
-	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(migrationFileContent))
+	assessment[metrics.AssessmentKeyProcessingTime] = uint64(queryResult.Duration.Milliseconds())
+	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(queryResult.Message))
+	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(sourceFileContent))
+	assessment[metrics.AssessmentKeyTokenInput] = uint64(queryResult.Usage.PromptTokens)
+	assessment[metrics.AssessmentKeyTokenOutput] = uint64(queryResult.Usage.CompletionTokens)
 
-	err = os.WriteFile(filepath.Join(ctx.RepositoryPath, ctx.FilePath), []byte(migrationFileContent), 0644)
-	if err != nil {
+	if err := os.MkdirAll(filepath.Dir(filePathAbsolute), 0755); err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+	if err := os.WriteFile(filePathAbsolute, []byte(sourceFileContent), 0644); err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 

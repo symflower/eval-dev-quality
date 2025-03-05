@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/sashabaranov/go-openai"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -244,7 +245,7 @@ func TestEvaluate(t *testing.T) {
 
 				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
 					// Set up mocks, when test is running.
-					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("", ErrEmptyResponseFromModel)
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(nil, ErrEmptyResponseFromModel)
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
 					mockedQuery.AssertNumberOfCalls(t, "Query", 2)
@@ -324,11 +325,14 @@ func TestEvaluate(t *testing.T) {
 				Name: "Success after retry",
 
 				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+					queryResult := &provider.QueryResult{
+						Message: "model-response",
+					}
 					// Set up mocks, when test is running.
-					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("", ErrEmptyResponseFromModel).Once()
-					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("model-response", nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
-					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("", ErrEmptyResponseFromModel).Once()
-					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("model-response", nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(nil, ErrEmptyResponseFromModel).Once()
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(nil, ErrEmptyResponseFromModel).Once()
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
 					mockedQuery.AssertNumberOfCalls(t, "Query", 4)
@@ -423,8 +427,15 @@ func TestEvaluate(t *testing.T) {
 				Name: "Immediate success",
 
 				Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+					queryResult := &provider.QueryResult{
+						Message: "model-response",
+						Usage: openai.Usage{
+							PromptTokens:     123,
+							CompletionTokens: 456,
+						},
+					}
 					// Set up mocks, when test is running.
-					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return("model-response", nil).After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
+					mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil).After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
 				},
 				After: func(t *testing.T, logger *log.Logger, resultPath string) {
 					mockedQuery.AssertNumberOfCalls(t, "Query", 2)
@@ -457,6 +468,8 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
 							metrics.AssessmentKeyResponseNoError:                    1,
+							metrics.AssessmentKeyTokenInput:                         123,
+							metrics.AssessmentKeyTokenOutput:                        456,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -470,6 +483,8 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
 							metrics.AssessmentKeyResponseNoError:                    1,
+							metrics.AssessmentKeyTokenInput:                         123,
+							metrics.AssessmentKeyTokenOutput:                        456,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -483,6 +498,8 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
 							metrics.AssessmentKeyResponseNoError:                    1,
+							metrics.AssessmentKeyTokenInput:                         123,
+							metrics.AssessmentKeyTokenOutput:                        456,
 						},
 					},
 					&metricstesting.AssessmentTuple{
@@ -496,6 +513,8 @@ func TestEvaluate(t *testing.T) {
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
 							metrics.AssessmentKeyResponseNoError:                    1,
+							metrics.AssessmentKeyTokenInput:                         123,
+							metrics.AssessmentKeyTokenOutput:                        456,
 						},
 					},
 				},
