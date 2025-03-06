@@ -59,6 +59,12 @@ var (
 	AssessmentKeyTokenInput = RegisterAssessmentKey("token-input")
 	// AssessmentKeyTokenOutput collects the number of output token.
 	AssessmentKeyTokenOutput = RegisterAssessmentKey("token-output")
+	// AssessmentKeyNativeTokenInput collects the number of input token.
+	AssessmentKeyNativeTokenInput = RegisterAssessmentKey("native-token-input")
+	// AssessmentKeyNativeTokenOutput collects the number of output token.
+	AssessmentKeyNativeTokenOutput = RegisterAssessmentKey("native-token-output")
+	// AssessmentKeyCostsTokenActual collects the number of output token.
+	AssessmentKeyCostsTokenActual = RegisterAssessmentKey("costs-total-actual")
 )
 
 // Assessments holds a collection of numerical assessment metrics.

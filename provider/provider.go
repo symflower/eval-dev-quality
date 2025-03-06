@@ -54,6 +54,20 @@ type QueryResult struct {
 	Duration time.Duration
 	// Usage holds the usage metrics of the query.
 	Usage openai.Usage
+	// GenerationInfo holds information about a generation.
+	GenerationInfo *GenerationInfo
+}
+
+// GenerationInfo holds information about a generation.
+// See https://openrouter.ai/docs/api-reference/overview#querying-cost-and-stats for more details.
+type GenerationInfo struct {
+	ID                     string  `json:"id"`
+	TotalCost              float64 `json:"total_cost"`
+	TokensPrompt           int     `json:"tokens_prompt"`
+	TokensCompletion       int     `json:"tokens_completion"`
+	NativeTokensPrompt     int     `json:"native_tokens_prompt"`
+	NativeTokensCompletion int     `json:"native_tokens_completion"`
+	NativeTokensReasoning  int     `json:"native_tokens_reasoning"`
 }
 
 // Query is a provider that allows to query a model directly.
