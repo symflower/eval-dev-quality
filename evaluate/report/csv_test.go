@@ -24,7 +24,7 @@ func TestNewEvaluationFile(t *testing.T) {
 	require.NoError(t, err)
 
 	expectedEvaluationFileContent := bytesutil.StringTrimIndentations(`
-		model-id,language,repository,case,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing,token-input,token-output
+		model-id,language,repository,case,task,run,costs-total-actual,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,native-token-input,native-token-output,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing,token-input,token-output
 	`)
 
 	assert.Equal(t, expectedEvaluationFileContent, string(actualEvaluationFileContent))
@@ -65,8 +65,8 @@ func TestWriteEvaluationRecord(t *testing.T) {
 		},
 
 		ExpectedCSV: `
-			model-id,language,repository,case,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing,token-input,token-output
-			mocked-model,golang,golang/plain,plain.go,write-tests,1,0,0,0,0,0,0,0,0,0,0,0,0
+			model-id,language,repository,case,task,run,costs-total-actual,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,native-token-input,native-token-output,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing,token-input,token-output
+			mocked-model,golang,golang/plain,plain.go,write-tests,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 		`,
 	})
 	validate(t, &testCase{
@@ -90,9 +90,9 @@ func TestWriteEvaluationRecord(t *testing.T) {
 		},
 
 		ExpectedCSV: `
-			model-id,language,repository,case,task,run,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing,token-input,token-output
-			mocked-model,golang,golang/plain,plain.go,write-tests,1,0,1,1,0,0,0,1,0,0,0,0,0
-			mocked-model,golang,golang/plain,plain.go,write-tests-symflower-fix,1,10,1,1,0,0,0,1,0,0,0,0,0
+			model-id,language,repository,case,task,run,costs-total-actual,coverage,files-executed,files-executed-maximum-reachable,generate-tests-for-file-character-count,native-token-input,native-token-output,processing-time,response-character-count,response-no-error,response-no-excess,response-with-code,tests-passing,token-input,token-output
+			mocked-model,golang,golang/plain,plain.go,write-tests,1,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0
+			mocked-model,golang,golang/plain,plain.go,write-tests-symflower-fix,1,0,10,1,1,0,0,0,0,0,1,0,0,0,0,0
 		`,
 	})
 }

@@ -109,7 +109,7 @@ func runModelAndSymflowerFix(ctx evaltask.Context, modelCtx model.Context, runMo
 
 			// Symflower was able to fix a failure so now update the assessment with the improved results.
 			withSymflowerFix := metrics.NewAssessments()
-			withSymflowerFix[metrics.AssessmentKeyProcessingTime] = processingTime
+			withSymflowerFix[metrics.AssessmentKeyProcessingTime] = float64(processingTime)
 			withSymflowerFix.Award(metrics.AssessmentKeyFilesExecuted)
 			withSymflowerFix.AwardMultiple(metrics.AssessmentKeyCoverage, withSymflowerFixTestResult.Coverage)
 

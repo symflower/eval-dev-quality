@@ -121,7 +121,7 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	processingTime := uint64(time.Since(start).Milliseconds())
+	processingTime := float64(time.Since(start).Milliseconds())
 
 	characterCount, err := countCharactersOfGeneratedFiles(ctx.RepositoryPath, extractGeneratedFilePaths(output))
 	if err != nil {
@@ -130,8 +130,8 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 
 	return metrics.Assessments{ // Symflower always generates just source code when it does not fail, so no need to check the assessment properties.
 		metrics.AssessmentKeyProcessingTime:                     processingTime,
-		metrics.AssessmentKeyGenerateTestsForFileCharacterCount: characterCount,
-		metrics.AssessmentKeyResponseCharacterCount:             characterCount,
+		metrics.AssessmentKeyGenerateTestsForFileCharacterCount: float64(characterCount),
+		metrics.AssessmentKeyResponseCharacterCount:             float64(characterCount),
 		metrics.AssessmentKeyResponseNoExcess:                   1,
 		metrics.AssessmentKeyResponseWithCode:                   1,
 	}, nil

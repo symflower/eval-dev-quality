@@ -59,14 +59,20 @@ var (
 	AssessmentKeyTokenInput = RegisterAssessmentKey("token-input")
 	// AssessmentKeyTokenOutput collects the number of output token.
 	AssessmentKeyTokenOutput = RegisterAssessmentKey("token-output")
+	// AssessmentKeyNativeTokenInput collects the number of input token.
+	AssessmentKeyNativeTokenInput = RegisterAssessmentKey("native-token-input")
+	// AssessmentKeyNativeTokenOutput collects the number of output token.
+	AssessmentKeyNativeTokenOutput = RegisterAssessmentKey("native-token-output")
+	// AssessmentKeyCostsTokenActual collects the number of output token.
+	AssessmentKeyCostsTokenActual = RegisterAssessmentKey("costs-total-actual")
 )
 
 // Assessments holds a collection of numerical assessment metrics.
-type Assessments map[AssessmentKey]uint64
+type Assessments map[AssessmentKey]float64
 
 // NewAssessments creates a new assessment collection.
 func NewAssessments() Assessments {
-	return map[AssessmentKey]uint64{}
+	return map[AssessmentKey]float64{}
 }
 
 // Add adds the given assessment collection to the current one.
@@ -98,7 +104,7 @@ func (a Assessments) Award(key AssessmentKey) {
 
 // AwardMultiple yields multiple score points.
 func (a Assessments) AwardMultiple(key AssessmentKey, count uint64) {
-	a[key] += count
+	a[key] += float64(count)
 }
 
 // String returns a string representation of the metrics.
@@ -109,7 +115,7 @@ func (a Assessments) String() string {
 	entries := make([]string, len(AllAssessmentKeys))
 
 	for i, key := range AllAssessmentKeys {
-		entries[i] = fmt.Sprintf("%s=%d", key, a[key])
+		entries[i] = fmt.Sprintf("%s=%v", key, a[key])
 	}
 
 	return strings.Join(entries, ", ")
@@ -123,7 +129,7 @@ func (a Assessments) StringCSV() (row []string) {
 
 	row = make([]string, len(AllAssessmentKeys))
 	for i, key := range AllAssessmentKeys {
-		row[i] = fmt.Sprintf("%d", a[key])
+		row[i] = fmt.Sprintf("%v", a[key])
 	}
 
 	return row

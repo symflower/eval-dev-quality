@@ -138,7 +138,17 @@ var _ provider.Query = (*Provider)(nil)
 
 // Query queries the provider with the given model name.
 func (p *Provider) Query(ctx context.Context, model model.Model, promptText string) (result *provider.QueryResult, err error) {
-	return openaiapi.QueryOpenAIAPIModel(ctx, p.client(), model.ModelIDWithoutProvider(), model.Attributes(), promptText)
+	queryResult, err := openaiapi.QueryOpenAIAPIModel(ctx, p.client(), model.ModelIDWithoutProvider(), model.Attributes(), promptText)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	queryResult.GenerationInfo, err = p.fetchGenerationInfo(queryResult.ResponseID)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+
+	return queryResult, nil
 }
 
 // client returns a new client with the current configuration.
@@ -147,4 +157,55 @@ func (p *Provider) client() (client *openai.Client) {
 	config.BaseURL = p.baseURL
 
 	return openai.NewClientWithConfig(config)
+}
+
+func (p *Provider) fetchGenerationInfo(generationID string) (generationInfo *provider.GenerationInfo, err error) {
+	request, err := http.NewRequest("GET", "https://openrouter.ai/api/v1/generation?id="+generationID, nil)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+	request.Header.Set("Accept", "application/json")
+	request.Header.Set("Authorization", "Bearer "+p.token)
+
+	client := &http.Client{}
+	var responseBody []byte
+	if err := retry.Do( // Query available models with a retry logic cause "openrouter.ai" has failed us in the past.
+		func() error {
+			response, err := client.Do(request)
+			if err != nil {
+				return pkgerrors.WithStack(err)
+			}
+			defer func() {
+				if e := response.Body.Close(); e != nil {
+					err = errors.Join(err, pkgerrors.WithStack(e))
+				}
+			}()
+
+			if response.StatusCode != http.StatusOK {
+				return pkgerrors.Errorf("received status code %d when querying provider models", response.StatusCode)
+			}
+
+			responseBody, err = io.ReadAll(response.Body)
+			if err != nil {
+				return pkgerrors.WithStack(err)
+			}
+
+			return nil
+		},
+		retry.Attempts(3),
+		retry.Delay(5*time.Second),
+		retry.DelayType(retry.BackOffDelay),
+		retry.LastErrorOnly(true),
+	); err != nil {
+		return nil, err
+	}
+
+	var dataResponse struct {
+		provider.GenerationInfo `json:"data"`
+	}
+	if err := json.Unmarshal(responseBody, &dataResponse); err != nil {
+		return nil, err
+	}
+
+	return &dataResponse.GenerationInfo, nil
 }

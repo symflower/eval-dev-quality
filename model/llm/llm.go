@@ -339,7 +339,11 @@ func (m *Model) query(logger *log.Logger, request string) (queryResult *provider
 				return err
 			}
 			duration = time.Since(start)
-			logger.Info("model responded", "model", m.ID(), "id", id, "duration", duration.Milliseconds(), "response-id", queryResult.ResponseID, "token-input", queryResult.Usage.PromptTokens, "token-output", queryResult.Usage.CompletionTokens, "response", string(bytesutil.PrefixLines([]byte(queryResult.Message), []byte("\t"))))
+			totalCosts := float64(-1)
+			if queryResult.GenerationInfo != nil {
+				totalCosts = queryResult.GenerationInfo.TotalCost
+			}
+			logger.Info("model responded", "model", m.ID(), "id", id, "duration", duration.Milliseconds(), "response-id", queryResult.ResponseID, "costs-total", totalCosts, "token-input", queryResult.Usage.PromptTokens, "token-output", queryResult.Usage.CompletionTokens, "response", string(bytesutil.PrefixLines([]byte(queryResult.Message), []byte("\t"))))
 
 			return nil
 		},
@@ -491,11 +495,16 @@ func handleQueryResult(queryResult *provider.QueryResult, filePathAbsolute strin
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
-	assessment[metrics.AssessmentKeyProcessingTime] = uint64(queryResult.Duration.Milliseconds())
-	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(queryResult.Message))
-	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(sourceFileContent))
-	assessment[metrics.AssessmentKeyTokenInput] = uint64(queryResult.Usage.PromptTokens)
-	assessment[metrics.AssessmentKeyTokenOutput] = uint64(queryResult.Usage.CompletionTokens)
+	assessment[metrics.AssessmentKeyProcessingTime] = float64(queryResult.Duration.Milliseconds())
+	assessment[metrics.AssessmentKeyResponseCharacterCount] = float64(len(queryResult.Message))
+	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = float64(len(sourceFileContent))
+	assessment[metrics.AssessmentKeyTokenInput] = float64(queryResult.Usage.PromptTokens)
+	assessment[metrics.AssessmentKeyTokenOutput] = float64(queryResult.Usage.CompletionTokens)
+	if queryResult.GenerationInfo != nil {
+		assessment[metrics.AssessmentKeyNativeTokenInput] = float64(queryResult.GenerationInfo.NativeTokensPrompt)
+		assessment[metrics.AssessmentKeyNativeTokenOutput] = float64(queryResult.GenerationInfo.NativeTokensCompletion)
+		assessment[metrics.AssessmentKeyCostsTokenActual] = queryResult.GenerationInfo.TotalCost
+	}
 
 	if err := os.MkdirAll(filepath.Dir(filePathAbsolute), 0755); err != nil {
 		return nil, pkgerrors.WithStack(err)

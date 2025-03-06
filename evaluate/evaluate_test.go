@@ -360,7 +360,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
@@ -373,7 +373,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
@@ -386,7 +386,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
@@ -399,7 +399,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
@@ -463,7 +463,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
@@ -478,7 +478,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
@@ -493,7 +493,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
@@ -508,7 +508,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 							metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 14,
 							metrics.AssessmentKeyResponseCharacterCount:             14,
@@ -605,7 +605,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -617,7 +617,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -629,7 +629,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -641,7 +641,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -653,7 +653,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -665,7 +665,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -677,7 +677,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -689,7 +689,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -701,7 +701,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -711,7 +711,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -721,7 +721,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					}, &metricstesting.AssessmentTuple{
@@ -730,7 +730,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -740,7 +740,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -752,7 +752,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -764,7 +764,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -775,7 +775,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -843,7 +843,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -853,7 +853,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -863,7 +863,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -875,7 +875,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -887,7 +887,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -897,7 +897,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -907,7 +907,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -917,7 +917,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -927,7 +927,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -939,7 +939,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -951,7 +951,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -963,7 +963,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -975,7 +975,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -987,7 +987,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -999,7 +999,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1011,7 +1011,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryNextPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1073,7 +1073,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -1083,7 +1083,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -1093,7 +1093,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -1103,7 +1103,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -1113,7 +1113,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -1123,7 +1123,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -1133,7 +1133,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -1143,7 +1143,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPlainPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						},
 					},
@@ -1197,7 +1197,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1209,7 +1209,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1221,7 +1221,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1233,7 +1233,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1245,7 +1245,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1257,7 +1257,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1269,7 +1269,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1281,7 +1281,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1293,7 +1293,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1305,7 +1305,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1317,7 +1317,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1329,7 +1329,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1387,7 +1387,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1399,7 +1399,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1411,7 +1411,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1423,7 +1423,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1435,7 +1435,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1447,7 +1447,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1459,7 +1459,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1471,7 +1471,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1483,7 +1483,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1495,7 +1495,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1507,7 +1507,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1519,7 +1519,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1606,7 +1606,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1618,7 +1618,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1630,7 +1630,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1642,7 +1642,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1654,7 +1654,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1666,7 +1666,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1678,7 +1678,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1690,7 +1690,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1702,7 +1702,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1714,7 +1714,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1726,7 +1726,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1738,7 +1738,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1809,7 +1809,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1821,7 +1821,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1833,7 +1833,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1845,7 +1845,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1857,7 +1857,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1869,7 +1869,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1881,7 +1881,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1893,7 +1893,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1905,7 +1905,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTests,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1917,7 +1917,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1929,7 +1929,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1941,7 +1941,7 @@ func TestEvaluate(t *testing.T) {
 						RepositoryPath: repositoryPath,
 						Case:           "plain.go",
 						Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-						Assessment: map[metrics.AssessmentKey]uint64{
+						Assessment: map[metrics.AssessmentKey]float64{
 							metrics.AssessmentKeyFilesExecuted:                 1,
 							metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 							metrics.AssessmentKeyResponseNoError:               1,
@@ -1994,7 +1994,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPath,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTests,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2006,7 +2006,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPath,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2018,7 +2018,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPath,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2030,7 +2030,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPath,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2088,7 +2088,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPathPlain,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTests,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2100,7 +2100,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPathPlain,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2112,7 +2112,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPathPlain,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2124,7 +2124,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPathPlain,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2136,7 +2136,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPathSomePlain,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTests,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2148,7 +2148,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPathSomePlain,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2160,7 +2160,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPathSomePlain,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
@@ -2172,7 +2172,7 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPathSomePlain,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-					Assessment: map[metrics.AssessmentKey]uint64{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecuted:                 1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
 						metrics.AssessmentKeyResponseNoError:               1,
