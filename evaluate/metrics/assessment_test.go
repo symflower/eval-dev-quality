@@ -37,11 +37,11 @@ func TestAssessmentsAdd(t *testing.T) {
 		Name: "Non existing key",
 
 		Assessments: NewAssessments(),
-		X: map[AssessmentKey]uint64{
+		X: map[AssessmentKey]float64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
 
-		ExpectedAssessments: map[AssessmentKey]uint64{
+		ExpectedAssessments: map[AssessmentKey]float64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
 	})
@@ -49,14 +49,14 @@ func TestAssessmentsAdd(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Existing key",
 
-		Assessments: map[AssessmentKey]uint64{
+		Assessments: map[AssessmentKey]float64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
-		X: map[AssessmentKey]uint64{
+		X: map[AssessmentKey]float64{
 			AssessmentKeyResponseNoExcess: 1,
 		},
 
-		ExpectedAssessments: map[AssessmentKey]uint64{
+		ExpectedAssessments: map[AssessmentKey]float64{
 			AssessmentKeyResponseNoExcess: 2,
 		},
 	})
@@ -209,7 +209,7 @@ func TestCombineModelAndSymflowerFixAssessments(t *testing.T) {
 
 		ModelAssessment: Assessments{
 			AssessmentKeyFilesExecuted:                      1,
-			AssessmentKeyProcessingTime:                     uint64(200),
+			AssessmentKeyProcessingTime:                     float64(200),
 			AssessmentKeyCoverage:                           0,
 			AssessmentKeyResponseCharacterCount:             100,
 			AssessmentKeyGenerateTestsForFileCharacterCount: 50,
@@ -219,7 +219,7 @@ func TestCombineModelAndSymflowerFixAssessments(t *testing.T) {
 		},
 		SymflowerFixAssessments: Assessments{
 			AssessmentKeyFilesExecuted:   1,
-			AssessmentKeyProcessingTime:  uint64(100),
+			AssessmentKeyProcessingTime:  float64(100),
 			AssessmentKeyCoverage:        1,
 			AssessmentKeyResponseNoError: 1,
 			AssessmentKeyTestsPassing:    10,
@@ -227,7 +227,7 @@ func TestCombineModelAndSymflowerFixAssessments(t *testing.T) {
 
 		ExpectedAssessments: Assessments{
 			AssessmentKeyFilesExecuted:                      1,
-			AssessmentKeyProcessingTime:                     uint64(300),
+			AssessmentKeyProcessingTime:                     float64(300),
 			AssessmentKeyCoverage:                           1,
 			AssessmentKeyResponseCharacterCount:             100,
 			AssessmentKeyGenerateTestsForFileCharacterCount: 50,

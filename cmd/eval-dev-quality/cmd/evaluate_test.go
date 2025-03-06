@@ -34,7 +34,7 @@ func validateMetrics(t *testing.T, csvData string, expectedAssessments []metrics
 	actualAssessmentTuples := reporttesting.ParseMetrics(t, csvData)
 	actual = make([]metrics.Assessments, len(actualAssessmentTuples))
 	for i, tuple := range actualAssessmentTuples {
-		assert.Greater(t, tuple.Assessment[metrics.AssessmentKeyProcessingTime], uint64(0))
+		assert.Greater(t, tuple.Assessment[metrics.AssessmentKeyProcessingTime], float64(0))
 		actual[i] = tuple.Assessment
 	}
 

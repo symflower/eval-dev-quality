@@ -11,11 +11,11 @@ import (
 	"github.com/symflower/eval-dev-quality/task"
 )
 
-func atoiUint64(t *testing.T, s string) uint64 {
-	value, err := strconv.ParseUint(s, 10, 64)
+func parseFloat64(t *testing.T, s string) float64 {
+	value, err := strconv.ParseFloat(s, 64)
 	assert.NoErrorf(t, err, "parsing unsigned integer from: %q", s)
 
-	return uint64(value)
+	return value
 }
 
 // ParseMetrics extracts multiple assessment metrics from the given string.
@@ -37,7 +37,7 @@ func ParseMetrics(t *testing.T, data string) (assessments metricstesting.Assessm
 			Assessment:     metrics.Assessments{},
 		}
 		for i, key := range metrics.AllAssessmentKeys {
-			tuple.Assessment[key] = atoiUint64(t, cells[i+6])
+			tuple.Assessment[key] = parseFloat64(t, cells[i+6])
 		}
 
 		assessments = append(assessments, tuple)

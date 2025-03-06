@@ -491,11 +491,11 @@ func handleQueryResult(queryResult *provider.QueryResult, filePathAbsolute strin
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
-	assessment[metrics.AssessmentKeyProcessingTime] = uint64(queryResult.Duration.Milliseconds())
-	assessment[metrics.AssessmentKeyResponseCharacterCount] = uint64(len(queryResult.Message))
-	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = uint64(len(sourceFileContent))
-	assessment[metrics.AssessmentKeyTokenInput] = uint64(queryResult.Usage.PromptTokens)
-	assessment[metrics.AssessmentKeyTokenOutput] = uint64(queryResult.Usage.CompletionTokens)
+	assessment[metrics.AssessmentKeyProcessingTime] = float64(queryResult.Duration.Milliseconds())
+	assessment[metrics.AssessmentKeyResponseCharacterCount] = float64(len(queryResult.Message))
+	assessment[metrics.AssessmentKeyGenerateTestsForFileCharacterCount] = float64(len(sourceFileContent))
+	assessment[metrics.AssessmentKeyTokenInput] = float64(queryResult.Usage.PromptTokens)
+	assessment[metrics.AssessmentKeyTokenOutput] = float64(queryResult.Usage.CompletionTokens)
 
 	if err := os.MkdirAll(filepath.Dir(filePathAbsolute), 0755); err != nil {
 		return nil, pkgerrors.WithStack(err)
