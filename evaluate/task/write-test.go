@@ -144,6 +144,7 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[string]
 	return repositoryAssessment, problems, nil
 }
 
+// symflowerTemplateAsString generates a test template for the given file and makes sure that the repository is in the same state as before.
 func symflowerTemplateAsString(ctx evaltask.Context, taskLogger *taskLogger, dataPath string, filePath string) (testTemplate string, err error) {
 	_, err = symflowerTemplate(taskLogger.Logger, dataPath, ctx.Language, filePath) // TODO Incorporate template processing time. https://github.com/symflower/eval-dev-quality/issues/350
 	if err != nil {
@@ -153,6 +154,10 @@ func symflowerTemplateAsString(ctx evaltask.Context, taskLogger *taskLogger, dat
 	testTemplateData, err := os.ReadFile(testTemplateFilePath)
 	if err != nil {
 		return "", pkgerrors.WithMessagef(err, "reading Symflower template from %q", testTemplateFilePath)
+	}
+
+	if err := ctx.Repository.Reset(ctx.Logger); err != nil {
+		ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 	}
 
 	return string(testTemplateData), nil
