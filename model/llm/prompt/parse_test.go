@@ -73,13 +73,12 @@ func TestParseResponse(t *testing.T) {
 	})
 
 	validate(t, &testCase{
-		Name: "Expected error on empty response",
+		Name: "No error on empty response",
 
 		Response: "",
 
 		ExpectedAssessment: metrics.Assessments{},
 		ExpectedCode:       "",
-		ExpectedError:      true,
 	})
 
 	t.Run("Formatted Code", func(t *testing.T) {

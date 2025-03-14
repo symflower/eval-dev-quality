@@ -506,6 +506,10 @@ func handleQueryResult(queryResult *provider.QueryResult, filePathAbsolute strin
 		assessment[metrics.AssessmentKeyCostsTokenActual] = queryResult.GenerationInfo.TotalCost
 	}
 
+	if sourceFileContent == "" {
+		return assessment, nil
+	}
+
 	if err := os.MkdirAll(filepath.Dir(filePathAbsolute), 0755); err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}

@@ -161,15 +161,39 @@ func TestEvaluate(t *testing.T) {
 
 	{
 		languageGolang := &golang.Language{}
-		mockedModel := modeltesting.NewMockCapabilityWriteTestsNamed(t, "empty-response-model")
+		mockedModelID := "testing-provider/empty-response-model"
+		mockedQuery := providertesting.NewMockQuery(t)
+		mockedModel := llm.NewModel(mockedQuery, mockedModelID)
 		repositoryPath := filepath.Join("golang", "plain")
 
 		validate(t, &testCase{
-			Name: "Empty model responses are errors",
+			Name: "Empty model response",
 
 			Before: func(t *testing.T, logger *log.Logger, resultPath string) {
+				queryResult1 := &provider.QueryResult{
+					Message: "",
+					GenerationInfo: &provider.GenerationInfo{
+						TotalCost:              0.111111111,
+						NativeTokensPrompt:     111,
+						NativeTokensCompletion: 222,
+					},
+				}
 				// Set up mocks, when test is running.
-				mockedModel.MockCapabilityWriteTests.On("WriteTests", mock.Anything).Return(nil, ErrEmptyResponseFromModel)
+				mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult1, nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
+
+				queryResult2 := &provider.QueryResult{
+					Message: "",
+					GenerationInfo: &provider.GenerationInfo{
+						TotalCost:              0.222222222,
+						NativeTokensPrompt:     333,
+						NativeTokensCompletion: 444,
+					},
+				}
+				// Set up mocks, when test is running.
+				mockedQuery.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult2, nil).Once().After(10 * time.Millisecond) // Simulate a model response delay because our internal safety measures trigger when a query is done in 0 milliseconds.
+			},
+			After: func(t *testing.T, logger *log.Logger, resultPath string) {
+				mockedQuery.AssertNumberOfCalls(t, "Query", 2)
 			},
 
 			Context: &Context{
@@ -180,6 +204,11 @@ func TestEvaluate(t *testing.T) {
 				Models: []evalmodel.Model{
 					mockedModel,
 				},
+				QueryAttempts: 3,
+
+				RepositoryPaths: []string{
+					repositoryPath,
+				},
 			},
 
 			ExpectedAssessments: []*metricstesting.AssessmentTuple{
@@ -189,8 +218,12 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPath,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTests,
-					Assessment: metrics.Assessments{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyCostsTokenActual:              0.111111111,
+						metrics.AssessmentKeyNativeTokenInput:              111,
+						metrics.AssessmentKeyNativeTokenOutput:             222,
 					},
 				},
 				&metricstesting.AssessmentTuple{
@@ -199,8 +232,12 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPath,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerFix,
-					Assessment: metrics.Assessments{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyCostsTokenActual:              0.111111111,
+						metrics.AssessmentKeyNativeTokenInput:              111,
+						metrics.AssessmentKeyNativeTokenOutput:             222,
 					},
 				},
 				&metricstesting.AssessmentTuple{
@@ -209,8 +246,12 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPath,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplate,
-					Assessment: metrics.Assessments{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyCostsTokenActual:              0.222222222,
+						metrics.AssessmentKeyNativeTokenInput:              333,
+						metrics.AssessmentKeyNativeTokenOutput:             444,
 					},
 				},
 				&metricstesting.AssessmentTuple{
@@ -219,15 +260,23 @@ func TestEvaluate(t *testing.T) {
 					RepositoryPath: repositoryPath,
 					Case:           "plain.go",
 					Task:           evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix,
-					Assessment: metrics.Assessments{
+					Assessment: map[metrics.AssessmentKey]float64{
 						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyCostsTokenActual:              0.222222222,
+						metrics.AssessmentKeyNativeTokenInput:              333,
+						metrics.AssessmentKeyNativeTokenOutput:             444,
 					},
 				},
 			},
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				"evaluation.log": nil,
-				filepath.Join(string(evaluatetask.IdentifierWriteTests), mockedModel.ID(), "golang", "golang", "plain", "evaluation.log"): nil,
-				"evaluation.csv": nil,
+				filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
+					assert.Equal(t, 4, strings.Count(data, "no test files found"), "number of ocurrences of \"no test files found\" not matched")
+				},
+				"evaluation.csv": func(t *testing.T, filePath, data string) {
+					assert.Lenf(t, strings.Split(data, "\n"), 6, "expected 6 lines: header, 4x entries and final new line:\n%s", data)
+				},
 			},
 		})
 	}

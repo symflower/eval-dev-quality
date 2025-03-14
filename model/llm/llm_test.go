@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -35,9 +36,10 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 		SourceFileContent string
 		SourceFilePath    string
 
-		ExpectedAssessment      metrics.Assessments
-		ExpectedTestFileContent string
-		ExpectedTestFilePath    string
+		ExpectedAssessment            metrics.Assessments
+		ExpectedTestFileContent       string
+		ExpectedTestFilePath          string
+		ExpectedTestFilePathNotExists string
 	}
 
 	validate := func(t *testing.T, tc *testCase) {
@@ -74,10 +76,16 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 
 			assert.Equal(t, metricstesting.Clean(tc.ExpectedAssessment), metricstesting.Clean(actualAssessment))
 
-			actualTestFileContent, err := os.ReadFile(filepath.Join(temporaryPath, tc.ExpectedTestFilePath))
-			assert.NoError(t, err)
+			if tc.ExpectedTestFilePath != "" {
+				actualTestFileContent, err := os.ReadFile(filepath.Join(temporaryPath, tc.ExpectedTestFilePath))
+				assert.NoError(t, err)
 
-			assert.Equal(t, strings.TrimSpace(bytesutil.StringTrimIndentations(tc.ExpectedTestFileContent)), string(actualTestFileContent))
+				assert.Equal(t, strings.TrimSpace(bytesutil.StringTrimIndentations(tc.ExpectedTestFileContent)), string(actualTestFileContent))
+			}
+
+			if tc.ExpectedTestFilePathNotExists != "" {
+				assert.NoFileExists(t, filepath.Join(temporaryPath, tc.ExpectedTestFilePathNotExists))
+			}
 		})
 	}
 
@@ -130,6 +138,29 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			func TestMain() {}
 		`,
 		ExpectedTestFilePath: "simple_test.go",
+	})
+	validate(t, &testCase{
+		Name: "Empty response",
+
+		SetupMock: func(mockedProvider *providertesting.MockQuery) {
+			queryResult := &provider.QueryResult{
+				Duration: time.Millisecond * 123,
+				GenerationInfo: &provider.GenerationInfo{
+					TotalCost: 0.123456789,
+				},
+			}
+			mockedProvider.On("Query", mock.Anything, mock.Anything, promptMessage).Return(queryResult, nil)
+		},
+
+		Language:          &golang.Language{},
+		ModelID:           "model-id",
+		SourceFileContent: sourceFileContent,
+		SourceFilePath:    sourceFilePath,
+
+		ExpectedAssessment: metrics.Assessments{
+			metrics.AssessmentKeyCostsTokenActual: 0.123456789,
+		},
+		ExpectedTestFilePathNotExists: "simple_test.go",
 	})
 }
 
