@@ -120,9 +120,9 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[string]
 			ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
 		}
 
-		_, err = symflowerTemplate(taskLogger.Logger, dataPath, ctx.Language, filePath) // TODO Incorporate template processing time. https://github.com/symflower/eval-dev-quality/issues/350
+		testTemplate, err := symflowerTemplateAsString(ctx, taskLogger, dataPath, filePath)
 		if err != nil {
-			problems = append(problems, pkgerrors.WithMessage(err, "generating Symflower template"))
+			problems = append(problems, err)
 
 			withSymflowerTemplateAssessment.Add(modelAssessmentFile)
 			withSymflowerTemplateAndFixAssessment.Add(withSymflowerFixAssessmentFile)
@@ -130,18 +130,7 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[string]
 			continue
 		}
 
-		testTemplateFilePath := filepath.Join(dataPath, ctx.Language.TestFilePath(dataPath, filePath))
-		testTemplate, err := os.ReadFile(testTemplateFilePath)
-		if err != nil {
-			problems = append(problems, pkgerrors.WithMessagef(err, "reading Symflower template from %q", testTemplateFilePath))
-
-			withSymflowerTemplateAssessment.Add(modelAssessmentFile)
-			withSymflowerTemplateAndFixAssessment.Add(withSymflowerFixAssessmentFile)
-
-			continue
-		}
-
-		arguments.Template = string(testTemplate)
+		arguments.Template = testTemplate
 		modelTemplateAssessmentFile, templateWithSymflowerFixAssessmentFile, ps, err := runModelAndSymflowerFix(ctx, modelContext, modelCapability.WriteTests)
 		problems = append(problems, ps...)
 		if err != nil {
@@ -153,6 +142,25 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[string]
 	}
 
 	return repositoryAssessment, problems, nil
+}
+
+// symflowerTemplateAsString generates a test template for the given file and makes sure that the repository is in the same state as before.
+func symflowerTemplateAsString(ctx evaltask.Context, taskLogger *taskLogger, dataPath string, filePath string) (testTemplate string, err error) {
+	_, err = symflowerTemplate(taskLogger.Logger, dataPath, ctx.Language, filePath) // TODO Incorporate template processing time. https://github.com/symflower/eval-dev-quality/issues/350
+	if err != nil {
+		return "", pkgerrors.WithMessage(err, "generating Symflower template")
+	}
+	testTemplateFilePath := filepath.Join(dataPath, ctx.Language.TestFilePath(dataPath, filePath))
+	testTemplateData, err := os.ReadFile(testTemplateFilePath)
+	if err != nil {
+		return "", pkgerrors.WithMessagef(err, "reading Symflower template from %q", testTemplateFilePath)
+	}
+
+	if err := ctx.Repository.Reset(ctx.Logger); err != nil {
+		ctx.Logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
+	}
+
+	return string(testTemplateData), nil
 }
 
 // validateWriteTestsRepository checks if the repository for the "write-tests" task is well-formed.
