@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
 	metricstesting "github.com/symflower/eval-dev-quality/evaluate/metrics/testing"
@@ -122,6 +123,52 @@ func TestWriteTestsRun(t *testing.T) {
 			},
 		})
 	})
+
+	{
+		temporaryDirectoryPath := t.TempDir()
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "golang", "plain")
+		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
+
+		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
+		// Simulate that a model does not generate anything.
+		modelMock.MockCapabilityWriteTests.On("WriteTests", mock.Anything).Return(metricstesting.AssessmentsWithProcessingTime, nil)
+
+		validate(t, &tasktesting.TestCaseTask{
+			Name: "Reset symflower template so it's not mistaken for model solution",
+
+			Model:          modelMock,
+			Language:       &golang.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("golang", "plain"),
+
+			ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+				"plain.go": map[evaltask.Identifier]metrics.Assessments{
+					IdentifierWriteTests: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+				},
+			},
+			ExpectedProblemContains: []string{
+				"ERROR: no test files found",
+				"ERROR: no test files found",
+				"ERROR: no test files found",
+				"ERROR: no test files found",
+			},
+		})
+	}
 
 	t.Run("Symflower Fix", func(t *testing.T) {
 		t.Run("Go", func(t *testing.T) {
