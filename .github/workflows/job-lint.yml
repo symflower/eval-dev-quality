@@ -11,7 +11,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.23.6"
+          go-version-file: "go.mod"
 
       - name: Install ack
         run: sudo apt-get update && sudo apt-get install -y ack-grep
