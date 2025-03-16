@@ -26,7 +26,7 @@ func main() {
 	logBuffer, logger := log.Buffer()
 	output, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
-			"deadcode",
+			"go", "tool", "golang.org/x/tools/cmd/deadcode",
 			"./...",
 		},
 	})
@@ -41,6 +41,10 @@ func main() {
 MATCHES:
 	for _, deadcode := range strings.Split(output, "\n") {
 		if strings.TrimSpace(deadcode) == "" {
+			continue
+		}
+
+		if strings.HasPrefix(deadcode, "go: downloading") {
 			continue
 		}
 

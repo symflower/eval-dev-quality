@@ -13,14 +13,6 @@ jobs:
         with:
           go-version-file: "go.mod"
 
-      - name: Install ack
-        run: sudo apt-get update && sudo apt-get install -y ack-grep
-        shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
-
-      - name: Install testing linting
-        run: make install-tools-linting
-        shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
-
       - name: Lint
         run: make lint
         shell: bash # Explicitly use Bash because otherwise failing Windows jobs are not erroring.
