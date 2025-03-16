@@ -108,5 +108,4 @@ RUN sed -i "s/args: \[\(.*\)\]/args: [\1, '--single-process']/" /home/ubuntu/.np
 # Install the binary.
 COPY --from=builder --chown=ubuntu:ubuntu /app/eval-dev-quality /app/.eval-dev-quality/bin/
 ENV PATH="${PATH}:/app/.eval-dev-quality/bin"
-RUN make install-tools-testing
 RUN make install-tools /app/.eval-dev-quality/bin
