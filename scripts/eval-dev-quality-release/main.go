@@ -105,7 +105,7 @@ func main() {
 			"evaluate/version.go",
 		},
 	}); err != nil {
-		logger.Panicf(err.Error())
+		logger.Panic(err.Error())
 	}
 	if _, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
@@ -114,7 +114,7 @@ func main() {
 			"--message=Release version " + versionTag,
 		},
 	}); err != nil {
-		logger.Panicf(err.Error())
+		logger.Panic(err.Error())
 	}
 
 	logger.Info("tag release commit")
@@ -128,7 +128,7 @@ func main() {
 			versionTag,
 		},
 	}); err != nil {
-		logger.Panicf(err.Error())
+		logger.Panic(err.Error())
 	}
 
 	logger.Info("push the branch and tag")
@@ -139,7 +139,7 @@ func main() {
 			"origin",
 		},
 	}); err != nil {
-		logger.Panicf(err.Error())
+		logger.Panic(err.Error())
 	}
 	if _, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{
@@ -149,6 +149,6 @@ func main() {
 			versionTag,
 		},
 	}); err != nil {
-		logger.Panicf(err.Error())
+		logger.Panic(err.Error())
 	}
 }

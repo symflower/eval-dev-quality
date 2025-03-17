@@ -101,14 +101,24 @@ func (l *Logger) With(key AttributeKey, value any) *Logger {
 
 // PrintfWithoutMeta prints a message without any timestamp, log level or origin program counter.
 func (l *Logger) PrintfWithoutMeta(message string, args ...any) {
+	l.PrintWithoutMeta(fmt.Sprintf(message, args...))
+}
+
+// PrintWithoutMeta prints a message without any timestamp, log level or origin program counter.
+func (l *Logger) PrintWithoutMeta(message string) {
 	// If time, level and PC use default values any Handler should ignore these fields (https://pkg.go.dev/log/slog#Handler).
-	record := slog.NewRecord(time.Time{}, slog.LevelInfo, fmt.Sprintf(message, args...), 0)
+	record := slog.NewRecord(time.Time{}, slog.LevelInfo, message, 0)
 	_ = l.Logger.Handler().Handle(context.Background(), record)
 }
 
 // Panicf is equivalent to "Printf" followed by a panic.
 func (l *Logger) Panicf(format string, args ...any) {
-	message := fmt.Sprintf(format, args...)
+	l.Panic(fmt.Sprintf(format, args...))
+}
+
+// Panic is equivalent to "Print" followed by a panic.
+func (l *Logger) Panic(format string) {
+	message := fmt.Sprint(format)
 	l.Logger.Info(message)
 
 	panic(message)

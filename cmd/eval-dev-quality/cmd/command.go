@@ -76,7 +76,7 @@ func Execute(logger *log.Logger, arguments []string) {
 	if parser.Active == nil {
 		var sb strings.Builder
 		parser.WriteHelp(&sb)
-		logger.PrintfWithoutMeta(sb.String())
+		logger.PrintWithoutMeta(sb.String())
 	}
 }
 
