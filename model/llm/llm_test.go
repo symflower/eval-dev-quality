@@ -3,6 +3,8 @@ package llm
 import (
 	"os"
 	"path/filepath"
+	"regexp"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -161,6 +163,119 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 			metrics.AssessmentKeyCostsTokenActual: 0.123456789,
 		},
 		ExpectedTestFilePathNotExists: "simple_test.go",
+	})
+}
+
+func TestModelQuery(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		SetupMock func(mockedProvider *providertesting.MockQuery)
+
+		QueryAttempts uint
+		Request       string
+
+		ExpectedResponse *provider.QueryResult
+		ExpectedError    string
+
+		ValidateLogs func(t *testing.T, logs string)
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			logOutput, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Log(logOutput.String())
+				}
+			}()
+
+			mock := providertesting.NewMockQuery(t)
+			if tc.SetupMock != nil {
+				tc.SetupMock(mock)
+			}
+			llm := NewModel(mock, "some-model")
+			llm.SetQueryAttempts(tc.QueryAttempts)
+
+			queryResult, actualError := llm.query(logger, tc.Request)
+
+			if tc.ExpectedError != "" {
+				assert.ErrorContains(t, actualError, tc.ExpectedError)
+				assert.Nil(t, queryResult)
+			} else {
+				assert.NoError(t, actualError)
+
+				queryResult.Duration = 0
+
+				assert.Equal(t, tc.ExpectedResponse, queryResult)
+			}
+
+			if tc.ValidateLogs != nil {
+				tc.ValidateLogs(t, logOutput.String())
+			}
+		})
+	}
+
+	reLogID := regexp.MustCompile(`query-id=([a-z0-9-]*)`)
+	parseLogIDs := func(logs string) (ids []string) {
+		for _, match := range reLogID.FindAllStringSubmatch(logs, -1) {
+			ids = append(ids, match[1])
+		}
+
+		return ids
+	}
+	assertAllIDsMatch := func(t *testing.T, logs string) {
+		ids := parseLogIDs(logs)
+		assert.Len(t,
+			slices.CompactFunc(ids, func(e1 string, e2 string) bool {
+				return e1 == e2
+			}),
+			1,
+		)
+	}
+
+	validate(t, &testCase{
+		Name: "Successful",
+		SetupMock: func(mockedProvider *providertesting.MockQuery) {
+			queryResult := &provider.QueryResult{
+				Message: "test response",
+			}
+			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(queryResult, nil)
+		},
+		QueryAttempts: 1,
+		Request:       "test request",
+		ExpectedResponse: &provider.QueryResult{
+			Message: "test response",
+		},
+
+		ValidateLogs: assertAllIDsMatch,
+	})
+
+	validate(t, &testCase{
+		Name: "Failed query no retry",
+		SetupMock: func(mockedProvider *providertesting.MockQuery) {
+			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(nil, assert.AnError)
+		},
+		QueryAttempts: 1,
+		Request:       "test request",
+		ExpectedError: assert.AnError.Error(),
+	})
+
+	validate(t, &testCase{
+		Name: "Failed query with retry",
+		SetupMock: func(mockedProvider *providertesting.MockQuery) {
+			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(nil, assert.AnError).Once()
+			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(&provider.QueryResult{
+				Message: "test response",
+			}, nil).Once()
+		},
+		QueryAttempts: 1 + 1,
+		Request:       "test request",
+		ExpectedResponse: &provider.QueryResult{
+			Message: "test response",
+		},
+
+		ValidateLogs: assertAllIDsMatch,
 	})
 }
 

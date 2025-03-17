@@ -329,10 +329,10 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 
 func (m *Model) query(logger *log.Logger, request string) (queryResult *provider.QueryResult, err error) {
 	var duration time.Duration
+	id := uuid.NewString()
 	if err := retry.Do(
 		func() error {
-			id := uuid.NewString
-			logger.Info("querying model", "model", m.ID(), "id", id, "prompt", string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
+			logger.Info("querying model", "model", m.ID(), "query-id", id, "prompt", string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
 			start := time.Now()
 			queryResult, err = m.provider.Query(context.Background(), m, request)
 			if err != nil {
@@ -343,7 +343,7 @@ func (m *Model) query(logger *log.Logger, request string) (queryResult *provider
 			if queryResult.GenerationInfo != nil {
 				totalCosts = queryResult.GenerationInfo.TotalCost
 			}
-			logger.Info("model responded", "model", m.ID(), "id", id, "duration", duration.Milliseconds(), "response-id", queryResult.ResponseID, "costs-total", totalCosts, "token-input", queryResult.Usage.PromptTokens, "token-output", queryResult.Usage.CompletionTokens, "response", string(bytesutil.PrefixLines([]byte(queryResult.Message), []byte("\t"))))
+			logger.Info("model responded", "model", m.ID(), "query-id", id, "duration", duration.Milliseconds(), "response-id", queryResult.ResponseID, "costs-total", totalCosts, "token-input", queryResult.Usage.PromptTokens, "token-output", queryResult.Usage.CompletionTokens, "response", string(bytesutil.PrefixLines([]byte(queryResult.Message), []byte("\t"))))
 
 			return nil
 		},
