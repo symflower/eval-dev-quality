@@ -4,7 +4,6 @@ import (
 	"regexp"
 	"strings"
 
-	pkgerrors "github.com/pkg/errors"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/evaluate/metrics"
@@ -21,7 +20,7 @@ func ParseResponse(response string) (assessment metrics.Assessments, code string
 
 	// Check for empty responses.
 	if strings.TrimSpace(response) == "" {
-		return assessment, "", pkgerrors.New("empty response from model")
+		return assessment, "", nil
 	}
 
 	// Some models produce duplicated code tags, so unify them if needed.
