@@ -30,9 +30,11 @@ require (
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/schollz/progressbar/v3 v3.18.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
+	github.com/symflower/gota v0.0.0-20250312083757-2306c53d6db1 // indirect
 	github.com/termie/go-shutil v0.0.0-20140729215957-bcacb06fecae // indirect
 	github.com/ulikunitz/xz v0.5.12 // indirect
 	github.com/yuin/goldmark v1.7.0 // indirect
+	golang.org/x/net v0.0.0-20210423184538-5f58ad60dda6 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/term v0.29.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
