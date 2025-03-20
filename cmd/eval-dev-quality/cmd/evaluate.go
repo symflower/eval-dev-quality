@@ -73,6 +73,8 @@ type Evaluate struct {
 	Configuration string `long:"configuration" description:"Configuration file to set up an evaluation run."`
 	// ExecutionTimeout holds the timeout for an execution.
 	ExecutionTimeout uint `long:"execution-timeout" description:"Execution timeout for compilation and tests in minutes." default:"5"`
+	// RunIDStartsAt holds the offset increment for the run id used in creating the result folders.
+	RunIDStartsAt uint `long:"run-id-starts-at" description:"Sets the starting index for the run ID." default:"1"`
 	// Runs holds the number of runs to perform.
 	Runs uint `long:"runs" description:"Number of runs to perform." default:"1"`
 	// RunsSequential indicates that interleaved runs are disabled and runs are performed sequentially.
@@ -174,6 +176,8 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		} else {
 			language.DefaultExecutionTimeout = time.Duration(command.ExecutionTimeout) * time.Minute
 		}
+
+		evaluationContext.RunIDStartsAt = command.RunIDStartsAt
 
 		if command.Runs == 0 {
 			command.logger.Panicf("number of configured runs must be greater than zero")

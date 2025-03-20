@@ -29,6 +29,8 @@ import (
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	"github.com/symflower/eval-dev-quality/provider"
 	providertesting "github.com/symflower/eval-dev-quality/provider/testing"
+	"github.com/symflower/gota/dataframe"
+	"github.com/symflower/gota/series"
 )
 
 var (
@@ -1235,6 +1237,7 @@ func TestEvaluate(t *testing.T) {
 						repositoryPath,
 					},
 
+					RunIDStartsAt:  11,
 					Runs:           3,
 					RunsSequential: false,
 				},
@@ -1395,7 +1398,14 @@ func TestEvaluate(t *testing.T) {
 						assert.Equal(t, 1, strings.Count(data, "creating temporary repository"), "create only one temporary repository")
 					},
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): nil,
-					"evaluation.csv": nil,
+					"evaluation.csv": func(t *testing.T, filePath string, data string) {
+						dataFrame := dataframe.ReadCSV(strings.NewReader(data))
+						assert.NoError(t, dataFrame.Err)
+
+						expectedColumnRun := series.New([]int{11, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13}, series.Int, "run")
+						actualColumnRun := dataFrame.Col("run")
+						assert.Equal(t, expectedColumnRun, actualColumnRun)
+					},
 				},
 			})
 		}
@@ -1425,6 +1435,7 @@ func TestEvaluate(t *testing.T) {
 						repositoryPath,
 					},
 
+					RunIDStartsAt:  21,
 					Runs:           3,
 					RunsSequential: true,
 				},
@@ -1585,7 +1596,14 @@ func TestEvaluate(t *testing.T) {
 						assert.Contains(t, data, "\"msg\":\"starting run\",\"count\":3,\"total\":3,")
 						assert.NotRegexp(t, `\\\"msg\\\":\\\"starting run\\\",\\\"count\\\":\d+,\\\"total\\\":\d+\}`, data)
 					},
-					"evaluation.csv": nil,
+					"evaluation.csv": func(t *testing.T, filePath string, data string) {
+						dataFrame := dataframe.ReadCSV(strings.NewReader(data))
+						assert.NoError(t, dataFrame.Err)
+
+						expectedColumnRun := series.New([]int{21, 21, 21, 21, 22, 22, 22, 22, 23, 23, 23, 23}, series.Int, "run")
+						actualColumnRun := dataFrame.Col("run")
+						assert.Equal(t, expectedColumnRun, actualColumnRun)
+					},
 				},
 			})
 		}
