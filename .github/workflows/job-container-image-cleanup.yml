@@ -17,14 +17,13 @@ jobs:
         with:
           container: ${{ inputs.container }}
           keep-tags-regexes: |
-            ^[1-9]\d*\.\d+.\d+$
+            ^v[1-9]\d*\.\d+.\d+$
             latest
             main
-          keep-younger-than: 14 # In days.
+          keep-last: 5
           organization: ${{ inputs.organization }}
-          prune-tags-regexes: |
-            ^.+$
           token: ${{ github.token }}
+          dry-run: true
   delete_untagged_container_versions:
     runs-on: ubuntu-latest
     steps:
