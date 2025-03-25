@@ -23,6 +23,7 @@ jobs:
           keep-last: 5
           organization: ${{ inputs.organization }}
           token: ${{ github.token }}
+          dry-run: true
   delete_untagged_container_versions:
     runs-on: ubuntu-latest
     steps:
