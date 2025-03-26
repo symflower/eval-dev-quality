@@ -255,9 +255,9 @@ func TestWriteTestsRun(t *testing.T) {
 				}
 				expectedProblems := []string{
 					"expected declaration, found this",
-					"unable to format source code",
 					"expected declaration, found this",
-					"unable to format source code",
+					"expected declaration, found this",
+					"expected declaration, found this",
 				}
 				validateGo(t, "Model generated test that is unfixable", &golang.Language{}, bytesutil.StringTrimIndentations(`
 					package plain

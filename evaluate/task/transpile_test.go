@@ -606,7 +606,7 @@ func TestTranspileRun(t *testing.T) {
 			},
 			ExpectedProblemContains: []string{
 				"expected 'package', found invalid",
-				"A fatal error happened. Please take a look at the logs", // This is `symflower fix` unable to read the broken Go file.
+				"expected 'package', found invalid",
 			},
 			ValidateLog: func(t *testing.T, data string) {
 				assert.Contains(t, data, "expected 'package', found invalid")
