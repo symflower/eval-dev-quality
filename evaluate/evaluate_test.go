@@ -570,7 +570,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "DONE 0 tests, 1 error")
+						assert.Contains(t, data, "DONE 0 tests, 1 failure, 1 error")
 					},
 					"evaluation.csv": nil,
 				},

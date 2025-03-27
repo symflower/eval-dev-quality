@@ -90,9 +90,9 @@ ENV JAVA_HOME="/app/.eval-dev-quality/amazon-corretto-11.0.24.8.1-linux-x64"
 ENV PATH="${PATH}:${JAVA_HOME}/bin"
 
 # Install Go.
-RUN wget https://go.dev/dl/go1.23.6.linux-amd64.tar.gz && \
-	tar -xf go1.23.6.linux-amd64.tar.gz -C /app/.eval-dev-quality/ && \
-	rm go1.23.6.linux-amd64.tar.gz
+RUN wget https://go.dev/dl/go1.24.1.linux-amd64.tar.gz && \
+	tar -xf go1.24.1.linux-amd64.tar.gz -C /app/.eval-dev-quality/ && \
+	rm go1.24.1.linux-amd64.tar.gz
 ENV PATH="${PATH}:/app/.eval-dev-quality/go/bin"
 ENV GOROOT="/app/.eval-dev-quality/go"
 ENV PATH="${PATH}:/home/ubuntu/go/bin"
@@ -108,5 +108,4 @@ RUN sed -i "s/args: \[\(.*\)\]/args: [\1, '--single-process']/" /home/ubuntu/.np
 # Install the binary.
 COPY --from=builder --chown=ubuntu:ubuntu /app/eval-dev-quality /app/.eval-dev-quality/bin/
 ENV PATH="${PATH}:/app/.eval-dev-quality/bin"
-RUN make install-tools-testing
 RUN make install-tools /app/.eval-dev-quality/bin
