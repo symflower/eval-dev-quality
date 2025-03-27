@@ -51,6 +51,7 @@ install-all: install install-tools # Install everything for and of this reposito
 .PHONY: install-all
 
 install-tools: # Install tools that are required for running the evaluation.
+	go install -v gotest.tools/gotestsum@v1.12.1
 	eval-dev-quality install-tools $(if $(ARGS), --install-tools-path $(word 1,$(ARGS)))
 .PHONY: install-tools
 
