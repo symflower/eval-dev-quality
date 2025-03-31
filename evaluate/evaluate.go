@@ -38,6 +38,8 @@ type Context struct {
 	// TestdataPath determines the testdata path where all repositories reside grouped by languages.
 	TestdataPath string
 
+	// RunIDStartsAt holds the run ID starting index created when running a evaluation multiple times.
+	RunIDStartsAt uint
 	// Runs holds the number of runs to perform.
 	Runs uint
 	// RunsSequential indicates that interleaved runs are disabled and runs are performed sequentially.
@@ -148,6 +150,7 @@ func Evaluate(ctx *Context) {
 								} else {
 									runCount = rl + 1
 								}
+								runID := ctx.RunIDStartsAt + runCount - 1
 
 								if err := temporaryRepository.Reset(logger); err != nil {
 									logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
@@ -177,7 +180,7 @@ func Evaluate(ctx *Context) {
 								}
 
 								// Write the task assessment to the evaluation CSV file.
-								if err := evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment); err != nil {
+								if err := evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runID, assessment); err != nil {
 									logger.Panicf("ERROR: cannot write evaluation record: %s", err)
 								}
 							}
@@ -271,6 +274,7 @@ func Evaluate(ctx *Context) {
 								} else {
 									runCount = rl + 1
 								}
+								runID := ctx.RunIDStartsAt + runCount - 1
 
 								if err := temporaryRepository.Reset(logger); err != nil {
 									logger.Panicf("ERROR: unable to reset temporary repository path: %s", err)
@@ -292,7 +296,7 @@ func Evaluate(ctx *Context) {
 								}
 
 								// Write the task assessment to the evaluation CSV file.
-								if err := evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runCount, assessment); err != nil {
+								if err := evaluationFile.WriteEvaluationRecord(model, language, temporaryRepository.Name(), runID, assessment); err != nil {
 									logger.Panicf("ERROR: cannot write evaluation record: %s", err)
 								}
 							}

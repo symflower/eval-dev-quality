@@ -11,6 +11,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sashabaranov/go-openai v1.38.0
 	github.com/stretchr/testify v1.10.0
+	github.com/symflower/gota v0.0.0-20250312083757-2306c53d6db1
 	github.com/symflower/lockfile v0.0.0-20240419143922-aa3b60940c84
 	github.com/zimmski/osutil v1.7.1
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
@@ -68,6 +69,7 @@ require (
 	github.com/yuin/goldmark v1.7.8 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20250305212735-054e65f0b394 // indirect
+	golang.org/x/net v0.37.0 // indirect
 	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/telemetry v0.0.0-20250310203348-fdfaad844314 // indirect
