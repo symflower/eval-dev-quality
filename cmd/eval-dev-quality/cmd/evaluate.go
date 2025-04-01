@@ -170,6 +170,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			command.logger.Panicf("number of configured query attempts must be greater than zero")
 		}
 		evaluationContext.QueryAttempts = command.QueryAttempts
+		evaluationConfiguration.APIAttempts = int(command.QueryAttempts)
 
 		if command.ExecutionTimeout == 0 {
 			command.logger.Panicf("execution timeout for compilation and tests must be greater than zero")
