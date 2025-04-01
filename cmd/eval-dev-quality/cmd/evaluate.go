@@ -145,6 +145,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 
 		command.ModelIDsWithProviderAndAttributes = configuration.Models.Selected
 		command.Repositories = configuration.Repositories.Selected
+		command.APIRequestAttempts = uint(configuration.APIRequestAttempts)
 	}
 
 	// Check and validate common options.
@@ -173,6 +174,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 		evaluationContext.APIReqestAttempts = command.APIRequestAttempts
 		evaluationContext.APIRequestTimeout = command.APIRequestTimeout
+		evaluationConfiguration.APIRequestAttempts = int(command.APIRequestAttempts)
 
 		if command.ExecutionTimeout == 0 {
 			command.logger.Panicf("execution timeout for compilation and tests must be greater than zero")
