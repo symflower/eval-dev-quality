@@ -35,6 +35,8 @@ type Model struct {
 	attributes map[string]string
 	// queryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	queryAttempts uint
+	// queryTimeout holds the timeout for model requests in seconds.
+	queryTimeout uint
 
 	// metaInformation holds a model meta information.
 	metaInformation *model.MetaInformation
@@ -47,6 +49,7 @@ func NewModel(provider provider.Query, modelIDWithAttributes string) (llmModel *
 		provider: provider,
 
 		queryAttempts: 1,
+		queryTimeout:  0,
 	}
 	llmModel.modelID, llmModel.attributes = model.ParseModelID(modelIDWithAttributes)
 
@@ -61,6 +64,7 @@ func NewModelWithMetaInformation(provider provider.Query, modelIdentifier string
 		modelID:  modelIdentifier,
 
 		queryAttempts: 1,
+		queryTimeout:  0,
 
 		metaInformation: metaInformation,
 	}
@@ -333,10 +337,19 @@ func (m *Model) query(logger *log.Logger, request string) (queryResult *provider
 	if err := retry.Do(
 		func() error {
 			logger.Info("querying model", "model", m.ID(), "query-id", id, "prompt", string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
+			ctx := context.Background()
+			if m.queryTimeout > 0 {
+				c, cancel := context.WithTimeoutCause(ctx, time.Second*time.Duration(m.queryTimeout), pkgerrors.Errorf("request query timeout (%d seconds)", m.queryTimeout))
+				defer cancel()
+				ctx = c
+			}
+
 			start := time.Now()
-			queryResult, err = m.provider.Query(context.Background(), m, request)
+			queryResult, err = m.provider.Query(ctx, m, request)
 			if err != nil {
 				return err
+			} else if ctx.Err() != nil {
+				return context.Cause(ctx)
 			}
 			duration = time.Since(start)
 			totalCosts := float64(-1)
@@ -520,9 +533,14 @@ func handleQueryResult(queryResult *provider.QueryResult, filePathAbsolute strin
 	return assessment, nil
 }
 
-var _ model.SetQueryAttempts = (*Model)(nil)
+var _ model.SetQueryHandling = (*Model)(nil)
 
 // SetQueryAttempts sets the number of query attempts to perform when a model request errors in the process of solving a task.
 func (m *Model) SetQueryAttempts(queryAttempts uint) {
 	m.queryAttempts = queryAttempts
+}
+
+// SetQueryTimeout sets the timeout for model requests in seconds.
+func (m *Model) SetQueryTimeout(timeout uint) {
+	m.queryTimeout = timeout
 }

@@ -30,6 +30,8 @@ type Context struct {
 	ProviderForModel map[evalmodel.Model]provider.Provider
 	// QueryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
 	QueryAttempts uint
+	// QueryTimeout holds the timeout for model queries in seconds.
+	QueryTimeout uint
 
 	// RepositoryPaths determines which relative repository paths should be used for the evaluation, or empty if all repositories should be used.
 	RepositoryPaths []string
@@ -130,8 +132,9 @@ func Evaluate(ctx *Context) {
 						modelSucceededBasicChecksOfLanguage[model] = map[evallanguage.Language]bool{}
 					}
 
-					if r, ok := model.(evalmodel.SetQueryAttempts); ok {
+					if r, ok := model.(evalmodel.SetQueryHandling); ok {
 						r.SetQueryAttempts(ctx.QueryAttempts)
+						r.SetQueryTimeout(ctx.QueryTimeout)
 					}
 
 					for _, taskIdentifier := range temporaryRepository.Configuration().Tasks {
