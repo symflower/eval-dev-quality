@@ -196,8 +196,8 @@ func TestModelQuery(t *testing.T) {
 				tc.SetupMock(mock)
 			}
 			llm := NewModel(mock, "some-model")
-			llm.SetQueryAttempts(tc.QueryAttempts)
-			llm.SetQueryTimeout(tc.QueryTimeout)
+			llm.SetAPIRequestAttempts(tc.QueryAttempts)
+			llm.SetAPIRequestTimeout(tc.QueryTimeout)
 
 			queryResult, actualError := llm.query(logger, tc.Request)
 
@@ -306,7 +306,7 @@ func TestModelQuery(t *testing.T) {
 		QueryAttempts: 2,
 		QueryTimeout:  1,
 		Request:       "test request",
-		ExpectedError: "request query timeout",
+		ExpectedError: "API query timed out",
 
 		ValidateLogs: func(t *testing.T, logs string) {
 			assert.Equal(t, 2, strings.Count(logs, "querying model"))
