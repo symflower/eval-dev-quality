@@ -60,7 +60,9 @@ type Evaluate struct {
 	// ProviderUrls holds all custom inference endpoint urls for the providers.
 	ProviderUrls map[string]string `long:"urls" description:"Custom OpenAI API compatible inference endpoints (of the form '$provider:$url,...'). Use '$provider=custom-$name' to manually register a custom OpenAI API endpoint provider. Note that the models of a custom OpenAI API endpoint provider must be declared explicitly using the '--model' option. When using the environment variable, separate multiple definitions with ','." env:"PROVIDER_URL" env-delim:","`
 	// QueryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
-	QueryAttempts uint `long:"attempts" description:"Number of query attempts to perform when a model request errors in the process of solving a task." default:"3"`
+	QueryAttempts uint `long:"query-attempts" description:"Number of query attempts to perform when a model request errors in the process of solving a task." default:"3"`
+	// QueryTimeout holds the timeout for model requests.
+	QueryTimeout uint `long:"query-timeout" description:"Timeout of a model query in seconds. ('0' to disable)" default:"1200"`
 
 	// Repositories determines which repository should be used for the evaluation, or empty if all repositories should be used.
 	Repositories []string `long:"repository" description:"Evaluate with this repository. By default all repositories are used."`
@@ -170,6 +172,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			command.logger.Panicf("number of configured query attempts must be greater than zero")
 		}
 		evaluationContext.QueryAttempts = command.QueryAttempts
+		evaluationContext.QueryTimeout = command.QueryTimeout
 
 		if command.ExecutionTimeout == 0 {
 			command.logger.Panicf("execution timeout for compilation and tests must be greater than zero")
