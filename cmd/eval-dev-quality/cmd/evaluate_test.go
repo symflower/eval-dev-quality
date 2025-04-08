@@ -1272,7 +1272,7 @@ func TestEvaluateInitialize(t *testing.T) {
 	makeValidCommand := func(modify func(command *Evaluate)) *Evaluate {
 		c := &Evaluate{
 			ModelIDsWithProviderAndAttributes: []string{"symflower/smart-template"},
-			QueryAttempts:                     1,
+			APIRequestAttempts:                1,
 
 			ResultPath:   filepath.Join("$TEMP_PATH", "result-directory"),
 			TestdataPath: filepath.Join("..", "..", "..", "testdata"),
@@ -1530,10 +1530,10 @@ func TestEvaluateInitialize(t *testing.T) {
 		Name: "Attempts parameter hast to be greater then zero",
 
 		Command: makeValidCommand(func(command *Evaluate) {
-			command.QueryAttempts = 0
+			command.APIRequestAttempts = 0
 		}),
 
-		ValidatePanic: "number of configured query attempts must be greater than zero",
+		ValidatePanic: "number of configured API request attempts must be greater than zero",
 	})
 	validate(t, &testCase{
 		Name: "Execution timeout parameter hast to be greater then zero",

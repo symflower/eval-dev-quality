@@ -196,8 +196,8 @@ func TestModelQuery(t *testing.T) {
 				tc.SetupMock(mock)
 			}
 			llm := NewModel(mock, "some-model")
-			llm.SetQueryAttempts(tc.QueryAttempts)
-			llm.SetQueryTimeout(tc.QueryTimeout)
+			llm.SetAPIRequestAttempts(tc.QueryAttempts)
+			llm.SetAPIRequestTimeout(tc.QueryTimeout)
 
 			queryResult, actualError := llm.query(logger, tc.Request)
 
