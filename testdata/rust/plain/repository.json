@@ -1,0 +1,13 @@
+{
+  "tasks": ["write-tests"],
+  "ignore": ["src/lib.rs"],
+  "tests-in-source": true,
+  "scores": {
+    "write-tests": {
+      "src/plain.rs": {
+        "coverage": 1,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
+}

@@ -93,8 +93,9 @@ func (t *WriteTests) Run(ctx evaltask.Context) (repositoryAssessment map[string]
 		modelContext := model.Context{
 			Language: ctx.Language,
 
-			RepositoryPath: dataPath,
-			FilePath:       filePath,
+			RepositoryPath:   dataPath,
+			HasTestsInSource: ctx.Repository.Configuration().HasTestsInSource,
+			FilePath:         filePath,
 
 			Logger: taskLogger.Logger,
 
