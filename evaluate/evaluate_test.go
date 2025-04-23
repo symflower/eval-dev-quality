@@ -105,8 +105,8 @@ func TestEvaluate(t *testing.T) {
 			logger = logger.With(log.AttributeKeyResultPath, resultPath)
 
 			tc.Context.Log = logger
-			if tc.Context.QueryAttempts == 0 {
-				tc.Context.QueryAttempts = 1
+			if tc.Context.APIReqestAttempts == 0 {
+				tc.Context.APIReqestAttempts = 1
 			}
 			tc.Context.ResultPath = resultPath
 			if tc.Context.TestdataPath == "" {
@@ -206,7 +206,7 @@ func TestEvaluate(t *testing.T) {
 				Models: []evalmodel.Model{
 					mockedModel,
 				},
-				QueryAttempts: 3,
+				APIReqestAttempts: 3,
 
 				RepositoryPaths: []string{
 					repositoryPath,
@@ -310,7 +310,7 @@ func TestEvaluate(t *testing.T) {
 					Models: []evalmodel.Model{
 						mockedModel,
 					},
-					QueryAttempts: 1,
+					APIReqestAttempts: 1,
 				},
 
 				ExpectedAssessments: []*metricstesting.AssessmentTuple{
@@ -397,7 +397,7 @@ func TestEvaluate(t *testing.T) {
 					Models: []evalmodel.Model{
 						mockedModel,
 					},
-					QueryAttempts: 3,
+					APIReqestAttempts: 3,
 
 					RepositoryPaths: []string{
 						repositoryPath,
@@ -461,7 +461,7 @@ func TestEvaluate(t *testing.T) {
 				ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 					"evaluation.log": nil,
 					filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-						assert.Contains(t, data, "\"msg\":\"query retry\",\"count\":1,\"total\":3,\"error\":\""+ErrEmptyResponseFromModel.Error())
+						assert.Contains(t, data, "\"msg\":\"API request attempt failed\",\"count\":1,\"total\":3,\"error\":\""+ErrEmptyResponseFromModel.Error())
 					},
 					"evaluation.csv": nil,
 				},
@@ -500,7 +500,7 @@ func TestEvaluate(t *testing.T) {
 					Models: []evalmodel.Model{
 						mockedModel,
 					},
-					QueryAttempts: 3,
+					APIReqestAttempts: 3,
 
 					RepositoryPaths: []string{
 						repositoryPath,

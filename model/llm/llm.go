@@ -33,8 +33,10 @@ type Model struct {
 
 	// attributes holds query attributes.
 	attributes map[string]string
-	// queryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
-	queryAttempts uint
+	// apiRequestAttempts holds the number of allowed API requests per LLM query.
+	apiRequestAttempts uint
+	// apiRequestTimeout holds the timeout for API requests in seconds.
+	apiRequestTimeout uint
 
 	// metaInformation holds a model meta information.
 	metaInformation *model.MetaInformation
@@ -46,7 +48,8 @@ func NewModel(provider provider.Query, modelIDWithAttributes string) (llmModel *
 		id:       modelIDWithAttributes,
 		provider: provider,
 
-		queryAttempts: 1,
+		apiRequestAttempts: 1,
+		apiRequestTimeout:  0,
 	}
 	llmModel.modelID, llmModel.attributes = model.ParseModelID(modelIDWithAttributes)
 
@@ -60,7 +63,8 @@ func NewModelWithMetaInformation(provider provider.Query, modelIdentifier string
 		provider: provider,
 		modelID:  modelIdentifier,
 
-		queryAttempts: 1,
+		apiRequestAttempts: 1,
+		apiRequestTimeout:  0,
 
 		metaInformation: metaInformation,
 	}
@@ -333,10 +337,19 @@ func (m *Model) query(logger *log.Logger, request string) (queryResult *provider
 	if err := retry.Do(
 		func() error {
 			logger.Info("querying model", "model", m.ID(), "query-id", id, "prompt", string(bytesutil.PrefixLines([]byte(request), []byte("\t"))))
+			ctx := context.Background()
+			if m.apiRequestTimeout > 0 {
+				c, cancel := context.WithTimeoutCause(ctx, time.Second*time.Duration(m.apiRequestTimeout), pkgerrors.Errorf("API request timed out (%d seconds)", m.apiRequestTimeout))
+				defer cancel()
+				ctx = c
+			}
+
 			start := time.Now()
-			queryResult, err = m.provider.Query(context.Background(), m, request)
+			queryResult, err = m.provider.Query(ctx, m, request)
 			if err != nil {
 				return err
+			} else if ctx.Err() != nil {
+				return context.Cause(ctx)
 			}
 			duration = time.Since(start)
 			totalCosts := float64(-1)
@@ -347,12 +360,12 @@ func (m *Model) query(logger *log.Logger, request string) (queryResult *provider
 
 			return nil
 		},
-		retry.Attempts(m.queryAttempts),
+		retry.Attempts(m.apiRequestAttempts),
 		retry.Delay(5*time.Second),
 		retry.DelayType(retry.BackOffDelay),
 		retry.LastErrorOnly(true),
 		retry.OnRetry(func(n uint, err error) {
-			logger.Info("query retry", "count", n+1, "total", m.queryAttempts, "error", err)
+			logger.Info("API request attempt failed", "count", n+1, "total", m.apiRequestAttempts, "error", err)
 		}),
 	); err != nil {
 		return nil, err
@@ -520,9 +533,14 @@ func handleQueryResult(queryResult *provider.QueryResult, filePathAbsolute strin
 	return assessment, nil
 }
 
-var _ model.SetQueryAttempts = (*Model)(nil)
+var _ model.ConfigureAPIRequestHandling = (*Model)(nil)
 
-// SetQueryAttempts sets the number of query attempts to perform when a model request errors in the process of solving a task.
-func (m *Model) SetQueryAttempts(queryAttempts uint) {
-	m.queryAttempts = queryAttempts
+// SetAPIRequestAttempts sets the number of allowed API requests per LLM query.
+func (m *Model) SetAPIRequestAttempts(queryAttempts uint) {
+	m.apiRequestAttempts = queryAttempts
+}
+
+// SetAPIRequestTimeout sets the timeout for API requests in seconds.
+func (m *Model) SetAPIRequestTimeout(timeout uint) {
+	m.apiRequestTimeout = timeout
 }

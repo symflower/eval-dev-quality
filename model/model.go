@@ -82,8 +82,10 @@ type Context struct {
 	Logger *log.Logger
 }
 
-// SetQueryAttempts defines a model that can set the number of query attempts when a model request errors in the process of solving a task.
-type SetQueryAttempts interface {
-	// SetQueryAttempts sets the number of query attempts to perform when a model request errors in the process of solving a task.
-	SetQueryAttempts(attempts uint)
+// ConfigureAPIRequestHandling defines a model that can configure how API requests are handled.
+type ConfigureAPIRequestHandling interface {
+	// SetAPIRequestAttempts sets the number of allowed API requests per LLM query.
+	SetAPIRequestAttempts(attempts uint)
+	// SetAPIRequestTimeout sets the timeout for API requests in seconds.
+	SetAPIRequestTimeout(timeout uint)
 }

@@ -28,8 +28,10 @@ type Context struct {
 	Models []evalmodel.Model
 	// ProviderForModel holds the models and their associated provider.
 	ProviderForModel map[evalmodel.Model]provider.Provider
-	// QueryAttempts holds the number of query attempts to perform when a model request errors in the process of solving a task.
-	QueryAttempts uint
+	// APIReqestAttempts holds the number of allowed API requests per LLM query.
+	APIReqestAttempts uint
+	// APIRequestTimeout holds the timeout for API requests in seconds.
+	APIRequestTimeout uint
 
 	// RepositoryPaths determines which relative repository paths should be used for the evaluation, or empty if all repositories should be used.
 	RepositoryPaths []string
@@ -130,8 +132,9 @@ func Evaluate(ctx *Context) {
 						modelSucceededBasicChecksOfLanguage[model] = map[evallanguage.Language]bool{}
 					}
 
-					if r, ok := model.(evalmodel.SetQueryAttempts); ok {
-						r.SetQueryAttempts(ctx.QueryAttempts)
+					if r, ok := model.(evalmodel.ConfigureAPIRequestHandling); ok {
+						r.SetAPIRequestAttempts(ctx.APIReqestAttempts)
+						r.SetAPIRequestTimeout(ctx.APIRequestTimeout)
 					}
 
 					for _, taskIdentifier := range temporaryRepository.Configuration().Tasks {

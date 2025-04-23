@@ -173,6 +173,7 @@ func TestModelQuery(t *testing.T) {
 		SetupMock func(mockedProvider *providertesting.MockQuery)
 
 		QueryAttempts uint
+		QueryTimeout  uint
 		Request       string
 
 		ExpectedResponse *provider.QueryResult
@@ -195,7 +196,8 @@ func TestModelQuery(t *testing.T) {
 				tc.SetupMock(mock)
 			}
 			llm := NewModel(mock, "some-model")
-			llm.SetQueryAttempts(tc.QueryAttempts)
+			llm.SetAPIRequestAttempts(tc.QueryAttempts)
+			llm.SetAPIRequestTimeout(tc.QueryTimeout)
 
 			queryResult, actualError := llm.query(logger, tc.Request)
 
@@ -276,6 +278,39 @@ func TestModelQuery(t *testing.T) {
 		},
 
 		ValidateLogs: assertAllIDsMatch,
+	})
+
+	validate(t, &testCase{
+		Name: "Timeout",
+		SetupMock: func(mockedProvider *providertesting.MockQuery) {
+			queryResult := &provider.QueryResult{
+				Message: "test response",
+			}
+			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(queryResult, nil).After(time.Second * 2)
+		},
+		QueryAttempts: 1,
+		QueryTimeout:  1,
+		Request:       "test request",
+		ExpectedError: "API request timed out",
+	})
+
+	validate(t, &testCase{
+		Name: "Multiple Timeouts",
+		SetupMock: func(mockedProvider *providertesting.MockQuery) {
+			queryResult := &provider.QueryResult{
+				Message: "test response",
+			}
+			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(queryResult, nil).After(time.Second * 2)
+			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(queryResult, nil).After(time.Second * 2)
+		},
+		QueryAttempts: 2,
+		QueryTimeout:  1,
+		Request:       "test request",
+		ExpectedError: "API request timed out",
+
+		ValidateLogs: func(t *testing.T, logs string) {
+			assert.Equal(t, 2, strings.Count(logs, "querying model"))
+		},
 	})
 }
 
