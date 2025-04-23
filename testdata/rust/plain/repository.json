@@ -1,0 +1,11 @@
+{
+  "tasks": ["write-tests"],
+  "scores": {
+    "write-tests": {
+      "lib.rs": {
+        "coverage": 1,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
+}
