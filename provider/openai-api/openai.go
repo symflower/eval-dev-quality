@@ -59,7 +59,7 @@ func (p *Provider) SetToken(token string) {
 var _ provider.Query = (*Provider)(nil)
 
 // Query queries the provider with the given model name.
-func (p *Provider) Query(ctx context.Context, model model.Model, promptText string) (result *provider.QueryResult, err error) {
+func (p *Provider) Query(ctx context.Context, logger *log.Logger, model model.Model, promptText string) (result *provider.QueryResult, err error) {
 	return QueryOpenAIAPIModel(ctx, p.client(), model.ModelIDWithoutProvider(), model.Attributes(), promptText)
 }
 

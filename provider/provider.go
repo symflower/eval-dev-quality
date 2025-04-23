@@ -73,7 +73,7 @@ type GenerationInfo struct {
 // Query is a provider that allows to query a model directly.
 type Query interface {
 	// Query queries the provider with the given model name.
-	Query(ctx context.Context, model model.Model, promptText string) (result *QueryResult, err error)
+	Query(ctx context.Context, logger *log.Logger, model model.Model, promptText string) (result *QueryResult, err error)
 }
 
 // Service is a provider that requires background services.

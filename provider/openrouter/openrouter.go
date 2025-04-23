@@ -137,13 +137,13 @@ func (p *Provider) SetToken(token string) {
 var _ provider.Query = (*Provider)(nil)
 
 // Query queries the provider with the given model name.
-func (p *Provider) Query(ctx context.Context, model model.Model, promptText string) (result *provider.QueryResult, err error) {
+func (p *Provider) Query(ctx context.Context, logger *log.Logger, model model.Model, promptText string) (result *provider.QueryResult, err error) {
 	queryResult, err := openaiapi.QueryOpenAIAPIModel(ctx, p.client(), model.ModelIDWithoutProvider(), model.Attributes(), promptText)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	queryResult.GenerationInfo, err = p.fetchGenerationInfo(queryResult.ResponseID)
+	queryResult.GenerationInfo, err = p.fetchGenerationInfo(logger, queryResult.ResponseID)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
@@ -159,7 +159,7 @@ func (p *Provider) client() (client *openai.Client) {
 	return openai.NewClientWithConfig(config)
 }
 
-func (p *Provider) fetchGenerationInfo(generationID string) (generationInfo *provider.GenerationInfo, err error) {
+func (p *Provider) fetchGenerationInfo(logger *log.Logger, generationID string) (generationInfo *provider.GenerationInfo, err error) {
 	request, err := http.NewRequest("GET", "https://openrouter.ai/api/v1/generation?id="+generationID, nil)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)

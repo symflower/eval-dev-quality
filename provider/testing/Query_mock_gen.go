@@ -6,6 +6,8 @@ import (
 	context "context"
 
 	mock "github.com/stretchr/testify/mock"
+	log "github.com/symflower/eval-dev-quality/log"
+
 	model "github.com/symflower/eval-dev-quality/model"
 
 	provider "github.com/symflower/eval-dev-quality/provider"
@@ -16,9 +18,9 @@ type MockQuery struct {
 	mock.Mock
 }
 
-// Query provides a mock function with given fields: ctx, _a1, promptText
-func (_m *MockQuery) Query(ctx context.Context, _a1 model.Model, promptText string) (*provider.QueryResult, error) {
-	ret := _m.Called(ctx, _a1, promptText)
+// Query provides a mock function with given fields: ctx, logger, _a2, promptText
+func (_m *MockQuery) Query(ctx context.Context, logger *log.Logger, _a2 model.Model, promptText string) (*provider.QueryResult, error) {
+	ret := _m.Called(ctx, logger, _a2, promptText)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Query")
@@ -26,19 +28,19 @@ func (_m *MockQuery) Query(ctx context.Context, _a1 model.Model, promptText stri
 
 	var r0 *provider.QueryResult
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, model.Model, string) (*provider.QueryResult, error)); ok {
-		return rf(ctx, _a1, promptText)
+	if rf, ok := ret.Get(0).(func(context.Context, *log.Logger, model.Model, string) (*provider.QueryResult, error)); ok {
+		return rf(ctx, logger, _a2, promptText)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, model.Model, string) *provider.QueryResult); ok {
-		r0 = rf(ctx, _a1, promptText)
+	if rf, ok := ret.Get(0).(func(context.Context, *log.Logger, model.Model, string) *provider.QueryResult); ok {
+		r0 = rf(ctx, logger, _a2, promptText)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*provider.QueryResult)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, model.Model, string) error); ok {
-		r1 = rf(ctx, _a1, promptText)
+	if rf, ok := ret.Get(1).(func(context.Context, *log.Logger, model.Model, string) error); ok {
+		r1 = rf(ctx, logger, _a2, promptText)
 	} else {
 		r1 = ret.Error(1)
 	}
