@@ -1448,7 +1448,8 @@ func TestEvaluateInitialize(t *testing.T) {
 							"golang/plain",
 							"java/plain"
 						]
-					}
+					},
+					"APIRequestAttempts": 1
 				}
 			`)
 			require.NoError(t, os.WriteFile(filepath.Join(workingDirectory, "config.json"), []byte(configurationContent), 0700))

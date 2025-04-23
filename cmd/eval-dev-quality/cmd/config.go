@@ -16,6 +16,9 @@ type EvaluationConfiguration struct {
 	Models ModelsConfiguration
 	// Repositories holds repository configuration data.
 	Repositories RepositoryConfiguration
+
+	// APIRequestAttempts holds the number of API request attempts.
+	APIRequestAttempts int
 }
 
 // ModelsConfiguration holds model data of how an evaluation was configured.
