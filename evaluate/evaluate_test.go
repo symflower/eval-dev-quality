@@ -274,7 +274,8 @@ func TestEvaluate(t *testing.T) {
 			ExpectedResultFiles: map[string]func(t *testing.T, filePath string, data string){
 				"evaluation.log": nil,
 				filepath.Join(string(evaluatetask.IdentifierWriteTests), log.CleanModelNameForFileSystem(mockedModelID), "golang", "golang", "plain", "evaluation.log"): func(t *testing.T, filePath, data string) {
-					assert.Equal(t, 4, strings.Count(data, "no test files found"), "number of ocurrences of \"no test files found\" not matched")
+					occurrences := 4 * 5 // Problems are reported as they occur + 4 times in the evaluation model report.
+					assert.Equal(t, occurrences, strings.Count(data, "no test files found"), "number of occurrences of \"no test files found\" not matched")
 				},
 				"evaluation.csv": func(t *testing.T, filePath, data string) {
 					assert.Lenf(t, strings.Split(data, "\n"), 6, "expected 6 lines: header, 4x entries and final new line:\n%s", data)
