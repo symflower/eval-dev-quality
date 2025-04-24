@@ -76,7 +76,7 @@ func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (test
 	commandOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
 		Command: []string{ // TODO Move this to `symflower test` to get coverage information.
 			"cargo",
-			"test",
+			"llvm-cov",
 		},
 
 		Directory: repositoryPath,

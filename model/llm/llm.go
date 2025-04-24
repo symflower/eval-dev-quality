@@ -2,6 +2,7 @@ package llm
 
 import (
 	"context"
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
@@ -145,7 +146,7 @@ type llmWriteTestSourceFilePromptContext struct {
 
 // llmWriteTestForFilePromptTemplate is the template for generating an LLM test generation prompt.
 var llmWriteTestForFilePromptTemplate = template.Must(template.New("model-llm-write-test-for-file-prompt").Parse(bytesutil.StringTrimIndentations(`
-	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" with package "{{ .ImportPath }}", provide a test file for this code{{ with .TestFramework }} with {{ . }} as a test framework{{ end }}.
+	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" {{- with .ImportPath }} with package "{{ . }}" {{- end }}, provide {{- if .Language.HasTestsInSource }} tests {{ else }} a test file {{ end -}} for this code{{ with .TestFramework }} with {{ . }} as a test framework{{ end }}.
 	The tests should produce 100 percent code coverage and must compile.
 	The response must contain only the test code in a fenced code block and nothing else.
 
@@ -328,7 +329,7 @@ func (m *Model) WriteTests(ctx model.Context) (assessment metrics.Assessments, e
 
 	filePath := filepath.Join(ctx.RepositoryPath, ctx.Language.TestFilePath(ctx.RepositoryPath, ctx.FilePath))
 
-	return handleQueryResult(queryResult, filePath)
+	return handleQueryResult(queryResult, filePath, ctx.Language.HasTestsInSource())
 }
 
 func (m *Model) query(logger *log.Logger, request string) (queryResult *provider.QueryResult, err error) {
@@ -413,7 +414,7 @@ func (m *Model) RepairCode(ctx model.Context) (assessment metrics.Assessments, e
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	return handleQueryResult(queryResult, filepath.Join(ctx.RepositoryPath, ctx.FilePath))
+	return handleQueryResult(queryResult, filepath.Join(ctx.RepositoryPath, ctx.FilePath), false)
 }
 
 var _ model.CapabilityTranspile = (*Model)(nil)
@@ -460,7 +461,7 @@ func (m *Model) Transpile(ctx model.Context) (assessment metrics.Assessments, er
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	return handleQueryResult(queryResult, filepath.Join(ctx.RepositoryPath, ctx.FilePath))
+	return handleQueryResult(queryResult, filepath.Join(ctx.RepositoryPath, ctx.FilePath), false)
 }
 
 var _ model.CapabilityMigrate = (*Model)(nil)
@@ -500,10 +501,10 @@ func (m *Model) Migrate(ctx model.Context) (assessment metrics.Assessments, err 
 		return nil, pkgerrors.WithStack(err)
 	}
 
-	return handleQueryResult(queryResult, filepath.Join(ctx.RepositoryPath, ctx.FilePath))
+	return handleQueryResult(queryResult, filepath.Join(ctx.RepositoryPath, ctx.FilePath), false)
 }
 
-func handleQueryResult(queryResult *provider.QueryResult, filePathAbsolute string) (assessment metrics.Assessments, err error) {
+func handleQueryResult(queryResult *provider.QueryResult, filePathAbsolute string, appendFile bool) (assessment metrics.Assessments, err error) {
 	assessment, sourceFileContent, err := prompt.ParseResponse(queryResult.Message)
 	if err != nil {
 		return nil, pkgerrors.WithStack(err)
@@ -526,7 +527,21 @@ func handleQueryResult(queryResult *provider.QueryResult, filePathAbsolute strin
 	if err := os.MkdirAll(filepath.Dir(filePathAbsolute), 0755); err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
-	if err := os.WriteFile(filePathAbsolute, []byte(sourceFileContent), 0644); err != nil {
+
+	flags := os.O_WRONLY | os.O_CREATE
+	if appendFile {
+		flags = flags | os.O_APPEND
+	}
+	file, err := os.OpenFile(filePathAbsolute, flags, 0644)
+	if err != nil {
+		return nil, pkgerrors.WithStack(err)
+	}
+	defer func() {
+		if closeErr := file.Close(); closeErr != nil {
+			err = errors.Join(err, pkgerrors.WithStack(closeErr))
+		}
+	}()
+	if _, err := file.WriteString(sourceFileContent); err != nil {
 		return nil, pkgerrors.WithStack(err)
 	}
 

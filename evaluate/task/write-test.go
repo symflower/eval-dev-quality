@@ -175,10 +175,10 @@ func validateWriteTestsRepository(logger *log.Logger, repositoryPath string, lan
 	var sourceFiles []string
 	var testFiles []string
 	for _, file := range files {
-		if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
-			testFiles = append(testFiles, file)
-		} else if strings.HasSuffix(file, language.DefaultFileExtension()) {
+		if strings.HasSuffix(file, language.DefaultFileExtension()) { // For languages where source file == test file, assume we are collecting source files by default.
 			sourceFiles = append(sourceFiles, file)
+		} else if strings.HasSuffix(file, language.DefaultTestFileSuffix()) {
+			testFiles = append(testFiles, file)
 		}
 	}
 
