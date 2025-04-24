@@ -170,7 +170,14 @@ func (p *Provider) fetchGenerationInfo(logger *log.Logger, generationID string) 
 	client := &http.Client{}
 	var responseBody []byte
 	if err := retry.Do( // Query available models with a retry logic cause "openrouter.ai" has failed us in the past.
-		func() error {
+		func() (err error) {
+			logger.Info("getting request metadata from openrouter.ai", "response-id", generationID)
+			defer func() {
+				if err != nil {
+					logger.Error("getting request metadata errored", "response-id", generationID, "error", err.Error())
+				}
+			}()
+
 			response, err := client.Do(request)
 			if err != nil {
 				return pkgerrors.WithStack(err)
@@ -200,6 +207,7 @@ func (p *Provider) fetchGenerationInfo(logger *log.Logger, generationID string) 
 		return nil, err
 	}
 
+	logger.Info("obtained request metadata", "response-id", generationID, "metadata", string(responseBody))
 	var dataResponse struct {
 		provider.GenerationInfo `json:"data"`
 	}
