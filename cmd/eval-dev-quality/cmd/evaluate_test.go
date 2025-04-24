@@ -1314,6 +1314,7 @@ func TestEvaluateInitialize(t *testing.T) {
 				"golang",
 				"java",
 				"ruby",
+				"rust",
 			}, command.Languages)
 		},
 		ValidateContext: func(t *testing.T, context *evaluate.Context) {
@@ -1321,6 +1322,7 @@ func TestEvaluateInitialize(t *testing.T) {
 				language.Languages["golang"],
 				language.Languages["java"],
 				language.Languages["ruby"],
+				language.Languages["rust"],
 			}, context.Languages)
 		},
 	})
