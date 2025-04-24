@@ -77,7 +77,6 @@ func Evaluate(ctx *Context) {
 	modelSucceededBasicChecksOfLanguage := map[evalmodel.Model]map[evallanguage.Language]bool{}
 	ctx.Log.Info("checking that models and languages can be used for evaluation")
 
-	problemsPerModel := map[string][]error{}
 	// Write the evaluation CSV header so it's only written once.
 	evaluationCSVFile, err := os.OpenFile(filepath.Join(ctx.ResultPath, "evaluation.csv"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -171,9 +170,6 @@ func Evaluate(ctx *Context) {
 								assessment, ps, err := task.Run(taskContext)
 								if err != nil {
 									ps = append(ps, err)
-								}
-								if len(ps) > 0 {
-									problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
 								}
 
 								if succeededPlain(assessment) {
@@ -292,8 +288,7 @@ func Evaluate(ctx *Context) {
 
 									Logger: logger,
 								}
-								assessment, ps, err := task.Run(taskContext)
-								problemsPerModel[modelID] = append(problemsPerModel[modelID], ps...)
+								assessment, _, err := task.Run(taskContext)
 								if err != nil {
 									logger.Error("model encountered a hard error", "model", modelID, "language", languageID, "repository", repositoryPath, "error", err)
 								}
