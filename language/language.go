@@ -38,6 +38,8 @@ type Language interface {
 	TestFilePath(projectRootPath string, filePath string) (testFilePath string)
 	// TestFramework returns the human-readable name of the test framework that should be used.
 	TestFramework() (testFramework string)
+	// HasTestsInSource returns if the tests for this language are commonly located within the corresponding implementation file.
+	HasTestsInSource() bool
 
 	// DefaultFileExtension returns the default file extension of the implemented language.
 	DefaultFileExtension() string

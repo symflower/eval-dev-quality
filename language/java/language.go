@@ -70,6 +70,11 @@ func (l *Language) TestFramework() (testFramework string) {
 	return "JUnit 5"
 }
 
+// HasTestsInSource returns if the tests for this language are commonly located within the corresponding implementation file.
+func (l *Language) HasTestsInSource() bool {
+	return false
+}
+
 // DefaultFileExtension returns the default file extension.
 func (l *Language) DefaultFileExtension() string {
 	return ".java"

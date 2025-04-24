@@ -119,6 +119,24 @@ func (_m *MockLanguage) Files(logger *log.Logger, repositoryPath string) ([]stri
 	return r0, r1
 }
 
+// HasTestsInSource provides a mock function with no fields
+func (_m *MockLanguage) HasTestsInSource() bool {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for HasTestsInSource")
+	}
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func() bool); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
 // ID provides a mock function with no fields
 func (_m *MockLanguage) ID() string {
 	ret := _m.Called()
