@@ -1,8 +1,10 @@
 package rust
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,10 +13,12 @@ import (
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
+	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/log"
+	"github.com/symflower/eval-dev-quality/tools"
 	"github.com/symflower/eval-dev-quality/util"
 )
 
@@ -76,12 +80,60 @@ func (l *Language) DefaultTestFileSuffix() string {
 	return "_test.rs"
 }
 
+// testDirectiveLinePerFile computes the line of the "#[cfg(test)]" compiler directive within each file.
+// Lines are counted index-1 based.
+func (l *Language) testDirectiveLinePerFile(logger *log.Logger, repositoryPath string) (linePerFile map[string]int, err error) {
+	files, err := l.Files(logger, repositoryPath)
+	if err != nil {
+		return nil, err
+	}
+
+	linePerFile = map[string]int{}
+	for _, filePath := range files {
+		file, err := os.Open(filepath.Join(repositoryPath, filePath))
+		if err != nil {
+			return nil, pkgerrors.WithStack(err)
+		}
+		defer func() {
+			err = errors.Join(file.Close(), err)
+		}()
+
+		line := 0
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			if err := scanner.Err(); err != nil {
+				return nil, pkgerrors.WithStack(err)
+			}
+			line++
+			if strings.Contains(scanner.Text(), "#[cfg(test)]") {
+				linePerFile[filePath] = line
+
+				break
+			}
+		}
+	}
+
+	return linePerFile, nil
+}
+
 // ExecuteTests invokes the language specific testing on the given repository.
 func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (testResult *language.TestResult, problems []error, err error) {
-	commandOutput, err := util.CommandWithResult(context.Background(), logger, &util.Command{
-		Command: []string{ // TODO Move this to `symflower test` to get coverage information.
-			"cargo",
-			"llvm-cov",
+	// HACK Tests in Rust are within the implementation file, but excluding coverage more granular than file-level is currently unstable (https://github.com/rust-lang/rust/issues/84605). Therefore, we assume that test are always at the end of the file and ignore reported coverage after the "#[cfg(test)]" compiler directive.
+	testStartLinePerFile, err := l.testDirectiveLinePerFile(logger, repositoryPath)
+	if err != nil {
+		return nil, nil, err
+	}
+	logger.Info("rust test locations", "locations", testStartLinePerFile)
+
+	ctx, cancel := context.WithTimeout(context.Background(), language.DefaultExecutionTimeout)
+	defer cancel()
+	coverageFilePath := filepath.Join(repositoryPath, "coverage.json")
+	commandOutput, err := util.CommandWithResult(ctx, logger, &util.Command{
+		Command: []string{
+			tools.SymflowerPath, "test",
+			"--language", "rust",
+			"--workspace", repositoryPath,
+			"--coverage-file", coverageFilePath,
 		},
 
 		Directory: repositoryPath,
@@ -110,7 +162,22 @@ func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (test
 		StdOut: commandOutput,
 	}
 
-	// TODO Get coverage information.
+	coverageData, err := language.ParseCoverage(logger, coverageFilePath)
+	if err != nil {
+		return testResult, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
+	}
+	for _, block := range coverageData {
+		// HACK The coverage should only contain relative paths but contains a weird build folder on macOS.
+		if index := strings.Index(block.FilePath, "src"); index != -1 && osutil.IsDarwin() && filepath.IsAbs(block.FilePath) {
+			block.FilePath = block.FilePath[index:]
+		}
+	}
+
+	for _, block := range coverageData {
+		if lineStart, ok := testStartLinePerFile[block.FilePath]; ok && block.LineEnd < lineStart && block.Count > 0 {
+			testResult.Coverage++
+		}
+	}
 
 	return testResult, problems, nil
 }

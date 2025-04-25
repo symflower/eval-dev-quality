@@ -1,12 +1,147 @@
 package rust
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/symflower/eval-dev-quality/log"
 	"github.com/zimmski/osutil/bytesutil"
 )
+
+func TestTestDirectiveLinePerFile(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Files map[string]string
+
+		Expected map[string]int
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			buffer, logger := log.Buffer()
+			defer func() {
+				if t.Failed() {
+					t.Logf("Logs:%s", buffer.String())
+				}
+			}()
+
+			directory := t.TempDir()
+			for path, content := range tc.Files {
+				require.NoError(t, os.WriteFile(
+					filepath.Join(directory, path),
+					[]byte(bytesutil.StringTrimIndentations(content)),
+					0700,
+				))
+			}
+
+			actual, err := (&Language{}).testDirectiveLinePerFile(logger, directory)
+			require.NoError(t, err)
+			assert.Equal(t, tc.Expected, actual)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "No tests",
+
+		Files: map[string]string{
+			"main.rs": `
+				fn main() {}
+			`,
+		},
+
+		Expected: map[string]int{},
+	})
+	validate(t, &testCase{
+		Name: "Single test",
+
+		Files: map[string]string{
+			"plain.rs": `
+				pub fn plain() {
+				    // This does not do anything but it gives us a line to cover.
+				}
+
+				#[cfg(test)]
+				mod tests {
+				    use super::*;
+
+				    #[test]
+				    fn test_plain() {
+				        // Simply call the function to ensure it runs without panicking
+				        plain();
+				        // Since plain() doesn't return anything or have observable side effects,
+				        // we can only verify that it executes without errors
+				    }
+				}
+			`,
+		},
+
+		Expected: map[string]int{
+			"plain.rs": 5,
+		},
+	})
+	validate(t, &testCase{
+		Name: "Multiple tests",
+
+		Files: map[string]string{
+			"plain.rs": `
+				pub fn plain() {
+				    // This does not do anything but it gives us a line to cover.
+				}
+
+				#[cfg(test)]
+				mod tests {
+				    use super::*;
+
+				    #[test]
+				    fn test_plain() {
+				        // Simply call the function to ensure it runs without panicking
+				        plain();
+				        // Since plain() doesn't return anything or have observable side effects,
+				        // we can only verify that it executes without errors
+				    }
+				}
+			`,
+			"plain_two.rs": `
+				pub fn plain() {
+				    // This does not do anything but it gives us a line to cover.
+				}
+
+				#[cfg(test)]
+				mod tests {
+				    use super::*;
+
+				    #[test]
+				    fn test_plain() {
+				        // Simply call the function to ensure it runs without panicking
+				        plain();
+				        // Since plain() doesn't return anything or have observable side effects,
+				        // we can only verify that it executes without errors
+				    }
+				}
+			`,
+		},
+
+		Expected: map[string]int{
+			"plain.rs":     5,
+			"plain_two.rs": 5,
+		},
+	})
+	validate(t, &testCase{
+		Name: "Non-rust file",
+
+		Files: map[string]string{
+			"README.md": `
+				Code example: #[cfg(test)]
+			`,
+		},
+
+		Expected: map[string]int{},
+	})
+}
 
 func TestParseSymflowerTestOutput(t *testing.T) {
 	type testCase struct {

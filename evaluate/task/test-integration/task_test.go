@@ -137,7 +137,7 @@ func TestWriteTestsRun(t *testing.T) {
 					evaluatetask.IdentifierWriteTests: metrics.Assessments{
 						metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 84,
 						metrics.AssessmentKeyResponseCharacterCount:             98,
-						metrics.AssessmentKeyCoverage:                           0, // TODO Get coverage.
+						metrics.AssessmentKeyCoverage:                           3,
 						metrics.AssessmentKeyFilesExecuted:                      1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 						metrics.AssessmentKeyResponseNoError:                    1,
@@ -147,7 +147,7 @@ func TestWriteTestsRun(t *testing.T) {
 					evaluatetask.IdentifierWriteTestsSymflowerFix: metrics.Assessments{
 						metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 84,
 						metrics.AssessmentKeyResponseCharacterCount:             98,
-						metrics.AssessmentKeyCoverage:                           0, // TODO Get coverage.
+						metrics.AssessmentKeyCoverage:                           3,
 						metrics.AssessmentKeyFilesExecuted:                      1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 						metrics.AssessmentKeyResponseNoError:                    1,
@@ -157,7 +157,7 @@ func TestWriteTestsRun(t *testing.T) {
 					evaluatetask.IdentifierWriteTestsSymflowerTemplate: metrics.Assessments{
 						metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 84,
 						metrics.AssessmentKeyResponseCharacterCount:             98,
-						metrics.AssessmentKeyCoverage:                           0, // TODO Get coverage.
+						metrics.AssessmentKeyCoverage:                           3,
 						metrics.AssessmentKeyFilesExecuted:                      1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 						metrics.AssessmentKeyResponseNoError:                    1,
@@ -167,7 +167,7 @@ func TestWriteTestsRun(t *testing.T) {
 					evaluatetask.IdentifierWriteTestsSymflowerTemplateSymflowerFix: metrics.Assessments{
 						metrics.AssessmentKeyGenerateTestsForFileCharacterCount: 84,
 						metrics.AssessmentKeyResponseCharacterCount:             98,
-						metrics.AssessmentKeyCoverage:                           0, // TODO Get coverage.
+						metrics.AssessmentKeyCoverage:                           3,
 						metrics.AssessmentKeyFilesExecuted:                      1,
 						metrics.AssessmentKeyFilesExecutedMaximumReachable:      1,
 						metrics.AssessmentKeyResponseNoError:                    1,
