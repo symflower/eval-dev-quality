@@ -39,6 +39,17 @@ jobs:
         with:
           ruby-version: "3.3.4"
 
+          
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.86.0"
+          components: llvm-tools-preview
+
+      - name: Install Rust crates
+        run: cargo install cargo-llvm-cov
+        shell: bash
+
       - name: Set up Git
         run: |
           git config --global user.name "GitHub Actions Bot"
