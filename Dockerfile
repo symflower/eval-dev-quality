@@ -60,15 +60,15 @@ RUN mkdir -p /app/evaluation
 
 # Install Ruby.
 RUN mkdir -p /tmp/compile
-RUN wget https://cache.ruby-lang.org/pub/ruby/3.3/ruby-3.3.4.tar.gz && \
-	tar -xf ruby-3.3.4.tar.gz -C /tmp/compile/ && \
-	rm ruby-3.3.4.tar.gz
-WORKDIR /tmp/compile/ruby-3.3.4
-RUN ./configure --prefix /app/.eval-dev-quality/ruby-3.3.4 --disable-install-doc
+RUN wget https://cache.ruby-lang.org/pub/ruby/3.4/ruby-3.4.3.tar.gz && \
+	tar -xf ruby-3.4.3.tar.gz -C /tmp/compile/ && \
+	rm ruby-3.4.3.tar.gz
+WORKDIR /tmp/compile/ruby-3.4.3
+RUN ./configure --prefix /app/.eval-dev-quality/ruby-3.4.3 --disable-install-doc
 RUN	make install
 WORKDIR /app
 RUN rm -rf /tmp/compile
-ENV PATH="${PATH}:/app/.eval-dev-quality/ruby-3.3.4/bin"
+ENV PATH="${PATH}:/app/.eval-dev-quality/ruby-3.4.3/bin"
 
 # Install Maven.
 RUN wget https://archive.apache.org/dist/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz && \
