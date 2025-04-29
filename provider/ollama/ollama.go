@@ -81,7 +81,7 @@ func (p *Provider) Models() (models []model.Model, err error) {
 var _ provider.Query = (*Provider)(nil)
 
 // Query queries the provider with the given model name.
-func (p *Provider) Query(ctx context.Context, model model.Model, promptText string) (result *provider.QueryResult, err error) {
+func (p *Provider) Query(ctx context.Context, logger *log.Logger, model model.Model, promptText string) (result *provider.QueryResult, err error) {
 	return openaiapi.QueryOpenAIAPIModel(ctx, p.client(), model.ModelIDWithoutProvider(), model.Attributes(), promptText)
 }
 

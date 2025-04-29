@@ -345,7 +345,7 @@ func (m *Model) query(logger *log.Logger, request string) (queryResult *provider
 			}
 
 			start := time.Now()
-			queryResult, err = m.provider.Query(ctx, m, request)
+			queryResult, err = m.provider.Query(ctx, logger, m, request)
 			if err != nil {
 				return err
 			} else if ctx.Err() != nil {

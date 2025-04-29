@@ -120,7 +120,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 				` + "```" + `
 			`),
 			}
-			mockedProvider.On("Query", mock.Anything, mock.Anything, promptMessage).Return(queryResult, nil)
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, promptMessage).Return(queryResult, nil)
 		},
 
 		Language:          &golang.Language{},
@@ -151,7 +151,7 @@ func TestModelGenerateTestsForFile(t *testing.T) {
 					TotalCost: 0.123456789,
 				},
 			}
-			mockedProvider.On("Query", mock.Anything, mock.Anything, promptMessage).Return(queryResult, nil)
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, promptMessage).Return(queryResult, nil)
 		},
 
 		Language:          &golang.Language{},
@@ -242,7 +242,7 @@ func TestModelQuery(t *testing.T) {
 			queryResult := &provider.QueryResult{
 				Message: "test response",
 			}
-			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(queryResult, nil)
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, "test request").Return(queryResult, nil)
 		},
 		QueryAttempts: 1,
 		Request:       "test request",
@@ -256,7 +256,7 @@ func TestModelQuery(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Failed query no retry",
 		SetupMock: func(mockedProvider *providertesting.MockQuery) {
-			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(nil, assert.AnError)
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, "test request").Return(nil, assert.AnError)
 		},
 		QueryAttempts: 1,
 		Request:       "test request",
@@ -266,8 +266,8 @@ func TestModelQuery(t *testing.T) {
 	validate(t, &testCase{
 		Name: "Failed query with retry",
 		SetupMock: func(mockedProvider *providertesting.MockQuery) {
-			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(nil, assert.AnError).Once()
-			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(&provider.QueryResult{
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, "test request").Return(nil, assert.AnError).Once()
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, "test request").Return(&provider.QueryResult{
 				Message: "test response",
 			}, nil).Once()
 		},
@@ -286,7 +286,7 @@ func TestModelQuery(t *testing.T) {
 			queryResult := &provider.QueryResult{
 				Message: "test response",
 			}
-			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(queryResult, nil).After(time.Second * 2)
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, "test request").Return(queryResult, nil).After(time.Second * 2)
 		},
 		QueryAttempts: 1,
 		QueryTimeout:  1,
@@ -300,8 +300,8 @@ func TestModelQuery(t *testing.T) {
 			queryResult := &provider.QueryResult{
 				Message: "test response",
 			}
-			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(queryResult, nil).After(time.Second * 2)
-			mockedProvider.On("Query", mock.Anything, mock.Anything, "test request").Return(queryResult, nil).After(time.Second * 2)
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, "test request").Return(queryResult, nil).After(time.Second * 2)
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, "test request").Return(queryResult, nil).After(time.Second * 2)
 		},
 		QueryAttempts: 2,
 		QueryTimeout:  1,
@@ -392,7 +392,7 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 						` + "```" + `
 					`),
 				}
-				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
 			},
 
 			Language:       &golang.Language{},
@@ -446,7 +446,7 @@ func TestModelRepairSourceCodeFile(t *testing.T) {
 						` + "```" + `
 					`),
 				}
-				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
 			},
 
 			Language:       &java.Language{},
@@ -876,7 +876,7 @@ func TestModelTranspile(t *testing.T) {
 				queryResult := &provider.QueryResult{
 					Message: "```\n" + transpiledFileContent + "```\n",
 				}
-				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
 			},
 
 			Language:       &golang.Language{},
@@ -929,7 +929,7 @@ func TestModelTranspile(t *testing.T) {
 				queryResult := &provider.QueryResult{
 					Message: "```\n" + transpiledFileContent + "```\n",
 				}
-				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
+				mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
 			},
 
 			Language:       &java.Language{},
@@ -1032,7 +1032,7 @@ func TestModelMigrate(t *testing.T) {
 			queryResult := &provider.QueryResult{
 				Message: "```\n" + migratedTestFile + "```\n",
 			}
-			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
+			mockedProvider.On("Query", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(queryResult, nil)
 		},
 
 		Language: &java.Language{},
