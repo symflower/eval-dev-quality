@@ -157,7 +157,7 @@ func TestMistakes(t *testing.T) {
 
 		ExpectedMistakesContains: func(t *testing.T, mistakes []string) {
 			assert.Contains(t, mistakes[0], "ArgumentError: wrong number of arguments (given 1, expected 0)")
-			assert.Contains(t, mistakes[0], "argument_missing.rb:1:in `argument_missing'")
+			assert.Contains(t, mistakes[0], "argument_missing.rb:1:in 'argument_missing'")
 		},
 	})
 }
@@ -225,11 +225,11 @@ func TestExtractMistakes(t *testing.T) {
 			        return 0
 			                ^
 			        from /home/user/eval-dev-quality/testdata/ruby/mistakes/endKeywordMissing/test/end_keyword_missing_test.rb:2:in ` + "`" + `<top (required)>'
-			        from <internal:/home/user/symflower/.devenv/ruby@3.3.4/ruby/lib64/ruby/3.3.0/rubygems/core_ext/kernel_require.rb>:136:in ` + "`" + `require'
-			        from <internal:/home/user/symflower/.devenv/ruby@3.3.4/ruby/lib64/ruby/3.3.0/rubygems/core_ext/kernel_require.rb>:136:in ` + "`" + `require'
-			        from /home/user/symflower/.devenv/ruby@3.3.4/ruby/lib64/ruby/gems/3.3.0/gems/rake-13.1.0/lib/rake/rake_test_loader.rb:21:in ` + "`" + `block in <main>'
-			        from /home/user/symflower/.devenv/ruby@3.3.4/ruby/lib64/ruby/gems/3.3.0/gems/rake-13.1.0/lib/rake/rake_test_loader.rb:6:in ` + "`" + `select'
-			        from /home/user/symflower/.devenv/ruby@3.3.4/ruby/lib64/ruby/gems/3.3.0/gems/rake-13.1.0/lib/rake/rake_test_loader.rb:6:in ` + "`" + `<main>'
+			        from <internal:/home/user/symflower/.devenv/ruby@3.4.3/ruby/lib64/ruby/3.3.0/rubygems/core_ext/kernel_require.rb>:136:in ` + "`" + `require'
+			        from <internal:/home/user/symflower/.devenv/ruby@3.4.3/ruby/lib64/ruby/3.3.0/rubygems/core_ext/kernel_require.rb>:136:in ` + "`" + `require'
+			        from /home/user/symflower/.devenv/ruby@3.4.3/ruby/lib64/ruby/gems/3.3.0/gems/rake-13.1.0/lib/rake/rake_test_loader.rb:21:in ` + "`" + `block in <main>'
+			        from /home/user/symflower/.devenv/ruby@3.4.3/ruby/lib64/ruby/gems/3.3.0/gems/rake-13.1.0/lib/rake/rake_test_loader.rb:6:in ` + "`" + `select'
+			        from /home/user/symflower/.devenv/ruby@3.4.3/ruby/lib64/ruby/gems/3.3.0/gems/rake-13.1.0/lib/rake/rake_test_loader.rb:6:in ` + "`" + `<main>'
 			rake aborted!
 			Command failed with status (1)
 			Tasks: TOP => test
