@@ -1,14 +1,18 @@
 package log
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/zimmski/osutil"
+	"github.com/zimmski/osutil/bytesutil"
 )
 
 func TestLogger(t *testing.T) {
@@ -170,6 +174,77 @@ func TestLogger(t *testing.T) {
 
 			ExpectedLogOutputContains: []string{"log-message"},
 		})
+	})
+}
+
+var timeStampRE = regexp.MustCompile(`\d+-\d+-\d+T\d+:\d+:[\d\.]+(Z|[\+\-]\d+:\d+)`)
+
+func TestFileLogger(t *testing.T) {
+	type testCase struct {
+		Name string
+
+		Log func(t *testing.T, logger *Logger)
+
+		ExpectedContent string
+	}
+
+	validate := func(t *testing.T, tc *testCase) {
+		t.Run(tc.Name, func(t *testing.T) {
+			temporaryDirectory := t.TempDir()
+			logFilePath := filepath.Join(temporaryDirectory, "log.log")
+			logger, loggerClose, err := File(logFilePath)
+			require.NoError(t, err)
+
+			tc.Log(t, logger)
+			require.NotPanics(t, func() {
+				loggerClose()
+			})
+
+			logFileContent, err := os.ReadFile(logFilePath)
+			require.NoError(t, err)
+			logFileContentString := string(logFileContent)
+
+			for _, match := range timeStampRE.FindAllString(logFileContentString, -1) {
+				logFileContentString = strings.Replace(logFileContentString, match, "$TIMESTAMP", 1)
+			}
+			assert.Equal(t, bytesutil.StringTrimIndentations(tc.ExpectedContent), logFileContentString)
+		})
+	}
+
+	validate(t, &testCase{
+		Name: "Simple",
+
+		Log: func(t *testing.T, logger *Logger) {
+			logger.Info("test")
+		},
+
+		ExpectedContent: `
+			{"time":"$TIMESTAMP","level":"INFO","msg":"test"}
+		`,
+	})
+
+	validate(t, &testCase{
+		Name: "Error",
+
+		Log: func(t *testing.T, logger *Logger) {
+			logger.Info("test", "error", errors.New("error message"))
+		},
+
+		ExpectedContent: `
+			{"time":"$TIMESTAMP","level":"INFO","msg":"test","error":"error message"}
+		`,
+	})
+
+	validate(t, &testCase{
+		Name: "Error Slice",
+
+		Log: func(t *testing.T, logger *Logger) {
+			logger.Info("test", "errors", []error{errors.New("error message"), errors.New("error message")})
+		},
+
+		ExpectedContent: `
+			{"time":"$TIMESTAMP","level":"INFO","msg":"test","errors":["error message","error message"]}
+		`,
 	})
 }
 

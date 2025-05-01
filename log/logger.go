@@ -141,6 +141,24 @@ func Buffer() (buffer *bytesutil.SynchronizedBuffer, logger *Logger) {
 	return buffer, logger
 }
 
+// handlerOptionsFormatErrorSlice ensures that error slices are properly formatted in log output.
+var handlerOptionsFormattErrorSlice = &slog.HandlerOptions{
+	ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+		if a.Value.Kind() == slog.KindAny {
+			if errors, ok := a.Value.Any().([]error); ok {
+				strs := make([]string, len(errors))
+				for i, err := range errors {
+					strs[i] = err.Error()
+				}
+
+				return slog.Attr{Key: a.Key, Value: slog.AnyValue(strs)}
+			}
+		}
+
+		return a
+	},
+}
+
 // File returns a logger that writes to a file.
 func File(path string) (logger *Logger, loggerClose func(), err error) {
 	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
@@ -157,7 +175,7 @@ func File(path string) (logger *Logger, loggerClose func(), err error) {
 		}
 	}
 
-	logger = newLoggerWithHandler(slog.NewJSONHandler(file, nil))
+	logger = newLoggerWithHandler(slog.NewJSONHandler(file, handlerOptionsFormattErrorSlice))
 
 	return logger, loggerClose, nil
 }
@@ -342,7 +360,7 @@ func createFileHandlerForParent(parent slog.Handler, fileName string) slog.Handl
 		return nil
 	}
 
-	var handler slog.Handler = slog.NewJSONHandler(file, nil)
+	var handler slog.Handler = slog.NewJSONHandler(file, handlerOptionsFormattErrorSlice)
 	if plainTextHandlers := getHandlerFromChain(parent, isPlainTextHandler); plainTextHandlers != nil {
 		handler = newMultiHandler(append(plainTextHandlers, handler)...)
 	}
