@@ -15,6 +15,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/language/ruby"
+	"github.com/symflower/eval-dev-quality/language/rust"
 	"github.com/symflower/eval-dev-quality/log"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
 	evaltask "github.com/symflower/eval-dev-quality/task"
@@ -421,6 +422,47 @@ func TestCodeRepairRun(t *testing.T) {
 			})
 		}
 	})
+	{
+		temporaryDirectoryPath := t.TempDir()
+
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "rust", "mistakes", "plain")
+		require.NoError(t, osutil.CopyTree(filepath.Join("testdata", "rust", "mistakes", "plain"), repositoryPath))
+
+		modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
+		validate(t, &tasktesting.TestCaseTask{
+			Name: "Rust",
+
+			Setup: func(t *testing.T) {
+				// Generate valid code for the task.
+				sourceFileContent := bytesutil.StringTrimIndentations(`
+					pub fn plain() {
+						// This does not do anything but it gives us a line to cover.
+					}
+				`)
+				modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "lib.rs"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+			},
+
+			Model:          modelMock,
+			Language:       &rust.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("rust", "mistakes"),
+
+			ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+				"plain": {
+					IdentifierCodeRepair: metrics.Assessments{
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+						metrics.AssessmentKeyTestsPassing:                  1,
+					},
+				},
+			},
+			ValidateLog: func(t *testing.T, data string) {
+				assert.Contains(t, data, "there is a keyword `pub` with a similar name") // Extracting the mistakes.
+				assert.Contains(t, data, "ok. 1 passed")                                 // Fixed by model.
+			},
+		})
+	}
 }
 
 func TestValidateCodeRepairRepository(t *testing.T) {
