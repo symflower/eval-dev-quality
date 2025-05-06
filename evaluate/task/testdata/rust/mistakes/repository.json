@@ -1,0 +1,11 @@
+{
+  "tasks": ["code-repair"],
+  "scores": {
+    "code-repair": {
+      "plain": {
+        "tests-passing": 1,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
+}
