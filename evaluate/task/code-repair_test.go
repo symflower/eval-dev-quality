@@ -45,26 +45,27 @@ func TestCodeRepairRun(t *testing.T) {
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "mistakes", "openingBracketMissing"), repositoryPath))
 
 			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
-
-			// Generate valid code for the task.
-			sourceFileContent := bytesutil.StringTrimIndentations(`
-				package openingBracketMissing
-
-				func openingBracketMissing(x int) int {
-					if x > 0 {
-						return 1
-					}
-					if x < 0 {
-						return -1
-					}
-
-					return 0
-				}
-			`)
-			modelMock.RegisterGenerateSuccess(t, "openingBracketMissing.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
-
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Single test case",
+
+				Setup: func(t *testing.T) {
+					// Generate valid code for the task.
+					sourceFileContent := bytesutil.StringTrimIndentations(`
+						package openingBracketMissing
+
+						func openingBracketMissing(x int) int {
+							if x > 0 {
+								return 1
+							}
+							if x < 0 {
+								return -1
+							}
+
+							return 0
+						}
+					`)
+					modelMock.RegisterGenerateSuccess(t, "openingBracketMissing.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+				},
 
 				Model:          modelMock,
 				Language:       &golang.Language{},
@@ -96,41 +97,42 @@ func TestCodeRepairRun(t *testing.T) {
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "mistakes", "typeUnknown"), filepath.Join(repositoryPath, "typeUnknown")))
 
 			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
-
-			// Generate valid code for the task.
-			sourceFileContent := bytesutil.StringTrimIndentations(`
-				package openingBracketMissing
-
-				func openingBracketMissing(x int) int {
-					if x > 0 {
-						return 1
-					}
-					if x < 0 {
-						return -1
-					}
-
-					return 0
-				}
-			`)
-			modelMock.RegisterGenerateSuccess(t, "openingBracketMissing.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
-			sourceFileContent = bytesutil.StringTrimIndentations(`
-				package typeUnknown
-
-				func typeUnknown(x int) int {
-					if x > 0 {
-						return 1
-					}
-					if x < 0 {
-						return -1
-					}
-
-					return 0
-				}
-			`)
-			modelMock.RegisterGenerateSuccess(t, "typeUnknown.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
-
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Multiple test cases",
+
+				Setup: func(t *testing.T) {
+					// Generate valid code for the task.
+					sourceFileContent := bytesutil.StringTrimIndentations(`
+						package openingBracketMissing
+
+						func openingBracketMissing(x int) int {
+							if x > 0 {
+								return 1
+							}
+							if x < 0 {
+								return -1
+							}
+
+							return 0
+						}
+					`)
+					modelMock.RegisterGenerateSuccess(t, "openingBracketMissing.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+					sourceFileContent = bytesutil.StringTrimIndentations(`
+						package typeUnknown
+
+						func typeUnknown(x int) int {
+							if x > 0 {
+								return 1
+							}
+							if x < 0 {
+								return -1
+							}
+
+							return 0
+						}
+					`)
+					modelMock.RegisterGenerateSuccess(t, "typeUnknown.go", sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+				},
 
 				Model:          modelMock,
 				Language:       &golang.Language{},
@@ -174,28 +176,29 @@ func TestCodeRepairRun(t *testing.T) {
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "mistakes", "openingBracketMissing"), repositoryPath))
 
 			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
-
-			// Generate valid code for the task.
-			sourceFileContent := bytesutil.StringTrimIndentations(`
-				package com.eval;
-
-				public class OpeningBracketMissing {
-					public static int openingBracketMissing(int x) {
-						if (x > 0) {
-							return 1;
-						}
-						if (x < 0) {
-							return -1;
-						}
-
-						return 0;
-					}
-				}
-			`)
-			modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
-
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Single test case",
+
+				Setup: func(t *testing.T) {
+					// Generate valid code for the task.
+					sourceFileContent := bytesutil.StringTrimIndentations(`
+						package com.eval;
+
+						public class OpeningBracketMissing {
+							public static int openingBracketMissing(int x) {
+								if (x > 0) {
+									return 1;
+								}
+								if (x < 0) {
+									return -1;
+								}
+
+								return 0;
+							}
+						}
+					`)
+					modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+				},
 
 				Model:          modelMock,
 				Language:       &java.Language{},
@@ -225,45 +228,46 @@ func TestCodeRepairRun(t *testing.T) {
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "java", "mistakes", "typeUnknown"), filepath.Join(repositoryPath, "typeUnknown")))
 
 			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
-
-			// Generate valid code for the task.
-			sourceFileContent := bytesutil.StringTrimIndentations(`
-				package com.eval;
-
-				public class OpeningBracketMissing {
-					public static int openingBracketMissing(int x) {
-						if (x > 0) {
-							return 1;
-						}
-						if (x < 0) {
-							return -1;
-						}
-
-						return 0;
-					}
-				}
-			`)
-			modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
-			sourceFileContent = bytesutil.StringTrimIndentations(`
-				package com.eval;
-
-				public class TypeUnknown {
-					public static int typeUnknown(int x) {
-						if (x > 0) {
-							return 1;
-						}
-						if (x < 0) {
-							return -1;
-						}
-
-						return 0;
-					}
-				}
-			`)
-			modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "main", "java", "com", "eval", "TypeUnknown.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
-
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Multiple test cases",
+
+				Setup: func(t *testing.T) {
+					// Generate valid code for the task.
+					sourceFileContent := bytesutil.StringTrimIndentations(`
+						package com.eval;
+
+						public class OpeningBracketMissing {
+							public static int openingBracketMissing(int x) {
+								if (x > 0) {
+									return 1;
+								}
+								if (x < 0) {
+									return -1;
+								}
+
+								return 0;
+							}
+						}
+					`)
+					modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "main", "java", "com", "eval", "OpeningBracketMissing.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+					sourceFileContent = bytesutil.StringTrimIndentations(`
+						package com.eval;
+
+						public class TypeUnknown {
+							public static int typeUnknown(int x) {
+								if (x > 0) {
+									return 1;
+								}
+								if (x < 0) {
+									return -1;
+								}
+
+								return 0;
+							}
+						}
+					`)
+					modelMock.RegisterGenerateSuccess(t, filepath.Join("src", "main", "java", "com", "eval", "TypeUnknown.java"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+				},
 
 				Model:          modelMock,
 				Language:       &java.Language{},
@@ -306,23 +310,24 @@ func TestCodeRepairRun(t *testing.T) {
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "ruby", "mistakes", "argumentMissing"), repositoryPath))
 
 			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
-
-			// Generate valid code for the task.
-			sourceFileContent := bytesutil.StringTrimIndentations(`
-				def argument_missing(x)
-					if x > 0
-						return 1
-					elsif x < 0
-						return -1
-					else
-						return 0
-					end
-				end
-			`)
-			modelMock.RegisterGenerateSuccess(t, filepath.Join("lib", "argument_missing.rb"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
-
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Single test case",
+
+				Setup: func(t *testing.T) {
+					// Generate valid code for the task.
+					sourceFileContent := bytesutil.StringTrimIndentations(`
+						def argument_missing(x)
+							if x > 0
+								return 1
+							elsif x < 0
+								return -1
+							else
+								return 0
+							end
+						end
+					`)
+					modelMock.RegisterGenerateSuccess(t, filepath.Join("lib", "argument_missing.rb"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+				},
 
 				Model:          modelMock,
 				Language:       &ruby.Language{},
@@ -353,37 +358,38 @@ func TestCodeRepairRun(t *testing.T) {
 			require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "ruby", "mistakes", "typeUnknown"), filepath.Join(repositoryPath, "typeUnknown")))
 
 			modelMock := modeltesting.NewMockCapabilityRepairCodeNamed(t, "mocked-model")
-
-			// Generate valid code for the task.
-			sourceFileContent := bytesutil.StringTrimIndentations(`
-				def argument_missing(x)
-					if x > 0
-						return 1
-					elsif x < 0
-						return -1
-					else
-						return 0
-					end
-				end
-			`)
-			modelMock.RegisterGenerateSuccess(t, filepath.Join("lib", "argument_missing.rb"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
-			sourceFileContent = bytesutil.StringTrimIndentations(`
-				def type_unknown(x)
-					if x.is_a?(Integer)
-						if x > 0
-							return 1
-						elsif x < 0
-							return -1
-						end
-					end
-
-					return 0
-				end
-			`)
-			modelMock.RegisterGenerateSuccess(t, filepath.Join("lib", "type_unknown.rb"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
-
 			validate(t, &tasktesting.TestCaseTask{
 				Name: "Multiple test cases",
+
+				Setup: func(t *testing.T) {
+					// Generate valid code for the task.
+					sourceFileContent := bytesutil.StringTrimIndentations(`
+						def argument_missing(x)
+							if x > 0
+								return 1
+							elsif x < 0
+								return -1
+							else
+								return 0
+							end
+						end
+					`)
+					modelMock.RegisterGenerateSuccess(t, filepath.Join("lib", "argument_missing.rb"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+					sourceFileContent = bytesutil.StringTrimIndentations(`
+						def type_unknown(x)
+							if x.is_a?(Integer)
+								if x > 0
+									return 1
+								elsif x < 0
+									return -1
+								end
+							end
+
+							return 0
+						end
+					`)
+					modelMock.RegisterGenerateSuccess(t, filepath.Join("lib", "type_unknown.rb"), sourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+				},
 
 				Model:          modelMock,
 				Language:       &ruby.Language{},
