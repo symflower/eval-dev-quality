@@ -130,11 +130,14 @@ func TestWriteTestsRun(t *testing.T) {
 		require.NoError(t, osutil.CopyTree(filepath.Join("..", "..", "testdata", "golang", "plain"), repositoryPath))
 
 		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
-		// Simulate that a model does not generate anything.
-		modelMock.MockCapabilityWriteTests.On("WriteTests", mock.Anything).Return(metricstesting.AssessmentsWithProcessingTime, nil)
 
 		validate(t, &tasktesting.TestCaseTask{
 			Name: "Reset symflower template so it's not mistaken for model solution",
+
+			Setup: func(t *testing.T) {
+				// Simulate that a model does not generate anything.
+				modelMock.MockCapabilityWriteTests.On("WriteTests", mock.Anything).Return(metricstesting.AssessmentsWithProcessingTime, nil)
+			},
 
 			Model:          modelMock,
 			Language:       &golang.Language{},
@@ -389,18 +392,21 @@ func TestWriteTestsRun(t *testing.T) {
 			// There will be no template for an empty file.
 		`)), 0666))
 		modelMock := modeltesting.NewMockCapabilityWriteTestsNamed(t, "mocked-model")
-		modelMock.RegisterGenerateSuccess(t, "empty_test.go", "package plain\n", metricstesting.AssessmentsWithProcessingTime).Once()
-		modelMock.RegisterGenerateSuccess(t, "plain_test.go", bytesutil.StringTrimIndentations(`
-			package plain
-
-			import "testing"
-
-			func TestPlain(t *testing.T) {
-					plain()
-			}
-		`), metricstesting.AssessmentsWithProcessingTime)
 		validate(t, &tasktesting.TestCaseTask{
 			Name: "Keep non-template score if template fails",
+
+			Setup: func(t *testing.T) {
+				modelMock.RegisterGenerateSuccess(t, "empty_test.go", "package plain\n", metricstesting.AssessmentsWithProcessingTime).Once()
+				modelMock.RegisterGenerateSuccess(t, "plain_test.go", bytesutil.StringTrimIndentations(`
+					package plain
+
+					import "testing"
+
+					func TestPlain(t *testing.T) {
+							plain()
+					}
+				`), metricstesting.AssessmentsWithProcessingTime)
+			},
 
 			Model:          modelMock,
 			Language:       &golang.Language{},
