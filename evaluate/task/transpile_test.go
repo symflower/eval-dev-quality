@@ -72,7 +72,7 @@ func TestTranspileRun(t *testing.T) {
 					 		}
 					 	}
 					`)
-					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(3)
 				},
 
 				Model:          modelMock,
@@ -83,16 +83,16 @@ func TestTranspileRun(t *testing.T) {
 				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
 					"cascadingIfElse": {
 						IdentifierTranspile: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  8,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  12,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 						IdentifierTranspileSymflowerFix: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  8,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  12,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 					},
 				},
@@ -129,7 +129,7 @@ func TestTranspileRun(t *testing.T) {
 							}
 						}
 					`)
-					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(3)
 
 					transpiledSourceFilePath = "isSorted.go"
 					transpiledSourceFileContent = bytesutil.StringTrimIndentations(`
@@ -144,7 +144,7 @@ func TestTranspileRun(t *testing.T) {
 							return i == len(a)-1
 						}
 					`)
-					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(3)
 				},
 
 				Model:          modelMock,
@@ -155,30 +155,30 @@ func TestTranspileRun(t *testing.T) {
 				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
 					"cascadingIfElse": {
 						IdentifierTranspile: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  8,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  12,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 						IdentifierTranspileSymflowerFix: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  8,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  12,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 					},
 					"isSorted": {
 						IdentifierTranspile: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  12,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  18,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 						IdentifierTranspileSymflowerFix: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  12,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  18,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 					},
 				},
@@ -224,7 +224,7 @@ func TestTranspileRun(t *testing.T) {
 							}
 						}
 					`)
-					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(3)
 				},
 
 				Model:          modelMock,
@@ -235,16 +235,16 @@ func TestTranspileRun(t *testing.T) {
 				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
 					"cascadingIfElse": {
 						IdentifierTranspile: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  6,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  9,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 						IdentifierTranspileSymflowerFix: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  6,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  9,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 					},
 				},
@@ -281,7 +281,7 @@ func TestTranspileRun(t *testing.T) {
 							}
 						}
 					`)
-					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(3)
 
 					transpiledSourceFilePath = filepath.Join("src", "main", "java", "com", "eval", "IsSorted.java")
 					transpiledSourceFileContent = bytesutil.StringTrimIndentations(`
@@ -298,7 +298,7 @@ func TestTranspileRun(t *testing.T) {
 							}
 						}
 					`)
-					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(3)
 				},
 
 				Model:          modelMock,
@@ -309,30 +309,30 @@ func TestTranspileRun(t *testing.T) {
 				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
 					"cascadingIfElse": {
 						IdentifierTranspile: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  6,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  9,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 						IdentifierTranspileSymflowerFix: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  6,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  9,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 					},
 					"isSorted": {
 						IdentifierTranspile: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  10,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  15,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 						IdentifierTranspileSymflowerFix: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  10,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  15,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 					},
 				},
@@ -370,7 +370,7 @@ func TestTranspileRun(t *testing.T) {
 					 		}
 					 	}
 					`)
-					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(3)
 				},
 
 				Model:          modelMock,
@@ -382,18 +382,19 @@ func TestTranspileRun(t *testing.T) {
 					"cascadingIfElse": {
 						IdentifierTranspile: metrics.Assessments{
 							metrics.AssessmentKeyTestsPassing:                  0,
-							metrics.AssessmentKeyResponseNoError:               2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
+							metrics.AssessmentKeyResponseNoError:               3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
 						},
 						IdentifierTranspileSymflowerFix: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  8,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  12,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 					},
 				},
 				ExpectedProblemContains: []string{
+					"imported and not used",
 					"imported and not used",
 					"imported and not used",
 				},
@@ -447,7 +448,7 @@ func TestTranspileRun(t *testing.T) {
 							def cascading_if_else(i)
 							end
 						`), string(content))
-					}, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+					}, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(3)
 				},
 
 				Model:          modelMock,
@@ -458,16 +459,16 @@ func TestTranspileRun(t *testing.T) {
 				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
 					"cascadingIfElse": {
 						IdentifierTranspile: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  6,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  9,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 						IdentifierTranspileSymflowerFix: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  6,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  9,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 					},
 				},
@@ -500,7 +501,7 @@ func TestTranspileRun(t *testing.T) {
 							end
 						end
 					`)
-					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(3)
 
 					transpiledSourceFilePath = filepath.Join("lib", "sort.rb")
 					transpiledSourceFileContent = bytesutil.StringTrimIndentations(`
@@ -513,7 +514,7 @@ func TestTranspileRun(t *testing.T) {
 							return i == a.length - 1
 						end
 					`)
-					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
+					modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(3)
 				},
 
 				Model:          modelMock,
@@ -524,35 +525,35 @@ func TestTranspileRun(t *testing.T) {
 				ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
 					"cascadingIfElse": {
 						IdentifierTranspile: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  6,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  9,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 						IdentifierTranspileSymflowerFix: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  6,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  9,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 					},
 					"isSorted": {
 						IdentifierTranspile: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  10,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  15,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 						IdentifierTranspileSymflowerFix: metrics.Assessments{
-							metrics.AssessmentKeyTestsPassing:                  10,
-							metrics.AssessmentKeyFilesExecuted:                 2,
-							metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-							metrics.AssessmentKeyResponseNoError:               2,
+							metrics.AssessmentKeyTestsPassing:                  15,
+							metrics.AssessmentKeyFilesExecuted:                 3,
+							metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+							metrics.AssessmentKeyResponseNoError:               3,
 						},
 					},
 				},
 				ValidateLog: func(t *testing.T, data string) {
-					assert.Equal(t, 2, strings.Count(data, "3 runs, 3 assertions, 0 failures, 0 errors, 0 skips"))
+					assert.Equal(t, 3, strings.Count(data, "3 runs, 3 assertions, 0 failures, 0 errors, 0 skips"))
 				},
 			})
 		}
@@ -589,7 +590,7 @@ func TestTranspileRun(t *testing.T) {
 						}
 					}
 				`)
-				modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Once()
+				modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(2)
 			},
 
 			Model:          modelMock,
@@ -600,16 +601,16 @@ func TestTranspileRun(t *testing.T) {
 			ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
 				"cascadingIfElse": {
 					IdentifierTranspile: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  4,
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
+						metrics.AssessmentKeyTestsPassing:                  8,
+						metrics.AssessmentKeyFilesExecuted:                 2,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+						metrics.AssessmentKeyResponseNoError:               3,
 					},
 					IdentifierTranspileSymflowerFix: metrics.Assessments{
-						metrics.AssessmentKeyTestsPassing:                  4,
-						metrics.AssessmentKeyFilesExecuted:                 1,
-						metrics.AssessmentKeyFilesExecutedMaximumReachable: 2,
-						metrics.AssessmentKeyResponseNoError:               2,
+						metrics.AssessmentKeyTestsPassing:                  8,
+						metrics.AssessmentKeyFilesExecuted:                 2,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 3,
+						metrics.AssessmentKeyResponseNoError:               3,
 					},
 				},
 			},
@@ -788,6 +789,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 				require.NoError(t, os.MkdirAll(implementationPath, 0700))
 				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "Class.java"), []byte(`content`), 0700))
 				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file.rb"), []byte(`content`), 0700))
+				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file.rs"), []byte(`content`), 0700))
 			},
 
 			TestdataPath:   filepath.Join("..", "..", "testdata"),
@@ -806,6 +808,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 				require.NoError(t, os.MkdirAll(implementationPath, 0700))
 				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "Class.java"), []byte(`content`), 0700))
 				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file.rb"), []byte(`content`), 0700))
+				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file.rs"), []byte(`content`), 0700))
 				require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "somePackage", "file.go"), []byte(`content`), 0700))
 			},
 
@@ -839,6 +842,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 				require.NoError(t, os.MkdirAll(implementationPath, 0700))
 				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file.go"), []byte(`content`), 0700))
 				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file.rb"), []byte(`content`), 0700))
+				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file.rs"), []byte(`content`), 0700))
 			},
 
 			TestdataPath:   filepath.Join("..", "..", "testdata"),
@@ -857,6 +861,7 @@ func TestValidateTranspileRepository(t *testing.T) {
 				require.NoError(t, os.MkdirAll(implementationPath, 0700))
 				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file.go"), []byte(`content`), 0700))
 				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file.rb"), []byte(`content`), 0700))
+				require.NoError(t, os.WriteFile(filepath.Join(implementationPath, "file.rs"), []byte(`content`), 0700))
 				require.NoError(t, os.WriteFile(filepath.Join(repositoryPath, "somePackage", "Class.java"), []byte(`content`), 0700))
 			},
 
@@ -938,6 +943,7 @@ func TestTranspileUnpackTranspilerPackage(t *testing.T) {
 			ExpectedOriginFilePathsWithLanguage: map[string]language.Language{
 				filepath.Join("implementation", "BinarySearch.java"): &java.Language{},
 				filepath.Join("implementation", "binary_search.rb"):  &ruby.Language{},
+				filepath.Join("implementation", "binary_search.rs"):  &rust.Language{},
 			},
 			ExpectedStubFilePath: "binarySearch.go",
 		})
@@ -952,8 +958,9 @@ func TestTranspileUnpackTranspilerPackage(t *testing.T) {
 			PackagePath:    "isSorted",
 
 			ExpectedOriginFilePathsWithLanguage: map[string]language.Language{
-				filepath.Join("implementation", "isSorted.go"): &golang.Language{},
-				filepath.Join("implementation", "sort.rb"):     &ruby.Language{},
+				filepath.Join("implementation", "isSorted.go"):  &golang.Language{},
+				filepath.Join("implementation", "sort.rb"):      &ruby.Language{},
+				filepath.Join("implementation", "is_sorted.rs"): &rust.Language{},
 			},
 			ExpectedStubFilePath: filepath.Join("src", "main", "java", "com", "eval", "IsSorted.java"),
 		})
