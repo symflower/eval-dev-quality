@@ -16,6 +16,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/language/java"
 	"github.com/symflower/eval-dev-quality/language/ruby"
+	"github.com/symflower/eval-dev-quality/language/rust"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	modeltesting "github.com/symflower/eval-dev-quality/model/testing"
@@ -619,6 +620,53 @@ func TestTranspileRun(t *testing.T) {
 			ValidateLog: func(t *testing.T, data string) {
 				assert.Contains(t, data, "expected 'package', found invalid")
 				assert.Contains(t, data, "PASS: TestSymflowerCascadingIfElse")
+			},
+		})
+	}
+
+	{
+		temporaryDirectoryPath := t.TempDir()
+
+		repositoryPath := filepath.Join(temporaryDirectoryPath, "rust", "transpile", "addition")
+		require.NoError(t, osutil.CopyTree(filepath.Join("testdata", "rust", "transpile", "addition"), repositoryPath))
+
+		modelMock := modeltesting.NewMockCapabilityTranspileNamed(t, "mocked-model")
+		validate(t, &tasktesting.TestCaseTask{
+			Name: "Transpile to Rust",
+
+			Setup: func(t *testing.T) {
+				transpiledSourceFilePath := filepath.Join("src", "lib.rs")
+				transpiledSourceFileContent := bytesutil.StringTrimIndentations(`
+						pub fn add(a: i32, b: i32) -> i32 {
+							return a + b;
+						}
+					`)
+				modelMock.RegisterGenerateSuccess(t, validateContext, transpiledSourceFilePath, transpiledSourceFileContent, metricstesting.AssessmentsWithProcessingTime).Times(1)
+			},
+
+			Model:          modelMock,
+			Language:       &rust.Language{},
+			TestDataPath:   temporaryDirectoryPath,
+			RepositoryPath: filepath.Join("rust", "transpile"),
+
+			ExpectedRepositoryAssessment: map[string]map[evaltask.Identifier]metrics.Assessments{
+				"addition": {
+					IdentifierTranspile: metrics.Assessments{
+						metrics.AssessmentKeyTestsPassing:                  1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+					IdentifierTranspileSymflowerFix: metrics.Assessments{
+						metrics.AssessmentKeyTestsPassing:                  1,
+						metrics.AssessmentKeyFilesExecuted:                 1,
+						metrics.AssessmentKeyFilesExecutedMaximumReachable: 1,
+						metrics.AssessmentKeyResponseNoError:               1,
+					},
+				},
+			},
+			ValidateLog: func(t *testing.T, data string) {
+				assert.Contains(t, data, "ok. 1 passed")
 			},
 		})
 	}

@@ -68,7 +68,7 @@ func (t *Transpile) Run(ctx evaltask.Context) (repositoryAssessment map[string]m
 
 		modelAssessments := metrics.NewAssessments()
 		withSymflowerAssessments := metrics.NewAssessments()
-		maximumReachableFiles := uint64(len(language.Languages) - 1) // Transpile repositories contain sub-tasks to transpile from every other supported language minus the one we are transpiling to.
+		maximumReachableFiles := uint64(len(originFilePathsWithLanguage))
 		modelAssessments[metrics.AssessmentKeyFilesExecutedMaximumReachable] = float64(maximumReachableFiles)
 		withSymflowerAssessments[metrics.AssessmentKeyFilesExecutedMaximumReachable] = float64(maximumReachableFiles)
 		repositoryAssessment[packagePath] = map[evaltask.Identifier]metrics.Assessments{
