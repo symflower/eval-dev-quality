@@ -22,6 +22,8 @@ import (
 type TestCaseTask struct {
 	Name string
 
+	Setup func(t *testing.T)
+
 	Task           evaltask.Task
 	Model          model.Model
 	Language       language.Language
@@ -50,6 +52,10 @@ func (tc *TestCaseTask) Validate(t *testing.T, createRepository createRepository
 	repository, cleanup, err := createRepository(logger, tc.TestDataPath, tc.RepositoryPath)
 	assert.NoError(t, err)
 	defer cleanup()
+
+	if tc.Setup != nil {
+		tc.Setup(t)
+	}
 
 	taskContext := evaltask.Context{
 		Language:   tc.Language,

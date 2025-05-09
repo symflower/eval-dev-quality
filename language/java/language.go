@@ -111,10 +111,11 @@ func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (test
 		StdOut: commandOutput,
 	}
 
-	testResult.Coverage, err = language.CoverageObjectCountOfFile(logger, coverageFilePath)
+	coverageData, err := language.ParseCoverage(logger, coverageFilePath)
 	if err != nil {
 		return nil, nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
+	testResult.Coverage = uint64(language.CountUniqueCoverage(coverageData))
 
 	return testResult, nil, nil
 }

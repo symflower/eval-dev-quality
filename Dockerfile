@@ -14,6 +14,7 @@ RUN apt-get update && \
 	apt-get install -y \
 	--no-install-recommends \
 	ca-certificates \
+	curl \
 	gcc \
 	git \
 	imagemagick \
@@ -96,6 +97,15 @@ RUN wget https://go.dev/dl/go1.24.1.linux-amd64.tar.gz && \
 ENV PATH="${PATH}:/app/.eval-dev-quality/go/bin"
 ENV GOROOT="/app/.eval-dev-quality/go"
 ENV PATH="${PATH}:/home/ubuntu/go/bin"
+
+# Install Rust
+ENV RUSTUP_HOME="/app/.eval-dev-quality/rustup"
+ENV CARGO_HOME="/app/.eval-dev-quality/cargo"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path && \
+	/app/.eval-dev-quality/cargo/bin/rustup install 1.86.0 && \
+	/app/.eval-dev-quality/cargo/bin/rustup component add llvm-tools-preview && \
+	/app/.eval-dev-quality/cargo/bin/cargo install cargo-llvm-cov
+ENV PATH="${PATH}:/app/.eval-dev-quality/cargo/bin"
 
 # Setup NPM global store in User space and install NPM packages.
 ENV NPM_CONFIG_PREFIX=/home/ubuntu/.npm-global

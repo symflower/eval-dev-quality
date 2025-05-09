@@ -91,7 +91,7 @@ func (*symflower) CheckVersion(logger *log.Logger, binaryPath string) (err error
 }
 
 // SymflowerVersionRequired holds the version of Symflower required for this revision of the evaluation.
-const SymflowerVersionRequired = "49066"
+const SymflowerVersionRequired = "50077"
 
 // RequiredVersion returns the required version of the tool.
 func (*symflower) RequiredVersion() string {
