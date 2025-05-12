@@ -72,6 +72,8 @@ type Context struct {
 
 	// RepositoryPath holds the absolute path to the repository.
 	RepositoryPath string
+	// HasTestsInSource determines if the tests for this repository are located within the corresponding implementation file.
+	HasTestsInSource bool
 	// FilePath holds the path to the file the model should act on.
 	FilePath string
 
