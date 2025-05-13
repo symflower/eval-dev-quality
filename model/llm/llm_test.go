@@ -21,6 +21,7 @@ import (
 	"github.com/symflower/eval-dev-quality/language"
 	"github.com/symflower/eval-dev-quality/language/golang"
 	"github.com/symflower/eval-dev-quality/language/java"
+	"github.com/symflower/eval-dev-quality/language/rust"
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/provider"
@@ -654,49 +655,156 @@ func TestFormatPromptContext(t *testing.T) {
 				` + "```" + `
 			`),
 		})
+
+		validate(t, &testCase{
+			Name: "No Import path",
+
+			Context: &llmWriteTestSourceFilePromptContext{
+				llmSourceFilePromptContext: llmSourceFilePromptContext{
+					Language: &golang.Language{},
+
+					Code: bytesutil.StringTrimIndentations(`
+						package increment
+
+						func increment(i int) int
+							return i + 1
+						}
+					`),
+					FilePath:   filepath.Join("path", "to", "increment.go"),
+					ImportPath: "",
+				},
+			},
+
+			ExpectedMessage: bytesutil.StringTrimIndentations(`
+				Given the following Go code file "path/to/increment.go", provide a test file for this code.
+				The tests should produce 100 percent code coverage and must compile.
+				The response must contain only the test code in a fenced code block and nothing else.
+
+				` + "```" + `golang
+				package increment
+
+				func increment(i int) int
+					return i + 1
+				}
+				` + "```" + `
+			`),
+		})
+
+		validate(t, &testCase{
+			Name: "Tests in source file",
+
+			Context: &llmWriteTestSourceFilePromptContext{
+				llmSourceFilePromptContext: llmSourceFilePromptContext{
+					Language: &rust.Language{},
+
+					Code: bytesutil.StringTrimIndentations(`
+						fn main() {
+						}
+					`),
+					FilePath:         filepath.Join("path", "to", "main.rs"),
+					ImportPath:       "",
+					HasTestsInSource: true,
+				},
+			},
+
+			ExpectedMessage: bytesutil.StringTrimIndentations(`
+				Given the following Rust code file "path/to/main.rs", provide tests for this code.
+				The tests should produce 100 percent code coverage and must compile.
+				The response must contain only the test code in a fenced code block and nothing else.
+
+				` + "```" + `rust
+				fn main() {
+				}
+				` + "```" + `
+			`),
+		})
 	})
 
-	validate(t, &testCase{
-		Name: "Code Repair",
+	t.Run("Code Repair", func(t *testing.T) {
+		validate(t, &testCase{
+			Name: "Default",
 
-		Context: &llmCodeRepairSourceFilePromptContext{
-			llmSourceFilePromptContext: llmSourceFilePromptContext{
-				Language: &golang.Language{},
+			Context: &llmCodeRepairSourceFilePromptContext{
+				llmSourceFilePromptContext: llmSourceFilePromptContext{
+					Language: &golang.Language{},
 
-				Code: bytesutil.StringTrimIndentations(`
+					Code: bytesutil.StringTrimIndentations(`
 					package increment
 
 					func increment(i int) int
 						return i + 1
 					}
 				`),
-				FilePath:   filepath.Join("path", "to", "increment.go"),
-				ImportPath: "increment",
+					FilePath:   filepath.Join("path", "to", "increment.go"),
+					ImportPath: "increment",
+				},
+				Mistakes: []string{
+					"path/to/increment.go:3:1: expected 'IDENT', found 'func'",
+					"path/to/increment.go: syntax error: non-declaration statement outside function body",
+					"path/to/increment.go: missing return",
+				},
 			},
-			Mistakes: []string{
-				"path/to/increment.go:3:1: expected 'IDENT', found 'func'",
-				"path/to/increment.go: syntax error: non-declaration statement outside function body",
-				"path/to/increment.go: missing return",
+
+			ExpectedMessage: bytesutil.StringTrimIndentations(`
+				Given the following Go code file "path/to/increment.go" with package "increment" and a list of compilation errors, modify the code such that the errors are resolved.
+				The response must contain only the source code in a fenced code block and nothing else.
+
+				` + "```" + `golang
+				package increment
+
+				func increment(i int) int
+					return i + 1
+				}
+				` + "```" + `
+
+				The list of compilation errors is the following:
+				- path/to/increment.go:3:1: expected 'IDENT', found 'func'
+				- path/to/increment.go: syntax error: non-declaration statement outside function body
+				- path/to/increment.go: missing return
+			`),
+		})
+
+		validate(t, &testCase{
+			Name: "No package",
+
+			Context: &llmCodeRepairSourceFilePromptContext{
+				llmSourceFilePromptContext: llmSourceFilePromptContext{
+					Language: &golang.Language{},
+
+					Code: bytesutil.StringTrimIndentations(`
+					package increment
+
+					func increment(i int) int
+						return i + 1
+					}
+				`),
+					FilePath: filepath.Join("path", "to", "increment.go"),
+				},
+				Mistakes: []string{
+					"path/to/increment.go:3:1: expected 'IDENT', found 'func'",
+					"path/to/increment.go: syntax error: non-declaration statement outside function body",
+					"path/to/increment.go: missing return",
+				},
 			},
-		},
 
-		ExpectedMessage: bytesutil.StringTrimIndentations(`
-			Given the following Go code file "path/to/increment.go" with package "increment" and a list of compilation errors, modify the code such that the errors are resolved.
-			The response must contain only the source code in a fenced code block and nothing else.
+			ExpectedMessage: bytesutil.StringTrimIndentations(`
+				Given the following Go code file "path/to/increment.go" and a list of compilation errors, modify the code such that the errors are resolved.
+				The response must contain only the source code in a fenced code block and nothing else.
 
-			` + "```" + `golang
-			package increment
+				` + "```" + `golang
+				package increment
 
-			func increment(i int) int
-				return i + 1
-			}
-			` + "```" + `
+				func increment(i int) int
+					return i + 1
+				}
+				` + "```" + `
 
-			The list of compilation errors is the following:
-			- path/to/increment.go:3:1: expected 'IDENT', found 'func'
-			- path/to/increment.go: syntax error: non-declaration statement outside function body
-			- path/to/increment.go: missing return
-		`),
+				The list of compilation errors is the following:
+				- path/to/increment.go:3:1: expected 'IDENT', found 'func'
+				- path/to/increment.go: syntax error: non-declaration statement outside function body
+				- path/to/increment.go: missing return
+			`),
+		})
 	})
 
 	validate(t, &testCase{

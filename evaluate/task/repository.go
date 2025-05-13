@@ -155,6 +155,10 @@ func TemporaryRepository(logger *log.Logger, testDataPath string, repositoryPath
 	if err != nil {
 		return nil, cleanup, pkgerrors.WithStack(err)
 	}
+	temporaryPath, err = filepath.EvalSymlinks(temporaryPath)
+	if err != nil {
+		return nil, cleanup, pkgerrors.WithStack(err)
+	}
 
 	cleanup = func() {
 		if e := os.RemoveAll(temporaryPath); e != nil {

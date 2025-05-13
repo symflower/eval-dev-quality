@@ -21,6 +21,8 @@ type RepositoryConfiguration struct {
 	Tasks []Identifier `json:"tasks"`
 	// IgnorePaths holds the relative paths that should be ignored when searching for cases.
 	IgnorePaths []string `json:"ignore,omitempty"`
+	// HasTestsInSource determines if the tests for this repository are located within the corresponding implementation file.
+	HasTestsInSource bool `json:"tests-in-source,omitempty"`
 
 	// Prompt holds LLM prompt-related configuration.
 	Prompt RepositoryConfigurationPrompt `json:"prompt,omitempty"`

@@ -1,0 +1,11 @@
+{
+  "tasks": ["transpile"],
+  "scores": {
+    "addition": {
+      "balancedBrackets": {
+        "tests-passing": 1,
+        "files-executed-maximum-reachable": 1
+      }
+    }
+  }
+}

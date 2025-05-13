@@ -27,6 +27,7 @@ import (
 	_ "github.com/symflower/eval-dev-quality/language/golang" // Register language.
 	_ "github.com/symflower/eval-dev-quality/language/java"   // Register language.
 	_ "github.com/symflower/eval-dev-quality/language/ruby"   // Register language.
+	_ "github.com/symflower/eval-dev-quality/language/rust"   // Register language.
 	"github.com/symflower/eval-dev-quality/log"
 	"github.com/symflower/eval-dev-quality/model"
 	"github.com/symflower/eval-dev-quality/model/llm"

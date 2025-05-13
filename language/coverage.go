@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"regexp"
+	"strconv"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/symflower/eval-dev-quality/log"
@@ -12,43 +13,67 @@ import (
 
 // CoverageBlockUnfolded is an unfolded representation of a coverage data block.
 type CoverageBlockUnfolded struct {
-	// FileRange holds the file range.
-	FileRange string
+	// FileRangeRaw holds the file range string.
+	FileRangeRaw string `json:"FileRange"`
+	// FilePath holds the file path.
+	FilePath string `json:",omitempty"`
+	// LineStart holds the start line.
+	LineStart int `json:",omitempty"`
+	// LineEnd holds the end line.
+	LineEnd int `json:",omitempty"`
+
 	// CoverageType holds the covered coverage type.
 	CoverageType string
 	// Count holds the execution count.
 	Count uint
 }
 
+// CountUniqueCoverage counts the unique coverage.
+func CountUniqueCoverage(data []*CoverageBlockUnfolded) (count int) {
+	for _, coverage := range data {
+		if coverage.Count > 0 {
+			count++
+		}
+	}
+
+	return count
+}
+
+// UniqueCoverageCountFromFile counts the unique coverage listed in the given coverage file.
+func UniqueCoverageCountFromFile(logger *log.Logger, coverageFilePath string) (uniqueCoverageCount uint64, err error) {
+	coverageData, err := ParseCoverage(logger, coverageFilePath)
+	if err != nil {
+		return 0, err
+	}
+
+	return uint64(CountUniqueCoverage(coverageData)), nil
+}
+
 // FileRangeMatch match a textual file range with lines and columns.
 var FileRangeMatch = regexp.MustCompile(`^(.+):(\d+):(\d+)-(.+):(\d+):(\d+)$`)
 
-// CoverageObjectCountOfFile parses the given coverage file and returns its coverage object count.
-func CoverageObjectCountOfFile(logger *log.Logger, coverageFilePath string) (coverageObjectCount uint64, err error) {
+// ParseCoverage parses the given coverage file and returns its coverage.
+func ParseCoverage(logger *log.Logger, coverageFilePath string) (coverageData []*CoverageBlockUnfolded, err error) {
 	coverageFile, err := os.ReadFile(coverageFilePath)
 	if err != nil {
-		return 0, pkgerrors.WithMessage(pkgerrors.WithStack(err), coverageFilePath)
+		return nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), coverageFilePath)
 	}
 
 	// Log coverage objects.
 	logger.Info("coverage objects", "objects", string(coverageFile))
 
-	var coverageData []CoverageBlockUnfolded
 	if err := json.Unmarshal(coverageFile, &coverageData); err != nil {
-		return 0, pkgerrors.WithMessage(pkgerrors.WithStack(err), string(coverageFile))
+		return nil, pkgerrors.WithMessage(pkgerrors.WithStack(err), string(coverageFile))
 	}
 	for _, c := range coverageData {
-		if c.Count == 0 {
-			continue
-		}
-
-		fr := FileRangeMatch.FindStringSubmatch(c.FileRange)
+		fr := FileRangeMatch.FindStringSubmatch(c.FileRangeRaw)
 		if fr == nil {
-			return 0, pkgerrors.WithMessage(pkgerrors.WithStack(errors.New("could not match file range")), c.FileRange)
+			return nil, pkgerrors.WithMessage(pkgerrors.WithStack(errors.New("could not match file range")), c.FileRangeRaw)
 		}
-
-		coverageObjectCount++
+		c.FilePath = fr[1]
+		c.LineStart, _ = strconv.Atoi(fr[2]) // The regex guarantees a valid number.
+		c.LineEnd, _ = strconv.Atoi(fr[5])   // The regex guarantees a valid number.
 	}
 
-	return coverageObjectCount, nil
+	return coverageData, nil
 }
