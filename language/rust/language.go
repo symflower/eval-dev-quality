@@ -13,7 +13,6 @@ import (
 	"strings"
 
 	pkgerrors "github.com/pkg/errors"
-	"github.com/zimmski/osutil"
 	"github.com/zimmski/osutil/bytesutil"
 
 	"github.com/symflower/eval-dev-quality/language"
@@ -165,13 +164,6 @@ func (l *Language) ExecuteTests(logger *log.Logger, repositoryPath string) (test
 	if err != nil {
 		return testResult, problems, pkgerrors.WithMessage(pkgerrors.WithStack(err), commandOutput)
 	}
-	for _, block := range coverageData {
-		// HACK The coverage should only contain relative paths but contains a weird build folder on macOS.
-		if index := strings.Index(block.FilePath, "src"); index != -1 && osutil.IsDarwin() && filepath.IsAbs(block.FilePath) {
-			block.FilePath = block.FilePath[index:]
-		}
-	}
-
 	for _, block := range coverageData {
 		if lineStart, ok := testStartLinePerFile[block.FilePath]; ok && block.LineEnd < lineStart && block.Count > 0 {
 			testResult.Coverage++

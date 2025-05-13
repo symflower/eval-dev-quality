@@ -41,7 +41,9 @@ func TestTemporaryRepository(t *testing.T) {
 			actualTemporaryRepository, cleanup, actualErr := TemporaryRepository(logger, tc.TestDataPath, tc.RepositoryPath)
 			defer cleanup()
 
-			assert.Regexp(t, regexp.QuoteMeta(filepath.Clean(os.TempDir())+string(os.PathSeparator))+tc.ExpectedTempPathRegex, actualTemporaryRepository, actualTemporaryRepository)
+			temporaryDirectory, err := filepath.EvalSymlinks(os.TempDir())
+			require.NoError(t, err)
+			assert.Regexp(t, regexp.QuoteMeta(temporaryDirectory+string(os.PathSeparator))+tc.ExpectedTempPathRegex, actualTemporaryRepository, actualTemporaryRepository)
 			assert.Equal(t, tc.ExpectedErr, actualErr)
 
 			if tc.ValidateAfter != nil {
