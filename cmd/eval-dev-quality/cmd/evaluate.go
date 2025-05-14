@@ -443,6 +443,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		sort.Strings(command.ModelIDsWithProviderAndAttributes)
 
 		// Check and initialize models.
+		var unknownModels []string
 		evaluationContext.ProviderForModel = map[model.Model]provider.Provider{}
 		for _, modelIDsWithProviderAndAttributes := range command.ModelIDsWithProviderAndAttributes {
 			command.logger.Info("selecting model", "model", modelIDsWithProviderAndAttributes)
@@ -497,7 +498,15 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				var ok bool
 				m, ok = models[modelIDWithProvider]
 				if !ok {
-					command.logger.Panicf("ERROR: model %q does not exist for provider %q. Valid models are: %s", modelIDsWithProviderAndAttributes, providerID, strings.Join(modelIDs, ", "))
+					unknownModels = append(unknownModels, modelIDsWithProviderAndAttributes)
+					command.logger.Error(
+						"ERROR: model does not exist for provider",
+						"model", modelIDsWithProviderAndAttributes,
+						"provider", providerID,
+						"valid", strings.Join(modelIDs, ", "),
+					)
+
+					continue
 				}
 
 				// If a model with attributes is requested, we add the base model plus attributes as new model to our list.
@@ -511,6 +520,12 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			evaluationContext.Models = append(evaluationContext.Models, m)
 			evaluationContext.ProviderForModel[m] = p
 			evaluationConfiguration.Models.Selected = append(evaluationConfiguration.Models.Selected, modelIDsWithProviderAndAttributes)
+		}
+
+		if len(unknownModels) > 0 {
+			sort.Strings(unknownModels)
+
+			command.logger.Panicf("ERROR: found unknown providers or models: %s", strings.Join(unknownModels, ", "))
 		}
 	}
 
