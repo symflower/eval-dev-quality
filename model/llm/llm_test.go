@@ -708,7 +708,7 @@ func TestFormatPromptContext(t *testing.T) {
 			},
 
 			ExpectedMessage: bytesutil.StringTrimIndentations(`
-				Given the following Rust code file "path/to/main.rs", provide tests for this code.
+				Given the following Rust code file "path/to/main.rs", provide tests for this code that can be appended to the source file.
 				The tests should produce 100 percent code coverage and must compile.
 				The response must contain only the test code in a fenced code block and nothing else.
 
