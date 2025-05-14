@@ -149,6 +149,9 @@ type llmWriteTestSourceFilePromptContext struct {
 // llmWriteTestForFilePromptTemplate is the template for generating an LLM test generation prompt.
 var llmWriteTestForFilePromptTemplate = template.Must(template.New("model-llm-write-test-for-file-prompt").Parse(bytesutil.StringTrimIndentations(`
 	Given the following {{ .Language.Name }} code file "{{ .FilePath }}" {{- with .ImportPath }} with package "{{ . }}" {{- end }}, {{- if .HasTestsInSource }} provide tests for this code that can be appended to the source file{{ else }} provide a test file for this code{{ with .TestFramework }} with {{ . }} as a test framework{{ end }}{{ end -}}.
+	{{- if .HasTestsInSource }}
+	Add everything required for testing, but do not repeat the original file and do not try to import the code file.
+	{{- end }}
 	The tests should produce 100 percent code coverage and must compile.
 	The response must contain only the test code in a fenced code block and nothing else.
 
