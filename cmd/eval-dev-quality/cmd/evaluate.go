@@ -61,7 +61,7 @@ type Evaluate struct {
 	// ProviderUrls holds all custom inference endpoint urls for the providers.
 	ProviderUrls map[string]string `long:"urls" description:"Custom OpenAI API compatible inference endpoints (of the form '$provider:$url,...'). Use '$provider=custom-$name' to manually register a custom OpenAI API endpoint provider. Note that the models of a custom OpenAI API endpoint provider must be declared explicitly using the '--model' option. When using the environment variable, separate multiple definitions with ','." env:"PROVIDER_URL" env-delim:","`
 	// APIRequestAttempts holds the number of allowed API requests per LLM query.
-	APIRequestAttempts uint `long:"api-request-attempts" description:"Number of allowed API requests per LLM query." default:"3"`
+	APIRequestAttempts uint `long:"api-request-attempts" description:"Number of allowed API requests per LLM query." default:"10"`
 	// APIRequestTimeout holds the timeout for API requests in seconds.
 	APIRequestTimeout uint `long:"api-request-timeout" description:"Timeout of API requests in seconds. ('0' to disable)" default:"1200"`
 
