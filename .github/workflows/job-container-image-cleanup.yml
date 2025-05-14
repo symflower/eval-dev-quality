@@ -16,6 +16,7 @@ jobs:
         uses: vlaurin/action-ghcr-prune@v0.6.0
         with:
           container: ${{ inputs.container }}
+          prune-tags-regexes: .*
           keep-tags-regexes: |
             ^v[1-9]\d*\.\d+.\d+$
             latest
@@ -23,7 +24,6 @@ jobs:
           keep-last: 5
           organization: ${{ inputs.organization }}
           token: ${{ github.token }}
-          dry-run: true
   delete_untagged_container_versions:
     runs-on: ubuntu-latest
     steps:
