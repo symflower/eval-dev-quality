@@ -110,6 +110,7 @@ func TestWriteTestsRun(t *testing.T) {
 			Setup: func(t *testing.T) {
 				var query any = bytesutil.StringTrimIndentations(`
 					Given the following Rust code file "src/plain.rs", provide tests for this code that can be appended to the source file.
+					Add everything required for testing, but do not repeat the original file and do not try to import the code file.
 					The tests should produce 100 percent code coverage and must compile.
 					The response must contain only the test code in a fenced code block and nothing else.
 
