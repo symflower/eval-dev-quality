@@ -122,6 +122,22 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 	evaluationContext = &evaluate.Context{}
 	evaluationConfiguration = NewEvaluationConfiguration()
 
+	// Setup evaluation result directory.
+	{
+		command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", command.timestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
+		uniqueResultPath, err := util.UniqueDirectory(command.ResultPath)
+		if err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
+		// Ensure that the directory really exists.
+		if err := osutil.MkdirAll(uniqueResultPath); err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
+		command.ResultPath = uniqueResultPath
+		evaluationContext.ResultPath = uniqueResultPath
+		command.logger.Info("configured results directory", "path", command.ResultPath)
+	}
+
 	// Load the provided configuration file, if any.
 	if command.Configuration != "" {
 		if command.Runtime != "local" {
@@ -213,29 +229,6 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 
 		evaluationContext.NoDisqualification = command.NoDisqualification
-	}
-
-	// Setup evaluation result directory.
-	{
-		command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", command.timestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
-		uniqueResultPath, err := util.UniqueDirectory(command.ResultPath)
-		if err != nil {
-			command.logger.Panicf("ERROR: %s", err)
-		}
-		// Ensure that the directory really exists.
-		if err := osutil.MkdirAll(uniqueResultPath); err != nil {
-			command.logger.Panicf("ERROR: %s", err)
-		}
-		command.ResultPath = uniqueResultPath
-		evaluationContext.ResultPath = uniqueResultPath
-		command.logger.Info("configured results directory", "path", command.ResultPath)
-	}
-
-	// Initialize logging within result directory.
-	{
-		log := command.logger.With(log.AttributeKeyResultPath, command.ResultPath)
-		command.logger = log
-		evaluationContext.Log = log
 	}
 
 	// Gather languages.
@@ -540,17 +533,27 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		command.logger.Panicf("ERROR: empty evaluation configuration")
 	}
 
-	configurationFile, err := os.Create(filepath.Join(evaluationContext.ResultPath, "config.json"))
-	if err != nil {
-		command.logger.Panicf("ERROR: cannot create configuration file: %s", err)
+	// Initialize logging within result directory.
+	{
+		log := command.logger.With(log.AttributeKeyResultPath, command.ResultPath)
+		command.logger = log
+		evaluationContext.Log = log
 	}
-	defer func() {
-		if err := configurationFile.Close(); err != nil {
+
+	// Write the final evaluation configuration to the result directory.
+	{
+		configurationFile, err := os.Create(filepath.Join(evaluationContext.ResultPath, "config.json"))
+		if err != nil {
+			command.logger.Panicf("ERROR: cannot create configuration file: %s", err)
+		}
+		defer func() {
+			if err := configurationFile.Close(); err != nil {
+				command.logger.Panicf("ERROR: %s", err)
+			}
+		}()
+		if err := evaluationConfiguration.Write(configurationFile); err != nil {
 			command.logger.Panicf("ERROR: %s", err)
 		}
-	}()
-	if err := evaluationConfiguration.Write(configurationFile); err != nil {
-		command.logger.Panicf("ERROR: %s", err)
 	}
 
 	switch command.Runtime {
