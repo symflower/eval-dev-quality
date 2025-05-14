@@ -338,6 +338,10 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 		evaluationContext.RepositoryPaths = command.Repositories
 		evaluationConfiguration.Repositories.Selected = append(evaluationConfiguration.Repositories.Selected, command.Repositories...)
+
+		for _, repositoryID := range evaluationConfiguration.Repositories.Selected {
+			command.logger.Info("selected repository", "repository", repositoryID)
+		}
 	}
 
 	// Make the resolved selected languages available in the command.
