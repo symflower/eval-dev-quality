@@ -76,6 +76,8 @@ type Evaluate struct {
 	Configuration string `long:"configuration" description:"Configuration file to set up an evaluation run."`
 	// ExecutionTimeout holds the timeout for an execution.
 	ExecutionTimeout uint `long:"execution-timeout" description:"Execution timeout for compilation and tests in minutes." default:"5"`
+	// OnlyValidate indicates that only the configuration is validated and no evaluation is performed.
+	OnlyValidate bool `long:"only-validate" description:"Only validate the configuration and do not perform an evaluation."`
 	// RunIDStartsAt holds the offset increment for the run id used in creating the result folders.
 	RunIDStartsAt uint `long:"run-id-starts-at" description:"Sets the starting index for the run ID." default:"1"`
 	// Runs holds the number of runs to perform.
@@ -123,7 +125,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 	evaluationConfiguration = NewEvaluationConfiguration()
 
 	// Setup evaluation result directory.
-	{
+	if !command.OnlyValidate {
 		command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", command.timestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
 		uniqueResultPath, err := util.UniqueDirectory(command.ResultPath)
 		if err != nil {
@@ -531,6 +533,10 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		command.logger.Panicf("ERROR: empty evaluation context")
 	} else if evaluationConfiguration == nil {
 		command.logger.Panicf("ERROR: empty evaluation configuration")
+	}
+
+	if command.OnlyValidate {
+		return nil
 	}
 
 	// Initialize logging within result directory.
