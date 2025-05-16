@@ -61,7 +61,7 @@ type Evaluate struct {
 	// ProviderUrls holds all custom inference endpoint urls for the providers.
 	ProviderUrls map[string]string `long:"urls" description:"Custom OpenAI API compatible inference endpoints (of the form '$provider:$url,...'). Use '$provider=custom-$name' to manually register a custom OpenAI API endpoint provider. Note that the models of a custom OpenAI API endpoint provider must be declared explicitly using the '--model' option. When using the environment variable, separate multiple definitions with ','." env:"PROVIDER_URL" env-delim:","`
 	// APIRequestAttempts holds the number of allowed API requests per LLM query.
-	APIRequestAttempts uint `long:"api-request-attempts" description:"Number of allowed API requests per LLM query." default:"3"`
+	APIRequestAttempts uint `long:"api-request-attempts" description:"Number of allowed API requests per LLM query." default:"10"`
 	// APIRequestTimeout holds the timeout for API requests in seconds.
 	APIRequestTimeout uint `long:"api-request-timeout" description:"Timeout of API requests in seconds. ('0' to disable)" default:"1200"`
 
@@ -76,6 +76,8 @@ type Evaluate struct {
 	Configuration string `long:"configuration" description:"Configuration file to set up an evaluation run."`
 	// ExecutionTimeout holds the timeout for an execution.
 	ExecutionTimeout uint `long:"execution-timeout" description:"Execution timeout for compilation and tests in minutes." default:"5"`
+	// OnlyValidate indicates that only the configuration is validated and no evaluation is performed.
+	OnlyValidate bool `long:"only-validate" description:"Only validate the configuration and do not perform an evaluation."`
 	// RunIDStartsAt holds the offset increment for the run id used in creating the result folders.
 	RunIDStartsAt uint `long:"run-id-starts-at" description:"Sets the starting index for the run ID." default:"1"`
 	// Runs holds the number of runs to perform.
@@ -121,6 +123,22 @@ func (command *Evaluate) SetArguments(args []string) {
 func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.Context, evaluationConfiguration *EvaluationConfiguration, cleanup func()) {
 	evaluationContext = &evaluate.Context{}
 	evaluationConfiguration = NewEvaluationConfiguration()
+
+	// Setup evaluation result directory.
+	if !command.OnlyValidate {
+		command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", command.timestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
+		uniqueResultPath, err := util.UniqueDirectory(command.ResultPath)
+		if err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
+		// Ensure that the directory really exists.
+		if err := osutil.MkdirAll(uniqueResultPath); err != nil {
+			command.logger.Panicf("ERROR: %s", err)
+		}
+		command.ResultPath = uniqueResultPath
+		evaluationContext.ResultPath = uniqueResultPath
+		command.logger.Info("configured results directory", "path", command.ResultPath)
+	}
 
 	// Load the provided configuration file, if any.
 	if command.Configuration != "" {
@@ -213,29 +231,6 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 
 		evaluationContext.NoDisqualification = command.NoDisqualification
-	}
-
-	// Setup evaluation result directory.
-	{
-		command.ResultPath = strings.ReplaceAll(command.ResultPath, "%datetime%", command.timestamp.Format("2006-01-02-15:04:05")) // REMARK Use a datetime format with a dash, so directories can be easily marked because they are only one group.
-		uniqueResultPath, err := util.UniqueDirectory(command.ResultPath)
-		if err != nil {
-			command.logger.Panicf("ERROR: %s", err)
-		}
-		// Ensure that the directory really exists.
-		if err := osutil.MkdirAll(uniqueResultPath); err != nil {
-			command.logger.Panicf("ERROR: %s", err)
-		}
-		command.ResultPath = uniqueResultPath
-		evaluationContext.ResultPath = uniqueResultPath
-		command.logger.Info("configured results directory", "path", command.ResultPath)
-	}
-
-	// Initialize logging within result directory.
-	{
-		log := command.logger.With(log.AttributeKeyResultPath, command.ResultPath)
-		command.logger = log
-		evaluationContext.Log = log
 	}
 
 	// Gather languages.
@@ -343,6 +338,10 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		}
 		evaluationContext.RepositoryPaths = command.Repositories
 		evaluationConfiguration.Repositories.Selected = append(evaluationConfiguration.Repositories.Selected, command.Repositories...)
+
+		for _, repositoryID := range evaluationConfiguration.Repositories.Selected {
+			command.logger.Info("selected repository", "repository", repositoryID)
+		}
 	}
 
 	// Make the resolved selected languages available in the command.
@@ -448,6 +447,7 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 		sort.Strings(command.ModelIDsWithProviderAndAttributes)
 
 		// Check and initialize models.
+		var unknownModels []string
 		evaluationContext.ProviderForModel = map[model.Model]provider.Provider{}
 		for _, modelIDsWithProviderAndAttributes := range command.ModelIDsWithProviderAndAttributes {
 			command.logger.Info("selecting model", "model", modelIDsWithProviderAndAttributes)
@@ -502,7 +502,15 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 				var ok bool
 				m, ok = models[modelIDWithProvider]
 				if !ok {
-					command.logger.Panicf("ERROR: model %q does not exist for provider %q. Valid models are: %s", modelIDsWithProviderAndAttributes, providerID, strings.Join(modelIDs, ", "))
+					unknownModels = append(unknownModels, modelIDsWithProviderAndAttributes)
+					command.logger.Error(
+						"ERROR: model does not exist for provider",
+						"model", modelIDsWithProviderAndAttributes,
+						"provider", providerID,
+						"valid", strings.Join(modelIDs, ", "),
+					)
+
+					continue
 				}
 
 				// If a model with attributes is requested, we add the base model plus attributes as new model to our list.
@@ -516,6 +524,12 @@ func (command *Evaluate) Initialize(args []string) (evaluationContext *evaluate.
 			evaluationContext.Models = append(evaluationContext.Models, m)
 			evaluationContext.ProviderForModel[m] = p
 			evaluationConfiguration.Models.Selected = append(evaluationConfiguration.Models.Selected, modelIDsWithProviderAndAttributes)
+		}
+
+		if len(unknownModels) > 0 {
+			sort.Strings(unknownModels)
+
+			command.logger.Panicf("ERROR: found unknown providers or models: %s", strings.Join(unknownModels, ", "))
 		}
 	}
 
@@ -540,17 +554,31 @@ func (command *Evaluate) Execute(args []string) (err error) {
 		command.logger.Panicf("ERROR: empty evaluation configuration")
 	}
 
-	configurationFile, err := os.Create(filepath.Join(evaluationContext.ResultPath, "config.json"))
-	if err != nil {
-		command.logger.Panicf("ERROR: cannot create configuration file: %s", err)
+	if command.OnlyValidate {
+		return nil
 	}
-	defer func() {
-		if err := configurationFile.Close(); err != nil {
+
+	// Initialize logging within result directory.
+	{
+		log := command.logger.With(log.AttributeKeyResultPath, command.ResultPath)
+		command.logger = log
+		evaluationContext.Log = log
+	}
+
+	// Write the final evaluation configuration to the result directory.
+	{
+		configurationFile, err := os.Create(filepath.Join(evaluationContext.ResultPath, "config.json"))
+		if err != nil {
+			command.logger.Panicf("ERROR: cannot create configuration file: %s", err)
+		}
+		defer func() {
+			if err := configurationFile.Close(); err != nil {
+				command.logger.Panicf("ERROR: %s", err)
+			}
+		}()
+		if err := evaluationConfiguration.Write(configurationFile); err != nil {
 			command.logger.Panicf("ERROR: %s", err)
 		}
-	}()
-	if err := evaluationConfiguration.Write(configurationFile); err != nil {
-		command.logger.Panicf("ERROR: %s", err)
 	}
 
 	switch command.Runtime {
